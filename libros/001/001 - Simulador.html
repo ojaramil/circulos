@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Interés Compuesto 💰</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="number"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #eaf2f8;
+            border: 1px solid #d1e0e0;
+            border-radius: 4px;
+        }
+        .results h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .results p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .results span {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .year-breakdown {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        .year-breakdown div {
+            padding: 3px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+        .year-breakdown div:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Interés Compuesto 📈</h1>
+
+        <div class="input-group">
+            <label for="initialInvestment">Inversión Inicial (€):</label>
+            <input type="number" id="initialInvestment" value="1000" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="annualInterestRate">Tasa de Interés Anual (%):</label>
+            <input type="number" id="annualInterestRate" value="7" min="0" step="0.1">
+        </div>
+
+        <div class="input-group">
+            <label for="years">Número de Años:</label>
+            <input type="number" id="years" value="10" min="1">
+        </div>
+
+        <div class="input-group">
+            <label for="contributionAmount">Aporte Adicional (€):</label>
+            <input type="number" id="contributionAmount" value="100" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="contributionFrequency">Frecuencia del Aporte:</label>
+            <select id="contributionFrequency">
+                <option value="monthly">Mensual</option>
+                <option value="annually">Anual</option>
+            </select>
+        </div>
+
+        <button onclick="calculateCompoundInterest()">Simular ✨</button>
+
+        <div class="results" id="resultsArea" style="display:none;">
+            <h2>Resultados de la Simulación:</h2>
+            <p>Saldo Final: <span id="finalBalance"></span></p>
+            <p>Total de Aportes: <span id="totalContributions"></span></p>
+            <p>Total de Intereses Ganados: <span id="totalInterest"></span></p>
+            <div class="year-breakdown" id="yearBreakdown">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+
+        function calculateCompoundInterest() {
+            // Obtener valores de los inputs
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            const annualInterestRate = parseFloat(document.getElementById('annualInterestRate').value) / 100 || 0;
+            const years = parseInt(document.getElementById('years').value) || 0;
+            const contributionAmount = parseFloat(document.getElementById('contributionAmount').value) || 0;
+            const contributionFrequency = document.getElementById('contributionFrequency').value;
+
+            if (years <= 0) {
+                alert("El número de años debe ser mayor que cero.");
+                return;
+            }
+
+            let currentBalance = initialInvestment;
+            let totalContributionsMade = initialInvestment; // Incluye la inversión inicial
+            let yearBreakdownHTML = "<h3>Desglose Anual:</h3>";
+
+            for (let i = 1; i <= years; i++) {
+                let yearlyContribution = 0;
+                if (contributionAmount > 0) {
+                    if (contributionFrequency === 'monthly') {
+                        for (let month = 0; month < 12; month++) {
+                            currentBalance += contributionAmount;
+                            yearlyContribution += contributionAmount;
+                        }
+                    } else { // Annually
+                        currentBalance += contributionAmount;
+                        yearlyContribution = contributionAmount;
+                    }
+                    totalContributionsMade += yearlyContribution;
+                }
+                
+                const interestEarnedThisYear = currentBalance * annualInterestRate;
+                currentBalance += interestEarnedThisYear;
+
+                yearBreakdownHTML += `<div>Año ${i}: Saldo ${formatCurrency(currentBalance)} (Interés ganado: ${formatCurrency(interestEarnedThisYear)})</div>`;
+            }
+            
+            // Si la inversión inicial fue 0 y solo hubo aportes, ajustamos el total de aportes.
+            if (initialInvestment === 0 && contributionAmount > 0) {
+                 totalContributionsMade = 0; // Reseteamos para calcular solo los aportes periódicos
+                 if (contributionFrequency === 'monthly') {
+                    totalContributionsMade = contributionAmount * 12 * years;
+                } else { // Annually
+                    totalContributionsMade = contributionAmount * years;
+                }
+            } else if (initialInvestment > 0 && contributionAmount > 0) {
+                // El total de aportes es la inversión inicial más los aportes periódicos
+                let periodicContributions = 0;
+                if (contributionFrequency === 'monthly') {
+                    periodicContributions = contributionAmount * 12 * years;
+                } else { // Annually
+                    periodicContributions = contributionAmount * years;
+                }
+                totalContributionsMade = initialInvestment + periodicContributions;
+            }
+
+
+            const totalInterestEarned = currentBalance - totalContributionsMade;
+
+            // Mostrar resultados
+            document.getElementById('finalBalance').textContent = formatCurrency(currentBalance);
+            document.getElementById('totalContributions').textContent = formatCurrency(totalContributionsMade);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterestEarned);
+            document.getElementById('yearBreakdown').innerHTML = yearBreakdownHTML;
+            document.getElementById('resultsArea').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

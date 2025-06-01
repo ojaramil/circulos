@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso: Desafío Housel 🧐</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fdfdff; /* Un blanco muy sutilmente azulado */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .game-container {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+        h1 {
+            color: #3b5998; /* Un azul más corporativo/serio */
+            margin-bottom: 25px;
+            font-size: 1.9em;
+        }
+        .question-area {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #questionText {
+            font-size: 1.15em;
+            line-height: 1.5;
+            color: #495057;
+        }
+        .answer-buttons {
+            margin-bottom: 20px;
+        }
+        .answer-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 0 10px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            min-width: 120px;
+        }
+        .answer-buttons button:hover {
+            opacity: 0.9;
+        }
+        .answer-buttons button:active {
+            transform: scale(0.96);
+        }
+        #trueButton {
+            background-color: #28a745; /* Verde */
+            color: white;
+        }
+        #falseButton {
+            background-color: #dc3545; /* Rojo */
+            color: white;
+        }
+        .answer-buttons button:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        .feedback-area {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1em;
+            min-height: 80px; /* Para evitar saltos de layout */
+        }
+        .feedback-correct {
+            background-color: #d1e7dd; /* Verde claro */
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+        .feedback-incorrect {
+            background-color: #f8d7da; /* Rojo claro */
+            color: #58151c;
+            border: 1px solid #f1aeb5;
+        }
+        .feedback-area p {
+            margin: 5px 0;
+        }
+        .feedback-area strong {
+            font-size: 1.1em;
+        }
+        .navigation-controls {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navigation-controls button {
+            background-color: #6c757d; /* Gris */
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .navigation-controls button:hover {
+            background-color: #5a6268;
+        }
+        .navigation-controls button:disabled {
+            background-color: #ced4da;
+            cursor: not-allowed;
+        }
+        #questionCounter, #scoreDisplay {
+            font-size: 1em;
+            color: #495057;
+            font-weight: bold;
+        }
+        .final-score {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e9f5ff;
+            border: 1px solid #b8daff;
+            border-radius: 8px;
+        }
+        .final-score h2 {
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Verdadero o Falso: Desafío Housel 🧐</h1>
+
+        <div class="question-area">
+            <p id="questionText"></p>
+        </div>
+
+        <div class="answer-buttons">
+            <button id="trueButton" onclick="handleAnswer(true)">Verdadero</button>
+            <button id="falseButton" onclick="handleAnswer(false)">Falso</button>
+        </div>
+
+        <div class="feedback-area" id="feedbackArea" style="display:none;">
+            <p><strong id="feedbackResult"></strong></p>
+            <p>Respuesta Correcta: <span id="correctAnswerText"></span></p>
+            <p>Explicación: <span id="explanationText"></span></p>
+        </div>
+
+        <div class="navigation-controls">
+            <button id="prevButton" onclick="previousQuestion()">⬅️ Anterior</button>
+            <span id="questionCounter">Pregunta 0 / 0</span>
+            <button id="nextButton" onclick="nextQuestion()">Siguiente ➡️</button>
+        </div>
+        <p id="scoreDisplay" style="margin-top: 15px;">Puntuación: 0 / 0</p>
+        <div class="final-score" id="finalScoreArea" style="display:none;">
+            <h2>¡Juego Terminado!</h2>
+            <p id="finalScoreText"></p>
+            <button onclick="initializeGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { statement: "Según Morgan Housel, la inteligencia y la educación formal en finanzas son los únicos factores determinantes para el éxito financiero.", correctAnswer: false, explanation: "Housel argumenta que el comportamiento es mucho más determinante que la inteligencia o la educación formal. (Introducción, Clave de Respuestas del Quiz)" },
+            { statement: "La psicología del dinero se enseña correctamente cuando se enfoca exclusivamente en modelos matemáticos y fórmulas, ignorando las emociones.", correctAnswer: false, explanation: "Sugiere que se enseña incorrectamente precisamente porque ignora el papel de las emociones y el comportamiento. (Clave de Respuestas del Quiz)" },
+            { statement: "\"Ser adinerado\" (tener altos ingresos) es exactamente lo mismo que \"ser rico\" (poseer riqueza).", correctAnswer: false, explanation: "Housel distingue claramente: el dinero es lo que ganas, la riqueza es lo que no gastas y acumulas. (Clave de Respuestas del Quiz, Glosario)" },
+            { statement: "El autor argumenta que todas las personas que toman decisiones financieras que parecen extrañas están, de hecho, \"locas\".", correctAnswer: false, explanation: "Afirma que \"nadie está loco\"; las decisiones tienen sentido para el individuo según sus experiencias únicas. (Capítulo 1, Clave de Respuestas del Quiz)" },
+            { statement: "El mayor beneficio que el dinero puede proporcionar, según Housel, es la capacidad de comprar más bienes de lujo.", correctAnswer: false, explanation: "El mayor beneficio es la libertad y el control sobre tu tiempo. (Capítulo 7, Clave de Respuestas del Quiz)" },
+            { statement: "El éxito financiero es casi enteramente el resultado de decisiones individuales acertadas, con poca o ninguna influencia de la suerte o el riesgo.", correctAnswer: false, explanation: "El libro da gran importancia a la suerte y el riesgo como factores significativos. (Capítulo 2)" },
+            { statement: "El concepto de \"suficiente\" implica que uno nunca debe dejar de aspirar a acumular más riqueza, sin importar cuánto ya se posea.", correctAnswer: false, explanation: "El concepto de \"suficiente\" es crucial para evitar la codicia y la ruina; saber cuándo parar es vital. (Capítulo 3, Glosario)" },
+            { statement: "Interrumpir el proceso de interés compuesto con frecuencia no tiene un impacto significativo en la acumulación de riqueza a largo plazo.", correctAnswer: false, explanation: "El poder del interés compuesto reside en el tiempo y en no interrumpirlo. (Capítulo 4, Glosario)" },
+            { statement: "Las habilidades y la mentalidad necesarias para hacerse rico son idénticas a las necesarias para conservar la riqueza.", correctAnswer: false, explanation: "Hacerse rico puede implicar tomar riesgos y ser optimista, mientras que conservar la riqueza requiere austeridad y paranoia/miedo a perderlo. (Capítulo 5)" },
+            { statement: "La verdadera riqueza de una persona siempre es evidente a través de su estilo de vida y las posesiones que muestra.", correctAnswer: false, explanation: "La riqueza es lo que no se ve, los activos no gastados, no las demostraciones externas. (Capítulo 9)" },
+            { statement: "Para tomar buenas decisiones financieras, siempre es mejor ser estrictamente \"racional\" (basado en datos y fórmulas) que ser \"razonable\" (considerando el contexto emocional y práctico).", correctAnswer: false, explanation: "Housel argumenta que a menudo es mejor ser \"razonable\" (tomar decisiones que te permitan dormir por la noche y mantener el rumbo) que estrictamente \"racional\". (Capítulo 11, Glosario)" },
+            { statement: "Tener un \"margen de error\" o \"margen para equivocarse\" en los planes financieros no es importante si se ha realizado una investigación exhaustiva.", correctAnswer: false, explanation: "El margen de error es fundamental porque el futuro es incierto y los imprevistos ocurren. (Capítulo 13, Glosario)" },
+            { statement: "La \"ilusión del fin de la historia\" nos ayuda a planificar con precisión nuestras metas financieras a muy largo plazo porque sabemos que no cambiaremos mucho.", correctAnswer: false, explanation: "La \"ilusión del fin de la historia\" nos hace subestimar cuánto cambiaremos, lo que dificulta la planificación rígida. (Capítulo 14, Clave de Respuestas del Quiz)" },
+            { statement: "La volatilidad del mercado debe considerarse principalmente como una \"multa\" o un castigo por haber tomado malas decisiones de inversión.", correctAnswer: false, explanation: "Se debe ver como una \"tarifa\", el precio que se paga por la oportunidad de obtener rendimientos a largo plazo. (Capítulo 15, Clave de Respuestas del Quiz)" },
+            { statement: "Todos los inversores en el mercado están jugando el mismo \"juego\" con los mismos objetivos y horizontes temporales.", correctAnswer: false, explanation: "Diferentes inversores juegan diferentes \"juegos\" con distintos objetivos y plazos, lo cual es crucial entender. (Capítulo 16, Clave de Respuestas del Quiz)" },
+            { statement: "La tasa de ahorro personal es menos importante para construir riqueza que obtener altos ingresos o lograr grandes rendimientos de inversión.", correctAnswer: false, explanation: "La tasa de ahorro es identificada como el factor más controlable e importante para acumular riqueza. (Capítulo 10, Glosario)" },
+            { statement: "El control emocional es un aspecto secundario en las finanzas si se poseen conocimientos técnicos avanzados.", correctAnswer: false, explanation: "El comportamiento y el control emocional son primordiales, incluso más que el conocimiento técnico. (Introducción, Clave de Respuestas del Quiz)" },
+            { statement: "Las experiencias personales pasadas de un individuo con el dinero tienen un impacto mínimo en cómo toman decisiones financieras en el presente.", correctAnswer: false, explanation: "Las experiencias personales moldean profundamente las decisiones financieras de cada individuo. (Capítulo 1)" },
+            { statement: "Housel enfatiza que el objetivo final de la gestión del dinero debe ser maximizar los rendimientos de inversión a cualquier costo.", correctAnswer: false, explanation: "El objetivo principal que Housel resalta es la independencia financiera y el control sobre el propio tiempo. (Capítulo 7, Glosario)" },
+            { statement: "La historia del ejecutivo tecnológico que se arruinó y la del conserje Ronald Read que acumuló una fortuna demuestran que el comportamiento es un motor más potente del éxito financiero que la inteligencia.", correctAnswer: true, explanation: "Estas historias introductorias son ejemplos clave de esta tesis central del libro. (Introducción)" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answeredCurrentQuestion = false; // Para evitar múltiples respuestas a la misma pregunta cargada
+
+        const questionTextElement = document.getElementById('questionText');
+        const trueButton = document.getElementById('trueButton');
+        const falseButton = document.getElementById('falseButton');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const feedbackResultElement = document.getElementById('feedbackResult');
+        const correctAnswerTextElement = document.getElementById('correctAnswerText');
+        const explanationTextElement = document.getElementById('explanationText');
+        const questionCounterElement = document.getElementById('questionCounter');
+        const scoreDisplayElement = document.getElementById('scoreDisplay');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const finalScoreArea = document.getElementById('finalScoreArea');
+        const finalScoreText = document.getElementById('finalScoreText');
+
+
+        function loadQuestion(index) {
+            const question = questions[index];
+            questionTextElement.textContent = question.statement;
+            
+            feedbackArea.style.display = 'none';
+            trueButton.disabled = false;
+            falseButton.disabled = false;
+            answeredCurrentQuestion = false;
+            
+            questionCounterElement.textContent = `Pregunta ${index + 1} / ${questions.length}`;
+            prevButton.disabled = (index === 0);
+            nextButton.disabled = (index === questions.length - 1);
+            if (index === questions.length -1) {
+                nextButton.textContent = "Finalizar Juego";
+            } else {
+                nextButton.textContent = "Siguiente ➡️";
+            }
+        }
+
+        function handleAnswer(userAnswer) {
+            if (answeredCurrentQuestion) return; // No permitir cambiar respuesta
+            answeredCurrentQuestion = true;
+
+            const question = questions[currentQuestionIndex];
+            const isCorrect = (userAnswer === question.correctAnswer);
+
+            feedbackArea.style.display = 'block';
+            if (isCorrect) {
+                feedbackResultElement.textContent = "¡Correcto!";
+                feedbackArea.className = 'feedback-area feedback-correct';
+                score++;
+            } else {
+                feedbackResultElement.textContent = "Incorrecto.";
+                feedbackArea.className = 'feedback-area feedback-incorrect';
+            }
+            
+            correctAnswerTextElement.textContent = question.correctAnswer ? "Verdadero" : "Falso";
+            explanationTextElement.innerHTML = question.explanation.replace(/\n/g, "<br>");
+
+            trueButton.disabled = true;
+            falseButton.disabled = true;
+            updateScoreDisplay();
+        }
+        
+        function updateScoreDisplay() {
+            scoreDisplayElement.textContent = `Puntuación: ${score} / ${questions.length}`;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+        
+        function showFinalScore() {
+            document.querySelector('.question-area').style.display = 'none';
+            document.querySelector('.answer-buttons').style.display = 'none';
+            document.querySelector('.navigation-controls').style.display = 'none';
+            document.getElementById('scoreDisplay').style.display = 'none';
+            feedbackArea.style.display = 'none';
+
+            finalScoreText.textContent = `Tu puntuación final es: ${score} de ${questions.length}.`;
+            finalScoreArea.style.display = 'block';
+        }
+
+        function initializeGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answeredCurrentQuestion = false;
+            
+            document.querySelector('.question-area').style.display = 'flex';
+            document.querySelector('.answer-buttons').style.display = 'block';
+            document.querySelector('.navigation-controls').style.display = 'flex';
+            document.getElementById('scoreDisplay').style.display = 'block';
+            finalScoreArea.style.display = 'none';
+
+            loadQuestion(currentQuestionIndex);
+            updateScoreDisplay();
+        }
+
+        // Iniciar el juego
+        initializeGame();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de "Suficiente" 🎯</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 550px;
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.9em;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #495057;
+        }
+        input[type="number"] {
+            width: calc(100% - 24px);
+            padding: 11px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        input[type="number"]:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            width: 100%;
+            transition: background-color 0.2s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        .results h2 {
+            color: #007bff;
+            margin-top: 0;
+            border-bottom: 1px solid #adb5bd;
+            padding-bottom: 8px;
+            font-size: 1.4em;
+        }
+        .results p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .results span {
+            font-weight: bold;
+            color: #17a2b8; /* Un color cian para destacar */
+        }
+        .results .freedom-message {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        small {
+            display: block;
+            margin-top:5px;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Planificador de "Suficiente" 🎯</h1>
+        <p style="text-align:center; margin-top:-15px; margin-bottom:20px; font-size:0.9em; color: #6c757d;">
+            Calcula cuánto necesitas para alcanzar tu "suficiente" y cuántos años podría tomarte.
+        </p>
+
+        <div class="input-group">
+            <label for="desiredAnnualExpenses">Gastos Anuales Deseados en Libertad Financiera (€):</label>
+            <input type="number" id="desiredAnnualExpenses" value="30000" min="1">
+            <small>¿Cuánto dinero necesitarías al año para vivir como deseas sin trabajar?</small>
+        </div>
+
+        <div class="input-group">
+            <label for="currentNetWorth">Patrimonio Neto Actual Invertido (€):</label>
+            <input type="number" id="currentNetWorth" value="10000" min="0">
+            <small>¿Cuánto tienes ahorrado e invertido actualmente?</small>
+        </div>
+
+        <div class="input-group">
+            <label for="annualSavings">Ahorro Anual Adicional (€):</label>
+            <input type="number" id="annualSavings" value="5000" min="0">
+            <small>¿Cuánto planeas ahorrar e invertir adicionalmente cada año?</small>
+        </div>
+
+        <div class="input-group">
+            <label for="assumedAnnualReturn">Retorno Anual Esperado de Inversiones (%):</label>
+            <input type="number" id="assumedAnnualReturn" value="5" min="0" step="0.1">
+            <small>Después de la inflación. Un 4-5% es una estimación conservadora común.</small>
+        </div>
+
+        <button onclick="calculatePathToEnough()">Calcular Mi Camino a "Suficiente" 🚀</button>
+
+        <div class="results" id="resultsArea" style="display:none;">
+            <h2>Resultados de Tu Plan:</h2>
+            <p>Para cubrir <span id="resDesiredExpenses"></span> al año, necesitas un patrimonio ("Nido para Suficiente") de: <span id="targetNestEgg"></span></p>
+            <p>Con tu ahorro actual y un retorno del <span id="resAssumedReturn"></span>% anual, podrías alcanzarlo en aproximadamente: <span id="yearsToEnough"></span> años.</p>
+            <p class="freedom-message" id="freedomMessage"></p>
+            <div id="yearByYearDetails" style="margin-top:15px; font-size:0.9em; max-height:150px; overflow-y:auto;"></div>
+        </div>
+    </div>
+
+    <script>
+        const WITHDRAWAL_RATE = 0.04; // Tasa de retiro segura (Regla del 4%)
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+
+        function calculatePathToEnough() {
+            const desiredAnnualExpenses = parseFloat(document.getElementById('desiredAnnualExpenses').value);
+            let currentNetWorth = parseFloat(document.getElementById('currentNetWorth').value);
+            const annualSavings = parseFloat(document.getElementById('annualSavings').value);
+            const assumedAnnualReturn = parseFloat(document.getElementById('assumedAnnualReturn').value) / 100;
+
+            // Validación básica
+            if (isNaN(desiredAnnualExpenses) || desiredAnnualExpenses <= 0) {
+                alert("Por favor, ingresa gastos anuales deseados válidos.");
+                return;
+            }
+            if (isNaN(currentNetWorth) || currentNetWorth < 0) {
+                alert("Por favor, ingresa un patrimonio neto actual válido.");
+                return;
+            }
+            if (isNaN(annualSavings) || annualSavings < 0) {
+                alert("Por favor, ingresa un ahorro anual válido.");
+                return;
+            }
+            if (isNaN(assumedAnnualReturn) || assumedAnnualReturn < 0) {
+                alert("Por favor, ingresa un retorno anual esperado válido.");
+                return;
+            }
+
+            const targetNestEgg = desiredAnnualExpenses / WITHDRAWAL_RATE;
+            document.getElementById('targetNestEgg').textContent = formatCurrency(targetNestEgg);
+            document.getElementById('resDesiredExpenses').textContent = formatCurrency(desiredAnnualExpenses);
+            document.getElementById('resAssumedReturn').textContent = (assumedAnnualReturn * 100).toFixed(1);
+
+
+            let years = 0;
+            let accumulatedAmount = currentNetWorth;
+            let yearDetailsHTML = "<h4>Proyección Anual (simplificada):</h4>";
+
+            if (accumulatedAmount >= targetNestEgg) {
+                document.getElementById('yearsToEnough').textContent = "0 (¡Ya lo has alcanzado!)";
+                yearDetailsHTML += `<p>¡Felicidades! Ya cuentas con suficiente patrimonio.</p>`;
+                setFreedomMessage(0);
+            } else if (annualSavings <= 0 && (accumulatedAmount * assumedAnnualReturn) < (desiredAnnualExpenses * 0.01) && assumedAnnualReturn <=0) { 
+                // Si no hay ahorros y el retorno no es suficiente para crecer significativamente
+                document.getElementById('yearsToEnough').textContent = "Más de 100 (o nunca con estos parámetros)";
+                yearDetailsHTML += `<p>Con un ahorro anual de €0 y un bajo retorno, alcanzar la meta es muy difícil.</p>`;
+                setFreedomMessage(101);
+            }
+            else {
+                const MAX_YEARS = 100; // Límite para evitar bucles infinitos
+                while (accumulatedAmount < targetNestEgg && years < MAX_YEARS) {
+                    accumulatedAmount += annualSavings; // Ahorro se añade al principio/final del año
+                    accumulatedAmount = accumulatedAmount * (1 + assumedAnnualReturn);
+                    years++;
+                    if (years <= 10 || years % 5 === 0 || years == MAX_YEARS-1) { // Mostrar algunos detalles
+                        yearDetailsHTML += `<div>Año ${years}: ${formatCurrency(accumulatedAmount)}</div>`;
+                    }
+                }
+                document.getElementById('yearsToEnough').textContent = years >= MAX_YEARS ? `Más de ${MAX_YEARS}` : `${years}`;
+                setFreedomMessage(years);
+                 if (years >= MAX_YEARS) {
+                    yearDetailsHTML += `<p>Después de ${MAX_YEARS} años, aún no se ha alcanzado el objetivo con estos parámetros.</p>`;
+                }
+            }
+            
+            document.getElementById('yearByYearDetails').innerHTML = yearDetailsHTML;
+            document.getElementById('resultsArea').style.display = 'block';
+        }
+
+        function setFreedomMessage(years) {
+            const freedomMsgEl = document.getElementById('freedomMessage');
+            if (years === 0) {
+                freedomMsgEl.textContent = "¡Has alcanzado la libertad financiera según tus términos! Controlas tu tiempo.";
+            } else if (years <= 10) {
+                freedomMsgEl.textContent = "¡Estás en la vía rápida hacia tu 'suficiente'! Sigue así y la libertad de decidir sobre tu tiempo estará cerca.";
+            } else if (years <= 20) {
+                freedomMsgEl.textContent = "Progreso constante. Cada año de ahorro te acerca más a la independencia y a tener más control sobre tu vida.";
+            } else if (years <= 35) {
+                freedomMsgEl.textContent = "Es un camino a largo plazo, pero la recompensa de la libertad y menos preocupaciones financieras vale la pena. ¡La constancia es clave!";
+            } else if (years <= 100){
+                freedomMsgEl.textContent = "Este es un viaje muy largo. Considera si puedes aumentar tu tasa de ahorro o ajustar tus expectativas de gastos para acelerar tu camino hacia 'suficiente'.";
+            } else {
+                freedomMsgEl.textContent = "Alcanzar 'suficiente' con los parámetros actuales parece muy desafiante. Revisa tus números o considera estrategias alternativas.";
+            }
+        }
+
+    </script>
+</body>
+</html>

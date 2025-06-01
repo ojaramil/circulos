@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rueda Visual de Decisiones Financieras 🎡</title>
+    <title>Rueda Visual de Decisiones Financieras (100 Eventos) 🎡</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,7 +15,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden; /* Para evitar scroll horizontal si la rueda es grande */
+            overflow-x: hidden;
         }
         .game-container {
             background-color: #ffffff;
@@ -23,7 +23,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px; /* Aumentado para dar espacio a la rueda */
+            max-width: 500px;
             text-align: center;
         }
         h1 {
@@ -42,23 +42,22 @@
             margin: 8px 0;
             font-size: 1.1em;
         }
-        .status-display #currentWealth {
+        .status-display #currentWealthVisual { /* Corregido para coincidir con JS */
             font-weight: bold;
             color: #0d47a1;
         }
-        .status-display #spinsLeft {
+        .status-display #spinsLeftVisual { /* Corregido para coincidir con JS */
             font-weight: bold;
             color: #d32f2f;
         }
 
-        /* Estilos de la Rueda */
         .wheel-container {
             position: relative;
-            width: 300px; /* Tamaño de la rueda */
+            width: 300px; 
             height: 300px;
             margin: 20px auto;
             border-radius: 50%;
-            overflow: hidden; /* Importante para los segmentos */
+            overflow: hidden; 
             border: 5px solid #34495e;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
@@ -67,33 +66,19 @@
             height: 100%;
             border-radius: 50%;
             position: relative;
-            transition: transform 4s cubic-bezier(0.3, 1, 0.7, 1); /* Animación de giro */
+            transition: transform 4s cubic-bezier(0.3, 1, 0.7, 1); 
         }
-        .segment {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform-origin: 100% 100%; /* Gira desde la esquina inferior derecha (centro de la rueda) */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7em; /* Ajustado para caber texto */
-            font-weight: bold;
-            color: white;
-            padding-left: 20px; /* Espacio para el texto */
-            box-sizing: border-box;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 0%); /* Forma de cuña base */
-        }
+        /* La apariencia de los segmentos de la rueda se generará con JS usando conic-gradient y divs de texto */
         .pointer {
             position: absolute;
-            top: -5px; /* Un poco por encima del borde de la rueda */
+            top: -5px; 
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
-            border-top: 25px solid #e74c3c; /* Color del puntero */
+            border-top: 25px solid #e74c3c; 
             z-index: 10;
         }
 
@@ -208,7 +193,7 @@
     <script>
         let currentWealthVisual = 10000;
         const initialWealthVisual = 10000;
-        let spinsTotalVisual = 15;
+        let spinsTotalVisual = 20; // Aumentamos los giros para tener más variedad de eventos
         let spinsLeftVisual = spinsTotalVisual;
         const initialSpinsVisual = spinsTotalVisual;
         let isSpinning = false;
@@ -222,157 +207,102 @@
         const gameOverMessageDisplayVisual = document.getElementById('gameOverMessageVisual');
         const wheelElement = document.getElementById('visualWheel');
 
-        // Definición de segmentos y sus eventos asociados
-        const wheelSegments = [
-            { label: "Gran Ganancia!", color: "#2ecc71", type: "positive", amount: 1500, impactType: "fixed", message: "¡Extraordinario! Recibes un gran bono." },
-            { label: "Pequeña Pérdida", color: "#e74c3c", type: "negative", amount: 500, impactType: "fixed", message: "Un gasto inesperado reduce tus ahorros." },
-            { label: "Oportunidad", color: "#3498db", type: "choice",
-                question: "¿Invertir €1000 en una startup prometedora?",
-                options: [
-                    { text: "Sí, ¡vamos!", consequence: { successRate: 0.5, successAmount: 2500, failureAmount: -1000, successText: "¡La startup despegó!", failureText: "La startup no tuvo éxito."} },
-                    { text: "No, gracias", consequence: { successRate: 1, successAmount: 0, failureAmount: 0, successText: "Decides mantener tu dinero seguro.", failureText:""} }
-                ]
-            },
-            { label: "Pequeña Ganancia", color: "#1abc9c", type: "positive", amount: 0.05, impactType: "percentage", message: "Tus inversiones menores rinden frutos." },
-            { label: "Sin Cambios", color: "#95a5a6", type: "neutral", amount: 0, impactType: "fixed", message: "Un día tranquilo, tus finanzas se mantienen estables." },
-            { label: "Gran Pérdida", color: "#c0392b", type: "negative", amount: 0.15, impactType: "percentage", message: "¡El mercado cae fuertemente!" },
-            { label: "Ingreso Extra", color: "#f1c40f", type: "positive", amount: 700, impactType: "fixed", message: "¡Encuentras dinero o recibes un regalo!" },
-            { label: "Decisión de Gasto", color: "#8e44ad", type: "choice",
-                question: "¿Comprar ese nuevo gadget de €400 que tanto quieres?",
-                options: [
-                    { text: "¡Sí, me lo merezco!", consequence: { successRate: 1, successAmount: 0, failureAmount: -400, successText: "Disfrutas tu nuevo gadget (coste: €400).", failureText:"" } },
-                    { text: "No, ahorraré", consequence: { successRate: 1, successAmount: 0, failureAmount: 0, successText: "Sabia decisión, el ahorro es primero.", failureText:"" } }
-                ]
-            }
+        const visualWheelSegments = [ // Para la apariencia de la rueda, 8 segmentos
+            { label: "Fortuna", color: "#2ecc71" }, { label: "Riesgo", color: "#e74c3c" },
+            { label: "Decisión", color: "#3498db" }, { label: "Neutral", color: "#95a5a6" },
+            { label: "Ingreso", color: "#f1c40f" }, { label: "Gasto", color: "#c0392b" },
+            { label: "Oportunidad", color: "#8e44ad" }, { label: "Imprevisto", color: "#d35400" }
         ];
-        const segmentAngle = 360 / wheelSegments.length;
+        const visualSegmentAngle = 360 / visualWheelSegments.length;
 
-        function createWheelSegments() {
-            wheelElement.innerHTML = ''; // Limpiar segmentos existentes
-            wheelSegments.forEach((segment, index) => {
-                const segmentDiv = document.createElement('div');
-                segmentDiv.classList.add('segment');
-                segmentDiv.textContent = segment.label;
-                segmentDiv.style.backgroundColor = segment.color;
-                // Ajustar clip-path y rotación para formar la cuña
-                // El ángulo de la cuña es segmentAngle. Para el clip-path, necesitamos la mitad de eso en radianes.
-                const angleRad = (segmentAngle / 2) * (Math.PI / 180);
-                const clipPathY = (Math.tan(angleRad) * 100).toFixed(2); // Porcentaje para el clip-path
-                segmentDiv.style.clipPath = `polygon(0% 0%, 100% 0%, 100% ${clipPathY}%, 0% 0%)`; // Cuña superior
-                segmentDiv.style.transform = `rotate(${index * segmentAngle}deg) skewY(${(90 - segmentAngle)/2}deg)`;
-
-                // Para texto legible, podríamos añadir otro elemento dentro y rotarlo en contra.
-                // Por simplicidad, dejaremos el texto como está, puede ser un desafío hacerlo perfecto con CSS puro.
-                // Una alternativa más robusta para el texto sería usar SVG.
-
-                // Simplificando la rotación de la cuña y el posicionamiento del texto
-                // Esta es una forma más simple de hacer los segmentos, aunque menos perfecta en la forma de cuña
-                segmentDiv.style.transform = `rotate(${index * segmentAngle}deg)`;
-                segmentDiv.style.clipPath = `polygon(50% 50%, 100% 0, 100% 100%)`; // Un triángulo desde el centro
-                segmentDiv.style.width = '50%';
-                segmentDiv.style.height = '50%';
-                segmentDiv.style.transformOrigin = '50% 100%'; // Centro inferior
-                segmentDiv.style.left = '25%'; // Ajustar para que el origen esté en el centro
-                segmentDiv.style.paddingLeft = '10px';
-                segmentDiv.style.justifyContent = 'flex-start';
-                segmentDiv.innerHTML = `<span style="transform: rotate(0deg) translateX(30px) translateY(-50%); display:inline-block; text-align:left; width:80px;">${segment.label}</span>`;
-
-
-                wheelElement.appendChild(segmentDiv);
+        // LISTA AMPLIADA DE 100 EVENTOS POSIBLES
+        const allPossibleEvents = [];
+        // Generador de eventos
+        // Ingresos
+        for (let i = 0; i < 15; i++) {
+            const amount = Math.floor(Math.random() * 1000) + 200; // 200 a 1200
+            allPossibleEvents.push({ description: `Bono inesperado de €${amount}.`, type: "positive", amount: amount, impactType: "fixed" });
+        }
+        allPossibleEvents.push({ description: "¡Gran ascenso! Tu capital aumenta un 15%.", type: "positive", amount: 0.15, impactType: "percentage" });
+        allPossibleEvents.push({ description: "Un proyecto freelance te da €750 extra.", type: "positive", amount: 750, impactType: "fixed" });
+        // Gastos
+        for (let i = 0; i < 20; i++) {
+            const amount = Math.floor(Math.random() * 800) + 100; // 100 a 900
+            const items = ["reparación del coche", "factura del dentista", "electrodoméstico roto", "multa de tráfico", "regalo de boda caro"];
+            allPossibleEvents.push({ description: `Gasto urgente: ${items[i % items.length]} de €${amount}.`, type: "negative", amount: amount, impactType: "fixed" });
+        }
+        allPossibleEvents.push({ description: "¡Impuestos más altos de lo esperado! Pierdes un 5% de tu capital.", type: "negative", amount: 0.05, impactType: "percentage" });
+        // Inversiones / Mercado
+        for (let i = 0; i < 10; i++) {
+            const perc = Math.floor(Math.random() * 11) + 5; // 5% a 15%
+            allPossibleEvents.push({ description: `El mercado sube un ${perc}%.`, type: "positive", amount: perc / 100, impactType: "percentage" });
+        }
+        for (let i = 0; i < 10; i++) {
+            const perc = Math.floor(Math.random() * 11) + 5; // 5% a 15%
+            allPossibleEvents.push({ description: `El mercado baja un ${perc}%.`, type: "negative", amount: perc / 100, impactType: "percentage" });
+        }
+        allPossibleEvents.push({ description: "Una de tus acciones estrella se desploma (-20% capital).", type: "negative", amount: 0.20, impactType: "percentage" });
+        allPossibleEvents.push({ description: "Recibes dividendos inesperados (+€400).", type: "positive", amount: 400, impactType: "fixed" });
+        // Suerte
+        for (let i = 0; i < 5; i++) {
+            const amount = Math.floor(Math.random() * 100) + 50; // 50 a 150
+            allPossibleEvents.push({ description: `Encuentras €${amount} en un abrigo viejo.`, type: "positive", amount: amount, impactType: "fixed" });
+        }
+        allPossibleEvents.push({ description: "Ganas un pequeño premio en un sorteo: €250.", type: "positive", amount: 250, impactType: "fixed" });
+        // Neutrales
+        for (let i = 0; i < 10; i++) {
+            allPossibleEvents.push({ description: "Un día tranquilo, sin cambios financieros significativos.", type: "neutral", amount: 0, impactType: "fixed" });
+        }
+        // Decisiones (Choices) - Añadimos unas 20 para variar
+        const choiceEventsTemplates = [
+            { question: "¿Invertir €COST en una prometedora pero volátil criptomoneda?", successRate: 0.3, successAmountFactor: 3, failureAmountFactor: -1, costFactor: 0.1}, // Costo es 10% del capital
+            { question: "¿Tomar un curso de desarrollo profesional por €COST?", successRate: 0.9, successAmountFactor: 0, failureAmountFactor: -1, costFactor: 0.05, successText: "Curso completado. ¡Conocimiento adquirido!" }, // Costo 5% capital
+            { question: "¿Prestar €COST a un amigo con promesa de devolución con intereses?", successRate: 0.6, successAmountFactor: 1.2, failureAmountFactor: -1, costFactor: 0.07}, // Costo 7% capital
+            { question: "¿Apostar €COST en un evento deportivo?", successRate: 0.4, successAmountFactor: 2.5, failureAmountFactor: -1, costFactor: 0.03}, // Costo 3% capital
+            { question: "¿Comprar acciones de una empresa local por €COST?", successRate: 0.5, successAmountFactor: 1.5, failureAmountFactor: -0.5, costFactor: 0.1} // Costo 10% capital, posible pérdida parcial
+        ];
+        for (let i = 0; i < 28; i++) { // Para llegar cerca de 100 eventos en total
+            const template = choiceEventsTemplates[i % choiceEventsTemplates.length];
+            const cost = Math.max(200, Math.floor(currentWealthVisual * template.costFactor)); // Costo mínimo de 200 o % del capital
+            allPossibleEvents.push({
+                description: template.question.replace("€COST", `€${cost}`), // Placeholder para el mensaje, la pregunta real está abajo
+                type: "choice",
+                question: template.question.replace("€COST", `€${cost}`),
+                options: [
+                    { text: "Sí, ¡adelante!", consequence: { successRate: template.successRate, successAmount: cost * template.successAmountFactor, failureAmount: cost * template.failureAmountFactor, successText: template.successText || "¡La decisión fue acertada!", failureText: "No salió como esperabas."}},
+                    { text: "No, mejor no arriesgar.", consequence: { successRate: 1, successAmount: 0, failureAmount: 0, successText: "Decides ser conservador esta vez.", failureText:""} }
+                ]
             });
         }
-        // Para el efecto visual, la siguiente es una aproximación más sencilla con CSS puro
-        function createSimplifiedWheelSegments() {
-            wheelElement.innerHTML = '';
-            const radius = 150; // radio de la rueda
-            wheelSegments.forEach((segment, i) => {
-                const segmentDiv = document.createElement('div');
-                segmentDiv.className = 'segment';
-                segmentDiv.style.backgroundColor = segment.color;
-                
-                // Calcular el ángulo de inicio y fin para el path del clip
-                const startAngle = i * segmentAngle;
-                const endAngle = (i + 1) * segmentAngle;
 
-                // Convertir ángulos a radianes para las funciones trigonométricas
-                const startRad = startAngle * Math.PI / 180;
-                const endRad = endAngle * Math.PI / 180;
 
-                // Puntos para el polígono (aproximación de una cuña)
-                // 50%,50% es el centro
-                const x1 = (50 + 50 * Math.cos(startRad)).toFixed(2);
-                const y1 = (50 + 50 * Math.sin(startRad)).toFixed(2);
-                const x2 = (50 + 50 * Math.cos(endRad)).toFixed(2);
-                const y2 = (50 + 50 * Math.sin(endRad)).toFixed(2);
-                
-                // Usar un clip-path que cree una cuña. Esto es lo más complejo con CSS.
-                // Una forma más simple es usar transformaciones en un div cuadrado.
-                segmentDiv.style.position = 'absolute';
-                segmentDiv.style.width = '300px';
-                segmentDiv.style.height = '300px';
-                segmentDiv.style.borderRadius = '50%';
-                
-                // Usar conic-gradient para los colores es mucho más fácil
-                // Lo dejaremos con divs por ahora para la idea original.
-                // Con CSS moderno, un `conic-gradient` en el div `.wheel` sería lo ideal para los colores de fondo.
-                // Luego, divs separados para el texto, rotados apropiadamente.
-
-                // Solución con divs rotados para cada segmento de color:
-                segmentDiv.style.width = '150px'; // Mitad del tamaño del contenedor
-                segmentDiv.style.height = '300px'; // Altura completa
-                segmentDiv.style.position = 'absolute';
-                segmentDiv.style.top = '0';
-                segmentDiv.style.left = '75px'; // (300 - 150)/2 para centrar el pivote de la mitad
-                segmentDiv.style.transformOrigin = '50% 100%'; // Pivote en el centro de la base
-                segmentDiv.style.transform = `rotate(${startAngle}deg)`;
-                segmentDiv.style.clipPath = `polygon(0% 0%, 100% 0%, 50% 100%)`; // Triángulo
-                
-                // Texto (requiere rotación inversa o posicionamiento cuidadoso)
-                const textSpan = document.createElement('span');
-                textSpan.textContent = segment.label;
-                textSpan.style.display = 'block';
-                textSpan.style.transform = `rotate(${- (startAngle + segmentAngle / 2)}deg) translate(0px, -120px)`; // Ajustar para posicionar
-                textSpan.style.textAlign = 'center';
-                textSpan.style.position = 'absolute';
-                textSpan.style.width = '100px';
-                textSpan.style.left = '25px'; // Centrar el texto en el segmento
-                textSpan.style.top = '15px'; // Desde arriba
-                textSpan.style.color = segment.colorContrast || 'white';
-                textSpan.style.fontSize = '11px';
-                segmentDiv.appendChild(textSpan); // Esto es incorrecto, el texto debe estar fuera o con rotación compensada
-
-                wheelElement.appendChild(segmentDiv);
-            });
-             // Alternativa mucho más simple para colores de fondo usando conic-gradient (aplicado al .wheel):
+        function createVisualWheel() {
+            wheelElement.innerHTML = ''; // Limpiar
             let gradientString = 'conic-gradient(';
-            wheelSegments.forEach((seg, i) => {
-                gradientString += `${seg.color} ${i * segmentAngle}deg ${(i + 1) * segmentAngle}deg`;
-                if (i < wheelSegments.length - 1) gradientString += ', ';
+            visualWheelSegments.forEach((seg, i) => {
+                gradientString += `${seg.color} ${i * visualSegmentAngle}deg ${(i + 1) * visualSegmentAngle}deg`;
+                if (i < visualWheelSegments.length - 1) gradientString += ', ';
             });
             gradientString += ')';
             wheelElement.style.background = gradientString;
 
-            // Añadir etiquetas de texto encima del degradado
-            wheelSegments.forEach((seg, i) => {
+            visualWheelSegments.forEach((seg, i) => {
                 const labelDiv = document.createElement('div');
                 labelDiv.textContent = seg.label;
                 labelDiv.style.position = 'absolute';
-                labelDiv.style.width = '100px'; // Ancho del texto
-                labelDiv.style.height = '30px'; // Alto del texto
+                labelDiv.style.width = '100px'; 
                 labelDiv.style.textAlign = 'center';
-                labelDiv.style.lineHeight = '30px';
-                labelDiv.style.color = seg.textColor || 'white'; // Puedes definir un textColor en tus segmentos
-                labelDiv.style.fontSize = '10px';
-                // Posicionar el texto en el medio del segmento
-                const angle = (i * segmentAngle) + (segmentAngle / 2) -90; // -90 para ajustar el inicio del angulo
-                const radiusForText = 100; // Distancia desde el centro
-                labelDiv.style.left = `${150 + radiusForText * Math.cos(angle * Math.PI / 180) - 50}px`; // 150 es centro, 50 es la mitad del ancho del texto
-                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - 15}px`; // 150 es centro, 15 es la mitad del alto del texto
-                labelDiv.style.transform = `rotate(${angle+90}deg)`; // Rotar el texto para que apunte hacia afuera
+                labelDiv.style.color = '#fff'; 
+                labelDiv.style.fontSize = '11px';
+                labelDiv.style.fontWeight = 'bold';
+                labelDiv.style.textShadow = '1px 1px 1px #333';
+                const angle = (i * visualSegmentAngle) + (visualSegmentAngle / 2) -90; 
+                const radiusForText = 100; 
+                labelDiv.style.left = `${150 + radiusForText * Math.cos(angle * Math.PI / 180) - 50}px`; 
+                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - (labelDiv.offsetHeight / 2 || 10)}px`;
+                labelDiv.style.transform = `rotate(${angle+90}deg)`;
                 wheelElement.appendChild(labelDiv);
             });
-
-
         }
 
 
@@ -391,13 +321,13 @@
             resetButtonVisual.style.display = 'none';
             gameOverMessageDisplayVisual.innerHTML = '';
             gameOverMessageDisplayVisual.className = 'game-over-message-visual';
-            wheelElement.style.transform = 'rotate(0deg)'; // Resetear rotación de la rueda
+            wheelElement.style.transform = 'rotate(0deg)';
             updateVisualDisplay();
         }
-
-        function handleVisualEvent(eventData) {
+        
+        function applyEventEffect(eventData) {
             let changeAmount = 0;
-            let message = eventData.message || eventData.label; // Usar mensaje específico si existe
+            let message = eventData.description;
 
             if (eventData.type === "positive" || eventData.type === "negative") {
                 if (eventData.impactType === "fixed") {
@@ -409,10 +339,11 @@
                 currentWealthVisual += changeAmount;
                 message += ` (Impacto: €${changeAmount.toFixed(2)})`;
             } else if (eventData.type === "neutral"){
-                 message = eventData.message; // No hay impacto financiero
+                 message = eventData.description; 
             }
             eventDescriptionDisplayVisual.textContent = message;
-            choicesAreaVisual.innerHTML = ''; // Limpiar opciones si las hubo
+            choicesAreaVisual.innerHTML = ''; 
+             if (currentWealthVisual < 0) currentWealthVisual = 0; // No permitir riqueza negativa
         }
 
         function presentVisualChoice(eventData) {
@@ -423,12 +354,12 @@
             eventData.options.forEach(option => {
                 const button = document.createElement('button');
                 button.textContent = option.text;
-                button.onclick = () => resolveVisualChoice(option.consequence);
+                button.onclick = () => resolveVisualChoice(option.consequence, eventData);
                 choicesAreaVisual.appendChild(button);
             });
         }
 
-        function resolveVisualChoice(consequence) {
+        function resolveVisualChoice(consequence, originalEvent) {
             choicesAreaVisual.innerHTML = '';
             let outcomeMessage = "";
             let changeAmount = 0;
@@ -442,12 +373,12 @@
             }
             
             currentWealthVisual += changeAmount;
-            eventDescriptionDisplayVisual.textContent = `${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
+            if (currentWealthVisual < 0) currentWealthVisual = 0;
+            eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> ${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
             
-            // No re-habilitar spinButtonVisual aquí, se hace después del spin o en checkGameOver
-            checkVisualGameOver(); // Verificar después de la elección
+            checkVisualGameOver(); 
             updateVisualDisplay();
-             if (spinsLeftVisual > 0 && currentWealthVisual > 0) { // Solo habilitar si el juego no ha terminado
+             if (!isSpinning && spinsLeftVisual > 0 && currentWealthVisual > 0) {
                 spinButtonVisual.disabled = false;
             }
         }
@@ -457,51 +388,36 @@
 
             isSpinning = true;
             spinButtonVisual.disabled = true;
+            choicesAreaVisual.innerHTML = ''; // Limpiar elecciones previas
+            eventDescriptionDisplayVisual.textContent = "Girando...";
             spinsLeftVisual--;
-            updateVisualDisplay(); // Actualizar giros restantes inmediatamente
+            updateVisualDisplay(); 
 
-            // Calcular un ángulo de giro aleatorio + múltiples vueltas para efecto visual
-            const randomExtraSpins = Math.floor(Math.random() * 3) + 2; // 2 a 4 vueltas extra
-            const targetSegmentIndex = Math.floor(Math.random() * wheelSegments.length);
-            // Centrar el puntero en el medio del segmento ganador
-            const targetRotation = (randomExtraSpins * 360) + (targetSegmentIndex * segmentAngle) + (segmentAngle / 2);
-            // Añadir una pequeña variación para que no siempre caiga exacto en el centro visual
-            const slightRandomOffset = (Math.random() - 0.5) * (segmentAngle * 0.6);
-            const finalRotation = targetRotation + slightRandomOffset;
-
+            const randomExtraSpins = Math.floor(Math.random() * 3) + 3; // 3 a 5 vueltas extra
+            const randomRotationStop = Math.random() * 360; // Un ángulo aleatorio para detenerse visualmente
+            const finalRotation = (randomExtraSpins * 360) + randomRotationStop;
 
             wheelElement.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
             wheelElement.style.transform = `rotate(${finalRotation}deg)`;
 
             setTimeout(() => {
                 isSpinning = false;
-                const actualLandedAngle = finalRotation % 360;
-                let winningSegmentIndex = Math.floor(actualLandedAngle / segmentAngle);
-                 // Ajuste para que el puntero esté en la parte superior (0 grados)
-                // El puntero está en la parte superior (0 grados o 360). La rotación es horaria.
-                // Un segmento X está entre (X * angle) y ((X+1) * angle)
-                // Si la rueda gira Y grados, el segmento en la parte superior es aquel cuyo rango original ahora contiene (360 - Y%360)
-                // O más fácil: si la rueda gira 'finalRotation', el 'valor' en la posición del puntero es el opuesto.
-                // Calculamos el índice del segmento que queda debajo del puntero
-                // El puntero está en la posición "0 grados" (arriba).
-                // El ángulo final de la rueda indica qué tan lejos giró. Para saber qué segmento está en la parte superior:
-                const normalizedAngle = (360 - (finalRotation % 360)) % 360; // Ángulo del segmento en la posición del puntero
-                winningSegmentIndex = Math.floor(normalizedAngle / segmentAngle);
+                
+                // SELECCIONAR EVENTO ALEATORIO DE LA LISTA GRANDE
+                const randomIndex = Math.floor(Math.random() * allPossibleEvents.length);
+                const actualEventData = allPossibleEvents[randomIndex];
 
-
-                const winningEventData = wheelSegments[winningSegmentIndex];
-
-                if (winningEventData.type === "choice") {
-                    presentVisualChoice(winningEventData);
+                if (actualEventData.type === "choice") {
+                    presentVisualChoice(actualEventData);
                 } else {
-                    handleVisualEvent(winningEventData);
-                     if (spinsLeftVisual > 0 && currentWealthVisual > 0) { // Solo habilitar si el juego no ha terminado
+                    applyEventEffect(actualEventData);
+                     if (spinsLeftVisual > 0 && currentWealthVisual > 0) {
                         spinButtonVisual.disabled = false;
                     }
                 }
                 checkVisualGameOver();
                 updateVisualDisplay();
-            }, 4100); // Un poco más que la duración de la transición
+            }, 4100); 
         }
 
         function checkVisualGameOver() {
@@ -509,7 +425,7 @@
                 spinButtonVisual.disabled = true;
                 resetButtonVisual.style.display = 'inline-block';
                 let finalMessage = "";
-                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; // Reset class
+                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
 
                 if (currentWealthVisual <= 0) {
                     finalMessage = `¡Te has quedado sin capital! Giros realizados: ${initialSpinsVisual - spinsLeftVisual}.`;
@@ -527,9 +443,8 @@
             }
         }
 
-        // Inicializar el juego
-        //createWheelSegments(); // Usar la función que crea los segmentos visuales
-        createSimplifiedWheelSegments(); // Usar la función que crea los segmentos visuales con conic-gradient para colores
+        // Inicializar
+        createVisualWheel(); 
         resetVisualGame();
 
     </script>

@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Contenido y Actividades</title>
     <style>
-        /* Paleta de Colores Inspirada en el Logo (Azules) */
         :root {
-            --primary-blue: #004A99; /* Azul principal del texto del logo */
-            --dark-bg-blue: #0D1F33;   /* Fondo principal muy oscuro */
-            --medium-bg-blue: #142b47; /* Fondo para sidebars/header */
-            --light-blue-accent: #59A9D9; /* Azul claro para acentos o hover */
-            --button-blue: #005BAA;      /* Azul para botones */
-            --text-color-light: #E0E7EF;  /* Texto claro para fondos oscuros */
-            --text-color-dark: #1E293B;   /* Texto oscuro para fondos claros (si se usa) */
-            --border-color: #273F5D;     /* Color para bordes sutiles */
-            --white-ish: #F0F8FF;         /* Blanco (AliceBlue) para texto muy destacado o fondos claros */
+            --primary-blue: #004A99;
+            --dark-bg-blue: #0D1F33;
+            --medium-bg-blue: #142b47;
+            --light-blue-accent: #59A9D9;
+            --button-blue: #005BAA;
+            --text-color-light: #E0E7EF;
+            --text-color-dark: #1E293B;
+            --border-color: #273F5D;
+            --white-ish: #F0F8FF;
         }
 
-        /* General Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             margin: 0;
@@ -27,6 +29,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden; /* Prevenir scroll horizontal en el body */
         }
 
         .course-header {
@@ -37,9 +40,10 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            position: sticky; /* Para que el header se mantenga visible */
+            position: sticky;
             top: 0;
-            z-index: 1000; /* Asegurar que esté por encima de otros contenidos */
+            z-index: 1000;
+            width: 100%; 
         }
 
         .course-header .logo-container {
@@ -97,7 +101,7 @@
         .main-container {
             display: flex;
             flex: 1;
-            overflow: hidden; /* Evita doble scrollbar si los sidebars son muy altos */
+            /* overflow: hidden; quitado, se maneja en hijos si es necesario */
         }
 
         .left-sidebar {
@@ -108,7 +112,8 @@
             border-right: 1px solid var(--border-color);
             overflow-y: auto;
             color: var(--text-color-light);
-            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
+            max-height: calc(100vh - 60px); /* Asumiendo header de 60px */
+            flex-shrink: 0; /* Evitar que se encoja */
         }
 
         .left-sidebar h3 {
@@ -142,19 +147,20 @@
             text-decoration: underline;
         }
 
-        .content-loader-area { /* Nuevo contenedor para el contenido cargado */
+        .content-loader-area {
             flex-grow: 1;
             background-color: var(--dark-bg-blue);
             padding: 20px;
-            overflow-y: auto; /* Permite scroll si el contenido cargado es largo */
-            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
-            position: relative; /* Para el overlay si se usa */
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+            position: relative;
+            min-width: 0; /* Permite que este contenedor se encoja */
         }
 
-        .video-player-wrapper { /* Se mantiene para video inicial o si no hay contenido cargado */
+        .video-player-wrapper {
             width: 100%;
-            max-width: 900px; /* Ajustar según preferencia */
-            margin: 0 auto; /* Centrar si es más pequeño que el content-loader-area */
+            max-width: 900px;
+            margin: 0 auto;
             aspect-ratio: 16 / 9;
             background-color: #000;
             position: relative;
@@ -165,17 +171,17 @@
             display: block; width: 100%; height: 100%; object-fit: cover;
         }
 
-        .loaded-html-content { /* Estilos para el contenido HTML cargado dinámicamente */
-            background-color: var(--white-ish); /* Fondo claro para el contenido cargado */
-            color: var(--text-color-dark);   /* Texto oscuro para contraste */
+        .loaded-html-content {
+            background-color: var(--white-ish);
+            color: var(--text-color-dark);
             padding: 20px;
             border-radius: 8px;
-            min-height: 400px; /* Asegurar un alto mínimo */
-            /* Los estilos específicos del HTML cargado (ej. juegos) prevalecerán dentro */
+            min-height: 400px;
+            width: 100%; /* Ocupar el ancho de .content-loader-area */
+            /* overflow-x: auto;  Opcional si el contenido interno aún desborda */
         }
-        /* Si los juegos cargados tienen su propio body/background, pueden sobreescribir esto, lo cual es usualmente deseado */
 
-        .video-overlay { /* Se mantiene para el overlay del video inicial */
+        .video-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(13, 31, 51, 0.8);
             color: var(--white-ish);
@@ -204,7 +210,8 @@
             border-left: 1px solid var(--border-color);
             overflow-y: auto;
             color: var(--text-color-light);
-            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
+            max-height: calc(100vh - 60px);
+            flex-shrink: 0; /* Evitar que se encoja */
         }
 
         .right-sidebar h3 {
@@ -228,11 +235,20 @@
         @media (max-width: 768px) {
             .main-container { flex-direction: column; }
             .left-sidebar, .right-sidebar, .content-loader-area {
-                width: 100%; min-width: unset; border-right: none; border-left: none;
+                width: 100%; 
+                min-width: unset; /* Resetear min-width */
+                border-right: none; border-left: none;
                 border-bottom: 1px solid var(--border-color);
-                max-height: 40vh; /* Ajustar para dar espacio en móvil */
+                max-height: none; /* O un valor adecuado para móvil */
+                overflow-x: hidden; /* Prevenir desbordamiento horizontal */
             }
-            .content-loader-area { order: -1; } /* Mover contenido cargado arriba si se desea */
+            .content-loader-area { 
+                order: -1; 
+                padding: 10px; /* Reducir padding */
+            }
+             .left-sidebar, .right-sidebar {
+                max-height: 300px; /* O un valor que funcione para scroll interno */
+             }
             .course-header { flex-direction: column; align-items: flex-start; }
             .course-header .header-actions {
                 margin-top: 10px; width: 100%; display: flex; justify-content: space-between;
@@ -263,7 +279,7 @@
             <h3>Lecciones del Módulo</h3>
             <ul id="lessonList">
                 <li data-content-type="video" data-content-src="placeholder_video">1. Introducción (Video)</li>
-                <li data-content-type="html" data-content-src="contenido_html_ejemplo.html">2. Concepto Principal (HTML)</li>
+                <li data-content-type="html" data-content-src="008 - resumen teoria.html">2. Resumen Teórico (HTML)</li>
                 <li>3. Ejemplos Prácticos</li>
                 <li>4. Herramientas y Técnicas</li>
                 <li>5. Conclusiones del Módulo</li>
@@ -280,8 +296,8 @@
         <main class="content-loader-area" id="mainContentArea">
             <div class="video-player-wrapper" id="videoPlayerWrapper">
                 <img src="https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Selecciona+una+lecci%C3%B3n+o+actividad" alt="Contenido Principal" class="placeholder-image" id="mainPlaceholderImage">
-                </div>
-            </main>
+            </div>
+        </main>
 
         <aside class="right-sidebar">
             <h3>Actividades y Juegos</h3>
@@ -293,7 +309,7 @@
                 <li><span class="icon">⏳</span> <a href="005 - Gestor Linea Tiempo Inversion.html" class="internal-activity-link">Gestor de Inversión</a></li>
                 <li><span class="icon">🧠</span> <a href="006 - FlashCard.html" class="internal-activity-link">Flashcards: Conceptos Clave</a></li>
                 <li><span class="icon">✔️</span> <a href="007 - verdero o falso.html" class="internal-activity-link">Verdadero o Falso</a></li>
-                <li><span class="icon">📜</span> <a href="008 - resumen teoria.html" class="internal-activity-link">Resumen Teórico</a></li>
+                <li><span class="icon">📜</span> <a href="008 - resumen teoria.html" class="internal-activity-link">Resumen Teórico (Actividad)</a></li>
             </ul>
             <h3 style="margin-top: 30px;">Lecturas Recomendadas</h3>
             <ul class="activity-list">
@@ -306,79 +322,65 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const mainContentArea = document.getElementById('mainContentArea');
-        const videoPlayerWrapper = document.getElementById('videoPlayerWrapper'); // Contenedor original del video/placeholder
-        const mainPlaceholderImageSrc = document.getElementById('mainPlaceholderImage')?.src; // Guardar src original
+        const videoPlayerWrapper = document.getElementById('videoPlayerWrapper');
+        const mainPlaceholderImage = document.getElementById('mainPlaceholderImage');
+        const mainPlaceholderImageSrc = mainPlaceholderImage ? mainPlaceholderImage.src : 'https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+no+disponible';
 
         const activityLinks = document.querySelectorAll('a.internal-activity-link');
         const lessonItems = document.querySelectorAll('#lessonList li');
 
-        // --- Función para ejecutar scripts en el HTML cargado ---
         function executeScriptsInElement(element) {
             const scripts = element.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
-                // Copiar atributos
                 Array.from(oldScript.attributes).forEach(attr => {
                     newScript.setAttribute(attr.name, attr.value);
                 });
-                // Copiar contenido para scripts inline
                 if (oldScript.innerHTML) {
                     newScript.innerHTML = oldScript.innerHTML;
                 }
-                // Reemplazar el script antiguo por el nuevo para forzar la ejecución
                 oldScript.parentNode.replaceChild(newScript, oldScript);
             });
         }
 
-        // --- Función para cargar contenido HTML ---
         function loadContent(url, isActivity = true) {
             fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok: ' + response.statusText);
+                        throw new Error('Network response was not ok: ' + response.statusText + ' para ' + url);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    // Si es una actividad, queremos reemplazar todo el contenido del 'mainContentArea'
-                    // y darle un fondo que contraste (ya que los juegos suelen tener su propio fondo)
                     if (isActivity) {
                         mainContentArea.innerHTML = `<div class="loaded-html-content">${html}</div>`;
                         executeScriptsInElement(mainContentArea.querySelector('.loaded-html-content'));
-                    } else {
-                        // Si es otro tipo de contenido (ej. un HTML de lección), podríamos querer
-                        // cargarlo de forma diferente, quizás dentro del videoPlayerWrapper
-                        // o en otro contenedor específico para lecciones.
-                        // Por ahora, lo cargamos similar a una actividad.
-                        videoPlayerWrapper.innerHTML = html; // O un nuevo div
-                        executeScriptsInElement(videoPlayerWrapper);
-                         // Ocultar overlay si existe y está visible
-                        const overlay = document.getElementById('videoOverlay');
-                        if (overlay) overlay.classList.add('hidden');
+                    } else { // Para contenido de lección cargado como HTML
+                        mainContentArea.innerHTML = ''; // Limpiar área principal
+                         // Crear un wrapper si es necesario o cargar directamente si el HTML es un fragmento
+                        const lessonContentWrapper = document.createElement('div');
+                        lessonContentWrapper.className = 'loaded-html-content'; // Reusar estilo o crear uno nuevo
+                        lessonContentWrapper.innerHTML = html;
+                        mainContentArea.appendChild(lessonContentWrapper);
+                        executeScriptsInElement(lessonContentWrapper);
                     }
                 })
                 .catch(error => {
                     console.error('Error al cargar el contenido:', error);
-                    if (isActivity) {
-                        mainContentArea.innerHTML = `<div class="loaded-html-content"><p style="color:red;">Error al cargar la actividad: ${url}. Por favor, verifica la ruta del archivo y que el servidor local esté funcionando si es necesario.</p></div>`;
-                    } else {
-                         videoPlayerWrapper.innerHTML = `<p style="color:red;">Error al cargar el contenido: ${url}.</p>`;
-                    }
+                    const errorMessage = `<div class="loaded-html-content"><p style="color:red; padding:20px;">${error.message}. Por favor, verifica la ruta del archivo y que el servidor local esté funcionando si es necesario.</p></div>`;
+                    mainContentArea.innerHTML = errorMessage;
                 });
         }
-
-        // --- Event Listeners para los enlaces de actividades ---
+        
         activityLinks.forEach(link => {
             link.addEventListener('click', function(event) {
                 event.preventDefault();
+                lessonItems.forEach(i => i.classList.remove('active')); // Desmarcar lecciones
                 const url = this.getAttribute('href');
-                // Quitar 'active' de las lecciones al cargar una actividad
-                lessonItems.forEach(i => i.classList.remove('active'));
-                loadContent(url, true); // true indica que es una actividad
+                loadContent(url, true);
             });
         });
 
-        // --- Event Listeners para los items de lecciones (ejemplo básico) ---
         lessonItems.forEach(item => {
             item.addEventListener('click', function() {
                 lessonItems.forEach(i => i.classList.remove('active'));
@@ -388,21 +390,30 @@
                 const contentSrc = this.dataset.contentSrc;
 
                 if (contentType === 'video' && contentSrc === 'placeholder_video') {
-                    // Restaurar el placeholder inicial o cargar un video específico
-                     mainContentArea.innerHTML = ''; // Limpiar contenido cargado
-                     mainContentArea.appendChild(videoPlayerWrapper); // Re-añadir el wrapper
-                     videoPlayerWrapper.innerHTML = `<img src="${mainPlaceholderImageSrc || 'https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+del+video+aqu%C3%AD'}" alt="Contenido Principal" class="placeholder-image" id="mainPlaceholderImage">`;
-                    // Aquí podrías añadir lógica para cargar un reproductor de video real.
+                    mainContentArea.innerHTML = ''; // Limpiar
+                    const newVideoWrapper = document.createElement('div'); // Crear nuevo video wrapper
+                    newVideoWrapper.className = 'video-player-wrapper';
+                    newVideoWrapper.id = 'videoPlayerWrapper';
+                    newVideoWrapper.innerHTML = `<img src="${mainPlaceholderImageSrc}" alt="Contenido Principal" class="placeholder-image" id="mainPlaceholderImage">`;
+                    mainContentArea.appendChild(newVideoWrapper);
                 } else if (contentType === 'html' && contentSrc) {
-                    loadContent(contentSrc, false); // false indica que no es una actividad principal
+                    loadContent(contentSrc, false); // Cargar como contenido de lección
                 } else {
-                    // Cargar un placeholder genérico o mensaje para otras lecciones
-                     mainContentArea.innerHTML = '';
-                     mainContentArea.appendChild(videoPlayerWrapper);
-                     videoPlayerWrapper.innerHTML = `<img src="https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+de+la+lecci%C3%B3n:+${this.textContent}" alt="Contenido de Lección" class="placeholder-image">`;
+                    mainContentArea.innerHTML = ''; // Limpiar
+                    const newVideoWrapper = document.createElement('div');
+                    newVideoWrapper.className = 'video-player-wrapper';
+                    newVideoWrapper.id = 'videoPlayerWrapper';
+                    newVideoWrapper.innerHTML = `<img src="https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+de+la+lecci%C3%B3n:+${this.textContent.trim()}" alt="Contenido de Lección" class="placeholder-image">`;
+                    mainContentArea.appendChild(newVideoWrapper);
                 }
             });
         });
+
+        // Cargar contenido de la primera lección (o un placeholder) al inicio si se desea
+        if (lessonItems.length > 0) {
+           // lessonItems[0].click(); // Simular clic en la primera lección
+           // O simplemente dejar el placeholder inicial que está en el HTML.
+        }
 
     });
     </script>

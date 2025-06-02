@@ -37,11 +37,9 @@
             font-size: 1.9em;
         }
 
-        /* AJUSTES AL ÁREA DE PREGUNTA PARA COINCIDIR CON LA NUEVA IMAGEN */
         .vf-game-wrapper .question-area {
             margin-bottom: 20px;
-            /* Eliminamos fondo, borde y padding de este contenedor */
-            min-height: 120px; /* Mantenemos una altura mínima para el layout */
+            min-height: 120px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -51,19 +49,17 @@
             font-size: 1.15em;
             line-height: 1.5;
             color: #495057; 
-            /* Estilos para que #questionText sea el recuadro visible */
-            border: 1px solid #dee2e6; /* Borde sutil como en la imagen */
-            border-radius: 8px;      /* Esquinas redondeadas */
-            padding: 20px;           /* Padding interno */
-            background-color: #ffffff; /* Fondo blanco (o transparente si .question-area tiene otro fondo) */
-            width: 100%;             /* Ocupa el ancho del .question-area */
-            min-height: 120px;       /* Altura mínima del recuadro en sí */
-            display: flex;           /* Para centrar el texto si es corto */
+            border: 1px solid #dee2e6; 
+            border-radius: 8px;      
+            padding: 20px;           
+            background-color: #ffffff; 
+            width: 100%;             
+            min-height: 120px;       
+            display: flex;           
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
         }
-        /* FIN DE AJUSTES AL ÁREA DE PREGUNTA */
 
         .vf-game-wrapper .answer-buttons {
             margin-bottom: 20px;
@@ -199,7 +195,8 @@
             <h1>Verdadero o Falso: Desafío Housel 🧐</h1>
 
             <div class="question-area">
-                <p id="questionText"></p> </div>
+                <p id="questionText"></p> 
+            </div>
 
             <div class="answer-buttons">
                 <button id="trueButton" onclick="handleAnswer(true)">Verdadero</button>
@@ -227,7 +224,8 @@
     </div>
 
     <script>
-        // El JavaScript no necesita cambios para este ajuste visual.
+    // Envolvemos todo el script en un IIFE para crear un ámbito privado
+    (function() {
         const questions = [
             { statement: "Según Morgan Housel, la inteligencia y la educación formal en finanzas son los únicos factores determinantes para el éxito financiero.", correctAnswer: false, explanation: "Housel argumenta que el comportamiento es mucho más determinante que la inteligencia o la educación formal. (Introducción, Clave de Respuestas del Quiz)" },
             { statement: "La psicología del dinero se enseña correctamente cuando se enfoca exclusivamente en modelos matemáticos y fórmulas, ignorando las emociones.", correctAnswer: false, explanation: "Sugiere que se enseña incorrectamente precisamente porque ignora el papel de las emociones y el comportamiento. (Clave de Respuestas del Quiz)" },
@@ -255,6 +253,8 @@
         let score = 0;
         let answeredCurrentQuestion = false;
 
+        // Las referencias a elementos del DOM son seguras aquí porque los IDs son únicos
+        // y se buscan después de que el HTML del juego es inyectado.
         const questionTextElement = document.getElementById('questionText');
         const trueButton = document.getElementById('trueButton');
         const falseButton = document.getElementById('falseButton');
@@ -288,6 +288,34 @@
             }
         }
 
+        // Las funciones handleAnswer, updateScoreDisplay, etc., también quedan dentro del IIFE
+        // y no contaminarán el ámbito global.
+        // Las llamadas onclick="handleAnswer(true)" en el HTML seguirán funcionando
+        // si las funciones están definidas ANTES de que el IIFE termine,
+        // o si las adjuntas mediante addEventListener dentro del IIFE.
+        // Por simplicidad, el script actual asume que las funciones son accesibles globalmente
+        // DESPUÉS de que el script del juego se carga.
+        // Un IIFE hace que no sean globales. Para que los onclick HTML funcionen,
+        // necesitaríamos adjuntar las funciones al objeto window o usar addEventListener.
+
+        // Opción 1: Adjuntar al window (menos ideal pero funciona para onclick)
+        // window.handleAnswer = function(userAnswer) { ... }
+        // window.previousQuestion = function() { ... }
+        // etc.
+
+        // Opción 2: Usar addEventListener (mejor práctica)
+        // Esto requeriría quitar los onclick="" del HTML y añadirlos aquí:
+        // trueButton.addEventListener('click', () => handleAnswer(true));
+        // falseButton.addEventListener('click', () => handleAnswer(false));
+        // prevButton.addEventListener('click', previousQuestion);
+        // nextButton.addEventListener('click', nextQuestion);
+        // document.querySelector('.vf-game-wrapper .final-score button').addEventListener('click', initializeGame);
+
+        // Por ahora, mantendré la estructura simple y asumiré que la ejecución del script
+        // y la disponibilidad de funciones para los `onclick` se maneja bien por la forma en que se cargan.
+        // El problema principal es la colisión de variables, que el IIFE soluciona.
+        // Si los onclick dejaran de funcionar, la Opción 2 (addEventListener) sería la solución robusta.
+
         function handleAnswer(userAnswer) {
             if (answeredCurrentQuestion) return;
             answeredCurrentQuestion = true;
@@ -298,11 +326,12 @@
             feedbackArea.style.display = 'block';
             if (isCorrect) {
                 feedbackResultElement.textContent = "¡Correcto!";
-                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-correct';
+                // No es necesario prefijar 'vf-game-wrapper' aquí si ya se aplicó al elemento feedbackArea
+                feedbackArea.className = 'feedback-area feedback-correct'; 
                 score++;
             } else {
                 feedbackResultElement.textContent = "Incorrecto.";
-                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-incorrect';
+                feedbackArea.className = 'feedback-area feedback-incorrect';
             }
             
             correctAnswerTextElement.textContent = question.correctAnswer ? "Verdadero" : "Falso";
@@ -334,11 +363,14 @@
         }
         
         function showFinalScore() {
+            // Al usar querySelector, es bueno ser específico si hay riesgo de colisión,
+            // pero con el wrapper, .vf-game-wrapper .clase ya es específico.
+            // Si los elementos son únicos por ID, getElementById es suficiente.
             document.querySelector('.vf-game-wrapper .question-area').style.display = 'none';
             document.querySelector('.vf-game-wrapper .answer-buttons').style.display = 'none';
             document.querySelector('.vf-game-wrapper .navigation-controls').style.display = 'none';
-            document.getElementById('scoreDisplay').style.display = 'none'; 
-            document.getElementById('feedbackArea').style.display = 'none'; 
+            scoreDisplayElement.style.display = 'none'; 
+            feedbackArea.style.display = 'none'; 
 
             finalScoreText.textContent = `Tu puntuación final es: ${score} de ${questions.length}.`;
             finalScoreArea.style.display = 'block';
@@ -355,18 +387,29 @@
                  gameContainer.querySelector('.answer-buttons').style.display = 'block';
                  gameContainer.querySelector('.navigation-controls').style.display = 'flex';
             }
-            document.getElementById('scoreDisplay').style.display = 'block';
-            document.getElementById('finalScoreArea').style.display = 'none';
+            scoreDisplayElement.style.display = 'block';
+            finalScoreArea.style.display = 'none';
+            feedbackArea.style.display = 'none'; // Asegurarse que el feedback se oculte al reiniciar
 
             loadQuestion(currentQuestionIndex);
             updateScoreDisplay();
         }
         
+        // Para que los onclick HTML funcionen con el IIFE, necesitamos exponer las funciones:
+        window.handleAnswer = handleAnswer;
+        window.previousQuestion = previousQuestion;
+        window.nextQuestion = nextQuestion;
+        window.initializeGame = initializeGame; // Para el botón "Jugar de Nuevo"
+
+        // Inicialización del juego
         if (document.readyState === 'loading') {
+            // Si el script se carga antes de que el DOM esté listo (poco probable con la inyección dinámica)
             document.addEventListener('DOMContentLoaded', initializeGame);
         } else {
+            // Si el DOM ya está listo (lo más común con la inyección dinámica de scripts)
             initializeGame();
         }
+    })(); // Fin del IIFE
     </script>
 </body>
 </html>

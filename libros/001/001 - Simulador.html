@@ -8,29 +8,28 @@
         /* Estilos encapsulados para el Simulador de Interés Compuesto */
         .simulador-wrapper {
             font-family: Arial, sans-serif;
-            /* margin: 20px; Eliminado, el padding/margen lo gestiona el contenedor en plantilla_principal o el propio wrapper */
-            padding: 20px; /* Añadido padding al wrapper para simular el margin previo del body */
-            background-color: #f4f4f4; /* Fondo del "lienzo" del simulador */
+            padding: 20px; 
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100%; /* Para ocupar el espacio disponible en el contenedor de la plantilla principal */
+            height: 100%; 
             box-sizing: border-box;
-            overflow-y: auto; /* Si el contenido del simulador es muy largo */
+            overflow-y: auto; 
         }
 
-        .simulador-wrapper .container { /* Estilos para el contenedor principal del contenido del simulador */
+        .simulador-wrapper .container { 
             background-color: #fff;
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px; /* Mantenemos el max-width para el contenido del simulador */
+            max-width: 500px; 
         }
 
         .simulador-wrapper h1 {
-            color: #2c3e50;
+            color: #005BAA; /* Azul de acento de la plataforma */
             text-align: center;
             margin-bottom: 20px;
         }
@@ -48,15 +47,15 @@
 
         .simulador-wrapper input[type="number"],
         .simulador-wrapper select {
-            width: 100%; /* Ajustado para que ocupe el 100% del contenedor padre */
+            width: 100%; 
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box; /* Importante para que el padding no aumente el ancho total */
+            box-sizing: border-box; 
         }
 
         .simulador-wrapper button {
-            background-color: #3498db;
+            background-color: #005BAA; /* Azul de acento de la plataforma */
             color: white;
             padding: 12px 20px;
             border: none;
@@ -68,21 +67,21 @@
         }
 
         .simulador-wrapper button:hover {
-            background-color: #2980b9;
+            background-color: #004C8C; /* Azul más oscuro para hover */
         }
 
         .simulador-wrapper .results {
             margin-top: 25px;
             padding: 15px;
-            background-color: #eaf2f8;
-            border: 1px solid #d1e0e0;
+            background-color: #e9f5ff; /* Un azul muy claro para resultados */
+            border: 1px solid #b8daff; /* Borde azul claro */
             border-radius: 4px;
         }
 
         .simulador-wrapper .results h2 {
-            color: #2c3e50;
+            color: #005BAA; /* Azul de acento */
             margin-top: 0;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #adb5bd; /* Gris claro para separador */
             padding-bottom: 5px;
         }
 
@@ -93,18 +92,19 @@
 
         .simulador-wrapper .results span {
             font-weight: bold;
-            color: #27ae60;
+            color: #59A9D9; /* Azul brillante de plataforma para destacar */
         }
 
         .simulador-wrapper .year-breakdown {
             margin-top: 15px;
-            max-height: 200px; /* Scroll para el desglose anual si es muy largo */
+            max-height: 200px; 
             overflow-y: auto;
             border: 1px solid #eee;
             padding: 10px;
             font-size: 0.9em;
+            background-color: #fff; /* Fondo blanco para el desglose */
         }
-        /* Estilo para scrollbars dentro del simulador (opcional, solo Webkit) */
+        
         .simulador-wrapper .year-breakdown::-webkit-scrollbar {
             width: 6px;
         }
@@ -116,7 +116,6 @@
             background-color: #f0f0f0;
         }
 
-
         .simulador-wrapper .year-breakdown div {
             padding: 3px 0;
             border-bottom: 1px dashed #f0f0f0;
@@ -125,13 +124,6 @@
         .simulador-wrapper .year-breakdown div:last-child {
             border-bottom: none;
         }
-
-        /* Si necesitas que el contenido del simulador no se expanda más allá de su max-width
-           cuando el wrapper es más grande (por ejemplo, en pantallas anchas dentro de la plantilla principal)
-           puedes dejar el .container como está, ya que tiene max-width: 500px.
-           El .simulador-wrapper con align-items: center centrará este .container.
-        */
-
     </style>
 </head>
 <body>
@@ -181,6 +173,8 @@
     </div>
 
     <script>
+    // Envolvemos todo el script en un IIFE
+    (function() {
         function formatCurrency(amount) {
             return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
         }
@@ -194,8 +188,6 @@
             const contributionFrequency = document.getElementById('contributionFrequency').value;
 
             if (years <= 0) {
-                // Considera mostrar este mensaje dentro del HTML en lugar de un alert
-                // para una mejor integración visual.
                 alert("El número de años debe ser mayor que cero.");
                 return;
             }
@@ -210,14 +202,13 @@
                     if (contributionFrequency === 'monthly') {
                         for (let month = 0; month < 12; month++) {
                             currentBalance += contributionAmount;
-                            // yearlyContribution se acumula aquí para el total de aportes al final
                         }
-                        yearlyContribution = contributionAmount * 12; // Contribución anual total
+                        yearlyContribution = contributionAmount * 12;
                     } else { // Annually
                         currentBalance += contributionAmount;
                         yearlyContribution = contributionAmount;
                     }
-                    // totalContributionsMade se calculará al final de forma más precisa.
+                    // totalContributionsMade se calculará de forma más precisa al final
                 }
                 
                 const interestEarnedThisYear = currentBalance * annualInterestRate;
@@ -239,9 +230,6 @@
 
             const totalInterestEarned = currentBalance - totalContributionsMade;
 
-            // Mostrar resultados
-            // Es importante que los IDs de los elementos sean únicos si varias instancias
-            // de este simulador pudieran cargarse (aunque en este caso se reemplaza el contenido).
             document.getElementById('finalBalance').textContent = formatCurrency(currentBalance);
             document.getElementById('totalContributions').textContent = formatCurrency(totalContributionsMade);
             document.getElementById('totalInterest').textContent = formatCurrency(totalInterestEarned);
@@ -249,10 +237,12 @@
             document.getElementById('resultsArea').style.display = 'block';
         }
 
-        // Pequeña adición para asegurar que el script se ejecuta después de que el DOM del juego esté listo,
-        // aunque con la carga dinámica de plantilla_principal.html, los scripts ya se re-ejecutan.
-        // No es estrictamente necesario aquí si el script está al final del body.
-        // console.log("Simulador de Interés Compuesto script listo.");
+        // Exponer la función calculateCompoundInterest al ámbito global para que el onclick HTML la encuentre
+        window.calculateCompoundInterest = calculateCompoundInterest;
+
+        // console.log("Simulador de Interés Compuesto (con IIFE) script listo.");
+
+    })(); // Fin del IIFE
     </script>
 </body>
 </html>

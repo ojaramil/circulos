@@ -5,42 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcards: Cómo Piensan los Ricos 🧠</title>
     <style>
-        body {
+        /* Estilos encapsulados para Flashcards con colores de la plataforma */
+        .flashcard-game-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f4f8; /* Un azul cielo muy claro */
+            background-color: #F0F8FF; /* CAMBIADO: Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
+            align-items: center; /* Centra el .game-container */
+            min-height: 100%; /* Asegura que ocupe al menos la altura del contenedor padre */
+            height: 100%; /* Para ocupar el espacio disponible */
+            box-sizing: border-box;
+            overflow-y: auto; /* Scroll si el contenido es más alto */
+            text-align: center; /* El body original tenía esto */
         }
-        .game-container {
-            background-color: #ffffff;
+
+        .flashcard-game-wrapper .game-container {
+            background-color: #ffffff; /* Contenedor interno blanco */
             padding: 25px 30px;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.12);
             width: 100%;
             max-width: 600px;
+            /* text-align: center; ya está en el wrapper */
         }
-        h1 {
-            color: #2a76c6; /* Azul medio */
+
+        .flashcard-game-wrapper h1 {
+            color: #005BAA; /* CAMBIADO: Azul de acento principal de la plataforma */
             margin-bottom: 25px;
             font-size: 2em;
         }
-        .flashcard-container {
-            perspective: 1000px; /* Para posible efecto 3D si se quisiera (no implementado aquí) */
+
+        .flashcard-game-wrapper .flashcard-container {
+            perspective: 1000px;
             margin-bottom: 20px;
         }
-        .flashcard {
+
+        .flashcard-game-wrapper .flashcard {
             width: 100%;
-            min-height: 250px; /* Altura mínima */
+            min-height: 250px;
             padding: 20px;
             border: 1px solid #d1d9e0;
             border-radius: 8px;
-            background-color: #f9f9f9;
+            background-color: #f9f9f9; /* Fondo de tarjeta mantenido */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -50,27 +59,34 @@
             font-size: 1.1em;
             line-height: 1.6;
         }
-        .flashcard .card-title {
+
+        .flashcard-game-wrapper .flashcard .card-title {
             font-weight: bold;
-            color: #007bff;
+            color: #59A9D9; /* CAMBIADO: Azul brillante de acento de la plataforma */
             margin-bottom: 10px;
             font-size: 0.9em;
             text-transform: uppercase;
         }
-        #cardFront, #cardBack {
+
+        .flashcard-game-wrapper #cardFront,
+        .flashcard-game-wrapper #cardBack {
             width: 100%;
         }
-        #cardBack {
-            display: none; /* Oculto por defecto */
+
+        .flashcard-game-wrapper #cardBack {
+            display: none; 
         }
-        .navigation-controls {
+
+        .flashcard-game-wrapper .navigation-controls {
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .navigation-controls button, #flipButton {
-            background-color: #007bff;
+
+        .flashcard-game-wrapper .navigation-controls button,
+        .flashcard-game-wrapper #flipButton {
+            background-color: #005BAA; /* CAMBIADO: Azul de acento principal */
             color: white;
             padding: 10px 18px;
             border: none;
@@ -79,163 +95,96 @@
             font-size: 1em;
             transition: background-color 0.2s ease, transform 0.1s ease;
         }
-        .navigation-controls button:hover, #flipButton:hover {
-            background-color: #0056b3;
+
+        .flashcard-game-wrapper .navigation-controls button:hover,
+        .flashcard-game-wrapper #flipButton:hover {
+            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
         }
-        .navigation-controls button:active, #flipButton:active {
+
+        .flashcard-game-wrapper .navigation-controls button:active,
+        .flashcard-game-wrapper #flipButton:active {
             transform: scale(0.97);
         }
-        .navigation-controls button:disabled {
-            background-color: #c0c0c0;
+
+        .flashcard-game-wrapper .navigation-controls button:disabled {
+            background-color: #c0c0c0; /* Gris para deshabilitado, mantenido */
             cursor: not-allowed;
         }
-        #flipButton {
+
+        .flashcard-game-wrapper #flipButton {
             display: block;
-            width: calc(100% - 40px); /* Ancho completo menos padding del contenedor */
-            margin: 0 auto 20px auto; /* Centrado y con margen inferior */
-            background-color: #28a745; /* Verde */
+            width: calc(100% - 40px); /* Ajustado para considerar el padding del .game-container si se quiere al ras */
+            /* Si se quiere al ras del game-container, el width podría ser 100% y quitar márgenes laterales */
+            /* O mantenerlo como está para que quede dentro del padding general */
+            width: auto; /* Que se ajuste al texto */
+            min-width: 200px; /* Un ancho mínimo para que se vea bien */
+            margin: 0 auto 20px auto;
+            /* El color ya se define arriba junto con los otros botones */
         }
-        #flipButton:hover {
-            background-color: #218838;
-        }
-        #cardCounter {
+        
+        .flashcard-game-wrapper #cardCounter {
             font-size: 0.95em;
-            color: #555;
+            color: #555; /* Mantenido */
             font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Flashcards: Cómo Piensan los Ricos</h1>
+    <div class="flashcard-game-wrapper">
+        <div class="game-container">
+            <h1>Flashcards: Cómo Piensan los Ricos</h1>
 
-        <div class="flashcard-container">
-            <div class="flashcard">
-                <div id="cardFront">
-                    <div class="card-title">ANVERSO</div>
-                    <p id="frontText"></p>
-                </div>
-                <div id="cardBack">
-                    <div class="card-title">REVERSO</div>
-                    <p id="backText"></p>
+            <div class="flashcard-container">
+                <div class="flashcard">
+                    <div id="cardFront">
+                        <div class="card-title">ANVERSO</div>
+                        <p id="frontText"></p>
+                    </div>
+                    <div id="cardBack">
+                        <div class="card-title">REVERSO</div>
+                        <p id="backText"></p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <button id="flipButton" onclick="flipCard()">Mostrar Respuesta</button>
+            <button id="flipButton" onclick="flipCard()">Mostrar Respuesta</button>
 
-        <div class="navigation-controls">
-            <button id="prevButton" onclick="previousCard()">⬅️ Anterior</button>
-            <span id="cardCounter">Tarjeta 0 / 0</span>
-            <button id="nextButton" onclick="nextCard()">Siguiente ➡️</button>
+            <div class="navigation-controls">
+                <button id="prevButton" onclick="previousCard()">⬅️ Anterior</button>
+                <span id="cardCounter">Tarjeta 0 / 0</span>
+                <button id="nextButton" onclick="nextCard()">Siguiente ➡️</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // El JavaScript no necesita cambios para este encapsulamiento de CSS.
         const flashcards = [
-            // Quiz de Diez Preguntas
-            {
-                front: "Según Morgan Housel, ¿qué factor es más determinante para el éxito financiero: la inteligencia o el comportamiento?",
-                back: "El comportamiento es mucho más determinante para el éxito financiero que la inteligencia. Un comportamiento deficiente puede llevar al desastre financiero, incluso para personas muy inteligentes."
-            },
-            {
-                front: "¿Por qué el autor sugiere que la psicología del dinero es un campo que a menudo se enseña de manera incorrecta?",
-                back: "El autor sugiere que las finanzas a menudo se enseñan como una disciplina puramente matemática con datos y fórmulas, ignorando el papel fundamental de las emociones, las experiencias personales y los matices del comportamiento humano."
-            },
-            {
-                front: "Explica la moraleja principal que el autor extrae de la historia del ejecutivo tecnológico que tiraba monedas al mar.",
-                back: "La moraleja principal es que tener dinero no garantiza un comportamiento financiero sensato, y un comportamiento impulsivo y falto de control emocional puede llevar a la ruina financiera, independientemente de la riqueza inicial."
-            },
-            {
-                front: "¿Cómo describe el autor la diferencia entre la riqueza y el dinero (o ser adinerado)?",
-                back: "El autor define el dinero como lo que ganas o los ingresos corrientes, mientras que la riqueza es lo que no gastas; son los activos financieros que aún no se han convertido en cosas que se ven. La riqueza se acumula al guardar lo ganado en lugar de gastarlo inmediatamente."
-            },
-            {
-                front: "¿Por qué el autor argumenta que \"nadie está loco\" en lo que respecta a las decisiones financieras?",
-                back: "El autor argumenta que \"nadie está loco\" porque las decisiones financieras de cada persona están moldeadas por sus experiencias personales únicas con el dinero, su educación, sus valores y el contexto económico en el que crecieron. Su comportamiento tiene sentido para ellos en ese momento, basado en su modelo mental único."
-            },
-            {
-                front: "Según los extractos, ¿cuál es el principal beneficio \"invisible\" o el mayor dividendo que reporta el dinero (especialmente a través de ahorros y liquidez)?",
-                back: "El principal beneficio invisible de tener ahorros y liquidez es la flexibilidad y el control sobre tu tiempo. Esto permite tomar decisiones importantes en la vida, como cambiar de carrera o retirarse anticipadamente, sin estar atado a las necesidades financieras inmediatas."
-            },
-            {
-                front: "¿Qué concepto o tipo de historias utiliza el autor para ilustrar la dificultad de distinguir entre la audacia (\"inspiradoramente audaz\") y la temeridad (\"locamente temerario\") en las finanzas?",
-                back: "El autor utiliza ejemplos como los de Cornelius Vanderbilt infringiendo la ley o la inversión altamente concentrada de Benjamin Graham en GEICO para ilustrar cómo, a menudo retrospectivamente, es difícil distinguir si un resultado financiero exitoso fue producto de una audaz decisión estratégica o simplemente de la suerte, y cómo la línea entre audacia y temeridad puede ser muy fina."
-            },
-            {
-                front: "¿Por qué es importante, según el autor, identificar a qué \"juego\" estás jugando en las inversiones?",
-                back: "Es crucial identificar a qué juego estás jugando en las inversiones (por ejemplo, inversión a largo plazo vs. trading intradía) porque los objetivos, los horizontes temporales y la justificación para un precio determinado varían enormemente entre los diferentes tipos de inversores. No entender el juego del otro puede llevar a malas decisiones al imitar o reaccionar a sus acciones."
-            },
-            {
-                front: "¿Cómo influye la \"ilusión del fin de la historia\" en la planificación financiera a largo plazo?",
-                back: "La \"ilusión del fin de la historia\" implica que las personas son conscientes de cuánto han cambiado en el pasado, pero subestiman cuánto cambiarán su personalidad, deseos y objetivos en el futuro. Esto dificulta la creación de planes financieros rígidos a largo plazo, ya que lo que queremos hoy puede no ser lo mismo que querremos en décadas."
-            },
-            {
-                front: "¿Qué significa considerar la volatilidad del mercado como una \"tarifa\" en lugar de una \"multa\"?",
-                back: "Considerar la volatilidad como una \"tarifa\" significa aceptar que las fluctuaciones y caídas del mercado son el costo necesario o el precio de entrada para obtener las ganancias a largo plazo que ofrece el mercado. Verla como una \"multa\" implica que es un castigo por haber cometido un error, lo que puede llevar a tomar decisiones emocionales como vender durante las caídas y perderse la recuperación."
-            },
-            // Glosario de Términos Clave
-            {
-                front: "Término Clave: Psicología del dinero",
-                back: "Definición: El estudio de cómo las emociones, las experiencias personales, los sesgos y los patrones de comportamiento influyen en las decisiones financieras de las personas, a menudo de maneras ilógicas."
-            },
-            {
-                front: "Término Clave: Comportamiento (en finanzas)",
-                back: "Definición: Las acciones y hábitos que las personas adoptan con respecto al dinero, incluyendo el ahorro, el gasto, la inversión y la gestión de la deuda, que el autor argumenta son más importantes que la inteligencia o el conocimiento técnico."
-            },
-            {
-                front: "Término Clave: Riqueza",
-                back: "Definición: Lo que no se gasta; los activos financieros que aún no se han convertido en cosas que se ven. Es la acumulación de activos a lo largo del tiempo, distinguiéndola del dinero (ingresos)."
-            },
-            {
-                front: "Término Clave: Suficiente",
-                back: "Definición: El punto en el que una persona tiene lo necesario para satisfacer sus necesidades y deseos razonables, reconociendo que un deseo insaciable de más puede llevar al arrepentimiento o a decisiones perjudiciales."
-            },
-            {
-                front: "Término Clave: Margen de error (Margen para equivocarse)",
-                back: "Definición: La diferencia entre lo que se piensa que va a ocurrir y lo que puede ocurrir mientras se conserva la capacidad de seguir adelante; proporciona resiliencia para sobrevivir a lo inesperado y permitir que las estrategias a largo plazo tengan éxito."
-            },
-            {
-                front: "Término Clave: Interés compuesto",
-                back: "Definición: El proceso por el cual las ganancias sobre una inversión también generan ganancias con el tiempo, lo que lleva a un crecimiento exponencial. El autor enfatiza la importancia de no interrumpirlo innecesariamente."
-            },
-            {
-                front: "Término Clave: Ilusión del fin de la historia",
-                back: "Definición: El sesgo psicológico por el cual las personas son conscientes de cuánto han cambiado en el pasado, pero subestiman cuánto cambiarán su personalidad, deseos y objetivos en el futuro."
-            },
-            {
-                front: "Término Clave: Volatilidad",
-                back: "Definición: Las fluctuaciones en el precio o valor de un activo o mercado. El autor sugiere verla como una \"tarifa\" (el costo de la rentabilidad) en lugar de una \"multa\" (un castigo)."
-            },
-            {
-                front: "Término Clave: Juego (en finanzas)",
-                back: "Definición: El objetivo y horizonte temporal específicos que un inversor o participante del mercado tiene. El autor subraya que diferentes personas juegan diferentes \"juegos\" y no entender esto puede llevar a malas decisiones."
-            },
-            {
-                front: "Término Clave: Independencia financiera",
-                back: "Definición: La capacidad de tener control sobre tu tiempo y poder hacer lo que quieras, cuando quieras, con quien quieras, basándose en tus propios recursos. Para el autor, este es el objetivo financiero por excelencia y se logra principalmente a través de una alta tasa de ahorro y el control de las expectativas de estilo de vida."
-            },
-            {
-                front: "Término Clave: Tasa de ahorro (Índice de ahorro)",
-                back: "Definición: La proporción de los ingresos que una persona ahorra en lugar de gastar. El autor lo identifica como un factor crucial, si no el más importante, para acumular riqueza, más que los ingresos o los retornos de inversión."
-            },
-            {
-                front: "Término Clave: Razonable vs. Racional",
-                back: "Definición: El autor distingue entre tomar decisiones basadas estrictamente en hechos numéricos y fórmulas (racional) y tomar decisiones que tienen sentido dentro del contexto emocional y social de la vida real de una persona (razonable). Algunas decisiones financieramente \"irracionales\" pueden ser \"razonables\" en la práctica."
-            },
-            // Adicionales
-            {
-                front: "¿Cuál es la premisa principal del libro, ilustrada en la introducción con las historias del ejecutivo tecnológico y Ronald Read?",
-                back: "Que el éxito financiero tiene que ver un poco con lo listo que seas y mucho con cómo te comportas, siendo el comportamiento algo difícil de enseñar, incluso a gente muy inteligente. Gente corriente puede enriquecerse con habilidades conductuales, mientras genios pueden ser desastres financieros por falta de control emocional."
-            },
-            {
-                front: "¿Qué enseña la historia de Bill Gates y Kent Evans sobre el éxito y el fracaso, según el capítulo \"Suerte y Riesgo\"?",
-                back: "Enseña que fuerzas idénticas de suerte y riesgo, de la misma magnitud (uno entre un millón en sus casos), pueden operar en direcciones opuestas. Bill Gates tuvo la suerte de uno entre un millón al asistir a Lakeside, mientras Kent Evans experimentó el riesgo de uno entre un millón al morir joven, impidiéndole alcanzar el éxito potencial que compartía con Gates."
-            },
-            {
-                front: "¿Cuál es la única manera de conservar la riqueza, en contraste con hacerse rico, según el autor?",
-                back: "La única manera de conservar la riqueza es una combinación de austeridad y paranoia (o miedo a que puedas perder lo que has conseguido con la misma rapidez)."
-            }
+            { front: "Según Morgan Housel, ¿qué factor es más determinante para el éxito financiero: la inteligencia o el comportamiento?", back: "El comportamiento es mucho más determinante para el éxito financiero que la inteligencia. Un comportamiento deficiente puede llevar al desastre financiero, incluso para personas muy inteligentes." },
+            { front: "¿Por qué el autor sugiere que la psicología del dinero es un campo que a menudo se enseña de manera incorrecta?", back: "El autor sugiere que las finanzas a menudo se enseñan como una disciplina puramente matemática con datos y fórmulas, ignorando el papel fundamental de las emociones, las experiencias personales y los matices del comportamiento humano." },
+            { front: "Explica la moraleja principal que el autor extrae de la historia del ejecutivo tecnológico que tiraba monedas al mar.", back: "La moraleja principal es que tener dinero no garantiza un comportamiento financiero sensato, y un comportamiento impulsivo y falto de control emocional puede llevar a la ruina financiera, independientemente de la riqueza inicial." },
+            { front: "¿Cómo describe el autor la diferencia entre la riqueza y el dinero (o ser adinerado)?", back: "El autor define el dinero como lo que ganas o los ingresos corrientes, mientras que la riqueza es lo que no gastas; son los activos financieros que aún no se han convertido en cosas que se ven. La riqueza se acumula al guardar lo ganado en lugar de gastarlo inmediatamente." },
+            { front: "¿Por qué el autor argumenta que \"nadie está loco\" en lo que respecta a las decisiones financieras?", back: "El autor argumenta que \"nadie está loco\" porque las decisiones financieras de cada persona están moldeadas por sus experiencias personales únicas con el dinero, su educación, sus valores y el contexto económico en el que crecieron. Su comportamiento tiene sentido para ellos en ese momento, basado en su modelo mental único." },
+            { front: "Según los extractos, ¿cuál es el principal beneficio \"invisible\" o el mayor dividendo que reporta el dinero (especialmente a través de ahorros y liquidez)?", back: "El principal beneficio invisible de tener ahorros y liquidez es la flexibilidad y el control sobre tu tiempo. Esto permite tomar decisiones importantes en la vida, como cambiar de carrera o retirarse anticipadamente, sin estar atado a las necesidades financieras inmediatas." },
+            { front: "¿Qué concepto o tipo de historias utiliza el autor para ilustrar la dificultad de distinguir entre la audacia (\"inspiradoramente audaz\") y la temeridad (\"locamente temerario\") en las finanzas?", back: "El autor utiliza ejemplos como los de Cornelius Vanderbilt infringiendo la ley o la inversión altamente concentrada de Benjamin Graham en GEICO para ilustrar cómo, a menudo retrospectivamente, es difícil distinguir si un resultado financiero exitoso fue producto de una audaz decisión estratégica o simplemente de la suerte, y cómo la línea entre audacia y temeridad puede ser muy fina." },
+            { front: "¿Por qué es importante, según el autor, identificar a qué \"juego\" estás jugando en las inversiones?", back: "Es crucial identificar a qué juego estás jugando en las inversiones (por ejemplo, inversión a largo plazo vs. trading intradía) porque los objetivos, los horizontes temporales y la justificación para un precio determinado varían enormemente entre los diferentes tipos de inversores. No entender el juego del otro puede llevar a malas decisiones al imitar o reaccionar a sus acciones." },
+            { front: "¿Cómo influye la \"ilusión del fin de la historia\" en la planificación financiera a largo plazo?", back: "La \"ilusión del fin de la historia\" implica que las personas son conscientes de cuánto han cambiado en el pasado, pero subestiman cuánto cambiarán su personalidad, deseos y objetivos en el futuro. Esto dificulta la creación de planes financieros rígidos a largo plazo, ya que lo que queremos hoy puede no ser lo mismo que querremos en décadas." },
+            { front: "¿Qué significa considerar la volatilidad del mercado como una \"tarifa\" en lugar de una \"multa\"?", back: "Considerar la volatilidad como una \"tarifa\" significa aceptar que las fluctuaciones y caídas del mercado son el costo necesario o el precio de entrada para obtener las ganancias a largo plazo que ofrece el mercado. Verla como una \"multa\" implica que es un castigo por haber cometido un error, lo que puede llevar a tomar decisiones emocionales como vender durante las caídas y perderse la recuperación." },
+            { front: "Término Clave: Psicología del dinero", back: "Definición: El estudio de cómo las emociones, las experiencias personales, los sesgos y los patrones de comportamiento influyen en las decisiones financieras de las personas, a menudo de maneras ilógicas." },
+            { front: "Término Clave: Comportamiento (en finanzas)", back: "Definición: Las acciones y hábitos que las personas adoptan con respecto al dinero, incluyendo el ahorro, el gasto, la inversión y la gestión de la deuda, que el autor argumenta son más importantes que la inteligencia o el conocimiento técnico." },
+            { front: "Término Clave: Riqueza", back: "Definición: Lo que no se gasta; los activos financieros que aún no se han convertido en cosas que se ven. Es la acumulación de activos a lo largo del tiempo, distinguiéndola del dinero (ingresos)." },
+            { front: "Término Clave: Suficiente", back: "Definición: El punto en el que una persona tiene lo necesario para satisfacer sus necesidades y deseos razonables, reconociendo que un deseo insaciable de más puede llevar al arrepentimiento o a decisiones perjudiciales." },
+            { front: "Término Clave: Margen de error (Margen para equivocarse)", back: "Definición: La diferencia entre lo que se piensa que va a ocurrir y lo que puede ocurrir mientras se conserva la capacidad de seguir adelante; proporciona resiliencia para sobrevivir a lo inesperado y permitir que las estrategias a largo plazo tengan éxito." },
+            { front: "Término Clave: Interés compuesto", back: "Definición: El proceso por el cual las ganancias sobre una inversión también generan ganancias con el tiempo, lo que lleva a un crecimiento exponencial. El autor enfatiza la importancia de no interrumpirlo innecesariamente." },
+            { front: "Término Clave: Ilusión del fin de la historia", back: "Definición: El sesgo psicológico por el cual las personas son conscientes de cuánto han cambiado en el pasado, pero subestiman cuánto cambiarán su personalidad, deseos y objetivos en el futuro." },
+            { front: "Término Clave: Volatilidad", back: "Definición: Las fluctuaciones en el precio o valor de un activo o mercado. El autor sugiere verla como una \"tarifa\" (el costo de la rentabilidad) en lugar de una \"multa\" (un castigo)." },
+            { front: "Término Clave: Juego (en finanzas)", back: "Definición: El objetivo y horizonte temporal específicos que un inversor o participante del mercado tiene. El autor subraya que diferentes personas juegan diferentes \"juegos\" y no entender esto puede llevar a malas decisiones." },
+            { front: "Término Clave: Independencia financiera", back: "Definición: La capacidad de tener control sobre tu tiempo y poder hacer lo que quieras, cuando quieras, con quien quieras, basándose en tus propios recursos. Para el autor, este es el objetivo financiero por excelencia y se logra principalmente a través de una alta tasa de ahorro y el control de las expectativas de estilo de vida." },
+            { front: "Término Clave: Tasa de ahorro (Índice de ahorro)", back: "Definición: La proporción de los ingresos que una persona ahorra en lugar de gastar. El autor lo identifica como un factor crucial, si no el más importante, para acumular riqueza, más que los ingresos o los retornos de inversión." },
+            { front: "Término Clave: Razonable vs. Racional", back: "Definición: El autor distingue entre tomar decisiones basadas estrictamente en hechos numéricos y fórmulas (racional) y tomar decisiones que tienen sentido dentro del contexto emocional y social de la vida real de una persona (razonable). Algunas decisiones financieramente \"irracionales\" pueden ser \"razonables\" en la práctica." },
+            { front: "¿Cuál es la premisa principal del libro, ilustrada en la introducción con las historias del ejecutivo tecnológico y Ronald Read?", back: "Que el éxito financiero tiene que ver un poco con lo listo que seas y mucho con cómo te comportas, siendo el comportamiento algo difícil de enseñar, incluso a gente muy inteligente. Gente corriente puede enriquecerse con habilidades conductuales, mientras genios pueden ser desastres financieros por falta de control emocional." },
+            { front: "¿Qué enseña la historia de Bill Gates y Kent Evans sobre el éxito y el fracaso, según el capítulo \"Suerte y Riesgo\"?", back: "Enseña que fuerzas idénticas de suerte y riesgo, de la misma magnitud (uno entre un millón en sus casos), pueden operar en direcciones opuestas. Bill Gates tuvo la suerte de uno entre un millón al asistir a Lakeside, mientras Kent Evans experimentó el riesgo de uno entre un millón al morir joven, impidiéndole alcanzar el éxito potencial que compartía con Gates." },
+            { front: "¿Cuál es la única manera de conservar la riqueza, en contraste con hacerse rico, según el autor?", back: "La única manera de conservar la riqueza es una combinación de austeridad y paranoia (o miedo a que puedas perder lo que has conseguido con la misma rapidez)." }
         ];
 
         let currentCardIndex = 0;
@@ -252,7 +201,7 @@
 
         function loadCard(index) {
             const card = flashcards[index];
-            frontTextElement.innerHTML = card.front.replace(/\n/g, "<br>"); // Permitir saltos de línea si los hubiera
+            frontTextElement.innerHTML = card.front.replace(/\n/g, "<br>");
             backTextElement.innerHTML = card.back.replace(/\n/g, "<br>");
             
             isFrontShowing = true;
@@ -291,10 +240,13 @@
                 loadCard(currentCardIndex);
             }
         }
-
-        // Inicializar el juego
-        loadCard(currentCardIndex);
-
+        
+        // Inicializar el juego (asegurándose que los elementos del DOM estén listos)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => loadCard(currentCardIndex));
+        } else {
+            loadCard(currentCardIndex);
+        }
     </script>
 </body>
 </html>

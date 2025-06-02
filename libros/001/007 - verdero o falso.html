@@ -10,19 +10,19 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #F0F8FF; /* CAMBIADO: Fondo del lienzo de la plataforma */
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centra el .game-container */
-            min-height: 100%; /* Para ocupar al menos la altura del contenedor padre */
-            height: 100%; /* Para ocupar el espacio disponible */
+            align-items: center; 
+            min-height: 100%; 
+            height: 100%; 
             box-sizing: border-box;
-            overflow-y: auto; /* Scroll si el contenido es más alto */
+            overflow-y: auto; 
         }
 
         .vf-game-wrapper .game-container {
-            background-color: #ffffff; /* Contenedor interno blanco */
+            background-color: #ffffff; 
             padding: 25px 30px;
             border-radius: 10px;
             box-shadow: 0 4px 18px rgba(0,0,0,0.1);
@@ -32,18 +32,16 @@
         }
 
         .vf-game-wrapper h1 {
-            color: #005BAA; /* CAMBIADO: Azul de acento principal de la plataforma */
+            color: #005BAA; /* Azul de acento principal de la plataforma */
             margin-bottom: 25px;
             font-size: 1.9em;
         }
 
+        /* AJUSTES AL ÁREA DE PREGUNTA PARA COINCIDIR CON LA NUEVA IMAGEN */
         .vf-game-wrapper .question-area {
             margin-bottom: 20px;
-            padding: 20px;
-            background-color: #f8f9fa; /* Fondo del área de pregunta mantenido */
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            min-height: 100px;
+            /* Eliminamos fondo, borde y padding de este contenedor */
+            min-height: 120px; /* Mantenemos una altura mínima para el layout */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -52,8 +50,20 @@
         .vf-game-wrapper #questionText {
             font-size: 1.15em;
             line-height: 1.5;
-            color: #495057; /* Color de texto de pregunta mantenido */
+            color: #495057; 
+            /* Estilos para que #questionText sea el recuadro visible */
+            border: 1px solid #dee2e6; /* Borde sutil como en la imagen */
+            border-radius: 8px;      /* Esquinas redondeadas */
+            padding: 20px;           /* Padding interno */
+            background-color: #ffffff; /* Fondo blanco (o transparente si .question-area tiene otro fondo) */
+            width: 100%;             /* Ocupa el ancho del .question-area */
+            min-height: 120px;       /* Altura mínima del recuadro en sí */
+            display: flex;           /* Para centrar el texto si es corto */
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
+        /* FIN DE AJUSTES AL ÁREA DE PREGUNTA */
 
         .vf-game-wrapper .answer-buttons {
             margin-bottom: 20px;
@@ -78,7 +88,6 @@
             transform: scale(0.96);
         }
 
-        /* Colores específicos de botones Verdadero/Falso MANTENIDOS por usabilidad */
         .vf-game-wrapper #trueButton {
             background-color: #28a745; 
             color: white;
@@ -103,7 +112,6 @@
             min-height: 80px;
         }
         
-        /* Colores de feedback MANTENIDOS por usabilidad */
         .vf-game-wrapper .feedback-correct {
             background-color: #d1e7dd; 
             color: #0f5132;
@@ -132,7 +140,7 @@
         }
 
         .vf-game-wrapper .navigation-controls button {
-            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+            background-color: #005BAA; 
             color: white;
             padding: 10px 18px;
             border: none;
@@ -143,34 +151,34 @@
         }
 
         .vf-game-wrapper .navigation-controls button:hover {
-            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
+            background-color: #004C8C; 
         }
 
         .vf-game-wrapper .navigation-controls button:disabled {
-            background-color: #ced4da; /* Gris para deshabilitado, mantenido */
+            background-color: #ced4da; 
             cursor: not-allowed;
         }
 
         .vf-game-wrapper #questionCounter, 
         .vf-game-wrapper #scoreDisplay {
             font-size: 1em;
-            color: #495057; /* Color de texto mantenido */
+            color: #495057; 
             font-weight: bold;
         }
 
         .vf-game-wrapper .final-score {
             margin-top: 20px;
             padding: 20px;
-            background-color: #e9f5ff; /* Fondo de puntaje final mantenido (azul claro) */
+            background-color: #e9f5ff; 
             border: 1px solid #b8daff;
             border-radius: 8px;
         }
 
         .vf-game-wrapper .final-score h2 {
-            color: #005BAA; /* CAMBIADO: Azul de acento */
+            color: #005BAA; 
         }
-        .vf-game-wrapper .final-score button { /* Botón "Jugar de Nuevo" */
-            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+        .vf-game-wrapper .final-score button { 
+            background-color: #005BAA; 
             color: white;
             padding: 10px 18px;
             border: none;
@@ -181,7 +189,7 @@
             transition: background-color 0.2s ease;
         }
         .vf-game-wrapper .final-score button:hover {
-            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
+            background-color: #004C8C; 
         }
     </style>
 </head>
@@ -191,8 +199,7 @@
             <h1>Verdadero o Falso: Desafío Housel 🧐</h1>
 
             <div class="question-area">
-                <p id="questionText"></p>
-            </div>
+                <p id="questionText"></p> </div>
 
             <div class="answer-buttons">
                 <button id="trueButton" onclick="handleAnswer(true)">Verdadero</button>
@@ -220,7 +227,7 @@
     </div>
 
     <script>
-        // El JavaScript no necesita cambios para este encapsulamiento de CSS.
+        // El JavaScript no necesita cambios para este ajuste visual.
         const questions = [
             { statement: "Según Morgan Housel, la inteligencia y la educación formal en finanzas son los únicos factores determinantes para el éxito financiero.", correctAnswer: false, explanation: "Housel argumenta que el comportamiento es mucho más determinante que la inteligencia o la educación formal. (Introducción, Clave de Respuestas del Quiz)" },
             { statement: "La psicología del dinero se enseña correctamente cuando se enfoca exclusivamente en modelos matemáticos y fórmulas, ignorando las emociones.", correctAnswer: false, explanation: "Sugiere que se enseña incorrectamente precisamente porque ignora el papel de las emociones y el comportamiento. (Clave de Respuestas del Quiz)" },
@@ -291,7 +298,7 @@
             feedbackArea.style.display = 'block';
             if (isCorrect) {
                 feedbackResultElement.textContent = "¡Correcto!";
-                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-correct'; // Asegurar que la clase base del wrapper no se pierda si se manipula directamente
+                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-correct';
                 score++;
             } else {
                 feedbackResultElement.textContent = "Incorrecto.";
@@ -327,12 +334,11 @@
         }
         
         function showFinalScore() {
-            // Acceder a los elementos con el prefijo del wrapper si fuera necesario, pero getElementById es global
             document.querySelector('.vf-game-wrapper .question-area').style.display = 'none';
             document.querySelector('.vf-game-wrapper .answer-buttons').style.display = 'none';
             document.querySelector('.vf-game-wrapper .navigation-controls').style.display = 'none';
-            document.getElementById('scoreDisplay').style.display = 'none'; // ID es único
-            document.getElementById('feedbackArea').style.display = 'none'; // ID es único
+            document.getElementById('scoreDisplay').style.display = 'none'; 
+            document.getElementById('feedbackArea').style.display = 'none'; 
 
             finalScoreText.textContent = `Tu puntuación final es: ${score} de ${questions.length}.`;
             finalScoreArea.style.display = 'block';
@@ -343,14 +349,12 @@
             score = 0;
             answeredCurrentQuestion = false;
             
-            // Asegurarse de que los selectores sean correctos si se anidaron más profundamente
             const gameContainer = document.querySelector('.vf-game-wrapper .game-container');
             if (gameContainer) {
                  gameContainer.querySelector('.question-area').style.display = 'flex';
                  gameContainer.querySelector('.answer-buttons').style.display = 'block';
                  gameContainer.querySelector('.navigation-controls').style.display = 'flex';
             }
-            // Los IDs son globales, por lo que no necesitan el prefijo del querySelector
             document.getElementById('scoreDisplay').style.display = 'block';
             document.getElementById('finalScoreArea').style.display = 'none';
 

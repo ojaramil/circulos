@@ -5,19 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verdadero o Falso: Desafío Housel 🧐</title>
     <style>
-        body {
+        /* Estilos encapsulados para Verdadero o Falso con colores de la plataforma */
+        .vf-game-wrapper {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #fdfdff; /* Un blanco muy sutilmente azulado */
+            background-color: #F0F8FF; /* CAMBIADO: Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            align-items: center; /* Centra el .game-container */
+            min-height: 100%; /* Para ocupar al menos la altura del contenedor padre */
+            height: 100%; /* Para ocupar el espacio disponible */
+            box-sizing: border-box;
+            overflow-y: auto; /* Scroll si el contenido es más alto */
         }
-        .game-container {
-            background-color: #ffffff;
+
+        .vf-game-wrapper .game-container {
+            background-color: #ffffff; /* Contenedor interno blanco */
             padding: 25px 30px;
             border-radius: 10px;
             box-shadow: 0 4px 18px rgba(0,0,0,0.1);
@@ -25,15 +30,17 @@
             max-width: 700px;
             text-align: center;
         }
-        h1 {
-            color: #3b5998; /* Un azul más corporativo/serio */
+
+        .vf-game-wrapper h1 {
+            color: #005BAA; /* CAMBIADO: Azul de acento principal de la plataforma */
             margin-bottom: 25px;
             font-size: 1.9em;
         }
-        .question-area {
+
+        .vf-game-wrapper .question-area {
             margin-bottom: 20px;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #f8f9fa; /* Fondo del área de pregunta mantenido */
             border: 1px solid #dee2e6;
             border-radius: 8px;
             min-height: 100px;
@@ -41,15 +48,18 @@
             align-items: center;
             justify-content: center;
         }
-        #questionText {
+
+        .vf-game-wrapper #questionText {
             font-size: 1.15em;
             line-height: 1.5;
-            color: #495057;
+            color: #495057; /* Color de texto de pregunta mantenido */
         }
-        .answer-buttons {
+
+        .vf-game-wrapper .answer-buttons {
             margin-bottom: 20px;
         }
-        .answer-buttons button {
+
+        .vf-game-wrapper .answer-buttons button {
             padding: 12px 25px;
             border: none;
             border-radius: 5px;
@@ -59,120 +69,158 @@
             transition: background-color 0.2s ease, transform 0.1s ease;
             min-width: 120px;
         }
-        .answer-buttons button:hover {
+
+        .vf-game-wrapper .answer-buttons button:hover {
             opacity: 0.9;
         }
-        .answer-buttons button:active {
+
+        .vf-game-wrapper .answer-buttons button:active {
             transform: scale(0.96);
         }
-        #trueButton {
-            background-color: #28a745; /* Verde */
+
+        /* Colores específicos de botones Verdadero/Falso MANTENIDOS por usabilidad */
+        .vf-game-wrapper #trueButton {
+            background-color: #28a745; 
             color: white;
         }
-        #falseButton {
-            background-color: #dc3545; /* Rojo */
+
+        .vf-game-wrapper #falseButton {
+            background-color: #dc3545; 
             color: white;
         }
-        .answer-buttons button:disabled {
+
+        .vf-game-wrapper .answer-buttons button:disabled {
             background-color: #e9ecef;
             color: #6c757d;
             cursor: not-allowed;
         }
-        .feedback-area {
+
+        .vf-game-wrapper .feedback-area {
             margin-top: 15px;
             padding: 15px;
             border-radius: 6px;
             font-size: 1em;
-            min-height: 80px; /* Para evitar saltos de layout */
+            min-height: 80px;
         }
-        .feedback-correct {
-            background-color: #d1e7dd; /* Verde claro */
+        
+        /* Colores de feedback MANTENIDOS por usabilidad */
+        .vf-game-wrapper .feedback-correct {
+            background-color: #d1e7dd; 
             color: #0f5132;
             border: 1px solid #badbcc;
         }
-        .feedback-incorrect {
-            background-color: #f8d7da; /* Rojo claro */
+
+        .vf-game-wrapper .feedback-incorrect {
+            background-color: #f8d7da; 
             color: #58151c;
             border: 1px solid #f1aeb5;
         }
-        .feedback-area p {
+
+        .vf-game-wrapper .feedback-area p {
             margin: 5px 0;
         }
-        .feedback-area strong {
+
+        .vf-game-wrapper .feedback-area strong {
             font-size: 1.1em;
         }
-        .navigation-controls {
+
+        .vf-game-wrapper .navigation-controls {
             margin-top: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .navigation-controls button {
-            background-color: #6c757d; /* Gris */
+
+        .vf-game-wrapper .navigation-controls button {
+            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
             color: white;
             padding: 10px 18px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
+            transition: background-color 0.2s ease;
         }
-        .navigation-controls button:hover {
-            background-color: #5a6268;
+
+        .vf-game-wrapper .navigation-controls button:hover {
+            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
         }
-        .navigation-controls button:disabled {
-            background-color: #ced4da;
+
+        .vf-game-wrapper .navigation-controls button:disabled {
+            background-color: #ced4da; /* Gris para deshabilitado, mantenido */
             cursor: not-allowed;
         }
-        #questionCounter, #scoreDisplay {
+
+        .vf-game-wrapper #questionCounter, 
+        .vf-game-wrapper #scoreDisplay {
             font-size: 1em;
-            color: #495057;
+            color: #495057; /* Color de texto mantenido */
             font-weight: bold;
         }
-        .final-score {
+
+        .vf-game-wrapper .final-score {
             margin-top: 20px;
             padding: 20px;
-            background-color: #e9f5ff;
+            background-color: #e9f5ff; /* Fondo de puntaje final mantenido (azul claro) */
             border: 1px solid #b8daff;
             border-radius: 8px;
         }
-        .final-score h2 {
-            color: #004085;
+
+        .vf-game-wrapper .final-score h2 {
+            color: #005BAA; /* CAMBIADO: Azul de acento */
+        }
+        .vf-game-wrapper .final-score button { /* Botón "Jugar de Nuevo" */
+            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background-color 0.2s ease;
+        }
+        .vf-game-wrapper .final-score button:hover {
+            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Verdadero o Falso: Desafío Housel 🧐</h1>
+    <div class="vf-game-wrapper">
+        <div class="game-container">
+            <h1>Verdadero o Falso: Desafío Housel 🧐</h1>
 
-        <div class="question-area">
-            <p id="questionText"></p>
-        </div>
+            <div class="question-area">
+                <p id="questionText"></p>
+            </div>
 
-        <div class="answer-buttons">
-            <button id="trueButton" onclick="handleAnswer(true)">Verdadero</button>
-            <button id="falseButton" onclick="handleAnswer(false)">Falso</button>
-        </div>
+            <div class="answer-buttons">
+                <button id="trueButton" onclick="handleAnswer(true)">Verdadero</button>
+                <button id="falseButton" onclick="handleAnswer(false)">Falso</button>
+            </div>
 
-        <div class="feedback-area" id="feedbackArea" style="display:none;">
-            <p><strong id="feedbackResult"></strong></p>
-            <p>Respuesta Correcta: <span id="correctAnswerText"></span></p>
-            <p>Explicación: <span id="explanationText"></span></p>
-        </div>
+            <div class="feedback-area" id="feedbackArea" style="display:none;">
+                <p><strong id="feedbackResult"></strong></p>
+                <p>Respuesta Correcta: <span id="correctAnswerText"></span></p>
+                <p>Explicación: <span id="explanationText"></span></p>
+            </div>
 
-        <div class="navigation-controls">
-            <button id="prevButton" onclick="previousQuestion()">⬅️ Anterior</button>
-            <span id="questionCounter">Pregunta 0 / 0</span>
-            <button id="nextButton" onclick="nextQuestion()">Siguiente ➡️</button>
-        </div>
-        <p id="scoreDisplay" style="margin-top: 15px;">Puntuación: 0 / 0</p>
-        <div class="final-score" id="finalScoreArea" style="display:none;">
-            <h2>¡Juego Terminado!</h2>
-            <p id="finalScoreText"></p>
-            <button onclick="initializeGame()">Jugar de Nuevo</button>
+            <div class="navigation-controls">
+                <button id="prevButton" onclick="previousQuestion()">⬅️ Anterior</button>
+                <span id="questionCounter">Pregunta 0 / 0</span>
+                <button id="nextButton" onclick="nextQuestion()">Siguiente ➡️</button>
+            </div>
+            <p id="scoreDisplay" style="margin-top: 15px;">Puntuación: 0 / 0</p>
+            <div class="final-score" id="finalScoreArea" style="display:none;">
+                <h2>¡Juego Terminado!</h2>
+                <p id="finalScoreText"></p>
+                <button onclick="initializeGame()">Jugar de Nuevo</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // El JavaScript no necesita cambios para este encapsulamiento de CSS.
         const questions = [
             { statement: "Según Morgan Housel, la inteligencia y la educación formal en finanzas son los únicos factores determinantes para el éxito financiero.", correctAnswer: false, explanation: "Housel argumenta que el comportamiento es mucho más determinante que la inteligencia o la educación formal. (Introducción, Clave de Respuestas del Quiz)" },
             { statement: "La psicología del dinero se enseña correctamente cuando se enfoca exclusivamente en modelos matemáticos y fórmulas, ignorando las emociones.", correctAnswer: false, explanation: "Sugiere que se enseña incorrectamente precisamente porque ignora el papel de las emociones y el comportamiento. (Clave de Respuestas del Quiz)" },
@@ -198,7 +246,7 @@
 
         let currentQuestionIndex = 0;
         let score = 0;
-        let answeredCurrentQuestion = false; // Para evitar múltiples respuestas a la misma pregunta cargada
+        let answeredCurrentQuestion = false;
 
         const questionTextElement = document.getElementById('questionText');
         const trueButton = document.getElementById('trueButton');
@@ -213,7 +261,6 @@
         const nextButton = document.getElementById('nextButton');
         const finalScoreArea = document.getElementById('finalScoreArea');
         const finalScoreText = document.getElementById('finalScoreText');
-
 
         function loadQuestion(index) {
             const question = questions[index];
@@ -235,7 +282,7 @@
         }
 
         function handleAnswer(userAnswer) {
-            if (answeredCurrentQuestion) return; // No permitir cambiar respuesta
+            if (answeredCurrentQuestion) return;
             answeredCurrentQuestion = true;
 
             const question = questions[currentQuestionIndex];
@@ -244,11 +291,11 @@
             feedbackArea.style.display = 'block';
             if (isCorrect) {
                 feedbackResultElement.textContent = "¡Correcto!";
-                feedbackArea.className = 'feedback-area feedback-correct';
+                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-correct'; // Asegurar que la clase base del wrapper no se pierda si se manipula directamente
                 score++;
             } else {
                 feedbackResultElement.textContent = "Incorrecto.";
-                feedbackArea.className = 'feedback-area feedback-incorrect';
+                feedbackArea.className = 'vf-game-wrapper feedback-area feedback-incorrect';
             }
             
             correctAnswerTextElement.textContent = question.correctAnswer ? "Verdadero" : "Falso";
@@ -280,11 +327,12 @@
         }
         
         function showFinalScore() {
-            document.querySelector('.question-area').style.display = 'none';
-            document.querySelector('.answer-buttons').style.display = 'none';
-            document.querySelector('.navigation-controls').style.display = 'none';
-            document.getElementById('scoreDisplay').style.display = 'none';
-            feedbackArea.style.display = 'none';
+            // Acceder a los elementos con el prefijo del wrapper si fuera necesario, pero getElementById es global
+            document.querySelector('.vf-game-wrapper .question-area').style.display = 'none';
+            document.querySelector('.vf-game-wrapper .answer-buttons').style.display = 'none';
+            document.querySelector('.vf-game-wrapper .navigation-controls').style.display = 'none';
+            document.getElementById('scoreDisplay').style.display = 'none'; // ID es único
+            document.getElementById('feedbackArea').style.display = 'none'; // ID es único
 
             finalScoreText.textContent = `Tu puntuación final es: ${score} de ${questions.length}.`;
             finalScoreArea.style.display = 'block';
@@ -295,19 +343,26 @@
             score = 0;
             answeredCurrentQuestion = false;
             
-            document.querySelector('.question-area').style.display = 'flex';
-            document.querySelector('.answer-buttons').style.display = 'block';
-            document.querySelector('.navigation-controls').style.display = 'flex';
+            // Asegurarse de que los selectores sean correctos si se anidaron más profundamente
+            const gameContainer = document.querySelector('.vf-game-wrapper .game-container');
+            if (gameContainer) {
+                 gameContainer.querySelector('.question-area').style.display = 'flex';
+                 gameContainer.querySelector('.answer-buttons').style.display = 'block';
+                 gameContainer.querySelector('.navigation-controls').style.display = 'flex';
+            }
+            // Los IDs son globales, por lo que no necesitan el prefijo del querySelector
             document.getElementById('scoreDisplay').style.display = 'block';
-            finalScoreArea.style.display = 'none';
+            document.getElementById('finalScoreArea').style.display = 'none';
 
             loadQuestion(currentQuestionIndex);
             updateScoreDisplay();
         }
-
-        // Iniciar el juego
-        initializeGame();
-
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        } else {
+            initializeGame();
+        }
     </script>
 </body>
 </html>

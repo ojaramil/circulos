@@ -3,55 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rueda Visual de Decisiones Financieras (100 Eventos) 🎡</title>
+    <title>Rueda Visual de Decisiones Financieras 🎡</title>
     <style>
-        body {
+        /* Estilos encapsulados para la Rueda de Decisiones Financieras */
+        .rueda-decisiones-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
+            margin: 0; /* El margen exterior lo gestiona la plantilla principal */
+            padding: 20px; /* Mantenemos el padding interno que tenía el body */
+            background-color: #f0f2f5; /* Color de fondo del "lienzo" del juego */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            align-items: center; /* Para centrar el .game-container si tiene max-width */
+            height: 100%; /* Para ocupar el espacio disponible en la plantilla */
+            box-sizing: border-box;
+            overflow-y: auto; /* Scroll si el contenido es más alto que el espacio */
             overflow-x: hidden;
         }
-        .game-container {
+
+        .rueda-decisiones-wrapper .game-container {
             background-color: #ffffff;
             padding: 25px 30px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 500px; /* Mantenemos el max-width para el contenido del juego */
             text-align: center;
         }
-        h1 {
+
+        .rueda-decisiones-wrapper h1 {
             color: #1a73e8;
             margin-bottom: 20px;
             font-size: 1.7em;
         }
-        .status-display {
+
+        .rueda-decisiones-wrapper .status-display {
             margin-bottom: 20px;
             padding: 15px;
             background-color: #e9f5ff;
             border-left: 5px solid #1a73e8;
             border-radius: 5px;
         }
-        .status-display p {
+
+        .rueda-decisiones-wrapper .status-display p {
             margin: 8px 0;
             font-size: 1.1em;
         }
-        .status-display #currentWealthVisual { /* Corregido para coincidir con JS */
+
+        .rueda-decisiones-wrapper .status-display #currentWealthVisual {
             font-weight: bold;
             color: #0d47a1;
         }
-        .status-display #spinsLeftVisual { /* Corregido para coincidir con JS */
+
+        .rueda-decisiones-wrapper .status-display #spinsLeftVisual {
             font-weight: bold;
             color: #d32f2f;
         }
 
-        .wheel-container {
+        .rueda-decisiones-wrapper .wheel-container {
             position: relative;
             width: 300px; 
             height: 300px;
@@ -61,15 +70,16 @@
             border: 5px solid #34495e;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
-        .wheel {
+
+        .rueda-decisiones-wrapper .wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             position: relative;
             transition: transform 4s cubic-bezier(0.3, 1, 0.7, 1); 
         }
-        /* La apariencia de los segmentos de la rueda se generará con JS usando conic-gradient y divs de texto */
-        .pointer {
+
+        .rueda-decisiones-wrapper .pointer {
             position: absolute;
             top: -5px; 
             left: 50%;
@@ -82,7 +92,7 @@
             z-index: 10;
         }
 
-        #spinButtonAction {
+        .rueda-decisiones-wrapper #spinButtonAction {
             background-color: #28a745;
             color: white;
             padding: 12px 25px;
@@ -95,17 +105,21 @@
             margin-bottom: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        #spinButtonAction:hover {
+
+        .rueda-decisiones-wrapper #spinButtonAction:hover {
             background-color: #218838;
         }
-        #spinButtonAction:active {
+
+        .rueda-decisiones-wrapper #spinButtonAction:active {
             transform: scale(0.98);
         }
-        #spinButtonAction:disabled {
+
+        .rueda-decisiones-wrapper #spinButtonAction:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        #resetButtonGame {
+
+        .rueda-decisiones-wrapper #resetButtonGame {
              background-color: #ffc107;
              color: #333;
              margin-left:10px;
@@ -115,7 +129,8 @@
              cursor: pointer;
              font-size: 1.0em;
         }
-        .event-area-visual {
+
+        .rueda-decisiones-wrapper .event-area-visual {
             margin-top: 20px;
             padding: 15px;
             background-color: #fff3cd;
@@ -127,12 +142,14 @@
             justify-content: center;
             align-items: center;
         }
-        .event-area-visual p {
+
+        .rueda-decisiones-wrapper .event-area-visual p {
             margin: 5px 0;
             font-size: 1em;
             color: #856404;
         }
-        .choices-visual button {
+
+        .rueda-decisiones-wrapper .choices-visual button {
             background-color: #007bff;
             color: white;
             padding: 8px 15px;
@@ -143,22 +160,26 @@
             margin: 5px;
             transition: background-color 0.2s ease;
         }
-        .choices-visual button:hover {
+
+        .rueda-decisiones-wrapper .choices-visual button:hover {
             background-color: #0056b3;
         }
-        .game-over-message-visual {
+
+        .rueda-decisiones-wrapper .game-over-message-visual {
             margin-top: 15px;
             padding: 10px;
             border-radius: 5px;
             font-size: 1.1em;
             font-weight: bold;
         }
-        .game-over-win-visual {
+
+        .rueda-decisiones-wrapper .game-over-win-visual {
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        .game-over-lose-visual {
+
+        .rueda-decisiones-wrapper .game-over-lose-visual {
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
@@ -166,34 +187,39 @@
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Rueda Visual de Decisiones 🎡</h1>
+    <div class="rueda-decisiones-wrapper">
+        <div class="game-container">
+            <h1>Rueda Visual de Decisiones 🎡</h1>
 
-        <div class="status-display">
-            <p>Capital Actual: <span id="currentWealthVisual">€0</span></p>
-            <p>Giros Restantes: <span id="spinsLeftVisual">0</span></p>
+            <div class="status-display">
+                <p>Capital Actual: <span id="currentWealthVisual">€0</span></p>
+                <p>Giros Restantes: <span id="spinsLeftVisual">0</span></p>
+            </div>
+
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <div class="wheel" id="visualWheel">
+                    </div>
+            </div>
+
+            <button id="spinButtonAction" onclick="spinVisualWheel()">Girar la Rueda</button>
+            <button id="resetButtonGame" onclick="resetVisualGame()" style="display:none;">Reiniciar Juego</button>
+
+            <div class="event-area-visual" id="eventAreaVisual">
+                <p id="eventDescriptionVisual">¡Gira la rueda para ver qué sucede!</p>
+                <div class="choices-visual" id="choicesAreaVisual"></div>
+            </div>
+            <div id="gameOverMessageVisual" class="game-over-message-visual"></div>
         </div>
-
-        <div class="wheel-container">
-            <div class="pointer"></div>
-            <div class="wheel" id="visualWheel">
-                </div>
-        </div>
-
-        <button id="spinButtonAction" onclick="spinVisualWheel()">Girar la Rueda</button>
-        <button id="resetButtonGame" onclick="resetVisualGame()" style="display:none;">Reiniciar Juego</button>
-
-        <div class="event-area-visual" id="eventAreaVisual">
-            <p id="eventDescriptionVisual">¡Gira la rueda para ver qué sucede!</p>
-            <div class="choices-visual" id="choicesAreaVisual"></div>
-        </div>
-        <div id="gameOverMessageVisual" class="game-over-message-visual"></div>
     </div>
 
     <script>
+        // El JavaScript no necesita cambios para este encapsulamiento de CSS
+        // ya que se basa en IDs que seguirán siendo únicos.
+
         let currentWealthVisual = 10000;
         const initialWealthVisual = 10000;
-        let spinsTotalVisual = 20; // Aumentamos los giros para tener más variedad de eventos
+        let spinsTotalVisual = 20; 
         let spinsLeftVisual = spinsTotalVisual;
         const initialSpinsVisual = spinsTotalVisual;
         let isSpinning = false;
@@ -207,7 +233,7 @@
         const gameOverMessageDisplayVisual = document.getElementById('gameOverMessageVisual');
         const wheelElement = document.getElementById('visualWheel');
 
-        const visualWheelSegments = [ // Para la apariencia de la rueda, 8 segmentos
+        const visualWheelSegments = [ 
             { label: "Fortuna", color: "#2ecc71" }, { label: "Riesgo", color: "#e74c3c" },
             { label: "Decisión", color: "#3498db" }, { label: "Neutral", color: "#95a5a6" },
             { label: "Ingreso", color: "#f1c40f" }, { label: "Gasto", color: "#c0392b" },
@@ -215,57 +241,49 @@
         ];
         const visualSegmentAngle = 360 / visualWheelSegments.length;
 
-        // LISTA AMPLIADA DE 100 EVENTOS POSIBLES
         const allPossibleEvents = [];
-        // Generador de eventos
-        // Ingresos
         for (let i = 0; i < 15; i++) {
-            const amount = Math.floor(Math.random() * 1000) + 200; // 200 a 1200
+            const amount = Math.floor(Math.random() * 1000) + 200;
             allPossibleEvents.push({ description: `Bono inesperado de €${amount}.`, type: "positive", amount: amount, impactType: "fixed" });
         }
         allPossibleEvents.push({ description: "¡Gran ascenso! Tu capital aumenta un 15%.", type: "positive", amount: 0.15, impactType: "percentage" });
         allPossibleEvents.push({ description: "Un proyecto freelance te da €750 extra.", type: "positive", amount: 750, impactType: "fixed" });
-        // Gastos
         for (let i = 0; i < 20; i++) {
-            const amount = Math.floor(Math.random() * 800) + 100; // 100 a 900
+            const amount = Math.floor(Math.random() * 800) + 100;
             const items = ["reparación del coche", "factura del dentista", "electrodoméstico roto", "multa de tráfico", "regalo de boda caro"];
             allPossibleEvents.push({ description: `Gasto urgente: ${items[i % items.length]} de €${amount}.`, type: "negative", amount: amount, impactType: "fixed" });
         }
         allPossibleEvents.push({ description: "¡Impuestos más altos de lo esperado! Pierdes un 5% de tu capital.", type: "negative", amount: 0.05, impactType: "percentage" });
-        // Inversiones / Mercado
         for (let i = 0; i < 10; i++) {
-            const perc = Math.floor(Math.random() * 11) + 5; // 5% a 15%
+            const perc = Math.floor(Math.random() * 11) + 5;
             allPossibleEvents.push({ description: `El mercado sube un ${perc}%.`, type: "positive", amount: perc / 100, impactType: "percentage" });
         }
         for (let i = 0; i < 10; i++) {
-            const perc = Math.floor(Math.random() * 11) + 5; // 5% a 15%
+            const perc = Math.floor(Math.random() * 11) + 5;
             allPossibleEvents.push({ description: `El mercado baja un ${perc}%.`, type: "negative", amount: perc / 100, impactType: "percentage" });
         }
         allPossibleEvents.push({ description: "Una de tus acciones estrella se desploma (-20% capital).", type: "negative", amount: 0.20, impactType: "percentage" });
         allPossibleEvents.push({ description: "Recibes dividendos inesperados (+€400).", type: "positive", amount: 400, impactType: "fixed" });
-        // Suerte
         for (let i = 0; i < 5; i++) {
-            const amount = Math.floor(Math.random() * 100) + 50; // 50 a 150
+            const amount = Math.floor(Math.random() * 100) + 50;
             allPossibleEvents.push({ description: `Encuentras €${amount} en un abrigo viejo.`, type: "positive", amount: amount, impactType: "fixed" });
         }
         allPossibleEvents.push({ description: "Ganas un pequeño premio en un sorteo: €250.", type: "positive", amount: 250, impactType: "fixed" });
-        // Neutrales
         for (let i = 0; i < 10; i++) {
             allPossibleEvents.push({ description: "Un día tranquilo, sin cambios financieros significativos.", type: "neutral", amount: 0, impactType: "fixed" });
         }
-        // Decisiones (Choices) - Añadimos unas 20 para variar
         const choiceEventsTemplates = [
-            { question: "¿Invertir €COST en una prometedora pero volátil criptomoneda?", successRate: 0.3, successAmountFactor: 3, failureAmountFactor: -1, costFactor: 0.1}, // Costo es 10% del capital
-            { question: "¿Tomar un curso de desarrollo profesional por €COST?", successRate: 0.9, successAmountFactor: 0, failureAmountFactor: -1, costFactor: 0.05, successText: "Curso completado. ¡Conocimiento adquirido!" }, // Costo 5% capital
-            { question: "¿Prestar €COST a un amigo con promesa de devolución con intereses?", successRate: 0.6, successAmountFactor: 1.2, failureAmountFactor: -1, costFactor: 0.07}, // Costo 7% capital
-            { question: "¿Apostar €COST en un evento deportivo?", successRate: 0.4, successAmountFactor: 2.5, failureAmountFactor: -1, costFactor: 0.03}, // Costo 3% capital
-            { question: "¿Comprar acciones de una empresa local por €COST?", successRate: 0.5, successAmountFactor: 1.5, failureAmountFactor: -0.5, costFactor: 0.1} // Costo 10% capital, posible pérdida parcial
+            { question: "¿Invertir €COST en una prometedora pero volátil criptomoneda?", successRate: 0.3, successAmountFactor: 3, failureAmountFactor: -1, costFactor: 0.1},
+            { question: "¿Tomar un curso de desarrollo profesional por €COST?", successRate: 0.9, successAmountFactor: 0, failureAmountFactor: -1, costFactor: 0.05, successText: "Curso completado. ¡Conocimiento adquirido!" },
+            { question: "¿Prestar €COST a un amigo con promesa de devolución con intereses?", successRate: 0.6, successAmountFactor: 1.2, failureAmountFactor: -1, costFactor: 0.07},
+            { question: "¿Apostar €COST en un evento deportivo?", successRate: 0.4, successAmountFactor: 2.5, failureAmountFactor: -1, costFactor: 0.03},
+            { question: "¿Comprar acciones de una empresa local por €COST?", successRate: 0.5, successAmountFactor: 1.5, failureAmountFactor: -0.5, costFactor: 0.1}
         ];
-        for (let i = 0; i < 28; i++) { // Para llegar cerca de 100 eventos en total
+        for (let i = 0; i < 28; i++) {
             const template = choiceEventsTemplates[i % choiceEventsTemplates.length];
-            const cost = Math.max(200, Math.floor(currentWealthVisual * template.costFactor)); // Costo mínimo de 200 o % del capital
+            const cost = Math.max(200, Math.floor((typeof currentWealthVisual !== 'undefined' ? currentWealthVisual : initialWealthVisual) * template.costFactor)); // Usa initialWealthVisual si currentWealthVisual no está definido aún
             allPossibleEvents.push({
-                description: template.question.replace("€COST", `€${cost}`), // Placeholder para el mensaje, la pregunta real está abajo
+                description: template.question.replace("€COST", `€${cost}`),
                 type: "choice",
                 question: template.question.replace("€COST", `€${cost}`),
                 options: [
@@ -275,9 +293,9 @@
             });
         }
 
-
         function createVisualWheel() {
-            wheelElement.innerHTML = ''; // Limpiar
+            if (!wheelElement) return;
+            wheelElement.innerHTML = '';
             let gradientString = 'conic-gradient(';
             visualWheelSegments.forEach((seg, i) => {
                 gradientString += `${seg.color} ${i * visualSegmentAngle}deg ${(i + 1) * visualSegmentAngle}deg`;
@@ -299,29 +317,30 @@
                 const angle = (i * visualSegmentAngle) + (visualSegmentAngle / 2) -90; 
                 const radiusForText = 100; 
                 labelDiv.style.left = `${150 + radiusForText * Math.cos(angle * Math.PI / 180) - 50}px`; 
-                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - (labelDiv.offsetHeight / 2 || 10)}px`;
+                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - 10}px`; // Ajustado el centrado vertical
                 labelDiv.style.transform = `rotate(${angle+90}deg)`;
                 wheelElement.appendChild(labelDiv);
             });
         }
 
-
         function updateVisualDisplay() {
-            wealthDisplayVisual.textContent = `€${currentWealthVisual.toFixed(2)}`;
-            spinsDisplayVisual.textContent = spinsLeftVisual;
+            if (wealthDisplayVisual) wealthDisplayVisual.textContent = `€${currentWealthVisual.toFixed(2)}`;
+            if (spinsDisplayVisual) spinsDisplayVisual.textContent = spinsLeftVisual;
         }
 
         function resetVisualGame() {
             currentWealthVisual = initialWealthVisual;
             spinsLeftVisual = initialSpinsVisual;
-            eventDescriptionDisplayVisual.textContent = "¡Gira la rueda para ver qué sucede!";
-            choicesAreaVisual.innerHTML = '';
-            spinButtonVisual.disabled = false;
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = "¡Gira la rueda para ver qué sucede!";
+            if (choicesAreaVisual) choicesAreaVisual.innerHTML = '';
+            if (spinButtonVisual) spinButtonVisual.disabled = false;
             isSpinning = false;
-            resetButtonVisual.style.display = 'none';
-            gameOverMessageDisplayVisual.innerHTML = '';
-            gameOverMessageDisplayVisual.className = 'game-over-message-visual';
-            wheelElement.style.transform = 'rotate(0deg)';
+            if (resetButtonVisual) resetButtonVisual.style.display = 'none';
+            if (gameOverMessageDisplayVisual) {
+                gameOverMessageDisplayVisual.innerHTML = '';
+                gameOverMessageDisplayVisual.className = 'game-over-message-visual';
+            }
+            if (wheelElement) wheelElement.style.transform = 'rotate(0deg)';
             updateVisualDisplay();
         }
         
@@ -332,7 +351,7 @@
             if (eventData.type === "positive" || eventData.type === "negative") {
                 if (eventData.impactType === "fixed") {
                     changeAmount = eventData.type === "positive" ? eventData.amount : -eventData.amount;
-                } else { // percentage
+                } else { 
                     changeAmount = currentWealthVisual * eventData.amount;
                     if (eventData.type === "negative") changeAmount = -changeAmount;
                 }
@@ -341,26 +360,26 @@
             } else if (eventData.type === "neutral"){
                  message = eventData.description; 
             }
-            eventDescriptionDisplayVisual.textContent = message;
-            choicesAreaVisual.innerHTML = ''; 
-             if (currentWealthVisual < 0) currentWealthVisual = 0; // No permitir riqueza negativa
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = message;
+            if (choicesAreaVisual) choicesAreaVisual.innerHTML = ''; 
+            if (currentWealthVisual < 0) currentWealthVisual = 0;
         }
 
         function presentVisualChoice(eventData) {
-            eventDescriptionDisplayVisual.textContent = eventData.question;
-            choicesAreaVisual.innerHTML = '';
-            spinButtonVisual.disabled = true;
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = eventData.question;
+            if (choicesAreaVisual) choicesAreaVisual.innerHTML = '';
+            if (spinButtonVisual) spinButtonVisual.disabled = true;
 
             eventData.options.forEach(option => {
                 const button = document.createElement('button');
                 button.textContent = option.text;
                 button.onclick = () => resolveVisualChoice(option.consequence, eventData);
-                choicesAreaVisual.appendChild(button);
+                if (choicesAreaVisual) choicesAreaVisual.appendChild(button);
             });
         }
 
         function resolveVisualChoice(consequence, originalEvent) {
-            choicesAreaVisual.innerHTML = '';
+            if (choicesAreaVisual) choicesAreaVisual.innerHTML = '';
             let outcomeMessage = "";
             let changeAmount = 0;
 
@@ -374,36 +393,37 @@
             
             currentWealthVisual += changeAmount;
             if (currentWealthVisual < 0) currentWealthVisual = 0;
-            eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> ${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> ${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
             
             checkVisualGameOver(); 
             updateVisualDisplay();
-             if (!isSpinning && spinsLeftVisual > 0 && currentWealthVisual > 0) {
+            if (!isSpinning && spinsLeftVisual > 0 && currentWealthVisual > 0 && spinButtonVisual) {
                 spinButtonVisual.disabled = false;
             }
         }
 
         function spinVisualWheel() {
-            if (isSpinning || spinsLeftVisual <= 0 || currentWealthVisual <= 0) return;
+            if (isSpinning || spinsLeftVisual <= 0 || currentWealthVisual <= 0 || !spinButtonVisual) return;
 
             isSpinning = true;
             spinButtonVisual.disabled = true;
-            choicesAreaVisual.innerHTML = ''; // Limpiar elecciones previas
-            eventDescriptionDisplayVisual.textContent = "Girando...";
+            if (choicesAreaVisual) choicesAreaVisual.innerHTML = ''; 
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = "Girando...";
             spinsLeftVisual--;
             updateVisualDisplay(); 
 
-            const randomExtraSpins = Math.floor(Math.random() * 3) + 3; // 3 a 5 vueltas extra
-            const randomRotationStop = Math.random() * 360; // Un ángulo aleatorio para detenerse visualmente
+            const randomExtraSpins = Math.floor(Math.random() * 3) + 3; 
+            const randomRotationStop = Math.random() * 360; 
             const finalRotation = (randomExtraSpins * 360) + randomRotationStop;
 
-            wheelElement.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
-            wheelElement.style.transform = `rotate(${finalRotation}deg)`;
+            if (wheelElement) {
+                wheelElement.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                wheelElement.style.transform = `rotate(${finalRotation}deg)`;
+            }
 
             setTimeout(() => {
                 isSpinning = false;
                 
-                // SELECCIONAR EVENTO ALEATORIO DE LA LISTA GRANDE
                 const randomIndex = Math.floor(Math.random() * allPossibleEvents.length);
                 const actualEventData = allPossibleEvents[randomIndex];
 
@@ -411,7 +431,7 @@
                     presentVisualChoice(actualEventData);
                 } else {
                     applyEventEffect(actualEventData);
-                     if (spinsLeftVisual > 0 && currentWealthVisual > 0) {
+                     if (spinsLeftVisual > 0 && currentWealthVisual > 0 && spinButtonVisual) {
                         spinButtonVisual.disabled = false;
                     }
                 }
@@ -422,31 +442,37 @@
 
         function checkVisualGameOver() {
             if (spinsLeftVisual <= 0 || currentWealthVisual <= 0) {
-                spinButtonVisual.disabled = true;
-                resetButtonVisual.style.display = 'inline-block';
+                if (spinButtonVisual) spinButtonVisual.disabled = true;
+                if (resetButtonVisual) resetButtonVisual.style.display = 'inline-block';
                 let finalMessage = "";
-                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
+                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
 
                 if (currentWealthVisual <= 0) {
                     finalMessage = `¡Te has quedado sin capital! Giros realizados: ${initialSpinsVisual - spinsLeftVisual}.`;
-                    gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
+                    if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
                 } else if (spinsLeftVisual <= 0) {
                     if (currentWealthVisual > initialWealthVisual) {
                         finalMessage = `¡Felicidades! Terminaste con €${currentWealthVisual.toFixed(2)}, ¡superaste tu capital inicial!`;
-                        gameOverMessageDisplayVisual.classList.add('game-over-win-visual');
+                        if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-win-visual');
                     } else {
                         finalMessage = `Juego terminado. Capital final: €${currentWealthVisual.toFixed(2)}.`;
-                        gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
+                        if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
                     }
                 }
-                gameOverMessageDisplayVisual.textContent = finalMessage;
+                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.textContent = finalMessage;
             }
         }
-
-        // Inicializar
-        createVisualWheel(); 
-        resetVisualGame();
-
+        
+        // Inicializar solo si los elementos existen (para que no falle si se carga sin DOM completo)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                 createVisualWheel(); 
+                 resetVisualGame();
+            });
+        } else {
+            createVisualWheel(); 
+            resetVisualGame();
+        }
     </script>
 </body>
 </html>

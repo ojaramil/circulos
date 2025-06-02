@@ -5,188 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Interés Compuesto 💰</title>
     <style>
-        /* Variables de color del tema principal (para referencia y uso aquí) */
-        :root {
-            --primary-blue: #004A99;
-            --button-blue: #005BAA;
-            --text-color-dark: #1E293B; /* Texto oscuro para fondos claros */
-            --white-ish: #F0F8FF;    /* Fondo de la "hoja" donde se carga esto */
-            --border-color-themed: #59A9D9; /* Un azul claro para bordes y acentos */
-            --light-blue-accent-for-results-bg-rgba: rgba(0, 74, 153, 0.05); /* Tinte azul muy claro */
-            --focus-shadow-color-rgba: rgba(0, 74, 153, 0.25); /* Sombra de foco azulada */
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Fuente consistente con el frame */
-            margin: 0; /* Quitamos margen para que se ajuste al contenedor .loaded-html-content */
-            padding: 0; /* Quitamos padding para que se ajuste al contenedor .loaded-html-content */
-            background-color: transparent; /* CLAVE: Hace el fondo del body del juego transparente */
-            color: var(--text-color-dark); /* Texto oscuro por defecto */
-            display: flex; /* Mantenemos flex para centrar el .container si es necesario */
+        /* Estilos encapsulados para el Simulador de Interés Compuesto */
+        .simulador-wrapper {
+            font-family: Arial, sans-serif;
+            /* margin: 20px; Eliminado, el padding/margen lo gestiona el contenedor en plantilla_principal o el propio wrapper */
+            padding: 20px; /* Añadido padding al wrapper para simular el margin previo del body */
+            background-color: #f4f4f4; /* Fondo del "lienzo" del simulador */
+            color: #333;
+            display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .container {
-            background-color: transparent; /* CLAVE: El contenedor principal del juego también transparente */
-            padding: 10px; /* Un padding ligero, ya que .loaded-html-content ya tiene uno */
-            border-radius: 0; /* Los bordes redondeados los da .loaded-html-content */
-            box-shadow: none; /* Sin sombra propia, la da .loaded-html-content si se quiere */
-            width: 100%;
-            max-width: 600px; /* Un poco más de ancho si se desea, o mantener el original */
-        }
-
-        h1 {
-            color: var(--primary-blue); /* Título con el azul principal */
-            text-align: center;
-            margin-bottom: 25px; /* Aumentar un poco el margen inferior */
-            font-size: 1.6em; /* Ajustar tamaño si es necesario */
-            border-bottom: 2px solid var(--primary-blue); /* Opcional: un borde inferior */
-            padding-bottom: 10px;
-        }
-
-        .input-group {
-            margin-bottom: 18px; /* Un poco más de espacio */
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600; /* Un poco más de peso */
-            color: var(--text-color-dark); /* Asegurar color oscuro */
-        }
-
-        input[type="number"], select {
-            width: 100%; /* Ocupar todo el ancho disponible */
-            padding: 10px;
-            border: 1px solid var(--border-color-themed); /* Borde con color del tema */
-            border-radius: 5px; /* Bordes un poco más redondeados */
+            height: 100%; /* Para ocupar el espacio disponible en el contenedor de la plantilla principal */
             box-sizing: border-box;
-            background-color: #fff; /* Fondo blanco para el input */
-            color: var(--text-color-dark);
-            font-size: 1em;
-        }
-        input[type="number"]:focus, select:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 0.2rem var(--focus-shadow-color-rgba);
-            outline: none;
+            overflow-y: auto; /* Si el contenido del simulador es muy largo */
         }
 
-        button {
-            background-color: var(--button-blue);
-            color: var(--white-ish); /* Texto claro para el botón */
-            padding: 12px 20px;
-            border: 1px solid var(--primary-blue); /* Borde con color del tema */
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em; /* Un poco más grande */
-            font-weight: 500;
+        .simulador-wrapper .container { /* Estilos para el contenedor principal del contenido del simulador */
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
             width: 100%;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
+            max-width: 500px; /* Mantenemos el max-width para el contenido del simulador */
         }
 
-        button:hover {
-            background-color: var(--primary-blue);
-            border-color: var(--button-blue);
+        .simulador-wrapper h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .results {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: var(--light-blue-accent-for-results-bg-rgba); /* Fondo con tinte azul muy claro */
-            border: 1px solid var(--border-color-themed);
-            border-radius: 5px;
+        .simulador-wrapper .input-group {
+            margin-bottom: 15px;
         }
 
-        .results h2 {
-            color: var(--primary-blue);
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color-themed);
-            padding-bottom: 8px;
-            font-size: 1.3em;
-        }
-
-        .results p {
-            margin: 10px 0;
-            font-size: 1.05em; /* Ligeramente más pequeño para encajar mejor */
-            color: var(--text-color-dark);
-        }
-
-        .results span { /* Para los montos en los resultados */
+        .simulador-wrapper label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: bold;
-            color: var(--button-blue); /* Usar el azul del botón para destacar */
+            color: #555;
         }
 
-        .year-breakdown {
-            margin-top: 20px;
-            max-height: 180px; /* Ajustar altura si es necesario */
-            overflow-y: auto;
-            border: 1px solid var(--border-color-themed);
-            padding: 15px;
-            font-size: 0.95em;
+        .simulador-wrapper input[type="number"],
+        .simulador-wrapper select {
+            width: 100%; /* Ajustado para que ocupe el 100% del contenedor padre */
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            background-color: rgba(255,255,255,0.5); /* Un blanco semi-transparente */
+            box-sizing: border-box; /* Importante para que el padding no aumente el ancho total */
         }
 
-        .year-breakdown h3 { /* Estilo para el título del desglose */
+        .simulador-wrapper button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .simulador-wrapper button:hover {
+            background-color: #2980b9;
+        }
+
+        .simulador-wrapper .results {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #eaf2f8;
+            border: 1px solid #d1e0e0;
+            border-radius: 4px;
+        }
+
+        .simulador-wrapper .results h2 {
+            color: #2c3e50;
             margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary-blue);
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .simulador-wrapper .results p {
+            margin: 8px 0;
             font-size: 1.1em;
         }
 
-        .year-breakdown div {
-            padding: 4px 0;
-            border-bottom: 1px dashed #ccc; /* Línea divisoria más sutil */
-            color: var(--text-color-dark);
+        .simulador-wrapper .results span {
+            font-weight: bold;
+            color: #27ae60;
         }
 
-        .year-breakdown div:last-child {
+        .simulador-wrapper .year-breakdown {
+            margin-top: 15px;
+            max-height: 200px; /* Scroll para el desglose anual si es muy largo */
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        /* Estilo para scrollbars dentro del simulador (opcional, solo Webkit) */
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 3px;
+        }
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar-track {
+            background-color: #f0f0f0;
+        }
+
+
+        .simulador-wrapper .year-breakdown div {
+            padding: 3px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .simulador-wrapper .year-breakdown div:last-child {
             border-bottom: none;
         }
+
+        /* Si necesitas que el contenido del simulador no se expanda más allá de su max-width
+           cuando el wrapper es más grande (por ejemplo, en pantallas anchas dentro de la plantilla principal)
+           puedes dejar el .container como está, ya que tiene max-width: 500px.
+           El .simulador-wrapper con align-items: center centrará este .container.
+        */
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Simulador de Interés Compuesto 📈</h1>
+    <div class="simulador-wrapper">
+        <div class="container">
+            <h1>Simulador de Interés Compuesto 📈</h1>
 
-        <div class="input-group">
-            <label for="initialInvestment">Inversión Inicial (€):</label>
-            <input type="number" id="initialInvestment" value="1000" min="0">
-        </div>
+            <div class="input-group">
+                <label for="initialInvestment">Inversión Inicial (€):</label>
+                <input type="number" id="initialInvestment" value="1000" min="0">
+            </div>
 
-        <div class="input-group">
-            <label for="annualInterestRate">Tasa de Interés Anual (%):</label>
-            <input type="number" id="annualInterestRate" value="7" min="0" step="0.1">
-        </div>
+            <div class="input-group">
+                <label for="annualInterestRate">Tasa de Interés Anual (%):</label>
+                <input type="number" id="annualInterestRate" value="7" min="0" step="0.1">
+            </div>
 
-        <div class="input-group">
-            <label for="years">Número de Años:</label>
-            <input type="number" id="years" value="10" min="1">
-        </div>
+            <div class="input-group">
+                <label for="years">Número de Años:</label>
+                <input type="number" id="years" value="10" min="1">
+            </div>
 
-        <div class="input-group">
-            <label for="contributionAmount">Aporte Adicional (€):</label>
-            <input type="number" id="contributionAmount" value="100" min="0">
-        </div>
+            <div class="input-group">
+                <label for="contributionAmount">Aporte Adicional (€):</label>
+                <input type="number" id="contributionAmount" value="100" min="0">
+            </div>
 
-        <div class="input-group">
-            <label for="contributionFrequency">Frecuencia del Aporte:</label>
-            <select id="contributionFrequency">
-                <option value="monthly">Mensual</option>
-                <option value="annually">Anual</option>
-            </select>
-        </div>
+            <div class="input-group">
+                <label for="contributionFrequency">Frecuencia del Aporte:</label>
+                <select id="contributionFrequency">
+                    <option value="monthly">Mensual</option>
+                    <option value="annually">Anual</option>
+                </select>
+            </div>
 
-        <button onclick="calculateCompoundInterest()">Simular ✨</button>
+            <button onclick="calculateCompoundInterest()">Simular ✨</button>
 
-        <div class="results" id="resultsArea" style="display:none;">
-            <h2>Resultados de la Simulación:</h2>
-            <p>Saldo Final: <span id="finalBalance"></span></p>
-            <p>Total de Aportes: <span id="totalContributions"></span></p>
-            <p>Total de Intereses Ganados: <span id="totalInterest"></span></p>
-            <div class="year-breakdown" id="yearBreakdown">
-                </div>
+            <div class="results" id="resultsArea" style="display:none;">
+                <h2>Resultados de la Simulación:</h2>
+                <p>Saldo Final: <span id="finalBalance"></span></p>
+                <p>Total de Aportes: <span id="totalContributions"></span></p>
+                <p>Total de Intereses Ganados: <span id="totalInterest"></span></p>
+                <div class="year-breakdown" id="yearBreakdown">
+                    </div>
+            </div>
         </div>
     </div>
 
@@ -204,6 +194,8 @@
             const contributionFrequency = document.getElementById('contributionFrequency').value;
 
             if (years <= 0) {
+                // Considera mostrar este mensaje dentro del HTML en lugar de un alert
+                // para una mejor integración visual.
                 alert("El número de años debe ser mayor que cero.");
                 return;
             }
@@ -212,28 +204,21 @@
             let totalContributionsMade = initialInvestment; 
             let yearBreakdownHTML = "<h3>Desglose Anual:</h3>";
 
-            // Cálculo correcto de aportes totales y balance
-            let periodicContributionsTotal = 0;
-
             for (let i = 1; i <= years; i++) {
-                let yearlyContributionThisYear = 0;
+                let yearlyContribution = 0;
                 if (contributionAmount > 0) {
                     if (contributionFrequency === 'monthly') {
-                        // Asumimos aportes al final del mes, interés se calcula sobre balance + aportes del año
                         for (let month = 0; month < 12; month++) {
-                             // Opción 1: Interés se compone después de cada aporte mensual (más complejo)
-                             // currentBalance += contributionAmount;
-                             // currentBalance *= (1 + annualInterestRate / 12); 
-                             // Por simplicidad, sumamos aportes y luego interés anual
-                            currentBalance += contributionAmount; // Suma directa
-                            yearlyContributionThisYear += contributionAmount;
+                            currentBalance += contributionAmount;
+                            // yearlyContribution se acumula aquí para el total de aportes al final
                         }
-                    } else { // Annually (asumimos aporte al principio del año o antes del cálculo de interés)
+                        yearlyContribution = contributionAmount * 12; // Contribución anual total
+                    } else { // Annually
                         currentBalance += contributionAmount;
-                        yearlyContributionThisYear = contributionAmount;
+                        yearlyContribution = contributionAmount;
                     }
+                    // totalContributionsMade se calculará al final de forma más precisa.
                 }
-                periodicContributionsTotal += yearlyContributionThisYear;
                 
                 const interestEarnedThisYear = currentBalance * annualInterestRate;
                 currentBalance += interestEarnedThisYear;
@@ -241,16 +226,33 @@
                 yearBreakdownHTML += `<div>Año ${i}: Saldo ${formatCurrency(currentBalance)} (Interés ganado: ${formatCurrency(interestEarnedThisYear)})</div>`;
             }
             
-            // Ajustar totalContributionsMade para que solo sume inversión inicial + aportes periódicos
+            // Cálculo preciso del total de aportes
+            let periodicContributionsTotal = 0;
+            if (contributionAmount > 0) {
+                if (contributionFrequency === 'monthly') {
+                    periodicContributionsTotal = contributionAmount * 12 * years;
+                } else { // Annually
+                    periodicContributionsTotal = contributionAmount * years;
+                }
+            }
             totalContributionsMade = initialInvestment + periodicContributionsTotal;
+
             const totalInterestEarned = currentBalance - totalContributionsMade;
 
+            // Mostrar resultados
+            // Es importante que los IDs de los elementos sean únicos si varias instancias
+            // de este simulador pudieran cargarse (aunque en este caso se reemplaza el contenido).
             document.getElementById('finalBalance').textContent = formatCurrency(currentBalance);
             document.getElementById('totalContributions').textContent = formatCurrency(totalContributionsMade);
             document.getElementById('totalInterest').textContent = formatCurrency(totalInterestEarned);
             document.getElementById('yearBreakdown').innerHTML = yearBreakdownHTML;
             document.getElementById('resultsArea').style.display = 'block';
         }
+
+        // Pequeña adición para asegurar que el script se ejecuta después de que el DOM del juego esté listo,
+        // aunque con la carga dinámica de plantilla_principal.html, los scripts ya se re-ejecutan.
+        // No es estrictamente necesario aquí si el script está al final del body.
+        // console.log("Simulador de Interés Compuesto script listo.");
     </script>
 </body>
 </html>

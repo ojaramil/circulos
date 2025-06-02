@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Contenido y Actividades</title>
+    <style>
+        /* Paleta de Colores Inspirada en el Logo (Azules) */
+        :root {
+            --primary-blue: #004A99; /* Azul principal del texto del logo */
+            --dark-bg-blue: #0D1F33;   /* Fondo principal muy oscuro */
+            --medium-bg-blue: #142b47; /* Fondo para sidebars/header */
+            --light-blue-accent: #59A9D9; /* Azul claro para acentos o hover */
+            --button-blue: #005BAA;      /* Azul para botones */
+            --text-color-light: #E0E7EF;  /* Texto claro para fondos oscuros */
+            --text-color-dark: #1E293B;   /* Texto oscuro para fondos claros (si se usa) */
+            --border-color: #273F5D;     /* Color para bordes sutiles */
+            --white-ish: #F0F8FF;         /* Blanco (AliceBlue) para texto muy destacado o fondos claros */
+        }
+
+        /* General Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: var(--dark-bg-blue);
+            color: var(--text-color-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .course-header {
+            background-color: var(--medium-bg-blue);
+            padding: 10px 20px;
+            color: var(--white-ish);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; /* Para que el header se mantenga visible */
+            top: 0;
+            z-index: 1000; /* Asegurar que esté por encima de otros contenidos */
+        }
+
+        .course-header .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .course-header .logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-blue);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--white-ish);
+        }
+        /*
+        .course-header .logo img {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: contain;
+        }
+        */
+
+        .course-header .course-title-info .clase-info {
+            font-size: 0.9em;
+            color: var(--light-blue-accent);
+        }
+        .course-header .course-title-info .course-name {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .header-actions button {
+            background-color: var(--border-color);
+            color: var(--white-ish);
+            border: 1px solid var(--primary-blue);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+        .header-actions button.siguiente-clase {
+            background-color: var(--primary-blue);
+            color: var(--white-ish);
+            font-weight: bold;
+            border-color: var(--light-blue-accent);
+        }
+        .header-actions button:hover {
+            background-color: var(--button-blue);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden; /* Evita doble scrollbar si los sidebars son muy altos */
+        }
+
+        .left-sidebar {
+            width: 20%;
+            min-width: 250px;
+            background-color: var(--medium-bg-blue);
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            color: var(--text-color-light);
+            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
+        }
+
+        .left-sidebar h3 {
+            margin-top: 0;
+            color: var(--white-ish);
+            font-size: 1.2em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .left-sidebar ul { list-style-type: none; padding: 0; margin: 0; }
+        .left-sidebar li {
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease;
+        }
+        .left-sidebar li:hover, .left-sidebar li.active {
+            background-color: var(--button-blue);
+            color: var(--white-ish);
+        }
+        .left-sidebar li:last-child { border-bottom: none; }
+        .left-sidebar a, .right-sidebar a {
+            color: var(--light-blue-accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .left-sidebar a:hover, .right-sidebar a:hover {
+            color: var(--white-ish);
+            text-decoration: underline;
+        }
+
+        .content-loader-area { /* Nuevo contenedor para el contenido cargado */
+            flex-grow: 1;
+            background-color: var(--dark-bg-blue);
+            padding: 20px;
+            overflow-y: auto; /* Permite scroll si el contenido cargado es largo */
+            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
+            position: relative; /* Para el overlay si se usa */
+        }
+
+        .video-player-wrapper { /* Se mantiene para video inicial o si no hay contenido cargado */
+            width: 100%;
+            max-width: 900px; /* Ajustar según preferencia */
+            margin: 0 auto; /* Centrar si es más pequeño que el content-loader-area */
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .video-player-wrapper img.placeholder-image {
+            display: block; width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .loaded-html-content { /* Estilos para el contenido HTML cargado dinámicamente */
+            background-color: var(--white-ish); /* Fondo claro para el contenido cargado */
+            color: var(--text-color-dark);   /* Texto oscuro para contraste */
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 400px; /* Asegurar un alto mínimo */
+            /* Los estilos específicos del HTML cargado (ej. juegos) prevalecerán dentro */
+        }
+        /* Si los juegos cargados tienen su propio body/background, pueden sobreescribir esto, lo cual es usualmente deseado */
+
+        .video-overlay { /* Se mantiene para el overlay del video inicial */
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(13, 31, 51, 0.8);
+            color: var(--white-ish);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; z-index: 10; border-radius: 8px;
+        }
+        .video-overlay.hidden { display: none; }
+        .video-overlay p { font-size: 1.1em; margin-bottom: 20px; }
+        .video-overlay .ver-planes-btn {
+            background-color: var(--primary-blue); color: var(--white-ish);
+            padding: 12px 25px; border: none; border-radius: 5px; text-decoration: none;
+            font-size: 1em; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease;
+        }
+        .video-overlay .ver-planes-btn:hover { background-color: var(--button-blue); }
+        .video-overlay .close-overlay-btn {
+            position: absolute; top: 15px; right: 15px; background: none; border: none;
+            color: #ccc; font-size: 1.5em; cursor: pointer;
+        }
+        .video-overlay .close-overlay-btn:hover { color: var(--white-ish); }
+
+        .right-sidebar {
+            width: 25%;
+            min-width: 300px;
+            background-color: var(--medium-bg-blue);
+            padding: 20px;
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+            color: var(--text-color-light);
+            max-height: calc(100vh - 60px); /* Ajustar según altura del header */
+        }
+
+        .right-sidebar h3 {
+            margin-top: 0; color: var(--white-ish); font-size: 1.2em;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;
+        }
+        .right-sidebar ul.activity-list { list-style-type: none; padding: 0; margin: 0; }
+        .right-sidebar ul.activity-list li {
+            padding: 12px 8px; border-bottom: 1px solid var(--border-color);
+            font-size: 0.95em; transition: background-color 0.3s ease; cursor: pointer;
+        }
+        .right-sidebar ul.activity-list li:hover { background-color: var(--button-blue); }
+        .right-sidebar ul.activity-list li:last-child { border-bottom: none; }
+        .right-sidebar ul.activity-list li a { display: block; }
+        .right-sidebar ul.activity-list .icon { margin-right: 10px; color: var(--light-blue-accent); }
+
+        @media (max-width: 1024px) {
+            .left-sidebar { min-width: 200px; width: 25%; }
+            .right-sidebar { min-width: 280px; width: 30%; }
+        }
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .left-sidebar, .right-sidebar, .content-loader-area {
+                width: 100%; min-width: unset; border-right: none; border-left: none;
+                border-bottom: 1px solid var(--border-color);
+                max-height: 40vh; /* Ajustar para dar espacio en móvil */
+            }
+            .content-loader-area { order: -1; } /* Mover contenido cargado arriba si se desea */
+            .course-header { flex-direction: column; align-items: flex-start; }
+            .course-header .header-actions {
+                margin-top: 10px; width: 100%; display: flex; justify-content: space-between;
+            }
+            .header-actions button { flex-grow: 1; margin-left: 5px; }
+            .header-actions button:first-child { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="course-header">
+        <div class="logo-container">
+            <div class="logo">AP</div>
+            <div class="course-title-info">
+                <div class="clase-info">Módulo Actual • Nombre del Curso</div>
+                <div class="course-name">Título Principal del Contenido</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button>Ver Módulos</button>
+            <button class="siguiente-clase">Siguiente Contenido →</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="left-sidebar">
+            <h3>Lecciones del Módulo</h3>
+            <ul id="lessonList">
+                <li data-content-type="video" data-content-src="placeholder_video">1. Introducción (Video)</li>
+                <li data-content-type="html" data-content-src="contenido_html_ejemplo.html">2. Concepto Principal (HTML)</li>
+                <li>3. Ejemplos Prácticos</li>
+                <li>4. Herramientas y Técnicas</li>
+                <li>5. Conclusiones del Módulo</li>
+            </ul>
+            <br>
+            <h3>Recursos Adicionales</h3>
+            <ul>
+                <li><a href="#" download>Guía descargable (PDF)</a></li>
+                <li><a href="https://www.aspergerparaasperger.org/" target="_blank">Enlaces de Interés APA</a></li>
+                <li><a href="#">Glosario de Términos</a></li>
+            </ul>
+        </aside>
+
+        <main class="content-loader-area" id="mainContentArea">
+            <div class="video-player-wrapper" id="videoPlayerWrapper">
+                <img src="https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Selecciona+una+lecci%C3%B3n+o+actividad" alt="Contenido Principal" class="placeholder-image" id="mainPlaceholderImage">
+                </div>
+            </main>
+
+        <aside class="right-sidebar">
+            <h3>Actividades y Juegos</h3>
+            <ul class="activity-list">
+                <li><span class="icon">📈</span> <a href="001 - Simulador.html" class="internal-activity-link">Simulador de Interés Compuesto</a></li>
+                <li><span class="icon">🎡</span> <a href="002 - Rueda decisiones financieras.html" class="internal-activity-link">Rueda de Decisiones</a></li>
+                <li><span class="icon">🎯</span> <a href="003 - planificador financiero.html" class="internal-activity-link">Planificador "Suficiente"</a></li>
+                <li><span class="icon">🕵️</span> <a href="004 - Detective de Riqueza.html" class="internal-activity-link">Detective de Riqueza</a></li>
+                <li><span class="icon">⏳</span> <a href="005 - Gestor Linea Tiempo Inversion.html" class="internal-activity-link">Gestor de Inversión</a></li>
+                <li><span class="icon">🧠</span> <a href="006 - FlashCard.html" class="internal-activity-link">Flashcards: Conceptos Clave</a></li>
+                <li><span class="icon">✔️</span> <a href="007 - verdero o falso.html" class="internal-activity-link">Verdadero o Falso</a></li>
+                <li><span class="icon">📜</span> <a href="008 - resumen teoria.html" class="internal-activity-link">Resumen Teórico</a></li>
+            </ul>
+            <h3 style="margin-top: 30px;">Lecturas Recomendadas</h3>
+            <ul class="activity-list">
+                 <li><span class="icon">📖</span> <a href="URL_ARTICULO_EXTERNO_1" target="_blank">Artículo sobre Psicología Financiera</a></li>
+                 <li><span class="icon">📚</span> <a href="URL_LIBRO_EXTERNO" target="_blank">Libro: El Comportamiento del Dinero</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainContentArea = document.getElementById('mainContentArea');
+        const videoPlayerWrapper = document.getElementById('videoPlayerWrapper'); // Contenedor original del video/placeholder
+        const mainPlaceholderImageSrc = document.getElementById('mainPlaceholderImage')?.src; // Guardar src original
+
+        const activityLinks = document.querySelectorAll('a.internal-activity-link');
+        const lessonItems = document.querySelectorAll('#lessonList li');
+
+        // --- Función para ejecutar scripts en el HTML cargado ---
+        function executeScriptsInElement(element) {
+            const scripts = element.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                // Copiar atributos
+                Array.from(oldScript.attributes).forEach(attr => {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                // Copiar contenido para scripts inline
+                if (oldScript.innerHTML) {
+                    newScript.innerHTML = oldScript.innerHTML;
+                }
+                // Reemplazar el script antiguo por el nuevo para forzar la ejecución
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        }
+
+        // --- Función para cargar contenido HTML ---
+        function loadContent(url, isActivity = true) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Si es una actividad, queremos reemplazar todo el contenido del 'mainContentArea'
+                    // y darle un fondo que contraste (ya que los juegos suelen tener su propio fondo)
+                    if (isActivity) {
+                        mainContentArea.innerHTML = `<div class="loaded-html-content">${html}</div>`;
+                        executeScriptsInElement(mainContentArea.querySelector('.loaded-html-content'));
+                    } else {
+                        // Si es otro tipo de contenido (ej. un HTML de lección), podríamos querer
+                        // cargarlo de forma diferente, quizás dentro del videoPlayerWrapper
+                        // o en otro contenedor específico para lecciones.
+                        // Por ahora, lo cargamos similar a una actividad.
+                        videoPlayerWrapper.innerHTML = html; // O un nuevo div
+                        executeScriptsInElement(videoPlayerWrapper);
+                         // Ocultar overlay si existe y está visible
+                        const overlay = document.getElementById('videoOverlay');
+                        if (overlay) overlay.classList.add('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar el contenido:', error);
+                    if (isActivity) {
+                        mainContentArea.innerHTML = `<div class="loaded-html-content"><p style="color:red;">Error al cargar la actividad: ${url}. Por favor, verifica la ruta del archivo y que el servidor local esté funcionando si es necesario.</p></div>`;
+                    } else {
+                         videoPlayerWrapper.innerHTML = `<p style="color:red;">Error al cargar el contenido: ${url}.</p>`;
+                    }
+                });
+        }
+
+        // --- Event Listeners para los enlaces de actividades ---
+        activityLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                // Quitar 'active' de las lecciones al cargar una actividad
+                lessonItems.forEach(i => i.classList.remove('active'));
+                loadContent(url, true); // true indica que es una actividad
+            });
+        });
+
+        // --- Event Listeners para los items de lecciones (ejemplo básico) ---
+        lessonItems.forEach(item => {
+            item.addEventListener('click', function() {
+                lessonItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                const contentType = this.dataset.contentType;
+                const contentSrc = this.dataset.contentSrc;
+
+                if (contentType === 'video' && contentSrc === 'placeholder_video') {
+                    // Restaurar el placeholder inicial o cargar un video específico
+                     mainContentArea.innerHTML = ''; // Limpiar contenido cargado
+                     mainContentArea.appendChild(videoPlayerWrapper); // Re-añadir el wrapper
+                     videoPlayerWrapper.innerHTML = `<img src="${mainPlaceholderImageSrc || 'https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+del+video+aqu%C3%AD'}" alt="Contenido Principal" class="placeholder-image" id="mainPlaceholderImage">`;
+                    // Aquí podrías añadir lógica para cargar un reproductor de video real.
+                } else if (contentType === 'html' && contentSrc) {
+                    loadContent(contentSrc, false); // false indica que no es una actividad principal
+                } else {
+                    // Cargar un placeholder genérico o mensaje para otras lecciones
+                     mainContentArea.innerHTML = '';
+                     mainContentArea.appendChild(videoPlayerWrapper);
+                     videoPlayerWrapper.innerHTML = `<img src="https://via.placeholder.com/1600x900.png/0D1F33/E0E7EF?Text=Contenido+de+la+lecci%C3%B3n:+${this.textContent}" alt="Contenido de Lección" class="placeholder-image">`;
+                }
+            });
+        });
+
+    });
+    </script>
+
+</body>
+</html>

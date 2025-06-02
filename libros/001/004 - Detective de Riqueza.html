@@ -5,40 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detective de Riqueza 🕵️ (Actualizado)</title>
     <style>
-        body {
+        /* Estilos encapsulados para Detective de Riqueza con colores de la plataforma */
+        .detective-riqueza-wrapper {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #e9eff1;
+            padding: 20px; /* Padding interno del wrapper */
+            background-color: #F0F8FF; /* CAMBIADO: Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Centra .game-inner-wrapper si tiene max-width */
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
-        .game-wrapper {
+
+        /* El div original .game-wrapper ahora lo llamaremos .game-inner-wrapper para evitar confusión con nuestro wrapper principal */
+        .detective-riqueza-wrapper .game-inner-wrapper {
             width: 100%;
             max-width: 800px;
         }
-        h1 {
-            color: #2c5d7e;
+
+        .detective-riqueza-wrapper h1 {
+            color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
             text-align: center;
             margin-bottom: 15px;
         }
-        .instructions {
+
+        .detective-riqueza-wrapper .instructions {
             text-align: center;
             margin-bottom: 25px;
             font-size: 0.95em;
-            color: #555;
+            color: #555; /* Mantenido */
         }
-        .profiles-container {
+
+        .detective-riqueza-wrapper .profiles-container {
             display: flex;
             justify-content: space-around;
             margin-bottom: 25px;
             gap: 20px;
             flex-wrap: wrap;
         }
-        .profile-card {
-            background-color: #fff;
+
+        .detective-riqueza-wrapper .profile-card {
+            background-color: #fff; /* Fondo de tarjeta mantenido blanco */
             border: 1px solid #d1d9de;
             border-radius: 8px;
             padding: 20px;
@@ -47,274 +57,221 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.07);
             transition: transform 0.2s ease-in-out;
             display: flex;
-            flex-direction: column; /* Para que la descripción empuje hacia abajo */
+            flex-direction: column;
         }
-        .profile-card:hover {
+
+        .detective-riqueza-wrapper .profile-card:hover {
             transform: translateY(-5px);
         }
-        .profile-card h2 {
-            color: #007bff;
+
+        .detective-riqueza-wrapper .profile-card h2 {
+            color: #59A9D9; /* CAMBIADO: Azul brillante de acento de la plataforma */
             margin-top: 0;
             margin-bottom: 15px;
-            border-bottom: 2px solid #007bff;
+            border-bottom: 2px solid #59A9D9; /* CAMBIADO */
             padding-bottom: 8px;
             font-size: 1.4em;
         }
-        .profile-card .section-title {
+
+        .detective-riqueza-wrapper .profile-card .section-title {
             font-weight: bold;
             margin-top: 10px;
             margin-bottom: 5px;
-            color: #333;
+            color: #333; /* Mantenido */
         }
-        .profile-card ul {
+
+        .detective-riqueza-wrapper .profile-card ul {
             list-style: none;
             padding: 0;
             margin-bottom: 15px;
-            flex-grow: 1; /* Permite que la lista crezca para alinear botones */
+            flex-grow: 1;
         }
-        .profile-card ul li {
+
+        .detective-riqueza-wrapper .profile-card ul li {
             background-color: #f8f9fa;
             padding: 8px 10px;
             border-radius: 4px;
             margin-bottom: 6px;
             font-size: 0.9em;
             color: #495057;
-            border-left: 3px solid #007bff;
+            border-left: 3px solid #59A9D9; /* CAMBIADO: Azul brillante de acento */
         }
-        .financial-details {
+
+        .detective-riqueza-wrapper .financial-details {
             margin-top: 15px;
             padding-top: 10px;
             border-top: 1px dashed #ccc;
         }
-        .financial-details p {
+
+        .detective-riqueza-wrapper .financial-details p {
             margin: 5px 0;
             font-size: 0.9em;
         }
-        .financial-details strong {
-            color: #28a745;
+
+        .detective-riqueza-wrapper .financial-details strong {
+            color: #28a745; /* MANTENIDO: Verde para ahorros/positivos */
         }
-        .financial-details .debt {
-            color: #dc3545;
+
+        .detective-riqueza-wrapper .financial-details .debt {
+            color: #dc3545; /* MANTENIDO: Rojo para deudas */
         }
-        .description-text {
+
+        .detective-riqueza-wrapper .description-text {
             font-style:italic;
             font-size:0.85em;
             margin-top:10px;
-            color: #555;
+            color: #555; /* Mantenido */
         }
-        .guess-section {
+
+        .detective-riqueza-wrapper .guess-section { /* No parece usarse, pero se prefija por si acaso */
             text-align: center;
             margin-bottom: 20px;
         }
-        .guess-section p {
+        .detective-riqueza-wrapper .guess-section p {
             margin-bottom: 10px;
             font-weight: bold;
         }
-        .action-button { /* Clase común para botones de acción */
-            background-color: #007bff;
+
+        .detective-riqueza-wrapper .action-button {
+            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
             color: white;
             padding: 10px 18px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            margin: 5px 10px; /* Ajustado para mejor espaciado */
+            margin: 5px 10px;
             transition: background-color 0.2s ease;
         }
-        .action-button:hover {
-            background-color: #0056b3;
+
+        .detective-riqueza-wrapper .action-button:hover {
+            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
         }
-        .action-button:disabled {
+
+        .detective-riqueza-wrapper .action-button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
-        #nextPairButton, #revealButton {
-            background-color: #17a2b8;
+        
+        /* ID specific buttons like #nextPairButton, #revealButton will inherit from .action-button if this class is applied to them */
+        /* If they need different base colors, those could be set here. For now, assume they use .action-button base style */
+        .detective-riqueza-wrapper #nextPairButton, 
+        .detective-riqueza-wrapper #revealButton {
+            /* Example: if they needed a secondary accent color from platform: background-color: #59A9D9; */
+            /* For now, they use the .action-button style defined above */
         }
-        #nextPairButton:hover, #revealButton:hover {
-            background-color: #117a8b;
+        .detective-riqueza-wrapper #nextPairButton:hover, 
+        .detective-riqueza-wrapper #revealButton:hover {
+            /* Example: background-color: #4A8BCD; */
         }
-        .button-container { /* Contenedor para centrar botones */
+
+
+        .detective-riqueza-wrapper .button-container {
             text-align: center;
             margin-top: 15px;
         }
-        .feedback-area {
+
+        .detective-riqueza-wrapper .feedback-area {
             margin-top: 20px;
             padding: 15px;
             border-radius: 5px;
             text-align: center;
             font-size: 1.1em;
         }
-        .feedback-correct {
+
+        .detective-riqueza-wrapper .feedback-correct { /* MANTENIDO: Verde para correcto */
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        .feedback-incorrect {
+
+        .detective-riqueza-wrapper .feedback-incorrect { /* MANTENIDO: Rojo para incorrecto */
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .score {
+
+        .detective-riqueza-wrapper .score {
             text-align: center;
             font-size: 1.2em;
             font-weight: bold;
             margin-top: 20px;
-            color: #2c5d7e;
+            color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
         }
     </style>
 </head>
 <body>
-    <div class="game-wrapper">
-        <h1>Detective de Riqueza 🕵️</h1>
-        <p class="instructions">Observa los "Bienes Visibles" de cada persona. ¿Quién crees que tiene un mayor PATRIMONIO NETO real?</p>
+    <div class="detective-riqueza-wrapper">
+        <div class="game-inner-wrapper"> <h1>Detective de Riqueza 🕵️</h1>
+            <p class="instructions">Observa los "Bienes Visibles" de cada persona. ¿Quién crees que tiene un mayor PATRIMONIO NETO real?</p>
 
-        <div class="profiles-container">
-            <div class="profile-card" id="profileCardA">
-                <h2 id="nameA"></h2>
-                <p class="section-title">Bienes Visibles:</p>
-                <ul id="visibleItemsA"></ul>
-                <div class="financial-details" id="financialsA" style="display:none;">
-                    <p class="section-title">Detalles Financieros:</p>
-                    <p>Ingresos Anuales: <span id="incomeA"></span></p>
-                    <p>Ahorros/Inversiones: <strong id="savingsA"></strong></p>
-                    <p>Deudas: <span class="debt" id="debtA"></span></p>
-                    <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthA"></strong></p>
-                    <p class="description-text" id="descriptionA"></p>
+            <div class="profiles-container">
+                <div class="profile-card" id="profileCardA">
+                    <h2 id="nameA"></h2>
+                    <p class="section-title">Bienes Visibles:</p>
+                    <ul id="visibleItemsA"></ul>
+                    <div class="financial-details" id="financialsA" style="display:none;">
+                        <p class="section-title">Detalles Financieros:</p>
+                        <p>Ingresos Anuales: <span id="incomeA"></span></p>
+                        <p>Ahorros/Inversiones: <strong id="savingsA"></strong></p>
+                        <p>Deudas: <span class="debt" id="debtA"></span></p>
+                        <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthA"></strong></p>
+                        <p class="description-text" id="descriptionA"></p>
+                    </div>
+                    <button class="action-button guess-button" id="guessAButton" onclick="handleGuess(0)">Elegir a <span id="guessNameA"></span></button>
                 </div>
-                 <button class="action-button guess-button" id="guessAButton" onclick="handleGuess(0)">Elegir a <span id="guessNameA"></span></button>
-            </div>
-            <div class="profile-card" id="profileCardB">
-                <h2 id="nameB"></h2>
-                <p class="section-title">Bienes Visibles:</p>
-                <ul id="visibleItemsB"></ul>
-                <div class="financial-details" id="financialsB" style="display:none;">
-                    <p class="section-title">Detalles Financieros:</p>
-                    <p>Ingresos Anuales: <span id="incomeB"></span></p>
-                    <p>Ahorros/Inversiones: <strong id="savingsB"></strong></p>
-                    <p>Deudas: <span class="debt" id="debtB"></span></p>
-                    <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthB"></strong></p>
-                    <p class="description-text" id="descriptionB"></p>
+                <div class="profile-card" id="profileCardB">
+                    <h2 id="nameB"></h2>
+                    <p class="section-title">Bienes Visibles:</p>
+                    <ul id="visibleItemsB"></ul>
+                    <div class="financial-details" id="financialsB" style="display:none;">
+                        <p class="section-title">Detalles Financieros:</p>
+                        <p>Ingresos Anuales: <span id="incomeB"></span></p>
+                        <p>Ahorros/Inversiones: <strong id="savingsB"></strong></p>
+                        <p>Deudas: <span class="debt" id="debtB"></span></p>
+                        <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthB"></strong></p>
+                        <p class="description-text" id="descriptionB"></p>
+                    </div>
+                    <button class="action-button guess-button" id="guessBButton" onclick="handleGuess(1)">Elegir a <span id="guessNameB"></span></button>
                 </div>
-                <button class="action-button guess-button" id="guessBButton" onclick="handleGuess(1)">Elegir a <span id="guessNameB"></span></button>
             </div>
-        </div>
-        
-        <div class="button-container">
-            <button class="action-button" id="revealButton" onclick="revealDetails()">Revelar Detalles (sin adivinar)</button>
-            <button class="action-button" id="nextPairButton" onclick="loadNextPair()" style="display:none;">Siguiente Par</button>
-        </div>
+            
+            <div class="button-container">
+                <button class="action-button" id="revealButton" onclick="revealDetails()">Revelar Detalles (sin adivinar)</button>
+                <button class="action-button" id="nextPairButton" onclick="loadNextPair()" style="display:none;">Siguiente Par</button>
+            </div>
 
-        <div class="feedback-area" id="feedbackArea" style="display:none;"></div>
-        <p class="score">Puntuación: <span id="scoreDisplay">0</span></p>
+            <div class="feedback-area" id="feedbackArea" style="display:none;"></div>
+            <p class="score">Puntuación: <span id="scoreDisplay">0</span></p>
+        </div>
     </div>
 
     <script>
+        // El JavaScript no necesita cambios para este encapsulamiento de CSS
+        // ya que se basa en IDs que seguirán siendo únicos y clases que ahora están correctamente prefijadas en el CSS.
         const characters = [
-            // Originales
-            {
-                name: "Alex Afluente",
-                visibleItems: ["Coche deportivo de lujo", "Reloj de marca exclusivo", "Viajes exóticos en Instagram", "Apartamento moderno en zona cara"],
-                income: 80000, savings: 15000, debt: 75000,
-                description: "Alex vive al día y usa mucho crédito para mantener su imagen de éxito, pero en realidad tiene más deudas que activos."
-            },
-            {
-                name: "Sara Sensata",
-                visibleItems: ["Coche compacto usado", "Vacaciones locales ocasionales", "Ropa funcional y duradera", "Piso alquilado sencillo"],
-                income: 60000, savings: 150000, debt: 5000,
-                description: "Sara prioriza el ahorro y la inversión a largo plazo sobre los lujos inmediatos. Su riqueza no es obvia, pero es sólida."
-            },
-            {
-                name: "Carlos Carísimo",
-                visibleItems: ["Trajes de diseñador", "Cenas en restaurantes de moda", "Membresía en club exclusivo", "Tecnología de última generación"],
-                income: 120000, savings: 30000, debt: 90000,
-                description: "Carlos gasta la mayor parte de sus altos ingresos en mantener un estilo de vida lujoso, acumulando deudas considerables."
-            },
-            {
-                name: "Laura Laboriosa",
-                visibleItems: ["Bicicleta para transportarse", "Libros de la biblioteca", "Comida casera", "Ropa de segunda mano de calidad"],
-                income: 45000, savings: 80000, debt: 2000,
-                description: "Laura vive de forma austera pero intencionada, lo que le permite ahorrar una gran parte de sus ingresos y construir riqueza silenciosamente."
-            },
-            {
-                name: "Víctor Vistoso",
-                visibleItems: ["Gran casa en las afueras (hipotecada)", "Barco recreativo (financiado)", "Fiestas frecuentes y ostentosas"],
-                income: 90000, savings: 20000, debt: 350000, 
-                description: "Víctor proyecta una imagen de gran riqueza con bienes financiados, pero sus deudas superan con creces sus ahorros líquidos."
-            },
-            {
-                name: "Elena Estratega",
-                visibleItems: ["Tablet para leer y aprender", "Curso online de inversión", "Plan de pensiones visible en sus metas", "Invierte en fondos indexados discretamente"],
-                income: 70000, savings: 250000, debt: 10000, 
-                description: "Elena se enfoca en la educación financiera y la inversión disciplinada. Su riqueza crece constantemente aunque no la ostente."
-            },
-            // 10 Nuevos personajes
-            {
-                name: "Miguel Minimalista",
-                visibleItems: ["Mochila de buena calidad", "Apartamento pequeño y ordenado", "Pocas posesiones visibles", "Bicicleta como transporte principal"],
-                income: 55000, savings: 120000, debt: 1000,
-                description: "Miguel valora las experiencias sobre las posesiones. Sus bajos gastos le permiten ahorrar e invertir agresivamente, construyendo una riqueza sólida y no visible."
-            },
-            {
-                name: "Diana Dinámica (Influencer)",
-                visibleItems: ["Ropa de diseñador (a menudo prestada o de canje)", "Fotos en destinos exóticos (colaboraciones)", "Último modelo de smartphone", "Siempre en eventos de moda"],
-                income: 40000, savings: 5000, debt: 15000,
-                description: "Diana proyecta una vida de lujo en redes, pero muchos de sus 'bienes' son temporales o financiados. Sus ingresos son variables y sus ahorros escasos."
-            },
-            {
-                name: "Roberto Retirado (Prudente)",
-                visibleItems: ["Casa modesta pagada", "Coche antiguo bien cuidado", "Pasa tiempo en el jardín", "Ropa cómoda y sencilla"],
-                income: 30000, savings: 350000, debt: 0,
-                description: "Roberto vivió una vida de ahorro constante. Ahora disfruta de una jubilación tranquila y sin deudas, con un patrimonio considerable que no ostenta."
-            },
-            {
-                name: "Patricia Profesional (Presionada)",
-                visibleItems: ["Coche de gama media-alta (leasing)", "Bolso de marca reconocido", "Vive en un barrio de moda (alquiler caro)", "Tecnología nueva para el trabajo"],
-                income: 75000, savings: 25000, debt: 40000,
-                description: "Patricia siente la presión de mantener una imagen profesional acorde a su entorno, lo que limita su capacidad de ahorro a pesar de un buen sueldo."
-            },
-            {
-                name: "Andrés Austero (Millonario Secreto)",
-                visibleItems: ["Camioneta vieja", "Herramientas de trabajo manual", "Vive en una casa sencilla en las afueras", "No usa redes sociales"],
-                income: 65000, savings: 1200000, debt: 5000,
-                description: "Andrés heredó un negocio familiar que gestiona con prudencia y vive muy por debajo de sus posibilidades. Pocos conocen su verdadera fortuna."
-            },
-            {
-                name: "Beatriz \"House Poor\"",
-                visibleItems: ["Casa impresionante y muy grande", "Muebles de diseño en las áreas visibles", "Coche familiar nuevo y espacioso"],
-                income: 110000, savings: 10000, debt: 600000, 
-                description: "Beatriz y su pareja invirtieron todo en una casa muy por encima de sus posibilidades. Gran parte de sus ingresos se va en la hipoteca, dejándolos con poco ahorro líquido."
-            },
-            {
-                name: "Tomás Tecnológico (Emprendedor Inicial)",
-                visibleItems: ["Oficina compartida (coworking)", "Portátil potente", "Mucha cafeína", "Ropa casual de startup"],
-                income: 25000, savings: 3000, debt: 20000, 
-                description: "Tomás está invirtiendo todo su tiempo y dinero en su nueva empresa tecnológica. Vive al límite con la esperanza de un gran éxito futuro."
-            },
-            {
-                name: "Gabriela Gastrónoma (Chef Exitosa)",
-                visibleItems: ["Restaurante propio concurrido", "Apariciones en medios locales", "Viaja para inspirarse culinariamente", "Viste con estilo pero sin ostentación"],
-                income: 150000, savings: 400000, debt: 50000,
-                description: "Gabriela ha construido un negocio rentable. Reinvertir y ahorrar son parte de su estrategia, viviendo bien pero enfocada en la solidez financiera."
-            },
-            {
-                name: "Fernando Funcionario (Estable)",
-                visibleItems: ["Piso de tamaño medio en propiedad (casi pagado)", "Coche familiar fiable", "Vacaciones anuales modestas", "Aficiones sencillas"],
-                income: 50000, savings: 180000, debt: 20000,
-                description: "Fernando tiene un empleo estable y ha sido constante con sus ahorros y el pago de su hipoteca. Disfruta de una seguridad financiera sin grandes lujos."
-            },
-            {
-                name: "Olivia Ostentosa (Heredera Imprudente)",
-                visibleItems: ["Múltiples coches deportivos", "Guardarropa lleno de alta costura", "Asidua a las fiestas más exclusivas", "Joyas llamativas"],
-                income: 20000, savings: 50000, debt: 30000,
-                description: "Olivia heredó una suma considerable, pero sus gastos extravagantes están mermando rápidamente su capital. Su estilo de vida supera con creces sus ingresos actuales."
-            }
+            { name: "Alex Afluente", visibleItems: ["Coche deportivo de lujo", "Reloj de marca exclusivo", "Viajes exóticos en Instagram", "Apartamento moderno en zona cara"], income: 80000, savings: 15000, debt: 75000, description: "Alex vive al día y usa mucho crédito para mantener su imagen de éxito, pero en realidad tiene más deudas que activos." },
+            { name: "Sara Sensata", visibleItems: ["Coche compacto usado", "Vacaciones locales ocasionales", "Ropa funcional y duradera", "Piso alquilado sencillo"], income: 60000, savings: 150000, debt: 5000, description: "Sara prioriza el ahorro y la inversión a largo plazo sobre los lujos inmediatos. Su riqueza no es obvia, pero es sólida." },
+            { name: "Carlos Carísimo", visibleItems: ["Trajes de diseñador", "Cenas en restaurantes de moda", "Membresía en club exclusivo", "Tecnología de última generación"], income: 120000, savings: 30000, debt: 90000, description: "Carlos gasta la mayor parte de sus altos ingresos en mantener un estilo de vida lujoso, acumulando deudas considerables." },
+            { name: "Laura Laboriosa", visibleItems: ["Bicicleta para transportarse", "Libros de la biblioteca", "Comida casera", "Ropa de segunda mano de calidad"], income: 45000, savings: 80000, debt: 2000, description: "Laura vive de forma austera pero intencionada, lo que le permite ahorrar una gran parte de sus ingresos y construir riqueza silenciosamente." },
+            { name: "Víctor Vistoso", visibleItems: ["Gran casa en las afueras (hipotecada)", "Barco recreativo (financiado)", "Fiestas frecuentes y ostentosas"], income: 90000, savings: 20000, debt: 350000, description: "Víctor proyecta una imagen de gran riqueza con bienes financiados, pero sus deudas superan con creces sus ahorros líquidos." },
+            { name: "Elena Estratega", visibleItems: ["Tablet para leer y aprender", "Curso online de inversión", "Plan de pensiones visible en sus metas", "Invierte en fondos indexados discretamente"], income: 70000, savings: 250000, debt: 10000, description: "Elena se enfoca en la educación financiera y la inversión disciplinada. Su riqueza crece constantemente aunque no la ostente." },
+            { name: "Miguel Minimalista", visibleItems: ["Mochila de buena calidad", "Apartamento pequeño y ordenado", "Pocas posesiones visibles", "Bicicleta como transporte principal"], income: 55000, savings: 120000, debt: 1000, description: "Miguel valora las experiencias sobre las posesiones. Sus bajos gastos le permiten ahorrar e invertir agresivamente, construyendo una riqueza sólida y no visible." },
+            { name: "Diana Dinámica (Influencer)", visibleItems: ["Ropa de diseñador (a menudo prestada o de canje)", "Fotos en destinos exóticos (colaboraciones)", "Último modelo de smartphone", "Siempre en eventos de moda"], income: 40000, savings: 5000, debt: 15000, description: "Diana proyecta una vida de lujo en redes, pero muchos de sus 'bienes' son temporales o financiados. Sus ingresos son variables y sus ahorros escasos." },
+            { name: "Roberto Retirado (Prudente)", visibleItems: ["Casa modesta pagada", "Coche antiguo bien cuidado", "Pasa tiempo en el jardín", "Ropa cómoda y sencilla"], income: 30000, savings: 350000, debt: 0, description: "Roberto vivió una vida de ahorro constante. Ahora disfruta de una jubilación tranquila y sin deudas, con un patrimonio considerable que no ostenta." },
+            { name: "Patricia Profesional (Presionada)", visibleItems: ["Coche de gama media-alta (leasing)", "Bolso de marca reconocido", "Vive en un barrio de moda (alquiler caro)", "Tecnología nueva para el trabajo"], income: 75000, savings: 25000, debt: 40000, description: "Patricia siente la presión de mantener una imagen profesional acorde a su entorno, lo que limita su capacidad de ahorro a pesar de un buen sueldo." },
+            { name: "Andrés Austero (Millonario Secreto)", visibleItems: ["Camioneta vieja", "Herramientas de trabajo manual", "Vive en una casa sencilla en las afueras", "No usa redes sociales"], income: 65000, savings: 1200000, debt: 5000, description: "Andrés heredó un negocio familiar que gestiona con prudencia y vive muy por debajo de sus posibilidades. Pocos conocen su verdadera fortuna." },
+            { name: "Beatriz \"House Poor\"", visibleItems: ["Casa impresionante y muy grande", "Muebles de diseño en las áreas visibles", "Coche familiar nuevo y espacioso"], income: 110000, savings: 10000, debt: 600000, description: "Beatriz y su pareja invirtieron todo en una casa muy por encima de sus posibilidades. Gran parte de sus ingresos se va en la hipoteca, dejándolos con poco ahorro líquido." },
+            { name: "Tomás Tecnológico (Emprendedor Inicial)", visibleItems: ["Oficina compartida (coworking)", "Portátil potente", "Mucha cafeína", "Ropa casual de startup"], income: 25000, savings: 3000, debt: 20000, description: "Tomás está invirtiendo todo su tiempo y dinero en su nueva empresa tecnológica. Vive al límite con la esperanza de un gran éxito futuro." },
+            { name: "Gabriela Gastrónoma (Chef Exitosa)", visibleItems: ["Restaurante propio concurrido", "Apariciones en medios locales", "Viaja para inspirarse culinariamente", "Viste con estilo pero sin ostentación"], income: 150000, savings: 400000, debt: 50000, description: "Gabriela ha construido un negocio rentable. Reinvertir y ahorrar son parte de su estrategia, viviendo bien pero enfocada en la solidez financiera." },
+            { name: "Fernando Funcionario (Estable)", visibleItems: ["Piso de tamaño medio en propiedad (casi pagado)", "Coche familiar fiable", "Vacaciones anuales modestas", "Aficiones sencillas"], income: 50000, savings: 180000, debt: 20000, description: "Fernando tiene un empleo estable y ha sido constante con sus ahorros y el pago de su hipoteca. Disfruta de una seguridad financiera sin grandes lujos." },
+            { name: "Olivia Ostentosa (Heredera Imprudente)", visibleItems: ["Múltiples coches deportivos", "Guardarropa lleno de alta costura", "Asidua a las fiestas más exclusivas", "Joyas llamativas"], income: 20000, savings: 50000, debt: 30000, description: "Olivia heredó una suma considerable, pero sus gastos extravagantes están mermando rápidamente su capital. Su estilo de vida supera con creces sus ingresos actuales." }
         ];
 
         let currentPair = [];
         let score = 0;
-        let revealedThisTurn = false; // Para controlar el flujo de revelación y conjetura
-        let characterIndicesUsedInCurrentSession = new Set(); // Para un poco más de variedad
+        let revealedThisTurn = false; 
+        let characterIndicesUsedInCurrentSession = new Set(); 
 
         const nameADisplay = document.getElementById('nameA');
         const visibleItemsADisplay = document.getElementById('visibleItemsA');
@@ -352,7 +309,7 @@
         function calculateNetWorth(character) {
             if (!character || typeof character.savings === 'undefined' || typeof character.debt === 'undefined') {
                 console.error("Personaje inválido para calcular patrimonio neto:", character);
-                return 0; // o algún valor por defecto o manejo de error
+                return 0; 
             }
             return character.savings - character.debt;
         }
@@ -361,9 +318,8 @@
             const indices = new Set();
             while (indices.size < count) {
                 let randomIndex = Math.floor(Math.random() * maxIndex);
-                // Asegurar que no usemos personajes usados recientemente en la sesión si es posible
-                if (characterIndicesUsedInCurrentSession.has(randomIndex) && characterIndicesUsedInCurrentSession.size < maxIndex -1 ) { // Si quedan otros por usar
-                    continue; // Intenta de nuevo
+                if (characterIndicesUsedInCurrentSession.has(randomIndex) && characterIndicesUsedInCurrentSession.size < maxIndex -1 ) { 
+                    continue; 
                 }
                 indices.add(randomIndex);
             }
@@ -373,7 +329,7 @@
         function loadNextPair() {
             revealedThisTurn = false;
             if (characterIndicesUsedInCurrentSession.size >= characters.length -1) {
-                characterIndicesUsedInCurrentSession.clear(); // Reiniciar si hemos usado casi todos
+                characterIndicesUsedInCurrentSession.clear(); 
             }
 
             const [indexA, indexB] = getRandomIndices(2, characters.length);
@@ -396,10 +352,10 @@
             financialsBDisplay.style.display = 'none';
 
             feedbackArea.style.display = 'none';
-            feedbackArea.className = 'feedback-area';
+            feedbackArea.className = 'feedback-area'; // Reset class
             guessAButton.disabled = false;
             guessBButton.disabled = false;
-            revealButton.style.display = 'inline-block'; // Mostrar botón de revelar
+            revealButton.style.display = 'inline-block'; 
             nextPairButton.style.display = 'none';
         }
 
@@ -429,7 +385,7 @@
             showFinancialDetails();
             
             feedbackArea.textContent = "Detalles revelados. ¡Ahora haz clic en 'Siguiente Par' para continuar!";
-            feedbackArea.className = 'feedback-area'; // Clase neutral
+            feedbackArea.className = 'feedback-area'; 
             feedbackArea.style.display = 'block';
             
             guessAButton.disabled = true;
@@ -438,8 +394,8 @@
             nextPairButton.style.display = 'inline-block';
         }
 
-        function handleGuess(guessedIndex) { // 0 for A, 1 for B
-            if (revealedThisTurn) return; // No permitir conjeturas si ya se reveló sin conjetura
+        function handleGuess(guessedIndex) { 
+            if (revealedThisTurn) return; 
             revealedThisTurn = true;
             
             showFinancialDetails();
@@ -448,12 +404,12 @@
             const netWorthA = calculateNetWorth(charA);
             const netWorthB = calculateNetWorth(charB);
 
-            const wealthierCharIndex = netWorthA > netWorthB ? 0 : (netWorthB > netWorthA ? 1 : -1); // -1 para empate
+            const wealthierCharIndex = netWorthA > netWorthB ? 0 : (netWorthB > netWorthA ? 1 : -1); 
             let guessedCorrectly = false;
             
-            if (wealthierCharIndex === -1) { // Empate
+            if (wealthierCharIndex === -1) { 
                  feedbackArea.textContent = `¡Es un empate en patrimonio neto! Ambos tienen ${formatCurrency(netWorthA)}.`;
-                 feedbackArea.className = 'feedback-area'; // neutral
+                 feedbackArea.className = 'feedback-area'; 
             } else {
                 guessedCorrectly = guessedIndex === wealthierCharIndex;
                 if (guessedCorrectly) {
@@ -474,7 +430,6 @@
             nextPairButton.style.display = 'inline-block';
         }
 
-        // Iniciar el juego
         loadNextPair();
     </script>
 </body>

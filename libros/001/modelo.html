@@ -261,12 +261,32 @@
 
 /* Forzar un fondo base y color de texto para el contenido cargado,
    si el juego/actividad tiene su propio tag <body> inyectado */
-.loaded-html-content body {
-    background-color: transparent !important; /* Hace transparente el body del juego cargado */
-    color: var(--text-color-dark) !important; /* Texto oscuro por defecto para el contenido del juego */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Asegurar consistencia de fuente */
-    margin: 0 !important; /* Evitar márgenes del body del juego */
-    padding: 0 !important; /* Evitar paddings del body del juego */
+/* En modelo.html, dentro de la etiqueta <style> */
+
+.loaded-html-content {
+    background-color: var(--white-ish); /* Fondo para el contenido cargado */
+    color: var(--text-color-dark);   /* Texto oscuro para el contenido cargado */
+    padding: 20px; /* Espacio interno para el contenido cargado */
+    border-radius: 8px;
+    width: 100%; /* Ocupar el 100% del .content-loader-area */
+    overflow-x: hidden; /* Corta cualquier contenido que se desborde horizontalmente */
+
+    /* === CAMBIOS SUGERIDOS === */
+    /* Quita o comenta el min-height complejo: */
+    /* min-height: calc(100vh - 60px - 40px - 40px); */ 
+
+    /* Opción A: Sin min-height explícito, deja que el contenido determine la altura. */
+    /* (No añadas nada aquí para min-height) */
+
+    /* Opción B: Si quieres que intente ocupar al menos el alto disponible si el contenido es corto. */
+    /* min-height: 100%; */ /* Esto haría que intente llenar el .content-loader-area */
+                           /* pero puede ser problemático si .content-loader-area no tiene una altura definida (solo max-height) */
+
+    /* Opción C: Añadir scroll DENTRO de .loaded-html-content si su propio contenido es muy alto.
+       Esto es útil si quieres que el padding de .loaded-html-content siempre esté visible
+       y el scroll sea solo para el juego/actividad en sí. */
+    /* overflow-y: auto; */
+    /* max-height: calc(100vh - 60px - 40px); */ /* Si usas overflow-y: auto aquí, dale un max-height. 40px es por su propio padding. */
 }
 
 /* Estilos para contenedores comunes en tus juegos/actividades */

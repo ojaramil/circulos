@@ -227,8 +227,6 @@
         const initialSpinsVisual = spinsTotalVisual;
         let isSpinning = false;
 
-        // Las referencias a elementos del DOM son seguras porque los IDs son únicos
-        // y se buscan después de que el HTML del juego es inyectado.
         const wealthDisplayVisual = document.getElementById('currentWealthVisual');
         const spinsDisplayVisual = document.getElementById('spinsLeftVisual');
         const eventDescriptionDisplayVisual = document.getElementById('eventDescriptionVisual');
@@ -247,7 +245,6 @@
         const visualSegmentAngle = 360 / visualWheelSegments.length;
 
         const allPossibleEvents = [];
-        // (La lógica de generación de eventos se mantiene igual, es extensa y no necesita cambios para el IIFE)
         for (let i = 0; i < 15; i++) {
             const amount = Math.floor(Math.random() * 1000) + 200;
             allPossibleEvents.push({ description: `Bono inesperado de €${amount}.`, type: "positive", amount: amount, impactType: "fixed" });
@@ -257,7 +254,7 @@
         for (let i = 0; i < 20; i++) {
             const amount = Math.floor(Math.random() * 800) + 100;
             const items = ["reparación del coche", "factura del dentista", "electrodoméstico roto", "multa de tráfico", "regalo de boda caro"];
-            allPossibleEvents.push({ description: `Gasto urgente: <span class="math-inline">\{items\[i % items\.length\]\} de €</span>{amount}.`, type: "negative", amount: amount, impactType: "fixed" });
+            allPossibleEvents.push({ description: `Gasto urgente: ${items[i % items.length]} de €${amount}.`, type: "negative", amount: amount, impactType: "fixed" });
         }
         allPossibleEvents.push({ description: "¡Impuestos más altos de lo esperado! Pierdes un 5% de tu capital.", type: "negative", amount: 0.05, impactType: "percentage" });
         for (let i = 0; i < 10; i++) {
@@ -287,7 +284,7 @@
         ];
         for (let i = 0; i < 28; i++) {
             const template = choiceEventsTemplates[i % choiceEventsTemplates.length];
-            const cost = Math.max(200, Math.floor((typeof currentWealthVisual !== 'undefined' ? currentWealthVisual : initialWealthVisual) * template.costFactor));
+            const cost = Math.max(200, Math.floor((typeof currentWealthVisual !== 'undefined' ? currentWealthVisual : initialWealthVisual) * template.costFactor)); 
             allPossibleEvents.push({
                 description: template.question.replace("€COST", `€${cost}`),
                 type: "choice",
@@ -298,7 +295,6 @@
                 ]
             });
         }
-
 
         function createVisualWheel() {
             if (!wheelElement) return;
@@ -335,7 +331,7 @@
             if (spinsDisplayVisual) spinsDisplayVisual.textContent = spinsLeftVisual;
         }
 
-        function resetVisualGameInternal() { // Renombrada para evitar colisión si resetVisualGame se vuelve global
+        function resetVisualGameInternal() { 
             currentWealthVisual = initialWealthVisual;
             spinsLeftVisual = initialSpinsVisual;
             if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = "¡Gira la rueda para ver qué sucede!";
@@ -345,7 +341,7 @@
             if (resetButtonVisual) resetButtonVisual.style.display = 'none';
             if (gameOverMessageDisplayVisual) {
                 gameOverMessageDisplayVisual.innerHTML = '';
-                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; // Solo la clase base
+                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
             }
             if (wheelElement) wheelElement.style.transform = 'rotate(0deg)';
             updateVisualDisplay();
@@ -380,13 +376,12 @@
             eventData.options.forEach(option => {
                 const button = document.createElement('button');
                 button.textContent = option.text;
-                // resolveVisualChoice es local al IIFE, así que esta asignación directa funcionará
                 button.onclick = () => resolveVisualChoice(option.consequence, eventData); 
                 if (choicesAreaVisual) choicesAreaVisual.appendChild(button);
             });
         }
 
-        function resolveVisualChoice(consequence, originalEvent) { // Se mantiene local al IIFE
+        function resolveVisualChoice(consequence, originalEvent) { 
             if (choicesAreaVisual) choicesAreaVisual.innerHTML = '';
             let outcomeMessage = "";
             let changeAmount = 0;
@@ -401,7 +396,7 @@
             
             currentWealthVisual += changeAmount;
             if (currentWealthVisual < 0) currentWealthVisual = 0;
-            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> <span class="math-inline">\{outcomeMessage\} \(Impacto\: €</span>{changeAmount.toFixed(2)})`;
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> ${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
             
             checkVisualGameOver(); 
             updateVisualDisplay();
@@ -410,7 +405,7 @@
             }
         }
 
-        function spinVisualWheelInternal() { // Renombrada para evitar colisión si spinVisualWheel se vuelve global
+        function spinVisualWheelInternal() { 
             if (isSpinning || spinsLeftVisual <= 0 || currentWealthVisual <= 0 || !spinButtonVisual) return;
 
             isSpinning = true;
@@ -453,7 +448,7 @@
                 if (spinButtonVisual) spinButtonVisual.disabled = true;
                 if (resetButtonVisual) resetButtonVisual.style.display = 'inline-block';
                 let finalMessage = "";
-                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.className = 'game-over-message-visual'; // Reset class
+                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
 
                 if (currentWealthVisual <= 0) {
                     finalMessage = `¡Te has quedado sin capital! Giros realizados: ${initialSpinsVisual - spinsLeftVisual}.`;
@@ -463,4 +458,29 @@
                         finalMessage = `¡Felicidades! Terminaste con €${currentWealthVisual.toFixed(2)}, ¡superaste tu capital inicial!`;
                         if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-win-visual');
                     } else {
-                        finalMessage = `Juego terminado. Capital final: €${currentWealthVisual.
+                        finalMessage = `Juego terminado. Capital final: €${currentWealthVisual.toFixed(2)}.`;
+                        if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
+                    }
+                }
+                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.textContent = finalMessage;
+            }
+        }
+        
+        // Exponer las funciones necesarias para los onclick del HTML
+        window.spinVisualWheel = spinVisualWheelInternal;
+        window.resetVisualGame = resetVisualGameInternal;
+        
+        // Inicializar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                 createVisualWheel(); 
+                 resetVisualGameInternal();
+            });
+        } else {
+            createVisualWheel(); 
+            resetVisualGameInternal();
+        }
+    })(); // Fin del IIFE
+    </script>
+</body>
+</html>

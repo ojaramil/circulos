@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rueda Visual de Decisiones Financieras 🎡</title>
+    <title>Rueda Visual de Decisiones Financieras (100 Eventos) 🎡</title>
     <style>
         /* Estilos encapsulados para la Rueda de Decisiones Financieras */
         .rueda-decisiones-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; /* El margen exterior lo gestiona la plantilla principal */
-            padding: 20px; /* Mantenemos el padding interno que tenía el body */
-            background-color: #f0f2f5; /* Color de fondo del "lienzo" del juego */
+            margin: 0; 
+            padding: 20px; 
+            background-color: #F0F8FF; /* Color de fondo del "lienzo" de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Para centrar el .game-container si tiene max-width */
-            height: 100%; /* Para ocupar el espacio disponible en la plantilla */
+            align-items: center; 
+            height: 100%; 
             box-sizing: border-box;
-            overflow-y: auto; /* Scroll si el contenido es más alto que el espacio */
+            overflow-y: auto; 
             overflow-x: hidden;
         }
 
@@ -27,12 +27,12 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px; /* Mantenemos el max-width para el contenido del juego */
+            max-width: 500px; 
             text-align: center;
         }
 
         .rueda-decisiones-wrapper h1 {
-            color: #1a73e8;
+            color: #005BAA; /* Azul de acento principal de la plataforma */
             margin-bottom: 20px;
             font-size: 1.7em;
         }
@@ -40,8 +40,8 @@
         .rueda-decisiones-wrapper .status-display {
             margin-bottom: 20px;
             padding: 15px;
-            background-color: #e9f5ff;
-            border-left: 5px solid #1a73e8;
+            background-color: #e9f5ff; /* Azul muy claro, combina con la plataforma */
+            border-left: 5px solid #005BAA; /* Azul de acento */
             border-radius: 5px;
         }
 
@@ -52,12 +52,12 @@
 
         .rueda-decisiones-wrapper .status-display #currentWealthVisual {
             font-weight: bold;
-            color: #0d47a1;
+            color: #005BAA; /* Azul oscuro para el capital */
         }
 
         .rueda-decisiones-wrapper .status-display #spinsLeftVisual {
             font-weight: bold;
-            color: #d32f2f;
+            color: #d32f2f; /* Rojo para giros restantes, se mantiene por claridad */
         }
 
         .rueda-decisiones-wrapper .wheel-container {
@@ -67,7 +67,7 @@
             margin: 20px auto;
             border-radius: 50%;
             overflow: hidden; 
-            border: 5px solid #34495e;
+            border: 5px solid #34495e; /* Un gris oscuro para el borde de la rueda */
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
 
@@ -88,12 +88,12 @@
             height: 0;
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
-            border-top: 25px solid #e74c3c; 
+            border-top: 25px solid #e74c3c; /* Rojo para el puntero, se mantiene */
             z-index: 10;
         }
 
         .rueda-decisiones-wrapper #spinButtonAction {
-            background-color: #28a745;
+            background-color: #005BAA; /* Azul de acento de la plataforma */
             color: white;
             padding: 12px 25px;
             border: none;
@@ -107,7 +107,7 @@
         }
 
         .rueda-decisiones-wrapper #spinButtonAction:hover {
-            background-color: #218838;
+            background-color: #004C8C; /* Azul más oscuro */
         }
 
         .rueda-decisiones-wrapper #spinButtonAction:active {
@@ -120,8 +120,8 @@
         }
 
         .rueda-decisiones-wrapper #resetButtonGame {
-             background-color: #ffc107;
-             color: #333;
+             background-color: #59A9D9; /* Azul brillante de plataforma para reiniciar */
+             color: white;
              margin-left:10px;
              padding: 12px 20px;
              border: none;
@@ -129,11 +129,14 @@
              cursor: pointer;
              font-size: 1.0em;
         }
+         .rueda-decisiones-wrapper #resetButtonGame:hover {
+            background-color: #4A8BCD;
+         }
 
         .rueda-decisiones-wrapper .event-area-visual {
             margin-top: 20px;
             padding: 15px;
-            background-color: #fff3cd;
+            background-color: #fff3cd; /* Amarillo claro para eventos, se mantiene */
             border: 1px solid #ffeeba;
             border-radius: 5px;
             min-height: 60px;
@@ -146,11 +149,11 @@
         .rueda-decisiones-wrapper .event-area-visual p {
             margin: 5px 0;
             font-size: 1em;
-            color: #856404;
+            color: #856404; /* Color de texto para área de evento, se mantiene */
         }
 
         .rueda-decisiones-wrapper .choices-visual button {
-            background-color: #007bff;
+            background-color: #005BAA; /* Azul de acento para botones de elección */
             color: white;
             padding: 8px 15px;
             border: none;
@@ -162,7 +165,7 @@
         }
 
         .rueda-decisiones-wrapper .choices-visual button:hover {
-            background-color: #0056b3;
+            background-color: #004C8C; /* Azul más oscuro */
         }
 
         .rueda-decisiones-wrapper .game-over-message-visual {
@@ -173,6 +176,7 @@
             font-weight: bold;
         }
 
+        /* Colores de feedback game over MANTENIDOS por usabilidad */
         .rueda-decisiones-wrapper .game-over-win-visual {
             background-color: #d4edda;
             color: #155724;
@@ -214,8 +218,6 @@
     </div>
 
     <script>
-        // El JavaScript no necesita cambios para este encapsulamiento de CSS
-        // ya que se basa en IDs que seguirán siendo únicos.
     // Envolvemos todo el script en un IIFE
     (function() {
         let currentWealthVisual = 10000;
@@ -225,6 +227,8 @@
         const initialSpinsVisual = spinsTotalVisual;
         let isSpinning = false;
 
+        // Las referencias a elementos del DOM son seguras porque los IDs son únicos
+        // y se buscan después de que el HTML del juego es inyectado.
         const wealthDisplayVisual = document.getElementById('currentWealthVisual');
         const spinsDisplayVisual = document.getElementById('spinsLeftVisual');
         const eventDescriptionDisplayVisual = document.getElementById('eventDescriptionVisual');
@@ -243,6 +247,7 @@
         const visualSegmentAngle = 360 / visualWheelSegments.length;
 
         const allPossibleEvents = [];
+        // (La lógica de generación de eventos se mantiene igual, es extensa y no necesita cambios para el IIFE)
         for (let i = 0; i < 15; i++) {
             const amount = Math.floor(Math.random() * 1000) + 200;
             allPossibleEvents.push({ description: `Bono inesperado de €${amount}.`, type: "positive", amount: amount, impactType: "fixed" });
@@ -252,7 +257,7 @@
         for (let i = 0; i < 20; i++) {
             const amount = Math.floor(Math.random() * 800) + 100;
             const items = ["reparación del coche", "factura del dentista", "electrodoméstico roto", "multa de tráfico", "regalo de boda caro"];
-            allPossibleEvents.push({ description: `Gasto urgente: ${items[i % items.length]} de €${amount}.`, type: "negative", amount: amount, impactType: "fixed" });
+            allPossibleEvents.push({ description: `Gasto urgente: <span class="math-inline">\{items\[i % items\.length\]\} de €</span>{amount}.`, type: "negative", amount: amount, impactType: "fixed" });
         }
         allPossibleEvents.push({ description: "¡Impuestos más altos de lo esperado! Pierdes un 5% de tu capital.", type: "negative", amount: 0.05, impactType: "percentage" });
         for (let i = 0; i < 10; i++) {
@@ -282,7 +287,7 @@
         ];
         for (let i = 0; i < 28; i++) {
             const template = choiceEventsTemplates[i % choiceEventsTemplates.length];
-            const cost = Math.max(200, Math.floor((typeof currentWealthVisual !== 'undefined' ? currentWealthVisual : initialWealthVisual) * template.costFactor)); // Usa initialWealthVisual si currentWealthVisual no está definido aún
+            const cost = Math.max(200, Math.floor((typeof currentWealthVisual !== 'undefined' ? currentWealthVisual : initialWealthVisual) * template.costFactor));
             allPossibleEvents.push({
                 description: template.question.replace("€COST", `€${cost}`),
                 type: "choice",
@@ -293,6 +298,7 @@
                 ]
             });
         }
+
 
         function createVisualWheel() {
             if (!wheelElement) return;
@@ -318,7 +324,7 @@
                 const angle = (i * visualSegmentAngle) + (visualSegmentAngle / 2) -90; 
                 const radiusForText = 100; 
                 labelDiv.style.left = `${150 + radiusForText * Math.cos(angle * Math.PI / 180) - 50}px`; 
-                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - 10}px`; // Ajustado el centrado vertical
+                labelDiv.style.top = `${150 + radiusForText * Math.sin(angle * Math.PI / 180) - 10}px`;
                 labelDiv.style.transform = `rotate(${angle+90}deg)`;
                 wheelElement.appendChild(labelDiv);
             });
@@ -329,7 +335,7 @@
             if (spinsDisplayVisual) spinsDisplayVisual.textContent = spinsLeftVisual;
         }
 
-        function resetVisualGame() {
+        function resetVisualGameInternal() { // Renombrada para evitar colisión si resetVisualGame se vuelve global
             currentWealthVisual = initialWealthVisual;
             spinsLeftVisual = initialSpinsVisual;
             if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = "¡Gira la rueda para ver qué sucede!";
@@ -339,7 +345,7 @@
             if (resetButtonVisual) resetButtonVisual.style.display = 'none';
             if (gameOverMessageDisplayVisual) {
                 gameOverMessageDisplayVisual.innerHTML = '';
-                gameOverMessageDisplayVisual.className = 'game-over-message-visual';
+                gameOverMessageDisplayVisual.className = 'game-over-message-visual'; // Solo la clase base
             }
             if (wheelElement) wheelElement.style.transform = 'rotate(0deg)';
             updateVisualDisplay();
@@ -374,12 +380,13 @@
             eventData.options.forEach(option => {
                 const button = document.createElement('button');
                 button.textContent = option.text;
-                button.onclick = () => resolveVisualChoice(option.consequence, eventData);
+                // resolveVisualChoice es local al IIFE, así que esta asignación directa funcionará
+                button.onclick = () => resolveVisualChoice(option.consequence, eventData); 
                 if (choicesAreaVisual) choicesAreaVisual.appendChild(button);
             });
         }
 
-        function resolveVisualChoice(consequence, originalEvent) {
+        function resolveVisualChoice(consequence, originalEvent) { // Se mantiene local al IIFE
             if (choicesAreaVisual) choicesAreaVisual.innerHTML = '';
             let outcomeMessage = "";
             let changeAmount = 0;
@@ -394,7 +401,7 @@
             
             currentWealthVisual += changeAmount;
             if (currentWealthVisual < 0) currentWealthVisual = 0;
-            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> ${outcomeMessage} (Impacto: €${changeAmount.toFixed(2)})`;
+            if (eventDescriptionDisplayVisual) eventDescriptionDisplayVisual.textContent = `${originalEvent.question} -> <span class="math-inline">\{outcomeMessage\} \(Impacto\: €</span>{changeAmount.toFixed(2)})`;
             
             checkVisualGameOver(); 
             updateVisualDisplay();
@@ -403,7 +410,7 @@
             }
         }
 
-        function spinVisualWheel() {
+        function spinVisualWheelInternal() { // Renombrada para evitar colisión si spinVisualWheel se vuelve global
             if (isSpinning || spinsLeftVisual <= 0 || currentWealthVisual <= 0 || !spinButtonVisual) return;
 
             isSpinning = true;
@@ -446,7 +453,7 @@
                 if (spinButtonVisual) spinButtonVisual.disabled = true;
                 if (resetButtonVisual) resetButtonVisual.style.display = 'inline-block';
                 let finalMessage = "";
-                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.className = 'game-over-message-visual'; 
+                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.className = 'game-over-message-visual'; // Reset class
 
                 if (currentWealthVisual <= 0) {
                     finalMessage = `¡Te has quedado sin capital! Giros realizados: ${initialSpinsVisual - spinsLeftVisual}.`;
@@ -456,25 +463,4 @@
                         finalMessage = `¡Felicidades! Terminaste con €${currentWealthVisual.toFixed(2)}, ¡superaste tu capital inicial!`;
                         if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-win-visual');
                     } else {
-                        finalMessage = `Juego terminado. Capital final: €${currentWealthVisual.toFixed(2)}.`;
-                        if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.classList.add('game-over-lose-visual');
-                    }
-                }
-                if (gameOverMessageDisplayVisual) gameOverMessageDisplayVisual.textContent = finalMessage;
-            }
-        }
-        
-        // Inicializar solo si los elementos existen (para que no falle si se carga sin DOM completo)
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                 createVisualWheel(); 
-                 resetVisualGame();
-            });
-        } else {
-            createVisualWheel(); 
-            resetVisualGame();
-        }
-    })(); // Fin del IIFE       
-    </script>
-</body>
-</html>
+                        finalMessage = `Juego terminado. Capital final: €${currentWealthVisual.

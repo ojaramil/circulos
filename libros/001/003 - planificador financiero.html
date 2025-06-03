@@ -10,8 +10,8 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 25px;
-            background-color: #F0F8FF; /* CAMBIADO: Color del lienzo de la plataforma principal */
-            color: #343a40; /* Mantenido para el texto principal del juego */
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma principal */
+            color: #343a40; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -21,7 +21,7 @@
         }
 
         .planificador-suficiente-wrapper .container {
-            background-color: #ffffff; /* Contenedor interno sigue siendo blanco */
+            background-color: #ffffff; 
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -30,7 +30,7 @@
         }
 
         .planificador-suficiente-wrapper h1 {
-            color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+            color: #005BAA; /* Azul de acento de la plataforma */
             text-align: center;
             margin-bottom: 25px;
             font-size: 1.9em;
@@ -51,7 +51,7 @@
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            color: #495057; /* Color de etiqueta mantenido */
+            color: #495057; 
         }
 
         .planificador-suficiente-wrapper input[type="number"] {
@@ -64,13 +64,13 @@
         }
 
         .planificador-suficiente-wrapper input[type="number"]:focus {
-            border-color: #80bdff; /* Azul claro para foco, combina bien */
+            border-color: #80bdff; 
             outline: 0;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
 
         .planificador-suficiente-wrapper button {
-            background-color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+            background-color: #005BAA; /* Azul de acento de la plataforma */
             color: white;
             padding: 12px 22px;
             border: none;
@@ -84,19 +84,19 @@
         }
 
         .planificador-suficiente-wrapper button:hover {
-            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
+            background-color: #004C8C; /* Azul más oscuro para hover */
         }
 
         .planificador-suficiente-wrapper .results {
             margin-top: 30px;
             padding: 20px;
-            background-color: #e9ecef; /* Fondo de resultados mantenido (gris claro) */
+            background-color: #e9ecef; 
             border: 1px solid #dee2e6;
             border-radius: 5px;
         }
 
         .planificador-suficiente-wrapper .results h2 {
-            color: #005BAA; /* CAMBIADO: Azul de acento de la plataforma */
+            color: #005BAA; /* Azul de acento de la plataforma */
             margin-top: 0;
             border-bottom: 1px solid #adb5bd;
             padding-bottom: 8px;
@@ -111,7 +111,7 @@
 
         .planificador-suficiente-wrapper .results span {
             font-weight: bold;
-            color: #59A9D9; /* CAMBIADO: Azul brillante de acento de la plataforma */
+            color: #59A9D9; /* Azul brillante de acento de la plataforma */
         }
 
         .planificador-suficiente-wrapper .results .freedom-message {
@@ -119,7 +119,7 @@
             color: #6c757d;
             margin-top: 15px;
             padding: 10px;
-            background-color: #f8f9fa; /* Fondo de mensaje mantenido */
+            background-color: #f8f9fa; 
             border-radius: 4px;
         }
         .planificador-suficiente-wrapper .results #yearByYearDetails {
@@ -187,14 +187,13 @@
     <script>
     // Envolvemos todo el script en un IIFE
     (function() {
-        
         const WITHDRAWAL_RATE = 0.04; // Tasa de retiro segura (Regla del 4%)
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
         }
 
-        function calculatePathToEnough() {
+        function calculatePathToEnoughInternal() { // Renombrada para evitar posible colisión antes de asignarla a window
             const desiredAnnualExpenses = parseFloat(document.getElementById('desiredAnnualExpenses').value);
             let currentNetWorth = parseFloat(document.getElementById('currentNetWorth').value);
             const annualSavings = parseFloat(document.getElementById('annualSavings').value);
@@ -255,7 +254,7 @@
             document.getElementById('resultsArea').style.display = 'block';
         }
 
-        function setFreedomMessage(years) {
+        function setFreedomMessage(years) { // Esta función es interna y no necesita ser global
             const freedomMsgEl = document.getElementById('freedomMessage');
             if (years === 0) {
                 freedomMsgEl.textContent = "¡Has alcanzado la libertad financiera según tus términos! Controlas tu tiempo.";
@@ -272,7 +271,14 @@
             }
         }
 
-       })(); // Fin del IIFE     
+        // Exponer la función calculatePathToEnoughInternal al ámbito global bajo el nombre que espera el HTML
+        window.calculatePathToEnough = calculatePathToEnoughInternal;
+
+        // No hay una función de inicialización automática como initializeGame() aquí, 
+        // la funcionalidad se dispara con el clic del botón.
+        // console.log("Planificador de Suficiente (con IIFE) script listo.");
+
+    })(); // Fin del IIFE
     </script>
 </body>
 </html>

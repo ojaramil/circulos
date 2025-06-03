@@ -10,30 +10,29 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #F0F8FF; /* CAMBIADO: Fondo del lienzo de la plataforma */
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
             color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centra el .game-container */
-            min-height: 100%; /* Asegura que ocupe al menos la altura del contenedor padre */
-            height: 100%; /* Para ocupar el espacio disponible */
+            align-items: center; 
+            min-height: 100%; 
+            height: 100%; 
             box-sizing: border-box;
-            overflow-y: auto; /* Scroll si el contenido es más alto */
-            text-align: center; /* El body original tenía esto */
+            overflow-y: auto; 
+            text-align: center; 
         }
 
         .flashcard-game-wrapper .game-container {
-            background-color: #ffffff; /* Contenedor interno blanco */
+            background-color: #ffffff; 
             padding: 25px 30px;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.12);
             width: 100%;
             max-width: 600px;
-            /* text-align: center; ya está en el wrapper */
         }
 
         .flashcard-game-wrapper h1 {
-            color: #005BAA; /* CAMBIADO: Azul de acento principal de la plataforma */
+            color: #005BAA; /* Azul de acento principal de la plataforma */
             margin-bottom: 25px;
             font-size: 2em;
         }
@@ -49,7 +48,7 @@
             padding: 20px;
             border: 1px solid #d1d9e0;
             border-radius: 8px;
-            background-color: #f9f9f9; /* Fondo de tarjeta mantenido */
+            background-color: #f9f9f9; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -62,7 +61,7 @@
 
         .flashcard-game-wrapper .flashcard .card-title {
             font-weight: bold;
-            color: #59A9D9; /* CAMBIADO: Azul brillante de acento de la plataforma */
+            color: #59A9D9; /* Azul brillante de acento de la plataforma */
             margin-bottom: 10px;
             font-size: 0.9em;
             text-transform: uppercase;
@@ -86,7 +85,7 @@
 
         .flashcard-game-wrapper .navigation-controls button,
         .flashcard-game-wrapper #flipButton {
-            background-color: #005BAA; /* CAMBIADO: Azul de acento principal */
+            background-color: #005BAA; /* Azul de acento principal */
             color: white;
             padding: 10px 18px;
             border: none;
@@ -98,7 +97,7 @@
 
         .flashcard-game-wrapper .navigation-controls button:hover,
         .flashcard-game-wrapper #flipButton:hover {
-            background-color: #004C8C; /* CAMBIADO: Azul más oscuro para hover */
+            background-color: #004C8C; /* Azul más oscuro para hover */
         }
 
         .flashcard-game-wrapper .navigation-controls button:active,
@@ -107,24 +106,20 @@
         }
 
         .flashcard-game-wrapper .navigation-controls button:disabled {
-            background-color: #c0c0c0; /* Gris para deshabilitado, mantenido */
+            background-color: #c0c0c0; 
             cursor: not-allowed;
         }
 
         .flashcard-game-wrapper #flipButton {
             display: block;
-            width: calc(100% - 40px); /* Ajustado para considerar el padding del .game-container si se quiere al ras */
-            /* Si se quiere al ras del game-container, el width podría ser 100% y quitar márgenes laterales */
-            /* O mantenerlo como está para que quede dentro del padding general */
-            width: auto; /* Que se ajuste al texto */
-            min-width: 200px; /* Un ancho mínimo para que se vea bien */
+            width: auto; 
+            min-width: 200px; 
             margin: 0 auto 20px auto;
-            /* El color ya se define arriba junto con los otros botones */
         }
         
         .flashcard-game-wrapper #cardCounter {
             font-size: 0.95em;
-            color: #555; /* Mantenido */
+            color: #555; 
             font-weight: bold;
         }
     </style>
@@ -158,9 +153,8 @@
     </div>
 
     <script>
-            // Envolvemos todo el script en un IIFE
+    // Envolvemos todo el script en un IIFE
     (function() {
-        // El JavaScript no necesita cambios para este encapsulamiento de CSS.
         const flashcards = [
             { front: "Según Morgan Housel, ¿qué factor es más determinante para el éxito financiero: la inteligencia o el comportamiento?", back: "El comportamiento es mucho más determinante para el éxito financiero que la inteligencia. Un comportamiento deficiente puede llevar al desastre financiero, incluso para personas muy inteligentes." },
             { front: "¿Por qué el autor sugiere que la psicología del dinero es un campo que a menudo se enseña de manera incorrecta?", back: "El autor sugiere que las finanzas a menudo se enseñan como una disciplina puramente matemática con datos y fórmulas, ignorando el papel fundamental de las emociones, las experiencias personales y los matices del comportamiento humano." },
@@ -196,60 +190,66 @@
         const backTextElement = document.getElementById('backText');
         const cardFrontDiv = document.getElementById('cardFront');
         const cardBackDiv = document.getElementById('cardBack');
-        const flipButton = document.getElementById('flipButton');
+        const flipButtonElement = document.getElementById('flipButton'); // Renombrada para evitar confusión con la función
         const cardCounterElement = document.getElementById('cardCounter');
-        const prevButton = document.getElementById('prevButton');
-        const nextButton = document.getElementById('nextButton');
+        const prevButtonElement = document.getElementById('prevButton'); // Renombrada
+        const nextButtonElement = document.getElementById('nextButton'); // Renombrada
 
-        function loadCard(index) {
+        function loadCardInternal(index) { // Renombrada para uso interno
             const card = flashcards[index];
-            frontTextElement.innerHTML = card.front.replace(/\n/g, "<br>");
-            backTextElement.innerHTML = card.back.replace(/\n/g, "<br>");
+            if (frontTextElement) frontTextElement.innerHTML = card.front.replace(/\n/g, "<br>");
+            if (backTextElement) backTextElement.innerHTML = card.back.replace(/\n/g, "<br>");
             
             isFrontShowing = true;
-            cardFrontDiv.style.display = 'block';
-            cardBackDiv.style.display = 'none';
-            flipButton.textContent = 'Mostrar Respuesta';
+            if (cardFrontDiv) cardFrontDiv.style.display = 'block';
+            if (cardBackDiv) cardBackDiv.style.display = 'none';
+            if (flipButtonElement) flipButtonElement.textContent = 'Mostrar Respuesta';
             
-            cardCounterElement.textContent = `Tarjeta ${index + 1} / ${flashcards.length}`;
-            prevButton.disabled = (index === 0);
-            nextButton.disabled = (index === flashcards.length - 1);
+            if (cardCounterElement) cardCounterElement.textContent = `Tarjeta ${index + 1} / ${flashcards.length}`;
+            if (prevButtonElement) prevButtonElement.disabled = (index === 0);
+            if (nextButtonElement) nextButtonElement.disabled = (index === flashcards.length - 1);
         }
 
-        function flipCard() {
+        function flipCardInternal() { // Renombrada
             isFrontShowing = !isFrontShowing;
             if (isFrontShowing) {
-                cardFrontDiv.style.display = 'block';
-                cardBackDiv.style.display = 'none';
-                flipButton.textContent = 'Mostrar Respuesta';
+                if (cardFrontDiv) cardFrontDiv.style.display = 'block';
+                if (cardBackDiv) cardBackDiv.style.display = 'none';
+                if (flipButtonElement) flipButtonElement.textContent = 'Mostrar Respuesta';
             } else {
-                cardFrontDiv.style.display = 'none';
-                cardBackDiv.style.display = 'block';
-                flipButton.textContent = 'Mostrar Pregunta/Término';
+                if (cardFrontDiv) cardFrontDiv.style.display = 'none';
+                if (cardBackDiv) cardBackDiv.style.display = 'block';
+                if (flipButtonElement) flipButtonElement.textContent = 'Mostrar Pregunta/Término';
             }
         }
 
-        function nextCard() {
+        function nextCardInternal() { // Renombrada
             if (currentCardIndex < flashcards.length - 1) {
                 currentCardIndex++;
-                loadCard(currentCardIndex);
+                loadCardInternal(currentCardIndex);
             }
         }
 
-        function previousCard() {
+        function previousCardInternal() { // Renombrada
             if (currentCardIndex > 0) {
                 currentCardIndex--;
-                loadCard(currentCardIndex);
+                loadCardInternal(currentCardIndex);
             }
         }
         
-        // Inicializar el juego (asegurándose que los elementos del DOM estén listos)
+        // Exponer las funciones necesarias al objeto window
+        window.flipCard = flipCardInternal;
+        window.previousCard = previousCardInternal;
+        window.nextCard = nextCardInternal;
+
+        // Inicializar el juego
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => loadCard(currentCardIndex));
+            document.addEventListener('DOMContentLoaded', () => loadCardInternal(currentCardIndex));
         } else {
-            loadCard(currentCardIndex);
+            loadCardInternal(currentCardIndex);
         }
-            })(); // Fin del IIFE
+        // console.log("Flashcard game (con IIFE) script listo.");
+    })(); // Fin del IIFE
     </script>
 </body>
 </html>

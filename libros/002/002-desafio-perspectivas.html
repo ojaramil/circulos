@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafío de Perspectivas</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f9f6f2; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #0077b6; text-align: center; }
+    .question { font-size: 1.1rem; margin: 24px 0 12px 0; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    button { background: #0077b6; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #023e8a; }
+    .result { text-align: center; font-size: 1.2rem; color: #0077b6; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Desafío de Perspectivas</h1>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    (function() {
+      const quiz = [
+        { q: "El mundo está peor que nunca. ¿Cuál es la perspectiva racional?", options: [ "La pobreza extrema ha disminuido mucho en las últimas décadas.", "Nada ha cambiado, todo sigue igual." ], answer: 0 },
+        { q: "Recibes una mala noticia en el trabajo. ¿Qué piensas?", options: [ "Es una oportunidad para aprender y mejorar.", "Todo va a salir mal a partir de ahora." ], answer: 0 },
+        { q: "Ves un avance tecnológico. ¿Qué opinas?", options: [ "La innovación suele traer mejoras a largo plazo.", "La tecnología solo complica la vida." ], answer: 0 },
+        { q: "Te enfrentas a un reto financiero. ¿Qué haces?", options: [ "Busco información y alternativas para superarlo.", "Me resigno y no hago nada." ], answer: 0 },
+        { q: "Alguien te habla de los problemas del mundo. ¿Qué respondes?", options: [ "Reconozco los problemas, pero también los avances logrados.", "Solo veo lo negativo, no hay esperanza." ], answer: 0 },
+        { q: "Te ofrecen un nuevo puesto desafiante. ¿Qué haces?", options: [ "Acepto el reto para crecer.", "Lo rechazo por miedo al fracaso." ], answer: 0 },
+        { q: "Un amigo logra un éxito importante. ¿Cómo reaccionas?", options: [ "Me alegro y me inspiro.", "Siento envidia y me desmotivo." ], answer: 0 },
+        { q: "Lees una noticia alarmista. ¿Qué piensas?", options: [ "Investigo fuentes confiables antes de preocuparme.", "Me alarmo sin verificar." ], answer: 0 },
+        { q: "Te enfrentas a un error propio. ¿Qué haces?", options: [ "Aprendo y corrijo.", "Me culpo y no cambio nada." ], answer: 0 },
+        { q: "Ves a alguien ayudar a otros. ¿Qué opinas?", options: [ "La cooperación mejora la sociedad.", "Cada quien debe valerse por sí mismo." ], answer: 0 },
+        { q: "Recibes una crítica constructiva. ¿Cómo la tomas?", options: [ "Como una oportunidad de mejora.", "Como un ataque personal." ], answer: 0 },
+        { q: "Te enfrentas a un cambio inesperado. ¿Qué haces?", options: [ "Me adapto y busco oportunidades.", "Resisto el cambio y me quejo." ], answer: 0 },
+        { q: "Un proyecto fracasa. ¿Qué piensas?", options: [ "Analizo y busco aprender.", "Me frustro y abandono." ], answer: 0 },
+        { q: "Te ofrecen colaborar en una innovación. ¿Qué decides?", options: [ "Acepto y aporto ideas.", "Prefiero no arriesgarme." ], answer: 0 },
+        { q: "Debes tomar una decisión financiera. ¿Qué priorizas?", options: [ "El ahorro y la inversión.", "El gasto inmediato." ], answer: 0 },
+        { q: "Un compañero necesita ayuda. ¿Qué haces?", options: [ "Colaboro y apoyo.", "Ignoro la situación." ], answer: 0 },
+        { q: "Te enfrentas a una situación de incertidumbre. ¿Qué haces?", options: [ "Analizo y actúo con cautela.", "Actúo impulsivamente." ], answer: 0 },
+        { q: "Debes liderar un proyecto. ¿Qué estilo eliges?", options: [ "Liderazgo colaborativo.", "Imposición de ideas." ], answer: 0 },
+        { q: "Recibes una oferta de capacitación. ¿Qué haces?", options: [ "La aprovecho.", "La rechazo por comodidad." ], answer: 0 },
+        { q: "Finalizas un ciclo de aprendizaje. ¿Qué haces?", options: [ "Reflexiono y comparto lo aprendido.", "Olvido el proceso." ], answer: 0 }
+      ];
+      let current = 0, score = 0;
+      function renderQuiz() {
+        if (current < quiz.length) {
+          document.getElementById('question').textContent = quiz[current].q;
+          document.getElementById('options').innerHTML = quiz[current].options.map((opt, i) => `<button onclick=\"choose(${i})\">${opt}</button>`).join('');
+          document.getElementById('result').textContent = '';
+        } else {
+          document.getElementById('question').textContent = '';
+          document.getElementById('options').innerHTML = '';
+          document.getElementById('result').textContent = `¡Puntaje final: ${score} de ${quiz.length}!`;
+        }
+      }
+      function choose(idx) {
+        if (idx === quiz[current].answer) score++;
+        current++;
+        renderQuiz();
+      }
+      window.choose = choose;
+      renderQuiz();
+    })();
+  </script>
+</body>
+</html> 

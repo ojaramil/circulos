@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards del Optimismo Racional</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #2e8b57; text-align: center; }
+    .flashcard { background: #b0e0e6; border-radius: 10px; padding: 32px 24px; margin: 32px 0; text-align: center; font-size: 1.2rem; color: #2e8b57; min-height: 80px; cursor: pointer; transition: background 0.3s, color 0.3s; box-shadow: 0 1px 4px #b0c4de; }
+    .flashcard.flipped { background: #2e8b57; color: #fff; }
+    .controls { display: flex; justify-content: space-between; }
+    button { background: #2e8b57; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; margin: 8px 0; transition: background 0.2s; }
+    button:hover { background: #246b45; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Flashcards del Optimismo Racional</h1>
+    <div class="flashcard" id="flashcard">Haz clic para ver la respuesta</div>
+    <div class="controls">
+      <button id="prev">Anterior</button>
+      <button id="next">Siguiente</button>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const cards = [
+        { q: "¿Qué es el optimismo racional?", a: "La creencia fundamentada en datos de que el progreso humano es posible y real." },
+        { q: "¿Qué papel juega la innovación en el progreso?", a: "La innovación impulsa mejoras continuas en calidad de vida, salud y bienestar." },
+        { q: "¿Por qué es importante la colaboración?", a: "La colaboración permite el intercambio de ideas y acelera el avance social y tecnológico." },
+        { q: "¿Qué mito combate el libro?", a: "El mito de que todo tiempo pasado fue mejor y que el mundo está empeorando." },
+        { q: "¿Qué actitud propone el optimismo racional ante los problemas?", a: "Reconocer los desafíos, pero confiar en la capacidad humana para resolverlos." },
+        { q: "¿Cómo influye la educación en el progreso?", a: "La educación abre oportunidades y fomenta la innovación." },
+        { q: "¿Qué significa resiliencia en el contexto del progreso?", a: "La capacidad de adaptarse y recuperarse ante adversidades." },
+        { q: "¿Por qué es importante el intercambio de ideas?", a: "El intercambio de ideas genera nuevas soluciones y avances." },
+        { q: "¿Qué rol juega la tecnología en la prosperidad?", a: "La tecnología facilita la vida y expande las posibilidades humanas." },
+        { q: "¿Qué es la especialización?", a: "Enfocarse en tareas específicas para aumentar la eficiencia y fomentar el intercambio." },
+        { q: "¿Por qué es clave la cooperación en la evolución humana?", a: "La cooperación permite lograr objetivos comunes y avanzar como sociedad." },
+        { q: "¿Qué es el capital social?", a: "Las relaciones y la confianza que facilitan la colaboración y el progreso." },
+        { q: "¿Cómo se mide el progreso?", a: "Por mejoras en salud, educación, bienestar y calidad de vida." },
+        { q: "¿Qué es la globalización?", a: "La integración de economías y culturas gracias al comercio y la tecnología." },
+        { q: "¿Por qué es importante la actitud ante el cambio?", a: "Una actitud positiva permite adaptarse y aprovechar nuevas oportunidades." },
+        { q: "¿Qué es la prosperidad?", a: "El bienestar económico y social alcanzado por el progreso y la innovación." },
+        { q: "¿Qué significa tener una mentalidad de crecimiento?", a: "Creer que las habilidades pueden desarrollarse con esfuerzo y aprendizaje." },
+        { q: "¿Por qué es importante la evidencia en el optimismo racional?", a: "La evidencia respalda la confianza en el progreso y combate el pesimismo." },
+        { q: "¿Qué es la división del trabajo?", a: "Separar tareas para aumentar la eficiencia y fomentar la especialización." },
+        { q: "¿Cómo contribuye la creatividad al progreso?", a: "La creatividad genera nuevas ideas y soluciones para los desafíos." }
+      ];
+      let idx = 0, flipped = false;
+      const flashcard = document.getElementById('flashcard');
+      function render() {
+        flashcard.textContent = flipped ? cards[idx].a : cards[idx].q;
+        flashcard.classList.toggle('flipped', flipped);
+      }
+      flashcard.onclick = function() {
+        flipped = !flipped;
+        render();
+      };
+      document.getElementById('prev').onclick = function() {
+        idx = (idx - 1 + cards.length) % cards.length;
+        flipped = false;
+        render();
+      };
+      document.getElementById('next').onclick = function() {
+        idx = (idx + 1) % cards.length;
+        flipped = false;
+        render();
+      };
+      render();
+    })();
+  </script>
+</body>
+</html> 

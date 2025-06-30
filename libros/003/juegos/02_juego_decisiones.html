@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Decisiones</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .scenario { margin-bottom: 1.5em; }
+    .options { display: flex; flex-direction: column; gap: 12px; margin-top: 1em; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+    .feedback { margin-top: 1em; font-weight: bold; color: #1e3a5c; }
+    .summary { background: #bbdefb; color: #1e3a5c; border-radius: 8px; padding: 1em; margin-top: 2em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Juego de Decisiones</h1>
+    <div class="scenario" id="escenario1">
+      <h2>Escenario 1: Tienes una idea de negocio pero pocos recursos.</h2>
+      <div class="options">
+        <button onclick="feedback(1,1)">Esperar a tener todo perfecto antes de empezar.</button>
+        <button onclick="feedback(1,2)">Empezar con lo que tienes y buscar oportunidades.</button>
+        <button onclick="feedback(1,3)">Buscar un socio o mentor que te apoye.</button>
+      </div>
+      <div class="feedback" id="fb1"></div>
+    </div>
+    <div class="scenario" id="escenario2">
+      <h2>Escenario 2: Encuentras un obstáculo importante en tu camino.</h2>
+      <div class="options">
+        <button onclick="feedback(2,1)">Abandonar y buscar otra meta.</button>
+        <button onclick="feedback(2,2)">Persistir y buscar nuevas estrategias.</button>
+        <button onclick="feedback(2,3)">Pedir consejo a alguien con experiencia.</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+    </div>
+    <div class="scenario" id="escenario3">
+      <h2>Escenario 3: Recibes críticas negativas sobre tu proyecto.</h2>
+      <div class="options">
+        <button onclick="feedback(3,1)">Dejar que las críticas te desmotiven.</button>
+        <button onclick="feedback(3,2)">Usar las críticas para mejorar y seguir adelante.</button>
+        <button onclick="feedback(3,3)">Analizar si las críticas tienen fundamento y ajustar tu plan.</button>
+      </div>
+      <div class="feedback" id="fb3"></div>
+    </div>
+    <div class="scenario" id="escenario4">
+      <h2>Escenario 4: Sientes que te falta conocimiento en un área clave.</h2>
+      <div class="options">
+        <button onclick="feedback(4,1)">Ignorar la carencia y seguir igual.</button>
+        <button onclick="feedback(4,2)">Buscar formación o asesoría especializada.</button>
+        <button onclick="feedback(4,3)">Delegar esa parte a alguien experto.</button>
+      </div>
+      <div class="feedback" id="fb4"></div>
+    </div>
+    <div class="scenario" id="escenario5">
+      <h2>Escenario 5: Tu plan inicial no está funcionando.</h2>
+      <div class="options">
+        <button onclick="feedback(5,1)">Rendirse y dejar el proyecto.</button>
+        <button onclick="feedback(5,2)">Revisar y ajustar el plan con flexibilidad.</button>
+        <button onclick="feedback(5,3)">Buscar apoyo en tu red de contactos.</button>
+      </div>
+      <div class="feedback" id="fb5"></div>
+    </div>
+    <div class="scenario" id="escenario6">
+      <h2>Escenario 6: Sientes miedo al fracaso antes de tomar una decisión importante.</h2>
+      <div class="options">
+        <button onclick="feedback(6,1)">Evitar decidir y dejar pasar la oportunidad.</button>
+        <button onclick="feedback(6,2)">Reconocer el miedo y actuar a pesar de él.</button>
+        <button onclick="feedback(6,3)">Hablar con alguien que haya superado ese miedo.</button>
+      </div>
+      <div class="feedback" id="fb6"></div>
+    </div>
+    <div class="scenario" id="escenario7">
+      <h2>Escenario 7: Un amigo te propone asociarse para un nuevo proyecto.</h2>
+      <div class="options">
+        <button onclick="feedback(7,1)">Aceptar sin analizar compatibilidad ni objetivos.</button>
+        <button onclick="feedback(7,2)">Evaluar valores, metas y roles antes de decidir.</button>
+        <button onclick="feedback(7,3)">Rechazar automáticamente por miedo a conflictos.</button>
+      </div>
+      <div class="feedback" id="fb7"></div>
+    </div>
+  </div>
+  <script>
+    function feedback(esc, opt) {
+      const respuestas = {
+        1: [
+          'Esperar puede hacer que nunca empieces. El libro enseña que debes actuar con lo que tienes y ajustar en el camino.',
+          '¡Correcto! El deseo y la acción son claves. Empezar con lo que tienes es el primer paso hacia el éxito.',
+          'Buscar un mentor puede acelerar tu aprendizaje y abrir nuevas oportunidades.'
+        ],
+        2: [
+          'Abandonar ante el primer obstáculo es una de las causas más comunes del fracaso. La perseverancia es esencial.',
+          '¡Correcto! La perseverancia y la búsqueda de soluciones son principios centrales del libro.',
+          'Pedir consejo es una estrategia inteligente para superar obstáculos.'
+        ],
+        3: [
+          'Dejarse vencer por la crítica limita tu potencial. El libro recomienda usar la crítica como aprendizaje.',
+          '¡Correcto! La actitud mental positiva y el aprendizaje de la crítica son fundamentales para avanzar.',
+          'Analizar las críticas te permite mejorar y crecer de manera objetiva.'
+        ],
+        4: [
+          'Ignorar la carencia puede limitar tu crecimiento. El conocimiento especializado es clave para avanzar.',
+          '¡Correcto! Buscar formación o asesoría te da herramientas para el éxito.',
+          'Delegar puede ser útil, pero es importante entender lo esencial para liderar.'
+        ],
+        5: [
+          'Rendirse ante el primer fallo impide aprender y crecer. La flexibilidad es vital.',
+          '¡Correcto! Revisar y ajustar el plan es parte del proceso de éxito.',
+          'Buscar apoyo puede aportar nuevas ideas y motivación.'
+        ],
+        6: [
+          'Evitar decidir por miedo te aleja de tus metas. El coraje es fundamental.',
+          '¡Correcto! Actuar a pesar del miedo es una característica de los triunfadores.',
+          'Aprender de quienes han superado el miedo puede inspirarte a avanzar.'
+        ],
+        7: [
+          'Asociarte sin analizar puede traer problemas futuros. Evalúa antes de decidir.',
+          '¡Correcto! Analizar compatibilidad y objetivos es clave para una sociedad exitosa.',
+          'Rechazar por miedo te puede hacer perder oportunidades valiosas.'
+        ]
+      };
+      document.getElementById('fb'+esc).textContent = respuestas[esc][opt-1];
+    }
+  </script>
+</body>
+</html> 

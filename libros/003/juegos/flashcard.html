@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards: Piense y Hágase Rico</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .flashcard { background: #bbdefb; border-radius: 10px; padding: 32px 24px; margin: 32px 0; text-align: center; font-size: 1.2rem; color: #1e3a5c; min-height: 80px; cursor: pointer; transition: background 0.3s, color 0.3s; box-shadow: 0 1px 4px #b0c4de; }
+    .flashcard.flipped { background: #ff9800; color: #fff; }
+    .controls { display: flex; justify-content: space-between; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; margin: 8px 0; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Flashcards: Piense y Hágase Rico</h1>
+    <div class="flashcard" id="flashcard">Haz clic para ver la respuesta</div>
+    <div class="controls">
+      <button id="prev">Anterior</button>
+      <button id="next">Siguiente</button>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const cards = [
+        { q: "¿Cuál es el punto de partida de todo logro según Hill?", a: "El deseo definido." },
+        { q: "¿Qué herramienta mental recomienda Hill para influir en el subconsciente?", a: "La autosugestión." },
+        { q: "¿Por qué es importante la perseverancia?", a: "Porque permite superar obstáculos y alcanzar metas." },
+        { q: "¿Qué valor tiene el trabajo en equipo?", a: "Multiplica el poder y los resultados de los individuos." },
+        { q: "¿Qué significa tener un objetivo claro?", a: "Saber exactamente qué se quiere lograr." },
+        { q: "¿Qué papel juega la fe en el éxito?", a: "Visualizar y creer en la consecución del deseo." },
+        { q: "¿Qué es el conocimiento especializado?", a: "Información específica y útil para alcanzar metas." },
+        { q: "¿Por qué es importante la planificación organizada?", a: "Permite convertir deseos en acciones concretas." },
+        { q: "¿Qué es la autosugestión?", a: "El proceso de influir en el subconsciente mediante pensamientos repetidos." },
+        { q: "¿Qué es la riqueza verdadera según Hill?", a: "Incluye paz mental, salud y relaciones sanas, no solo dinero." }
+      ];
+      let idx = 0, flipped = false;
+      const flashcard = document.getElementById('flashcard');
+      function render() {
+        flashcard.textContent = flipped ? cards[idx].a : cards[idx].q;
+        flashcard.classList.toggle('flipped', flipped);
+      }
+      flashcard.onclick = function() {
+        flipped = !flipped;
+        render();
+      };
+      document.getElementById('prev').onclick = function() {
+        idx = (idx - 1 + cards.length) % cards.length;
+        flipped = false;
+        render();
+      };
+      document.getElementById('next').onclick = function() {
+        idx = (idx + 1) % cards.length;
+        flipped = false;
+        render();
+      };
+      render();
+    })();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crea tu Afirmación</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    label { color: #1e3a5c; font-weight: bold; }
+    input, textarea { width: 100%; margin-bottom: 0.7em; border-radius: 6px; border: 1px solid #bbdefb; padding: 0.5em; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+    .afirmaciones { margin-top: 1.5em; }
+    .afirmacion { background: #bbdefb; color: #1e3a5c; border-radius: 8px; padding: 1em; margin-bottom: 1em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Crea tu Afirmación</h1>
+    <p>Escribe una afirmación positiva que te motive a alcanzar tus metas. Ejemplo: <em>"Cada día me acerco más a mis objetivos con perseverancia y fe."</em></p>
+    <textarea id="afirm-input" placeholder="Escribe tu afirmación aquí..."></textarea><br>
+    <button onclick="mostrarAfirmacion()">Ver mi afirmación</button>
+    <button onclick="guardarAfirmacion()" style="background:#005BAA;">Guardar afirmación</button>
+    <div class="afirmacion" id="afirmacion" style="display:none;"></div>
+    <button id="copy-btn" style="display:none;" onclick="copiarAfirmacion()">Copiar afirmación</button>
+    <div class="copied-msg" id="copied-msg"></div>
+    <div style="margin-top:2em;">
+      <strong>Ejemplo aleatorio:</strong> <span id="ejemplo"></span>
+    </div>
+    <div style="margin-top:2em;">
+      <strong>Mis afirmaciones guardadas:</strong>
+      <ul id="lista-afirmaciones" style="text-align:left;"></ul>
+    </div>
+  </div>
+  <script>
+    const ejemplos = [
+      'Cada día avanzo con determinación hacia mis metas.',
+      'Soy capaz de superar cualquier obstáculo.',
+      'Mi perseverancia me acerca al éxito.',
+      'Confío en mi capacidad para lograr lo que deseo.',
+      'Transformo mis pensamientos positivos en acciones.'
+    ];
+    function ejemploAleatorio() {
+      document.getElementById('ejemplo').textContent = ejemplos[Math.floor(Math.random()*ejemplos.length)];
+    }
+    ejemploAleatorio();
+    let afirmacionesGuardadas = [];
+    function mostrarAfirmacion() {
+      const val = document.getElementById('afirm-input').value.trim();
+      const out = document.getElementById('afirmacion');
+      const btn = document.getElementById('copy-btn');
+      const msg = document.getElementById('copied-msg');
+      if(val) {
+        out.textContent = val;
+        out.style.display = 'block';
+        btn.style.display = 'inline-block';
+        msg.textContent = '';
+      } else {
+        out.style.display = 'none';
+        btn.style.display = 'none';
+        msg.textContent = '';
+      }
+    }
+    function copiarAfirmacion() {
+      const val = document.getElementById('afirmacion').textContent;
+      navigator.clipboard.writeText(val).then(function() {
+        document.getElementById('copied-msg').textContent = '¡Afirmación copiada!';
+      });
+    }
+    function guardarAfirmacion() {
+      const val = document.getElementById('afirm-input').value.trim();
+      if(val) {
+        afirmacionesGuardadas.push(val);
+        actualizarLista();
+        document.getElementById('afirm-input').value = '';
+        document.getElementById('afirmacion').style.display = 'none';
+        document.getElementById('copy-btn').style.display = 'none';
+      }
+    }
+    function actualizarLista() {
+      const ul = document.getElementById('lista-afirmaciones');
+      ul.innerHTML = '';
+      afirmacionesGuardadas.forEach((af, i) => {
+        const li = document.createElement('li');
+        li.textContent = af;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html> 

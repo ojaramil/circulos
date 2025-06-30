@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verdadero o Falso</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .vf-box { max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #b0c4de; padding: 2rem; color: #222; }
+    .vf-q { margin-bottom: 1.2rem; }
+    .vf-q button { margin-left: 0.7rem; background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.6em 1.2em; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+    .vf-q button:hover { background: #1565c0; }
+    .vf-result { margin-top: 1.5rem; font-size: 1.2rem; font-weight: bold; color: #1e3a5c; }
+    .vf-box h1 { color: #1565c0; text-align: center; }
+    .vf-stats { margin-top: 2em; background: #bbdefb; color: #1e3a5c; border-radius: 8px; padding: 1em; }
+    .vf-prop { margin-top: 2em; }
+    .vf-prop input, .vf-prop textarea { width: 100%; margin-bottom: 0.5em; border-radius: 6px; border: 1px solid #bbdefb; padding: 0.5em; }
+    .vf-prop button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.6em 1.2em; font-size: 1em; cursor: pointer; }
+    .vf-prop button:hover { background: #1565c0; }
+  </style>
+</head>
+<body>
+  <div class="vf-box">
+    <h1>Verdadero o Falso</h1>
+    <form id="vf-form"></form>
+    <div class="vf-result" id="vf-resultado"></div>
+    <button onclick="reiniciar()" style="margin-top:1em;background:#005BAA;color:#fff;border:none;border-radius:6px;padding:0.6em 1.2em;font-size:1em;">Reiniciar</button>
+    <div class="vf-stats" id="vf-stats" style="display:none;"></div>
+    <div class="vf-prop">
+      <h2>¿Tienes una pregunta para agregar?</h2>
+      <input type="text" id="prop-pregunta" placeholder="Escribe tu pregunta aquí">
+      <textarea id="prop-explicacion" placeholder="Explicación o comentario (opcional)"></textarea>
+      <button onclick="proponerPregunta(event)">Enviar pregunta</button>
+      <div id="vf-prop-msg"></div>
+    </div>
+  </div>
+  <script>
+    const preguntas = [
+      { texto: 'El éxito solo depende de la suerte.', resp: false, tema: 'Mitos', exp: 'El éxito depende de la acción, el deseo y la perseverancia, no solo de la suerte.' },
+      { texto: 'La perseverancia es clave para alcanzar metas.', resp: true, tema: 'Perseverancia', exp: 'La perseverancia es uno de los principios centrales del libro.' },
+      { texto: 'El deseo definido es el punto de partida de todo logro.', resp: true, tema: 'Deseo', exp: 'Todo logro comienza con un deseo definido.' },
+      { texto: 'La autosugestión ayuda a influir en el subconsciente.', resp: true, tema: 'Autosugestión', exp: 'La autosugestión es una herramienta poderosa para influir en el subconsciente.' },
+      { texto: 'Solo las personas con educación formal pueden tener éxito.', resp: false, tema: 'Mitos', exp: 'Cualquier persona puede tener éxito, sin importar su educación formal.' },
+      { texto: 'La actitud mental positiva es fundamental para el éxito.', resp: true, tema: 'Actitud', exp: 'La actitud mental positiva es clave para superar obstáculos.' },
+      { texto: 'El trabajo en equipo potencia los resultados.', resp: true, tema: 'Trabajo en equipo', exp: 'El trabajo en equipo es uno de los principios de Hill.' },
+      { texto: 'El miedo al fracaso es útil para avanzar.', resp: false, tema: 'Mitos', exp: 'El miedo al fracaso suele limitar el crecimiento.' },
+      { texto: 'La planificación organizada es innecesaria.', resp: false, tema: 'Planificación', exp: 'La planificación es esencial para convertir deseos en logros.' },
+      { texto: 'El conocimiento especializado ayuda a lograr metas.', resp: true, tema: 'Conocimiento', exp: 'El conocimiento especializado es clave para alcanzar objetivos.' },
+      { texto: 'La riqueza verdadera incluye paz mental y relaciones sanas.', resp: true, tema: 'Riqueza', exp: 'La riqueza integral va más allá de lo material.' },
+      { texto: 'Rendirse ante la primera dificultad es recomendable.', resp: false, tema: 'Perseverancia', exp: 'La perseverancia es fundamental para superar dificultades.' }
+    ];
+    let score = 0;
+    let answered = Array(preguntas.length).fill(false);
+    let aciertosPorTema = {};
+    let fallosPorTema = {};
+    function renderPreguntas() {
+      let html = '';
+      preguntas.forEach((q, i) => {
+        html += `<div class='vf-q'>${i+1}. ${q.texto}<br>
+          <button type='button' onclick='responder(${i},true)'>Verdadero</button>
+          <button type='button' onclick='responder(${i},false)'>Falso</button>
+          <span id='fb${i}'></span>
+        </div>`;
+      });
+      document.getElementById('vf-form').innerHTML = html;
+    }
+    function responder(idx, val) {
+      if (answered[idx]) return;
+      answered[idx] = true;
+      const correct = val === preguntas[idx].resp;
+      if (correct) {
+        score++;
+        aciertosPorTema[preguntas[idx].tema] = (aciertosPorTema[preguntas[idx].tema]||0)+1;
+      } else {
+        fallosPorTema[preguntas[idx].tema] = (fallosPorTema[preguntas[idx].tema]||0)+1;
+      }
+      const fb = document.getElementById('fb'+idx);
+      fb.textContent = ' ' + preguntas[idx].exp;
+      fb.style.color = correct ? '#43a047' : '#c62828';
+      if (answered.every(x=>x)) mostrarStats();
+      document.getElementById('vf-resultado').textContent = answered.every(x=>x) ? 'Puntuación final: ' + score + ' de ' + preguntas.length : '';
+    }
+    function mostrarStats() {
+      let temas = Array.from(new Set(preguntas.map(q=>q.tema)));
+      let html = '<h2>Estadísticas por tema</h2><ul>';
+      temas.forEach(t => {
+        html += `<li><strong>${t}:</strong> Aciertos: ${aciertosPorTema[t]||0}, Fallos: ${fallosPorTema[t]||0}</li>`;
+      });
+      html += '</ul>';
+      document.getElementById('vf-stats').innerHTML = html;
+      document.getElementById('vf-stats').style.display = 'block';
+    }
+    function reiniciar() {
+      score = 0;
+      answered = Array(preguntas.length).fill(false);
+      aciertosPorTema = {};
+      fallosPorTema = {};
+      renderPreguntas();
+      document.getElementById('vf-resultado').textContent = '';
+      document.getElementById('vf-stats').style.display = 'none';
+    }
+    function proponerPregunta(e) {
+      e.preventDefault();
+      const pregunta = document.getElementById('prop-pregunta').value.trim();
+      const explicacion = document.getElementById('prop-explicacion').value.trim();
+      if (pregunta.length < 10) {
+        document.getElementById('vf-prop-msg').textContent = 'Por favor, escribe una pregunta más completa.';
+        return;
+      }
+      document.getElementById('vf-prop-msg').textContent = '¡Gracias! Tu pregunta ha sido enviada para revisión.';
+      document.getElementById('prop-pregunta').value = '';
+      document.getElementById('prop-explicacion').value = '';
+    }
+    renderPreguntas();
+  </script>
+</body>
+</html> 

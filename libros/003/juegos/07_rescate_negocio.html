@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rescate de Negocio</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .step { margin-bottom: 1.5em; }
+    .options { display: flex; flex-direction: column; gap: 12px; margin-top: 1em; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+    .feedback { margin-top: 1em; font-weight: bold; color: #1e3a5c; }
+    .summary { background: #bbdefb; color: #1e3a5c; border-radius: 8px; padding: 1em; margin-top: 2em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rescate de Negocio</h1>
+    <p>Tu negocio está en crisis. Toma decisiones clave para intentar salvarlo, aplicando los principios de Hill. ¿Lograrás el éxito?</p>
+    <div id="juego">
+      <div class="step" id="paso"></div>
+      <div id="opciones"></div>
+      <div class="feedback" id="resultado"></div>
+    </div>
+  </div>
+  <script>
+    const pasos = [
+      {
+        texto: 'El negocio está al borde de la quiebra. ¿Qué haces primero?',
+        opciones: [
+          { txt: 'Motivar al equipo y buscar ideas juntos', next: 1, correcto: true },
+          { txt: 'Despedir empleados para reducir gastos', next: 1, correcto: false },
+          { txt: 'Buscar un préstamo urgente', next: 1, correcto: false }
+        ]
+      },
+      {
+        texto: '¿Cómo enfrentas la falta de clientes?',
+        opciones: [
+          { txt: 'Lanzar una campaña creativa y pedir recomendaciones', next: 2, correcto: true },
+          { txt: 'Esperar a que la situación mejore sola', next: 2, correcto: false },
+          { txt: 'Reducir precios drásticamente', next: 2, correcto: false }
+        ]
+      },
+      {
+        texto: '¿Qué haces con los productos que no se venden?',
+        opciones: [
+          { txt: 'Buscar nuevos usos o mercados para ellos', next: 3, correcto: true },
+          { txt: 'Tirarlos para reducir inventario', next: 3, correcto: false },
+          { txt: 'Ofrecerlos como promociones', next: 3, correcto: false }
+        ]
+      },
+      {
+        texto: '¿Cómo mantienes la moral alta?',
+        opciones: [
+          { txt: 'Reconocer el esfuerzo y celebrar pequeños logros', next: 4, correcto: true },
+          { txt: 'Ignorar los problemas y exigir más', next: 4, correcto: false },
+          { txt: 'Ofrecer incentivos económicos inmediatos', next: 4, correcto: false }
+        ]
+      },
+      {
+        texto: 'Última decisión: ¿Cómo aseguras la supervivencia a largo plazo?',
+        opciones: [
+          { txt: 'Seguir aprendiendo y adaptando el negocio', next: null, correcto: true },
+          { txt: 'No cambiar nada y esperar suerte', next: null, correcto: false },
+          { txt: 'Vender el negocio rápidamente', next: null, correcto: false }
+        ]
+      }
+    ];
+    let paso = 0;
+    let aciertos = 0;
+    let resumen = [];
+    function mostrarPaso() {
+      if (paso >= pasos.length) {
+        document.getElementById('paso').style.display = 'none';
+        document.getElementById('opciones').style.display = 'none';
+        let resumenHtml = '<ul>' + resumen.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+        if (aciertos >= 4) {
+          document.getElementById('resultado').innerHTML = '¡Felicidades! Lograste salvar y transformar tu negocio. La actitud positiva y la acción marcan la diferencia.<br><br><strong>Resumen de tus decisiones:</strong>' + resumenHtml;
+        } else if (aciertos >= 2) {
+          document.getElementById('resultado').innerHTML = 'Has mejorado la situación, pero aún hay mucho por aprender. ¡Sigue aplicando los principios de Hill!<br><br><strong>Resumen de tus decisiones:</strong>' + resumenHtml;
+        } else {
+          document.getElementById('resultado').innerHTML = 'El negocio no sobrevivió. Recuerda: la perseverancia, el aprendizaje y el trabajo en equipo son claves.<br><br><strong>Resumen de tus decisiones:</strong>' + resumenHtml;
+        }
+        return;
+      }
+      document.getElementById('paso').textContent = pasos[paso].texto;
+      document.getElementById('opciones').innerHTML = '';
+      pasos[paso].opciones.forEach((op, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = op.txt;
+        btn.onclick = function() {
+          if (op.correcto) aciertos++;
+          resumen.push(op.txt);
+          paso++;
+          mostrarPaso();
+        };
+        document.getElementById('opciones').appendChild(btn);
+      });
+    }
+    mostrarPaso();
+  </script>
+</body>
+</html> 

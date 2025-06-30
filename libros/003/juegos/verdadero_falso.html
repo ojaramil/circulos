@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso: Piense y Hágase Rico</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .statement { font-size: 1.1rem; margin: 24px 0 12px 0; }
+    .options { display: flex; gap: 16px; justify-content: center; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+    .result { text-align: center; font-size: 1.2rem; color: #1e3a5c; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Verdadero o Falso: Piense y Hágase Rico</h1>
+    <div class="statement" id="statement"></div>
+    <div class="options">
+      <button id="btn-verdadero">Verdadero</button>
+      <button id="btn-falso">Falso</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    (function() {
+      const facts = [
+        { s: "El deseo definido es el punto de partida de todo logro.", answer: true, exp: "Correcto. Hill afirma que todo logro comienza con un deseo claro y definido." },
+        { s: "La perseverancia no es necesaria para alcanzar el éxito.", answer: false, exp: "Incorrecto. La perseverancia es uno de los principios centrales del libro." },
+        { s: "La autosugestión ayuda a influir en el subconsciente.", answer: true, exp: "Correcto. La autosugestión es una herramienta poderosa según Hill." },
+        { s: "Solo las personas con educación formal pueden tener éxito.", answer: false, exp: "Incorrecto. El libro enseña que el éxito está al alcance de todos." },
+        { s: "El trabajo en equipo potencia los resultados.", answer: true, exp: "Correcto. El trabajo en equipo es clave para lograr grandes metas." },
+        { s: "El miedo al fracaso es útil para avanzar.", answer: false, exp: "Incorrecto. El miedo al fracaso suele limitar el crecimiento." },
+        { s: "La planificación organizada es innecesaria.", answer: false, exp: "Incorrecto. La planificación es esencial para convertir deseos en logros." },
+        { s: "La riqueza verdadera incluye paz mental y relaciones sanas.", answer: true, exp: "Correcto. La riqueza integral va más allá de lo material." },
+        { s: "Rendirse ante la primera dificultad es recomendable.", answer: false, exp: "Incorrecto. La perseverancia es fundamental para superar dificultades." },
+        { s: "El conocimiento especializado ayuda a lograr metas.", answer: true, exp: "Correcto. El conocimiento especializado es clave para alcanzar objetivos." }
+      ];
+      let idx = 0, score = 0;
+      function render() {
+        if (idx < facts.length) {
+          document.getElementById('statement').textContent = facts[idx].s;
+          document.getElementById('result').textContent = '';
+        } else {
+          document.getElementById('statement').textContent = '';
+          document.getElementById('result').textContent = `¡Puntaje final: ${score} de ${facts.length}!`;
+        }
+      }
+      function check(val) {
+        if (idx < facts.length) {
+          if (val === facts[idx].answer) {
+            score++;
+            document.getElementById('result').textContent = facts[idx].exp;
+          } else {
+            document.getElementById('result').textContent = 'Incorrecto. ' + facts[idx].exp;
+          }
+          setTimeout(() => { idx++; render(); }, 1800);
+        }
+      }
+      document.getElementById('btn-verdadero').onclick = function() { check(true); };
+      document.getElementById('btn-falso').onclick = function() { check(false); };
+      render();
+    })();
+  </script>
+</body>
+</html> 

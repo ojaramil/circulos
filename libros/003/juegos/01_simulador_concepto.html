@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Concepto: El Deseo</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    label { color: #1e3a5c; font-weight: bold; }
+    input[type=range] { width: 100%; margin: 10px 0; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; margin-top: 1em; }
+    button:hover { background: #1565c0; }
+    .result { margin-top: 1.5em; font-size: 1.2em; color: #1e3a5c; font-weight: bold; text-align: center; }
+    .sim-box { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0005; padding: 2rem; color: #17432b; }
+    .sim-box label { display: block; margin: 1rem 0 0.5rem; font-weight: bold; color: #17432b; }
+    .sim-result { margin-top: 2rem; font-size: 1.3rem; text-align: center; font-weight: bold; color: #43a047; }
+    .sim-slider { width: 100%; accent-color: #43a047; }
+    .sim-box h1 { color: #005BAA; text-align: center; }
+    .sim-box p { color: #388e3c; font-size: 0.97em; }
+    .sim-progress { width: 100%; height: 18px; background: #e3f0ff; border-radius: 8px; margin: 1.5em 0; overflow: hidden; }
+    .sim-bar { height: 100%; background: #43a047; width: 0; transition: width 0.3s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador: El Poder del Deseo</h1>
+    <label for="deseo">Intensidad del Deseo</label>
+    <input type="range" min="1" max="10" value="5" id="deseo" class="sim-slider">
+    <label for="perseverancia">Perseverancia</label>
+    <input type="range" min="1" max="10" value="5" id="perseverancia" class="sim-slider">
+    <label for="planificacion">Planificación</label>
+    <input type="range" min="1" max="10" value="5" id="planificacion" class="sim-slider">
+    <label for="actitud">Actitud positiva</label>
+    <input type="range" min="1" max="10" value="5" id="actitud" class="sim-slider">
+    <label for="red">Red de apoyo</label>
+    <input type="range" min="1" max="10" value="5" id="red" class="sim-slider">
+    <label for="conocimiento">Conocimiento especializado</label>
+    <input type="range" min="1" max="10" value="5" id="conocimiento" class="sim-slider">
+    <div class="sim-progress"><div class="sim-bar" id="bar"></div></div>
+    <div class="sim-result" id="resultado">Potencial de Éxito: 0</div>
+    <div id="consejo" style="margin-top:1em;font-size:1em;color:#005BAA;"></div>
+    <button onclick="reiniciar()" style="margin-top:1.5em;background:#005BAA;">Reiniciar</button>
+    <p style="margin-top:1.5rem;">Ajusta los controles para ver cómo el deseo, la perseverancia, la planificación, la actitud positiva, la red de apoyo y el conocimiento especializado aumentan tu potencial de éxito según los principios del libro.</p>
+  </div>
+  <script>
+    function calcular() {
+      const d = +document.getElementById('deseo').value;
+      const p = +document.getElementById('perseverancia').value;
+      const pl = +document.getElementById('planificacion').value;
+      const a = +document.getElementById('actitud').value;
+      const r = +document.getElementById('red').value;
+      const c = +document.getElementById('conocimiento').value;
+      const resultado = d * p * pl * a * r * c;
+      document.getElementById('resultado').textContent = 'Potencial de Éxito: ' + resultado;
+      // Barra de progreso visual
+      let pct = Math.min(100, Math.round((resultado/100000)*100));
+      document.getElementById('bar').style.width = pct + '%';
+      // Mensajes motivacionales
+      let consejo = '';
+      if (resultado < 20000) consejo = 'Potencial bajo: Refuerza tus pilares para avanzar.';
+      else if (resultado < 50000) consejo = 'Potencial medio: Vas por buen camino, sigue mejorando.';
+      else if (resultado < 90000) consejo = '¡Potencial alto! Estás aplicando muchos principios de Hill.';
+      else consejo = '¡Excelente! Tienes todos los factores clave para el éxito. ¡Sigue así!';
+      document.getElementById('consejo').textContent = consejo;
+    }
+    function reiniciar() {
+      ['deseo','perseverancia','planificacion','actitud','red','conocimiento'].forEach(id => {
+        document.getElementById(id).value = 5;
+      });
+      calcular();
+    }
+    document.querySelectorAll('.sim-slider').forEach(slider => {
+      slider.addEventListener('input', calcular);
+    });
+    calcular();
+  </script>
+</body>
+</html> 

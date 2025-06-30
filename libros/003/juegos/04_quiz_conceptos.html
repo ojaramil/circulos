@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz de Conceptos</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .quiz-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .question { margin-bottom: 1.5em; }
+    .options { display: flex; flex-direction: column; gap: 12px; margin-top: 1em; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #1565c0; }
+    .feedback { margin-top: 1em; font-weight: bold; color: #1e3a5c; }
+    .stats { background: #bbdefb; color: #1e3a5c; border-radius: 8px; padding: 1em; margin-top: 2em; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz de Conceptos</h1>
+    <form id="quiz-form">
+      <div class="question">1. ¿Cuál es el punto de partida de todo logro según Hill?<br>
+        <div class="options">
+          <button type="button" onclick="responder(0,0)">La suerte</button>
+          <button type="button" onclick="responder(0,1)">El deseo</button>
+          <button type="button" onclick="responder(0,2)">El dinero</button>
+          <button type="button" onclick="responder(0,3)">El conocimiento</button>
+        </div>
+        <span id="fb0"></span>
+      </div>
+      <div class="question">2. ¿Qué recomienda Hill para influir en el subconsciente?<br>
+        <div class="options">
+          <button type="button" onclick="responder(1,0)">Autosugestión</button>
+          <button type="button" onclick="responder(1,1)">Adivinación</button>
+          <button type="button" onclick="responder(1,2)">Suerte</button>
+          <button type="button" onclick="responder(1,3)">Trabajo en equipo</button>
+        </div>
+        <span id="fb1"></span>
+      </div>
+      <div class="question">3. ¿Qué es fundamental para superar obstáculos?<br>
+        <div class="options">
+          <button type="button" onclick="responder(2,0)">Perseverancia</button>
+          <button type="button" onclick="responder(2,1)">Conocimiento</button>
+          <button type="button" onclick="responder(2,2)">Riqueza</button>
+          <button type="button" onclick="responder(2,3)">Suerte</button>
+        </div>
+        <span id="fb2"></span>
+      </div>
+      <div class="question">4. ¿Qué valor destaca Hill además del éxito material?<br>
+        <div class="options">
+          <button type="button" onclick="responder(3,0)">Paz mental</button>
+          <button type="button" onclick="responder(3,1)">Competencia</button>
+          <button type="button" onclick="responder(3,2)">Ambición</button>
+          <button type="button" onclick="responder(3,3)">Suerte</button>
+        </div>
+        <span id="fb3"></span>
+      </div>
+      <div class="question">5. ¿Qué recomienda Hill para potenciar resultados?<br>
+        <div class="options">
+          <button type="button" onclick="responder(4,0)">Trabajo en equipo</button>
+          <button type="button" onclick="responder(4,1)">Competencia feroz</button>
+          <button type="button" onclick="responder(4,2)">Aislamiento</button>
+          <button type="button" onclick="responder(4,3)">Ahorro extremo</button>
+        </div>
+        <span id="fb4"></span>
+      </div>
+    </form>
+    <div class="feedback" id="quiz-resultado"></div>
+  </div>
+  <script>
+    const respuestas = [1,0,0,0,0];
+    const explicaciones = [
+      [
+        'No, la suerte no es el punto de partida. Hill enfatiza el deseo.',
+        '¡Correcto! El deseo es el punto de partida de todo logro.',
+        'No, el dinero es resultado, no punto de partida.',
+        'El conocimiento es importante, pero el deseo es el inicio.'
+      ],
+      [
+        '¡Correcto! La autosugestión es clave para influir en el subconsciente.',
+        'No, la adivinación no es un principio de Hill.',
+        'No, la suerte no influye en el subconsciente.',
+        'El trabajo en equipo es importante, pero no es la técnica principal para el subconsciente.'
+      ],
+      [
+        '¡Correcto! La perseverancia es fundamental para superar obstáculos.',
+        'El conocimiento ayuda, pero la perseverancia es clave.',
+        'La riqueza no garantiza superar obstáculos.',
+        'La suerte no es un factor confiable.'
+      ],
+      [
+        '¡Correcto! Hill destaca la paz mental como parte del éxito integral.',
+        'La competencia no es el valor central.',
+        'La ambición puede ser útil, pero la paz mental es esencial.',
+        'La suerte no es un valor destacado por Hill.'
+      ],
+      [
+        '¡Correcto! El trabajo en equipo potencia los resultados.',
+        'La competencia feroz puede ser contraproducente.',
+        'El aislamiento limita el crecimiento.',
+        'El ahorro es importante, pero no es la clave para potenciar resultados.'
+      ]
+    ];
+    let score = 0;
+    let answered = Array(5).fill(false);
+    function responder(idx, val) {
+      if (answered[idx]) return;
+      answered[idx] = true;
+      if (val === respuestas[idx]) score++;
+      document.getElementById('fb'+idx).textContent = ' ' + explicaciones[idx][val];
+      if (answered.every(x=>x)) {
+        document.getElementById('quiz-resultado').textContent = 'Puntuación final: ' + score + ' de 5';
+      }
+    }
+  </script>
+</body>
+</html> 

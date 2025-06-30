@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>A un metro del oro</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1565c0; text-align: center; }
+    .oro-box { margin-bottom: 1.5em; }
+    button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; margin-top: 1em; }
+    button:hover { background: #1565c0; }
+    .result { margin-top: 1.5em; font-size: 1.2em; color: #1e3a5c; font-weight: bold; text-align: center; }
+    .oro-progress { margin: 1em 0; height: 18px; background: #e3f0ff; border-radius: 8px; overflow: hidden; }
+    .oro-bar { height: 100%; background: #43a047; width: 0; transition: width 0.3s; }
+  </style>
+</head>
+<body>
+  <div class="oro-box">
+    <h1>A un metro del oro</h1>
+    <p>¿Hasta dónde perseverarías? Haz clic en "Excavar" para seguir buscando oro o "Rendirse" para abandonar. ¿Lograrás encontrar la veta?</p>
+    <div class="oro-progress"><div class="oro-bar" id="bar"></div></div>
+    <div id="acciones">
+      <button onclick="excavar()">Excavar</button>
+      <button onclick="rendirse()">Rendirse</button>
+      <button onclick="pedirAyuda()" style="background:#005BAA;">Pedir ayuda</button>
+      <button onclick="reiniciar()" style="background:#c62828;">Reiniciar</button>
+    </div>
+    <div class="oro-result" id="resultado"></div>
+    <div id="consejo" style="margin-top:1em;font-size:1em;color:#005BAA;"></div>
+  </div>
+  <script>
+    const meta = Math.floor(Math.random()*4)+6; // entre 6 y 9 clics
+    let progreso = 0;
+    let terminado = false;
+    const consejos = [
+      'A veces el éxito está más cerca de lo que crees.',
+      'La perseverancia suele ser recompensada.',
+      'Escucha tu intuición, pero no te rindas fácilmente.',
+      'Evalúa si has dado tu máximo esfuerzo antes de abandonar.'
+    ];
+    function excavar() {
+      if (terminado) return;
+      progreso++;
+      document.getElementById('bar').style.width = (progreso*10)+'%';
+      if (progreso === meta) {
+        document.getElementById('resultado').textContent = '¡Felicidades! Encontraste la veta de oro. La perseverancia da frutos.';
+        terminado = true;
+        document.getElementById('acciones').style.display = 'none';
+      } else if (progreso > meta) {
+        document.getElementById('resultado').textContent = '¡Increíble! Seguiste adelante y encontraste aún más oro.';
+        terminado = true;
+        document.getElementById('acciones').style.display = 'none';
+      } else {
+        document.getElementById('resultado').textContent = 'Nada aún... ¿Seguirás excavando?';
+      }
+    }
+    function rendirse() {
+      if (terminado) return;
+      if (progreso >= meta-1 && progreso < meta) {
+        document.getElementById('resultado').textContent = '¡Oh no! Te rendiste a solo un metro del oro. La perseverancia es clave.';
+      } else {
+        document.getElementById('resultado').textContent = 'Te rendiste antes de tiempo. A veces el éxito está más cerca de lo que crees.';
+      }
+      terminado = true;
+      document.getElementById('acciones').style.display = 'none';
+    }
+    function pedirAyuda() {
+      document.getElementById('consejo').textContent = consejos[Math.floor(Math.random()*consejos.length)];
+    }
+    function reiniciar() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html> 

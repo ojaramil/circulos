@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Fondos Índice</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            text-align: left;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.incorrect {
+            background: #dc3545;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Quiz de Fondos Índice</h1>
+        <p>¡Aprende sobre los fondos índice, una de las mejores formas de invertir para jóvenes!</p>
+
+        <div class="score-display">
+            <h3>Puntuación: <span id="score">0</span>/100</h3>
+            <p>Pregunta: <span id="questionNumber">1</span>/8</p>
+        </div>
+
+        <div class="game-container" id="question1">
+            <h3>🎯 Pregunta 1</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es un fondo índice?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(1, 'a')">A) Un fondo que sigue automáticamente un grupo de empresas (como las 500 más grandes)</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'b')">B) Un fondo que solo invierte en una empresa</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'c')">C) Un fondo que solo invierte en oro</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'd')">D) Un fondo que solo invierte en bienes raíces</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="question2" style="display: none;">
+            <h3>🎯 Pregunta 2</h3>
+            <div class="question-card">
+                <p><strong>¿Por qué los fondos índice son buenos para principiantes?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(2, 'b')">A) Porque son muy arriesgados</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'a')">B) Porque son simples, baratos y diversificados</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'c')">C) Porque solo invierten en empresas pequeñas</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'd')">D) Porque te hacen rico rápidamente</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="question3" style="display: none;">
+            <h3>🎯 Pregunta 3</h3>
+            <div class="question-card">
+                <p><strong>¿Qué significa "diversificación"?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(3, 'c')">A) Invertir todo en una empresa</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'b')">B) Invertir solo en tecnología</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'a')">C) Invertir en muchas empresas diferentes para reducir el riesgo</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'd')">D) No invertir nada</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="question4" style="display: none;">
+            <h3>🎯 Pregunta 4</h3>
+            <div class="question-card">
+                <p><strong>¿Cuál es una ventaja de los fondos índice?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(4, 'a')">A) Comisiones muy bajas</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'b')">B) Comisiones muy altas</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'c')">C) Solo invierten en empresas pequeñas</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'd')">D) Te garantizan ganancias</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="question5" style="display: none;">
+            <h3>🎯 Pregunta 5</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es el S&P 500?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(5, 'b')">A) Un banco</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'a')">B) Un índice que sigue las 500 empresas más grandes de Estados Unidos</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'c')">C) Un tipo de bono</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'd')">D) Una criptomoneda</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="question6" style="display: none;">
+            <h3>🎯 Pregunta 6</h3>
+            <div class="question-card">
+                <p><strong>¿Por qué es mejor invertir a largo plazo?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(6, 'c')">A) Porque es más emocionante</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'b')">B) Porque puedes vender rápido</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'a')">C) Porque el mercado sube con el tiempo y reduces el riesgo</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'd')">D) Porque es más fácil</button>
+            </div>
+            
+            <div class="feedback" id="feedback6"></div>
+        </div>
+
+        <div class="game-container" id="question7" style="display: none;">
+            <h3>🎯 Pregunta 7</h3>
+            <div class="question-card">
+                <p><strong>¿Qué significa "dollar-cost averaging"?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(7, 'a')">A) Invertir la misma cantidad de dinero regularmente, sin importar el precio</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'b')">B) Solo invertir cuando el mercado sube</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'c')">C) Invertir todo tu dinero de una vez</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'd')">D) No invertir nunca</button>
+            </div>
+            
+            <div class="feedback" id="feedback7"></div>
+        </div>
+
+        <div class="game-container" id="question8" style="display: none;">
+            <h3>🎯 Pregunta 8</h3>
+            <div class="question-card">
+                <p><strong>¿Cuál es la mejor estrategia para un joven inversor?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(8, 'b')">A) Invertir todo en una sola empresa</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'a')">B) Invertir regularmente en fondos índice y mantener a largo plazo</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'c')">C) Comprar y vender constantemente</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'd')">D) Esperar hasta ser adulto</button>
+            </div>
+            
+            <div class="feedback" id="feedback8"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Quiz Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="question-card">
+                <h3>🎯 Lo que Aprendiste sobre Fondos Índice:</h3>
+                <ul>
+                    <li><strong>Simplicidad:</strong> Los fondos índice son fáciles de entender</li>
+                    <li><strong>Diversificación:</strong> Inviertes en muchas empresas a la vez</li>
+                    <li><strong>Bajo costo:</strong> Comisiones muy bajas</li>
+                    <li><strong>Largo plazo:</strong> Mejor estrategia para jóvenes</li>
+                    <li><strong>Dollar-cost averaging:</strong> Invertir regularmente es mejor</li>
+                </ul>
+                
+                <h3>💡 Consejos para Empezar:</h3>
+                <ol>
+                    <li>Investiga fondos índice populares (S&P 500, Total Market)</li>
+                    <li>Empieza con pequeñas cantidades regularmente</li>
+                    <li>No te preocupes por las fluctuaciones diarias</li>
+                    <li>Mantén tus inversiones a largo plazo</li>
+                    <li>Reinvierte las ganancias</li>
+                </ol>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentQuestion = 1;
+        const totalQuestions = 8;
+
+        function checkAnswer(question, correctAnswer) {
+            const buttons = document.querySelectorAll(`#question${question} .choice-button`);
+            const feedback = document.getElementById(`feedback${question}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            // Obtener la respuesta seleccionada
+            const selectedButton = event.target;
+            const selectedAnswer = selectedButton.textContent.charAt(0).toLowerCase();
+            
+            if (selectedAnswer === correctAnswer) {
+                currentScore += 12.5;
+                feedback.innerHTML = '<strong>✅ ¡Correcto!</strong> ¡Excelente conocimiento sobre fondos índice!';
+                feedback.className = 'feedback positive';
+            } else {
+                feedback.innerHTML = '<strong>❌ Incorrecto.</strong> ¡No te preocupes, es parte del aprendizaje!';
+                feedback.className = 'feedback negative';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Actualizar puntuación
+            updateScore();
+            
+            // Mostrar siguiente pregunta después de 2 segundos
+            setTimeout(() => {
+                if (question < totalQuestions) {
+                    document.getElementById(`question${question}`).style.display = 'none';
+                    document.getElementById(`question${question + 1}`).style.display = 'block';
+                    currentQuestion++;
+                } else {
+                    showFinalResult();
+                }
+            }, 2000);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = Math.round(currentScore);
+            document.getElementById('finalScore').textContent = Math.round(currentScore);
+            document.getElementById('questionNumber').textContent = currentQuestion;
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`question${totalQuestions}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentScore >= 80) {
+                finalMessage.textContent = '¡Excelente! Tienes un gran conocimiento sobre fondos índice. ¡Eres un inversor experto!';
+            } else if (currentScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu conocimiento está creciendo. Con práctica serás un experto en fondos índice.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con este curso aprenderás mucho más sobre inversiones.';
+            }
+        }
+        
+        function restartGame() {
+            currentScore = 0;
+            currentQuestion = 1;
+            
+            // Ocultar todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primera pregunta
+            document.getElementById('question1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateScore();
+        }
+    </script>
+</body>
+</html> 

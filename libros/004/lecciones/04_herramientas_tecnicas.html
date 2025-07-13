@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas y Técnicas - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>Herramientas y Técnicas: Implementando tu Estrategia Inquebrantable</h1>
+
+    <div class="card">
+        <h2>📊 Calculadora de Asignación de Activos</h2>
+        <p>Usa esta herramienta para determinar tu asignación ideal basada en tu edad y tolerancia al riesgo:</p>
+        
+        <div class="form-group">
+            <label for="age">Tu edad:</label>
+            <input type="number" id="age" min="18" max="100" value="30">
+        </div>
+        
+        <div class="form-group">
+            <label for="risk">Tolerancia al riesgo:</label>
+            <select id="risk">
+                <option value="conservative">Conservador</option>
+                <option value="moderate" selected>Moderado</option>
+                <option value="aggressive">Agresivo</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="calculateAllocation()">Calcular Asignación</button>
+        
+        <div id="allocation-result" class="alert alert-info" style="display: none;">
+            <h3>Tu Asignación Recomendada:</h3>
+            <div id="allocation-details"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>💰 Calculadora de Costos de Inversión</h2>
+        <p>Compara el impacto de diferentes costos en tus retornos a largo plazo:</p>
+        
+        <div class="form-group">
+            <label for="initial">Inversión inicial ($):</label>
+            <input type="number" id="initial" value="10000" min="1000">
+        </div>
+        
+        <div class="form-group">
+            <label for="monthly">Contribución mensual ($):</label>
+            <input type="number" id="monthly" value="500" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="years">Años de inversión:</label>
+            <input type="number" id="years" value="30" min="1" max="50">
+        </div>
+        
+        <div class="form-group">
+            <label for="cost1">Costo anual Opción A (%):</label>
+            <input type="number" id="cost1" value="1.5" step="0.1" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="cost2">Costo anual Opción B (%):</label>
+            <input type="number" id="cost2" value="0.1" step="0.1" min="0">
+        </div>
+        
+        <button class="btn" onclick="calculateCosts()">Comparar Costos</button>
+        
+        <div id="cost-result" class="alert alert-info" style="display: none;">
+            <h3>Comparación de Costos:</h3>
+            <div id="cost-details"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🔄 Checklist de Rebalanceo</h2>
+        <p>Usa esta lista para mantener tu portafolio alineado:</p>
+        
+        <div class="form-group">
+            <label><input type="checkbox" id="check1"> Revisar asignación actual vs objetivo</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check2"> Identificar desviaciones mayores al 5%</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check3"> Calcular compras/ventas necesarias</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check4"> Considerar implicaciones fiscales</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check5"> Ejecutar transacciones</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check6"> Documentar cambios</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="check7"> Programar próxima revisión</label>
+        </div>
+        
+        <button class="btn" onclick="checkRebalancing()">Verificar Checklist</button>
+        
+        <div id="rebalancing-result" class="alert alert-success" style="display: none;">
+            <h3>Estado del Rebalanceo:</h3>
+            <div id="rebalancing-details"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📈 Fondos Índice Recomendados</h2>
+        <p>Lista de fondos de bajo costo para construir tu portafolio:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Fondo</th>
+                    <th>Símbolo</th>
+                    <th>Costo Anual</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Acciones EEUU</td>
+                    <td>Vanguard Total Stock Market</td>
+                    <td>VTSAX</td>
+                    <td>0.04%</td>
+                    <td>Todo el mercado estadounidense</td>
+                </tr>
+                <tr>
+                    <td>Acciones Internacionales</td>
+                    <td>Vanguard Total International</td>
+                    <td>VTIAX</td>
+                    <td>0.08%</td>
+                    <td>Mercados desarrollados y emergentes</td>
+                </tr>
+                <tr>
+                    <td>Bonos</td>
+                    <td>Vanguard Total Bond Market</td>
+                    <td>VBTLX</td>
+                    <td>0.05%</td>
+                    <td>Bonos gubernamentales y corporativos</td>
+                </tr>
+                <tr>
+                    <td>Bienes Raíces</td>
+                    <td>Vanguard REIT Index</td>
+                    <td>VGSLX</td>
+                    <td>0.12%</td>
+                    <td>Fondos de inversión inmobiliaria</td>
+                </tr>
+                <tr>
+                    <td>Bonos Municipales</td>
+                    <td>Vanguard Tax-Exempt Bond</td>
+                    <td>VTEAX</td>
+                    <td>0.09%</td>
+                    <td>Bonos libres de impuestos federales</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>🎯 Plan de Acción Personal</h2>
+        <p>Crea tu plan de inversión inquebrantable:</p>
+        
+        <div class="form-group">
+            <label for="goal">Meta financiera principal:</label>
+            <select id="goal">
+                <option value="retirement">Jubilación</option>
+                <option value="education">Educación</option>
+                <option value="house">Compra de casa</option>
+                <option value="emergency">Fondo de emergencia</option>
+                <option value="other">Otro</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="timeline">Horizonte temporal (años):</label>
+            <input type="number" id="timeline" value="20" min="1" max="50">
+        </div>
+        
+        <div class="form-group">
+            <label for="amount">Cantidad objetivo ($):</label>
+            <input type="number" id="amount" value="1000000" min="10000">
+        </div>
+        
+        <div class="form-group">
+            <label for="current">Ahorros actuales ($):</label>
+            <input type="number" id="current" value="50000" min="0">
+        </div>
+        
+        <button class="btn" onclick="createPlan()">Crear Plan</button>
+        
+        <div id="plan-result" class="alert alert-success" style="display: none;">
+            <h3>Tu Plan de Acción:</h3>
+            <div id="plan-details"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🛡️ Evaluación de Riesgo</h2>
+        <p>Determina tu perfil de riesgo con este cuestionario:</p>
+        
+        <div class="form-group">
+            <label>1. ¿Cómo reaccionarías si tu portafolio perdiera 20% en un año?</label>
+            <select id="risk1">
+                <option value="1">Vendería todo inmediatamente</option>
+                <option value="2">Vendería parte</option>
+                <option value="3">Mantendría y esperaría</option>
+                <option value="4">Compraría más</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>2. ¿Cuánto tiempo planeas mantener tus inversiones?</label>
+            <select id="risk2">
+                <option value="1">Menos de 3 años</option>
+                <option value="2">3-5 años</option>
+                <option value="3">5-10 años</option>
+                <option value="4">Más de 10 años</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>3. ¿Qué porcentaje de tu portafolio estás dispuesto a arriesgar por mayores retornos?</label>
+            <select id="risk3">
+                <option value="1">0-10%</option>
+                <option value="2">10-25%</option>
+                <option value="3">25-50%</option>
+                <option value="4">Más del 50%</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="assessRisk()">Evaluar Riesgo</button>
+        
+        <div id="risk-result" class="alert alert-info" style="display: none;">
+            <h3>Tu Perfil de Riesgo:</h3>
+            <div id="risk-details"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📱 Herramientas Digitales Recomendadas</h2>
+        
+        <h3>Plataformas de Inversión</h3>
+        <ul>
+            <li><strong>Vanguard:</strong> Fondos índice de bajo costo</li>
+            <li><strong>Fidelity:</strong> Amplia selección de fondos</li>
+            <li><strong>Charles Schwab:</strong> Excelente servicio al cliente</li>
+            <li><strong>M1 Finance:</strong> Automatización avanzada</li>
+        </ul>
+        
+        <h3>Aplicaciones de Seguimiento</h3>
+        <ul>
+            <li><strong>Personal Capital:</strong> Análisis completo de portafolio</li>
+            <li><strong>Mint:</strong> Presupuesto y seguimiento</li>
+            <li><strong>YNAB:</strong> Presupuesto basado en cero</li>
+            <li><strong>Portfolio Visualizer:</strong> Análisis de portafolio</li>
+        </ul>
+        
+        <h3>Recursos Educativos</h3>
+        <ul>
+            <li><strong>Bogleheads Wiki:</strong> Comunidad de inversores</li>
+            <li><strong>Morningstar:</strong> Análisis de fondos</li>
+            <li><strong>SEC EDGAR:</strong> Información de empresas</li>
+            <li><strong>Investopedia:</strong> Educación financiera</li>
+        </ul>
+    </div>
+
+    <div class="alert alert-warning">
+        <h3>⚠️ Recordatorios Importantes</h3>
+        <ul>
+            <li>Nunca inviertas dinero que necesites en los próximos 3-5 años</li>
+            <li>Mantén un fondo de emergencia de 3-6 meses de gastos</li>
+            <li>Diversifica siempre - no pongas todos los huevos en una canasta</li>
+            <li>Los costos importan - busca fondos de bajo costo</li>
+            <li>Mantén la perspectiva a largo plazo</li>
+            <li>Automatiza tus inversiones cuando sea posible</li>
+        </ul>
+    </div>
+
+    <script>
+        function calculateAllocation() {
+            const age = parseInt(document.getElementById('age').value);
+            const risk = document.getElementById('risk').value;
+            
+            let stocks, bonds, international;
+            
+            if (risk === 'conservative') {
+                stocks = Math.max(100 - age - 10, 20);
+                bonds = 100 - stocks - 10;
+                international = 10;
+            } else if (risk === 'moderate') {
+                stocks = Math.max(100 - age, 30);
+                bonds = 100 - stocks - 20;
+                international = 20;
+            } else {
+                stocks = Math.max(100 - age + 10, 40);
+                bonds = 100 - stocks - 30;
+                international = 30;
+            }
+            
+            document.getElementById('allocation-details').innerHTML = `
+                <ul>
+                    <li><strong>Acciones EEUU:</strong> ${stocks - international}%</li>
+                    <li><strong>Acciones Internacionales:</strong> ${international}%</li>
+                    <li><strong>Bonos:</strong> ${bonds}%</li>
+                </ul>
+            `;
+            document.getElementById('allocation-result').style.display = 'block';
+        }
+        
+        function calculateCosts() {
+            const initial = parseFloat(document.getElementById('initial').value);
+            const monthly = parseFloat(document.getElementById('monthly').value);
+            const years = parseInt(document.getElementById('years').value);
+            const cost1 = parseFloat(document.getElementById('cost1').value) / 100;
+            const cost2 = parseFloat(document.getElementById('cost2').value) / 100;
+            
+            const monthlyRate1 = (0.07 - cost1) / 12;
+            const monthlyRate2 = (0.07 - cost2) / 12;
+            
+            let futureValue1 = initial * Math.pow(1 + monthlyRate1, years * 12);
+            let futureValue2 = initial * Math.pow(1 + monthlyRate2, years * 12);
+            
+            for (let i = 1; i <= years * 12; i++) {
+                futureValue1 += monthly * Math.pow(1 + monthlyRate1, i);
+                futureValue2 += monthly * Math.pow(1 + monthlyRate2, i);
+            }
+            
+            const difference = futureValue2 - futureValue1;
+            
+            document.getElementById('cost-details').innerHTML = `
+                <ul>
+                    <li><strong>Opción A (${(cost1*100).toFixed(1)}% costo):</strong> $${futureValue1.toLocaleString()}</li>
+                    <li><strong>Opción B (${(cost2*100).toFixed(1)}% costo):</strong> $${futureValue2.toLocaleString()}</li>
+                    <li><strong>Diferencia:</strong> $${difference.toLocaleString()}</li>
+                </ul>
+            `;
+            document.getElementById('cost-result').style.display = 'block';
+        }
+        
+        function checkRebalancing() {
+            const checks = document.querySelectorAll('input[type="checkbox"]');
+            const completed = Array.from(checks).filter(check => check.checked).length;
+            const total = checks.length;
+            
+            document.getElementById('rebalancing-details').innerHTML = `
+                <p>Has completado ${completed} de ${total} pasos (${Math.round(completed/total*100)}%)</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${completed/total*100}%"></div>
+                </div>
+            `;
+            document.getElementById('rebalancing-result').style.display = 'block';
+        }
+        
+        function createPlan() {
+            const goal = document.getElementById('goal').value;
+            const timeline = parseInt(document.getElementById('timeline').value);
+            const amount = parseFloat(document.getElementById('amount').value);
+            const current = parseFloat(document.getElementById('current').value);
+            
+            const needed = amount - current;
+            const monthlyNeeded = needed / (timeline * 12);
+            const annualReturn = 0.07;
+            
+            document.getElementById('plan-details').innerHTML = `
+                <ul>
+                    <li><strong>Meta:</strong> ${goal}</li>
+                    <li><strong>Cantidad necesaria:</strong> $${needed.toLocaleString()}</li>
+                    <li><strong>Ahorro mensual requerido:</strong> $${monthlyNeeded.toLocaleString()}</li>
+                    <li><strong>Retorno anual esperado:</strong> ${(annualReturn*100).toFixed(1)}%</li>
+                </ul>
+            `;
+            document.getElementById('plan-result').style.display = 'block';
+        }
+        
+        function assessRisk() {
+            const risk1 = parseInt(document.getElementById('risk1').value);
+            const risk2 = parseInt(document.getElementById('risk2').value);
+            const risk3 = parseInt(document.getElementById('risk3').value);
+            
+            const totalScore = risk1 + risk2 + risk3;
+            let profile, allocation;
+            
+            if (totalScore <= 6) {
+                profile = "Conservador";
+                allocation = "20% acciones, 80% bonos";
+            } else if (totalScore <= 9) {
+                profile = "Moderado";
+                allocation = "60% acciones, 40% bonos";
+            } else {
+                profile = "Agresivo";
+                allocation = "80% acciones, 20% bonos";
+            }
+            
+            document.getElementById('risk-details').innerHTML = `
+                <p><strong>Perfil:</strong> ${profile}</p>
+                <p><strong>Asignación recomendada:</strong> ${allocation}</p>
+                <p><strong>Puntuación:</strong> ${totalScore}/12</p>
+            `;
+            document.getElementById('risk-result').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

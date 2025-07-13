@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Interés</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .calculator-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .input-group {
+            margin: 1.5rem 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .calc-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        .calc-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .highlight-box {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .chart-container {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        .year-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .year-row:nth-child(even) {
+            background: #e9ecef;
+        }
+        .year-row:hover {
+            background: #dee2e6;
+        }
+        .scenario-card {
+            background: #e9ecef;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Calculadora de Interés Compuesto</h1>
+        <p>¡Descubre el poder mágico del interés compuesto!</p>
+
+        <div class="highlight-box">
+            <h2>🌟 ¿Qué es el Interés Compuesto?</h2>
+            <p>Es cuando ganas interés sobre tu interés. ¡Es como una bola de nieve que crece mientras rueda!</p>
+        </div>
+
+        <div class="game-container">
+            <div class="calculator-card">
+                <h2>📊 Calculadora de Interés Compuesto</h2>
+                <p>Ingresa tus datos y ve cómo crece tu dinero</p>
+            </div>
+
+            <div class="input-group">
+                <label for="initialAmount">💰 Cantidad inicial</label>
+                <input type="number" id="initialAmount" placeholder="Ej: 100" min="0" value="100">
+            </div>
+
+            <div class="input-group">
+                <label for="monthlyContribution">💸 Contribución mensual</label>
+                <input type="number" id="monthlyContribution" placeholder="Ej: 50" min="0" value="50">
+            </div>
+
+            <div class="input-group">
+                <label for="interestRate">📈 Tasa de interés anual (%)</label>
+                <input type="number" id="interestRate" placeholder="Ej: 7" min="0" max="20" step="0.1" value="7">
+            </div>
+
+            <div class="input-group">
+                <label for="years">⏰ Número de años</label>
+                <input type="number" id="years" placeholder="Ej: 10" min="1" max="50" value="10">
+            </div>
+
+            <button class="calc-button" onclick="calculateInterest()">
+                🧮 Calcular Interés Compuesto
+            </button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h3>📊 Resultados de tu Inversión</h3>
+            <div id="results"></div>
+        </div>
+
+        <div class="game-container">
+            <div class="calculator-card">
+                <h2>🎯 Comparación de Escenarios</h2>
+                <p>Ve cómo diferentes estrategias afectan tu riqueza</p>
+            </div>
+
+            <div class="scenario-card">
+                <h3>📈 Escenario 1: Inversor Temprano</h3>
+                <p>Empieza a los 15 años con $100 inicial y $50 mensuales al 7% anual</p>
+                <button class="calc-button" onclick="calculateScenario(15, 100, 50, 7, 50)" style="background: #667eea;">
+                    Calcular Escenario 1
+                </button>
+            </div>
+
+            <div class="scenario-card">
+                <h3>📈 Escenario 2: Inversor Tardío</h3>
+                <p>Empieza a los 25 años con $100 inicial y $100 mensuales al 7% anual</p>
+                <button class="calc-button" onclick="calculateScenario(25, 100, 100, 7, 40)" style="background: #667eea;">
+                    Calcular Escenario 2
+                </button>
+            </div>
+
+            <div class="scenario-card">
+                <h3>📈 Escenario 3: Inversor Agresivo</h3>
+                <p>Empieza a los 15 años con $200 inicial y $100 mensuales al 10% anual</p>
+                <button class="calc-button" onclick="calculateScenario(15, 200, 100, 10, 50)" style="background: #667eea;">
+                    Calcular Escenario 3
+                </button>
+            </div>
+
+            <div id="scenarioResults"></div>
+        </div>
+
+        <div class="game-container">
+            <div class="calculator-card">
+                <h2>💡 Lecciones del Interés Compuesto</h2>
+                <p>Aprende los principios más importantes</p>
+            </div>
+
+            <div class="tip-box">
+                <h3>🎯 Principios Clave:</h3>
+                <ul>
+                    <li><strong>El tiempo es tu mejor amigo:</strong> Cuanto más joven empieces, mejor</li>
+                    <li><strong>La consistencia es clave:</strong> Contribuciones regulares son más importantes que grandes cantidades</li>
+                    <li><strong>El interés compuesto es mágico:</strong> Tu dinero crece exponencialmente</li>
+                    <li><strong>Pequeñas cantidades importan:</strong> $50 al mes pueden convertirse en miles</li>
+                    <li><strong>Empieza hoy:</strong> Cada día que esperas es dinero perdido</li>
+                </ul>
+            </div>
+
+            <div class="chart-container">
+                <h3>📊 Ejemplo Real:</h3>
+                <p>Si inviertes $100 al mes desde los 15 años hasta los 65 años al 7% anual:</p>
+                <ul>
+                    <li><strong>Total invertido:</strong> $60,000</li>
+                    <li><strong>Interés ganado:</strong> $1,440,000</li>
+                    <li><strong>Total final:</strong> $1,500,000</li>
+                </ul>
+                <p><em>¡El interés compuesto generó 24 veces más dinero que lo que invertiste!</em></p>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="calculator-card">
+                <h2>🚀 Plan de Acción</h2>
+                <p>¿Qué puedes hacer hoy?</p>
+            </div>
+
+            <div class="tip-box">
+                <h3>💪 Pasos para Empezar:</h3>
+                <ol>
+                    <li><strong>Calcula tu capacidad de ahorro:</strong> ¿Cuánto puedes invertir mensualmente?</li>
+                    <li><strong>Establece metas realistas:</strong> Empieza pequeño y aumenta gradualmente</li>
+                    <li><strong>Investiga opciones de inversión:</strong> Cuentas de ahorro, fondos de inversión, etc.</li>
+                    <li><strong>Configura ahorro automático:</strong> Haz que sea inconsciente</li>
+                    <li><strong>Revisa y ajusta regularmente:</strong> Aumenta tus contribuciones cuando puedas</li>
+                </ol>
+            </div>
+
+            <div class="highlight-box">
+                <h2>🌟 Recuerda</h2>
+                <p>El interés compuesto es la octava maravilla del mundo. Quien lo entiende, lo gana. Quien no lo entiende, lo paga.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateInterest() {
+            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            const years = parseInt(document.getElementById('years').value);
+
+            if (!initialAmount || !monthlyContribution || !annualRate || !years) {
+                alert('Por favor completa todos los campos.');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const totalMonths = years * 12;
+            
+            let balance = initialAmount;
+            let totalContributed = initialAmount;
+            let totalInterest = 0;
+            
+            const yearlyData = [];
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                balance = balance * (1 + monthlyRate) + monthlyContribution;
+                totalContributed += monthlyContribution;
+                
+                if (month % 12 === 0) {
+                    const year = month / 12;
+                    const yearInterest = balance - totalContributed;
+                    yearlyData.push({
+                        year: year,
+                        balance: balance,
+                        contributed: totalContributed,
+                        interest: yearInterest
+                    });
+                }
+            }
+            
+            totalInterest = balance - totalContributed;
+            
+            displayResults(balance, totalContributed, totalInterest, yearlyData);
+        }
+
+        function displayResults(finalBalance, totalContributed, totalInterest, yearlyData) {
+            const resultsDiv = document.getElementById('results');
+            const resultBox = document.getElementById('resultBox');
+            
+            resultsDiv.innerHTML = `
+                <div class="highlight-box">
+                    <h3>💰 Resumen de tu Inversión</h3>
+                    <p><strong>Balance final:</strong> $${finalBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                    <p><strong>Total invertido:</strong> $${totalContributed.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                    <p><strong>Interés ganado:</strong> $${totalInterest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                    <p><strong>Retorno total:</strong> ${((finalBalance / totalContributed - 1) * 100).toFixed(1)}%</p>
+                </div>
+
+                <div class="chart-container">
+                    <h3>📈 Crecimiento Año por Año</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Balance</th>
+                                <th>Invertido</th>
+                                <th>Interés Ganado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${yearlyData.map(data => `
+                                <tr>
+                                    <td>${data.year}</td>
+                                    <td>$${data.balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td>$${data.contributed.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td>$${data.interest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            resultBox.style.display = 'block';
+        }
+
+        function calculateScenario(startAge, initial, monthly, rate, years) {
+            const monthlyRate = rate / 100 / 12;
+            const totalMonths = years * 12;
+            
+            let balance = initial;
+            let totalContributed = initial;
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                balance = balance * (1 + monthlyRate) + monthly;
+                totalContributed += monthly;
+            }
+            
+            const totalInterest = balance - totalContributed;
+            const endAge = startAge + years;
+            
+            displayScenarioResults(startAge, endAge, balance, totalContributed, totalInterest, monthly, rate);
+        }
+
+        function displayScenarioResults(startAge, endAge, finalBalance, totalContributed, totalInterest, monthly, rate) {
+            const scenarioResults = document.getElementById('scenarioResults');
+            
+            const scenarioDiv = document.createElement('div');
+            scenarioDiv.className = 'scenario-card';
+            scenarioDiv.innerHTML = `
+                <h3>📊 Resultados del Escenario</h3>
+                <p><strong>Edad de inicio:</strong> ${startAge} años</p>
+                <p><strong>Edad final:</strong> ${endAge} años</p>
+                <p><strong>Contribución mensual:</strong> $${monthly}</p>
+                <p><strong>Tasa de interés:</strong> ${rate}% anual</p>
+                <p><strong>Balance final:</strong> $${finalBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                <p><strong>Total invertido:</strong> $${totalContributed.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                <p><strong>Interés ganado:</strong> $${totalInterest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                <p><strong>Retorno total:</strong> ${((finalBalance / totalContributed - 1) * 100).toFixed(1)}%</p>
+            `;
+            
+            scenarioResults.appendChild(scenarioDiv);
+        }
+    </script>
+</body>
+</html> 

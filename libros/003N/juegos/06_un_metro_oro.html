@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A un Metro del Oro</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .scenario-card {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            text-align: left;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.incorrect {
+            background: #dc3545;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏅 A un Metro del Oro</h1>
+        <p>¡Aprende sobre la persistencia y cómo muchos se rinden justo antes del éxito! Este juego te enseñará a no abandonar cuando estés cerca de tu meta.</p>
+
+        <div class="score-display">
+            <h3>Distancia al Oro: <span id="distanceToGold">100</span> metros</h3>
+            <p>Puntuación de Persistencia: <span id="persistenceScore">0</span>/100</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-container" id="scenario1">
+            <h2>🎯 Escenario 1: El Proyecto de Ciencias</h2>
+            <div class="scenario-card">
+                <p><strong>Situación:</strong> Has trabajado en tu proyecto de ciencias por 3 semanas. Estás a punto de terminarlo, pero tu experimento no funciona como esperabas. Te quedan solo 2 días para la presentación.</p>
+                <p><strong>Tu progreso:</strong> 85% completado</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="choice-button" onclick="selectChoice(1, 'a')">
+                <strong>A) Rendirte y entregar el proyecto como está</strong>
+                <p>Es mejor entregar algo que nada</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(1, 'b')">
+                <strong>B) Trabajar toda la noche para arreglar el experimento</strong>
+                <p>No te rendirás hasta que funcione</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(1, 'c')">
+                <strong>C) Pedir una extensión de tiempo</strong>
+                <p>Necesitas más tiempo para hacerlo bien</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(1, 'd')">
+                <strong>D) Cambiar completamente el proyecto</strong>
+                <p>Empezar algo nuevo que funcione</p>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h2>🎯 Escenario 2: El Equipo Deportivo</h2>
+            <div class="scenario-card">
+                <p><strong>Situación:</strong> Tu equipo ha perdido 5 partidos seguidos. Están en el último lugar de la liga. El próximo partido es contra el mejor equipo. Muchos jugadores quieren rendirse.</p>
+                <p><strong>Tu progreso:</strong> Temporada 70% completada</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="choice-button" onclick="selectChoice(2, 'a')">
+                <strong>A) Rendirte y no jugar el próximo partido</strong>
+                <p>No tiene sentido seguir perdiendo</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(2, 'b')">
+                <strong>B) Entrenar más duro que nunca</strong>
+                <p>Usar la derrota como motivación</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(2, 'c')">
+                <strong>C) Cambiar de equipo</strong>
+                <p>Buscar un equipo mejor</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(2, 'd')">
+                <strong>D) Convencer a otros de que se rindan</strong>
+                <p>Es mejor aceptar la realidad</p>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h2>🎯 Escenario 3: La Aplicación de Música</h2>
+            <div class="scenario-card">
+                <p><strong>Situación:</strong> Has estado aprendiendo a tocar guitarra por 6 meses. Todavía no puedes tocar tu canción favorita perfectamente. Te frustras cada vez que practicas.</p>
+                <p><strong>Tu progreso:</strong> 80% de la canción dominada</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="choice-button" onclick="selectChoice(3, 'a')">
+                <strong>A) Dejar de tocar guitarra</strong>
+                <p>No tienes talento natural</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(3, 'b')">
+                <strong>B) Practicar esa canción específica por horas</strong>
+                <p>No te rendirás hasta dominarla</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(3, 'c')">
+                <strong>C) Cambiar a otra canción más fácil</strong>
+                <p>Elegir algo más alcanzable</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(3, 'd')">
+                <strong>D) Tomar clases con un profesor</strong>
+                <p>Buscar ayuda profesional</p>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="scenario4" style="display: none;">
+            <h2>🎯 Escenario 4: El Negocio de Limonada</h2>
+            <div class="scenario-card">
+                <p><strong>Situación:</strong> Has tenido un puesto de limonada por 3 días. Solo has vendido 5 vasos. Los otros niños se burlan de ti. Mañana es el último día de la feria.</p>
+                <p><strong>Tu progreso:</strong> 90% de la feria completada</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="choice-button" onclick="selectChoice(4, 'a')">
+                <strong>A) Cerrar el puesto y no volver</strong>
+                <p>No vale la pena seguir</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(4, 'b')">
+                <strong>B) Mejorar tu estrategia y volver mañana</strong>
+                <p>Usar lo aprendido para el último día</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(4, 'c')">
+                <strong>C) Regalar la limonada</strong>
+                <p>Al menos no se desperdicia</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(4, 'd')">
+                <strong>D) Cambiar a vender otra cosa</strong>
+                <p>Probar algo diferente</p>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="scenario5" style="display: none;">
+            <h2>🎯 Escenario 5: El Video Juego</h2>
+            <div class="scenario-card">
+                <p><strong>Situación:</strong> Has estado jugando un video juego por 2 semanas. Estás en el nivel final, pero el jefe es muy difícil. Has perdido 20 veces seguidas.</p>
+                <p><strong>Tu progreso:</strong> 99% del juego completado</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="choice-button" onclick="selectChoice(5, 'a')">
+                <strong>A) Dejar el juego para siempre</strong>
+                <p>Es demasiado difícil</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(5, 'b')">
+                <strong>B) Estudiar estrategias y seguir intentando</strong>
+                <p>No te rendirás hasta vencerlo</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(5, 'c')">
+                <strong>C) Usar trucos para saltarte el nivel</strong>
+                <p>Hacer trampa para terminar</p>
+            </div>
+            <div class="choice-button" onclick="selectChoice(5, 'd')">
+                <strong>D) Jugar otro juego más fácil</strong>
+                <p>Elegir algo más divertido</p>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Has Llegado al Oro!</h2>
+            <div class="score-display">
+                <h3>Distancia Final: <span id="finalDistance">0</span> metros</h3>
+                <p>Puntuación de Persistencia: <span id="finalScore">0</span>/100</p>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="scenario-card">
+                <h3>🎯 Lo que Aprendiste sobre "A un Metro del Oro":</h3>
+                <ul>
+                    <li><strong>La mayoría se rinde cerca del éxito:</strong> Muchos abandonan cuando están a punto de lograr su meta</li>
+                    <li><strong>La persistencia es la clave:</strong> Los que siguen intentando son los que triunfan</li>
+                    <li><strong>Los obstáculos son oportunidades:</strong> Cada desafío te hace más fuerte</li>
+                    <li><strong>El éxito está más cerca de lo que crees:</strong> A menudo solo necesitas un esfuerzo más</li>
+                    <li><strong>La diferencia entre éxito y fracaso:</strong> Es la decisión de no rendirse</li>
+                </ul>
+                
+                <h3>💡 Estrategias para No Rendirte:</h3>
+                <ol>
+                    <li><strong>Recuerda tu "por qué":</strong> ¿Por qué empezaste?</li>
+                    <li><strong>Celebra los pequeños logros:</strong> Cada paso cuenta</li>
+                    <li><strong>Busca inspiración:</strong> Lee historias de personas que no se rindieron</li>
+                    <li><strong>Cambia tu estrategia:</strong> No tu meta</li>
+                    <li><strong>Rodeate de personas positivas:</strong> Que te animen a seguir</li>
+                    <li><strong>Visualiza el éxito:</strong> Imagina cómo se sentirá lograrlo</li>
+                </ol>
+                
+                <h3>🏅 Historias Famosas de Persistencia:</h3>
+                <ul>
+                    <li><strong>Thomas Edison:</strong> Intentó 1,000 veces antes de inventar la bombilla</li>
+                    <li><strong>J.K. Rowling:</strong> Su libro fue rechazado 12 veces antes de ser publicado</li>
+                    <li><strong>Michael Jordan:</strong> Fue rechazado del equipo de baloncesto en la escuela</li>
+                    <li><strong>Walt Disney:</strong> Fue despedido por "falta de imaginación"</li>
+                </ul>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 1;
+        let distanceToGold = 100;
+        let persistenceScore = 0;
+        let selectedChoices = {};
+
+        function selectChoice(scenario, choice) {
+            // Remover selección previa
+            document.querySelectorAll(`#scenario${scenario} .choice-button`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.choice-button').classList.add('selected');
+            selectedChoices[scenario] = choice;
+            
+            // Aplicar consecuencias según la opción seleccionada
+            switch(scenario) {
+                case 1:
+                    switch(choice) {
+                        case 'a': // Rendirse
+                            distanceToGold += 20;
+                            persistenceScore -= 20;
+                            break;
+                        case 'b': // Trabajar toda la noche
+                            distanceToGold -= 15;
+                            persistenceScore += 25;
+                            break;
+                        case 'c': // Pedir extensión
+                            distanceToGold -= 5;
+                            persistenceScore += 10;
+                            break;
+                        case 'd': // Cambiar proyecto
+                            distanceToGold += 10;
+                            persistenceScore -= 10;
+                            break;
+                    }
+                    break;
+                    
+                case 2:
+                    switch(choice) {
+                        case 'a': // Rendirse
+                            distanceToGold += 25;
+                            persistenceScore -= 25;
+                            break;
+                        case 'b': // Entrenar más duro
+                            distanceToGold -= 20;
+                            persistenceScore += 30;
+                            break;
+                        case 'c': // Cambiar equipo
+                            distanceToGold += 5;
+                            persistenceScore -= 5;
+                            break;
+                        case 'd': // Convencer a otros de rendirse
+                            distanceToGold += 15;
+                            persistenceScore -= 15;
+                            break;
+                    }
+                    break;
+                    
+                case 3:
+                    switch(choice) {
+                        case 'a': // Dejar guitarra
+                            distanceToGold += 30;
+                            persistenceScore -= 30;
+                            break;
+                        case 'b': // Practicar por horas
+                            distanceToGold -= 25;
+                            persistenceScore += 35;
+                            break;
+                        case 'c': // Cambiar canción
+                            distanceToGold -= 5;
+                            persistenceScore += 5;
+                            break;
+                        case 'd': // Tomar clases
+                            distanceToGold -= 10;
+                            persistenceScore += 15;
+                            break;
+                    }
+                    break;
+                    
+                case 4:
+                    switch(choice) {
+                        case 'a': // Cerrar puesto
+                            distanceToGold += 20;
+                            persistenceScore -= 20;
+                            break;
+                        case 'b': // Mejorar estrategia
+                            distanceToGold -= 15;
+                            persistenceScore += 25;
+                            break;
+                        case 'c': // Regalar limonada
+                            distanceToGold += 5;
+                            persistenceScore -= 5;
+                            break;
+                        case 'd': // Cambiar producto
+                            distanceToGold += 10;
+                            persistenceScore -= 10;
+                            break;
+                    }
+                    break;
+                    
+                case 5:
+                    switch(choice) {
+                        case 'a': // Dejar juego
+                            distanceToGold += 35;
+                            persistenceScore -= 35;
+                            break;
+                        case 'b': // Estudiar estrategias
+                            distanceToGold -= 30;
+                            persistenceScore += 40;
+                            break;
+                        case 'c': // Usar trucos
+                            distanceToGold += 10;
+                            persistenceScore -= 10;
+                            break;
+                        case 'd': // Jugar otro juego
+                            distanceToGold += 15;
+                            persistenceScore -= 15;
+                            break;
+                    }
+                    break;
+            }
+            
+            // Asegurar que los valores estén en rangos válidos
+            distanceToGold = Math.max(0, Math.min(100, distanceToGold));
+            persistenceScore = Math.max(0, Math.min(100, persistenceScore));
+            
+            // Actualizar display
+            updateDisplay();
+            
+            // Mostrar feedback
+            showFeedback(scenario, choice);
+            
+            // Continuar al siguiente escenario o mostrar resultado final
+            setTimeout(() => {
+                if (scenario < 5) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function showFeedback(scenario, choice) {
+            const feedbacks = {
+                1: {
+                    a: "Rendirte cuando estás al 85% te aleja del oro. ¡Estabas tan cerca!",
+                    b: "¡Excelente! Trabajar toda la noche muestra verdadera persistencia.",
+                    c: "Pedir extensión es una estrategia inteligente, no rendirse.",
+                    d: "Cambiar de proyecto puede ser necesario, pero no es rendirse."
+                },
+                2: {
+                    a: "Rendirte en el 70% de la temporada te aleja mucho del oro.",
+                    b: "¡Perfecto! Usar las derrotas como motivación es la actitud correcta.",
+                    c: "Cambiar de equipo puede ser una opción, pero no es rendirse.",
+                    d: "Convencer a otros de rendirse es lo peor que puedes hacer."
+                },
+                3: {
+                    a: "Dejar la guitarra al 80% te aleja completamente del oro.",
+                    b: "¡Increíble! Practicar por horas muestra determinación absoluta.",
+                    c: "Cambiar a una canción más fácil es una estrategia válida.",
+                    d: "Buscar ayuda profesional es una excelente estrategia."
+                },
+                4: {
+                    a: "Cerrar el puesto al 90% te aleja del oro cuando estabas tan cerca.",
+                    b: "¡Brillante! Mejorar la estrategia y volver es persistencia pura.",
+                    c: "Regalar la limonada no es rendirse, es ser generoso.",
+                    d: "Cambiar de producto puede ser una estrategia válida."
+                },
+                5: {
+                    a: "Dejar el juego al 99% te aleja completamente del oro. ¡Estabas a un paso!",
+                    b: "¡Espectacular! Estudiar estrategias y seguir intentando es persistencia máxima.",
+                    c: "Usar trucos no es rendirse, pero no es la mejor estrategia.",
+                    d: "Cambiar a otro juego es rendirse cuando estabas al 99%."
+                }
+            };
+            
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback positive';
+            feedbackDiv.innerHTML = `<p><strong>Feedback:</strong> ${feedbacks[scenario][choice]}</p>`;
+            
+            const scenarioDiv = document.getElementById(`scenario${scenario}`);
+            scenarioDiv.appendChild(feedbackDiv);
+        }
+
+        function updateDisplay() {
+            document.getElementById('distanceToGold').textContent = distanceToGold;
+            document.getElementById('persistenceScore').textContent = persistenceScore;
+            document.getElementById('progressBar').style.width = (100 - distanceToGold) + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('scenario5').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            document.getElementById('finalDistance').textContent = distanceToGold;
+            document.getElementById('finalScore').textContent = persistenceScore;
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (distanceToGold <= 10) {
+                finalMessage.textContent = '¡Increíble! Has llegado prácticamente al oro. ¡Eres un maestro de la persistencia!';
+            } else if (distanceToGold <= 30) {
+                finalMessage.textContent = '¡Excelente! Estás muy cerca del oro. Tu persistencia es admirable.';
+            } else if (distanceToGold <= 50) {
+                finalMessage.textContent = '¡Bien! Estás a mitad de camino. Con más persistencia llegarás al oro.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos aprendemos. Con este juego ahora sabes la importancia de no rendirse.';
+            }
+        }
+
+        function restartGame() {
+            // Resetear variables
+            currentScenario = 1;
+            distanceToGold = 100;
+            persistenceScore = 0;
+            selectedChoices = {};
+            
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`scenario${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primer escenario
+            document.getElementById('scenario1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.choice-button').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Remover feedbacks
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.remove();
+            });
+            
+            // Actualizar display
+            updateDisplay();
+            
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 

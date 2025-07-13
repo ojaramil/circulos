@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso - Optimismo Joven</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .question-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-text {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .answer-button {
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s ease;
+            font-size: 1rem;
+        }
+        .answer-button:hover {
+            background: #5a6fd8;
+        }
+        .answer-button.correct {
+            background: #28a745;
+        }
+        .answer-button.incorrect {
+            background: #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .feedback-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Verdadero o Falso - Optimismo</h1>
+        <p>¡Pon a prueba tu conocimiento sobre el optimismo! Responde verdadero o falso a estas preguntas y aprende más sobre esta poderosa habilidad.</p>
+
+        <div class="score-display">
+            <h2>Puntuación: <span id="score">0</span> / <span id="total">0</span></h2>
+        </div>
+
+        <div id="game-container">
+            <div class="question-card">
+                <h2>🎮 Instrucciones</h2>
+                <p>Lee cada pregunta y decide si es <strong>VERDADERO</strong> o <strong>FALSO</strong>. ¡Demuestra lo que sabes sobre el optimismo!</p>
+                <button onclick="startGame()" class="answer-button">¡Comenzar Juego!</button>
+            </div>
+        </div>
+
+        <script>
+            let currentQuestion = 0;
+            let score = 0;
+            let totalQuestions = 0;
+
+            const questions = [
+                {
+                    question: "El optimismo es una habilidad que se puede aprender y desarrollar.",
+                    answer: true,
+                    explanation: "¡VERDADERO! El optimismo no es algo con lo que naces, es una habilidad que puedes desarrollar con práctica y las herramientas correctas."
+                },
+                {
+                    question: "Los optimistas ignoran los problemas y solo piensan en cosas positivas.",
+                    answer: false,
+                    explanation: "¡FALSO! Los optimistas realistas reconocen los problemas, pero buscan soluciones activas en lugar de rendirse."
+                },
+                {
+                    question: "El optimismo puede mejorar tu salud física y mental.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los estudios científicos muestran que los optimistas tienen mejor salud, viven más tiempo y manejan mejor el estrés."
+                },
+                {
+                    question: "Solo las personas felices pueden ser optimistas.",
+                    answer: false,
+                    explanation: "¡FALSO! Cualquiera puede desarrollar el optimismo, sin importar su situación actual. Es una elección y una habilidad."
+                },
+                {
+                    question: "El optimismo te ayuda a alcanzar tus metas y objetivos.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los optimistas perseveran más, ven oportunidades donde otros ven obstáculos, y tienen más éxito."
+                },
+                {
+                    question: "Los optimistas nunca se sienten tristes o frustrados.",
+                    answer: false,
+                    explanation: "¡FALSO! Los optimistas sienten todas las emociones, pero tienen herramientas para manejar mejor los momentos difíciles."
+                },
+                {
+                    question: "El optimismo mejora las relaciones sociales y la comunicación.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los optimistas atraen más personas, resuelven conflictos mejor, y crean conexiones más fuertes."
+                },
+                {
+                    question: "El optimismo es solo para personas ricas o exitosas.",
+                    answer: false,
+                    explanation: "¡FALSO! El optimismo no depende del dinero o el éxito. Personas de todas las condiciones pueden ser optimistas."
+                },
+                {
+                    question: "Los optimistas ven los errores como oportunidades de aprendizaje.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los optimistas no ven los errores como fracasos, sino como valiosas lecciones para mejorar."
+                },
+                {
+                    question: "El optimismo se puede practicar todos los días con ejercicios simples.",
+                    answer: true,
+                    explanation: "¡VERDADERO! El optimismo se fortalece con práctica diaria: gratitud, reframing, afirmaciones positivas, etc."
+                },
+                {
+                    question: "Los optimistas son menos inteligentes que los pesimistas.",
+                    answer: false,
+                    explanation: "¡FALSO! No hay relación entre optimismo e inteligencia. De hecho, los optimistas suelen ser más creativos."
+                },
+                {
+                    question: "El optimismo te hace más resiliente ante los fracasos.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los optimistas se recuperan más rápido de las dificultades y ven los fracasos como temporales."
+                },
+                {
+                    question: "El optimismo es lo mismo que ser feliz todo el tiempo.",
+                    answer: false,
+                    explanation: "¡FALSO! El optimismo no es ser feliz constantemente, sino tener esperanza y confianza en el futuro."
+                },
+                {
+                    question: "Los optimistas tienen mejor rendimiento en la escuela y el trabajo.",
+                    answer: true,
+                    explanation: "¡VERDADERO! Los optimistas se esfuerzan más, manejan mejor el estrés, y tienen mejor rendimiento académico y laboral."
+                },
+                {
+                    question: "El optimismo es una actitud que no se puede cambiar.",
+                    answer: false,
+                    explanation: "¡FALSO! El optimismo es una habilidad que se puede desarrollar y cambiar con práctica y las herramientas correctas."
+                }
+            ];
+
+            function startGame() {
+                currentQuestion = 0;
+                score = 0;
+                totalQuestions = questions.length;
+                document.getElementById('score').textContent = score;
+                document.getElementById('total').textContent = totalQuestions;
+                showQuestion();
+            }
+
+            function showQuestion() {
+                if (currentQuestion >= questions.length) {
+                    endGame();
+                    return;
+                }
+
+                const question = questions[currentQuestion];
+                const gameContainer = document.getElementById('game-container');
+                
+                gameContainer.innerHTML = `
+                    <div class="question-card">
+                        <h2>Pregunta ${currentQuestion + 1} de ${questions.length}</h2>
+                        <div class="question-text">
+                            ${question.question}
+                        </div>
+                        
+                        <button onclick="selectAnswer(true)" class="answer-button">✅ VERDADERO</button>
+                        <button onclick="selectAnswer(false)" class="answer-button">❌ FALSO</button>
+                    </div>
+                `;
+            }
+
+            function selectAnswer(selectedAnswer) {
+                const question = questions[currentQuestion];
+                const isCorrect = (selectedAnswer === question.answer);
+                const buttons = document.querySelectorAll('.answer-button');
+                
+                // Disable all buttons
+                buttons.forEach(button => button.style.pointerEvents = 'none');
+                
+                // Show correct/incorrect
+                buttons.forEach((button, index) => {
+                    if (index === 0 && question.answer === true) {
+                        button.classList.add('correct');
+                    } else if (index === 1 && question.answer === false) {
+                        button.classList.add('correct');
+                    } else if (index === 0 && selectedAnswer === true && !isCorrect) {
+                        button.classList.add('incorrect');
+                    } else if (index === 1 && selectedAnswer === false && !isCorrect) {
+                        button.classList.add('incorrect');
+                    }
+                });
+
+                // Update score
+                if (isCorrect) {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                }
+
+                // Show feedback
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback-box';
+                feedback.innerHTML = `
+                    <h3>${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                    <p>${question.explanation}</p>
+                    <button onclick="nextQuestion()" class="answer-button" style="margin-top: 1rem;">Siguiente</button>
+                `;
+                document.getElementById('game-container').appendChild(feedback);
+            }
+
+            function nextQuestion() {
+                currentQuestion++;
+                showQuestion();
+            }
+
+            function endGame() {
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = '';
+                let emoji = '';
+
+                if (percentage >= 80) {
+                    message = '¡Eres un experto en optimismo! Tienes un conocimiento sólido sobre esta poderosa habilidad.';
+                    emoji = '🌟';
+                } else if (percentage >= 60) {
+                    message = '¡Muy bien! Tienes buenos conocimientos sobre el optimismo. Sigue aprendiendo.';
+                    emoji = '👍';
+                } else if (percentage >= 40) {
+                    message = '¡Buen intento! Ahora sabes más sobre el optimismo. Sigue estudiando.';
+                    emoji = '💪';
+                } else {
+                    message = 'No te preocupes, ahora tienes más información sobre el optimismo. Sigue aprendiendo.';
+                    emoji = '🌱';
+                }
+
+                document.getElementById('game-container').innerHTML = `
+                    <div class="question-card">
+                        <h2>${emoji} ¡Juego Terminado! ${emoji}</h2>
+                        <p>Tu puntuación final: <strong>${score} de ${totalQuestions}</strong> (${percentage}%)</p>
+                        <p>${message}</p>
+                        
+                        <h3>🎯 Lo que aprendiste:</h3>
+                        <ul>
+                            <li>El optimismo es una habilidad que se puede desarrollar</li>
+                            <li>Los optimistas no ignoran los problemas, buscan soluciones</li>
+                            <li>El optimismo mejora la salud y las relaciones</li>
+                            <li>Cualquiera puede ser optimista, sin importar su situación</li>
+                            <li>Se puede practicar todos los días</li>
+                        </ul>
+                        
+                        <button onclick="startGame()" class="answer-button">Jugar de Nuevo</button>
+                    </div>
+                `;
+            }
+        </script>
+    </div>
+</body>
+</html> 

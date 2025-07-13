@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadena de Innovaciones - Optimismo Joven</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .innovation-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .chain-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .idea-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 1rem;
+        }
+        .idea-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .idea-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .idea-card:hover {
+            border-color: #667eea;
+            background: #e8f4fd;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .action-button {
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .action-button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Cadena de Innovaciones</h1>
+        <p>¡Crea una cadena de ideas innovadoras! Este juego te ayudará a desarrollar tu creatividad optimista y ver cómo una idea puede llevar a otra mejor.</p>
+
+        <div class="score-display">
+            <h2>Ideas Creadas: <span id="ideaCount">0</span></h2>
+            <p>Puntuación de Creatividad: <span id="creativityScore">0</span></p>
+        </div>
+
+        <div id="game-container">
+            <div class="innovation-card">
+                <h2>🎮 Instrucciones</h2>
+                <p>Vamos a crear una cadena de innovaciones. Cada idea debe mejorar o expandir la anterior. ¡Usa tu optimismo para ver posibilidades infinitas!</p>
+                
+                <div class="chain-link">
+                    <h3>🎯 Desafío Inicial</h3>
+                    <p>¿Cómo podríamos hacer que la escuela sea más divertida y efectiva?</p>
+                </div>
+                
+                <button onclick="startChain()" class="action-button">¡Comenzar Cadena!</button>
+            </div>
+        </div>
+
+        <script>
+            let ideaCount = 0;
+            let creativityScore = 0;
+            let currentChallenge = "¿Cómo podríamos hacer que la escuela sea más divertida y efectiva?";
+            let ideas = [];
+
+            const challenges = [
+                "¿Cómo podríamos hacer que la escuela sea más divertida y efectiva?",
+                "¿Cómo podríamos ayudar a más personas a ser optimistas?",
+                "¿Cómo podríamos resolver el problema de la contaminación?",
+                "¿Cómo podríamos hacer que la tecnología ayude a las personas mayores?",
+                "¿Cómo podríamos crear más oportunidades para jóvenes emprendedores?",
+                "¿Cómo podríamos mejorar la comunicación entre padres e hijos?",
+                "¿Cómo podríamos hacer que el deporte sea más accesible para todos?",
+                "¿Cómo podríamos crear una comunidad más unida en nuestro barrio?"
+            ];
+
+            function startChain() {
+                ideaCount = 0;
+                creativityScore = 0;
+                ideas = [];
+                currentChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+                showIdeaInput();
+            }
+
+            function showIdeaInput() {
+                const gameContainer = document.getElementById('game-container');
+                gameContainer.innerHTML = `
+                    <div class="innovation-card">
+                        <h2>💡 Idea ${ideaCount + 1}</h2>
+                        <div class="chain-link">
+                            <h3>Desafío:</h3>
+                            <p>${currentChallenge}</p>
+                        </div>
+                        
+                        <h3>Tu Idea Innovadora:</h3>
+                        <textarea id="newIdea" class="idea-input" rows="4" placeholder="Escribe tu idea innovadora aquí..."></textarea>
+                        
+                        <button onclick="addIdea()" class="action-button">Agregar Idea</button>
+                        <button onclick="newChallenge()" class="action-button">Nuevo Desafío</button>
+                    </div>
+                `;
+            }
+
+            function addIdea() {
+                const idea = document.getElementById('newIdea').value.trim();
+                if (idea) {
+                    ideas.push({
+                        number: ideaCount + 1,
+                        idea: idea,
+                        challenge: currentChallenge
+                    });
+                    
+                    ideaCount++;
+                    creativityScore += 10;
+                    
+                    updateDisplay();
+                    showIdeasChain();
+                } else {
+                    alert('Por favor, escribe tu idea');
+                }
+            }
+
+            function newChallenge() {
+                currentChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+                showIdeaInput();
+            }
+
+            function updateDisplay() {
+                document.getElementById('ideaCount').textContent = ideaCount;
+                document.getElementById('creativityScore').textContent = creativityScore;
+            }
+
+            function showIdeasChain() {
+                const gameContainer = document.getElementById('game-container');
+                let ideasHTML = '';
+                
+                ideas.forEach((item, index) => {
+                    ideasHTML += `
+                        <div class="idea-card">
+                            <h3>💡 Idea ${item.number}</h3>
+                            <p><strong>Desafío:</strong> ${item.challenge}</p>
+                            <p><strong>Tu Solución:</strong> ${item.idea}</p>
+                        </div>
+                    `;
+                });
+                
+                gameContainer.innerHTML = `
+                    <div class="innovation-card">
+                        <h2>🔗 Tu Cadena de Innovaciones</h2>
+                        <p>Has creado ${ideaCount} ideas innovadoras. ¡Excelente trabajo!</p>
+                        
+                        ${ideasHTML}
+                        
+                        <div class="chain-link">
+                            <h3>🎯 Próximo Desafío</h3>
+                            <p>¿Cómo podrías mejorar o expandir tu última idea?</p>
+                        </div>
+                        
+                        <textarea id="newIdea" class="idea-input" rows="4" placeholder="Escribe cómo mejorarías tu última idea..."></textarea>
+                        
+                        <button onclick="addIdea()" class="action-button">Agregar Mejora</button>
+                        <button onclick="newChallenge()" class="action-button">Nuevo Desafío</button>
+                        <button onclick="finishChain()" class="action-button">Terminar Cadena</button>
+                    </div>
+                `;
+            }
+
+            function finishChain() {
+                const gameContainer = document.getElementById('game-container');
+                let ideasHTML = '';
+                
+                ideas.forEach((item, index) => {
+                    ideasHTML += `
+                        <div class="idea-card">
+                            <h3>💡 Idea ${item.number}</h3>
+                            <p><strong>Desafío:</strong> ${item.challenge}</p>
+                            <p><strong>Tu Solución:</strong> ${item.idea}</p>
+                        </div>
+                    `;
+                });
+                
+                let message = '';
+                let emoji = '';
+                
+                if (ideaCount >= 5) {
+                    message = '¡Eres un genio innovador! Tu creatividad optimista no tiene límites.';
+                    emoji = '🌟';
+                } else if (ideaCount >= 3) {
+                    message = '¡Muy bien! Tienes una gran capacidad para generar ideas innovadoras.';
+                    emoji = '👍';
+                } else {
+                    message = '¡Buen comienzo! La creatividad se desarrolla con práctica.';
+                    emoji = '💪';
+                }
+                
+                gameContainer.innerHTML = `
+                    <div class="innovation-card">
+                        <h2>${emoji} ¡Cadena Completada! ${emoji}</h2>
+                        <p>${message}</p>
+                        
+                        <h3>📊 Resumen de tu Cadena:</h3>
+                        <ul>
+                            <li>Ideas creadas: ${ideaCount}</li>
+                            <li>Puntuación de creatividad: ${creativityScore}</li>
+                            <li>Desafíos abordados: ${new Set(ideas.map(i => i.challenge)).size}</li>
+                        </ul>
+                        
+                        <h3>🔗 Tu Cadena de Ideas:</h3>
+                        ${ideasHTML}
+                        
+                        <h3>🎯 Lo que aprendiste:</h3>
+                        <ul>
+                            <li>El optimismo te ayuda a ver posibilidades donde otros ven problemas</li>
+                            <li>Cada idea puede llevar a una mejor</li>
+                            <li>La creatividad se fortalece con la práctica</li>
+                            <li>Los desafíos son oportunidades para innovar</li>
+                        </ul>
+                        
+                        <button onclick="startChain()" class="action-button">Crear Nueva Cadena</button>
+                    </div>
+                `;
+            }
+        </script>
+    </div>
+</body>
+</html> 

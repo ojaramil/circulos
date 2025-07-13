@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construye tu Futuro - Optimismo Joven</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .future-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .goal-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 1rem;
+        }
+        .goal-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .step-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        .motivation-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .action-button {
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .action-button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Construye tu Futuro</h1>
+        <p>¡Es hora de crear tu propio futuro optimista! Este juego te ayudará a establecer metas, crear un plan de acción y mantener la motivación para alcanzar tus sueños.</p>
+
+        <div class="motivation-box">
+            <h2>🌟 Tu Futuro Brilla</h2>
+            <p>El optimismo no es solo pensar positivo, es crear activamente el futuro que quieres. ¡Tú tienes el poder de construir tu propio camino hacia el éxito!</p>
+        </div>
+
+        <div class="future-card">
+            <h2>🎯 Paso 1: Define tu Meta Principal</h2>
+            <p>¿Qué te gustaría lograr en los próximos 6 meses? Puede ser algo relacionado con:</p>
+            <ul>
+                <li>🎓 Estudios (mejorar en una materia, aprender algo nuevo)</li>
+                <li>🏃‍♂️ Salud (hacer más ejercicio, comer mejor)</li>
+                <li>👥 Relaciones (hacer nuevos amigos, mejorar con la familia)</li>
+                <li>🎨 Hobbies (aprender un instrumento, mejorar en un deporte)</li>
+                <li>💰 Finanzas (ahorrar para algo especial)</li>
+            </ul>
+            
+            <input type="text" id="mainGoal" class="goal-input" placeholder="Ejemplo: Quiero mejorar mis notas en matemáticas de 7 a 9">
+            <button onclick="setGoal()" class="action-button">Establecer Meta</button>
+        </div>
+
+        <div id="planning-section" style="display: none;">
+            <div class="future-card">
+                <h2>📋 Paso 2: Crea tu Plan de Acción</h2>
+                <p>Ahora vamos a dividir tu meta en pasos pequeños y manejables:</p>
+                
+                <div id="steps-container">
+                    <div class="step-card">
+                        <h3>Paso 1:</h3>
+                        <input type="text" class="goal-input step-input" placeholder="¿Cuál es el primer paso que necesitas dar?">
+                    </div>
+                </div>
+                
+                <button onclick="addStep()" class="action-button">+ Agregar Paso</button>
+                <button onclick="createPlan()" class="action-button">Crear Plan</button>
+            </div>
+        </div>
+
+        <div id="motivation-section" style="display: none;">
+            <div class="future-card">
+                <h2>💪 Paso 3: Encuentra tu Motivación</h2>
+                <p>¿Por qué es importante para ti alcanzar esta meta?</p>
+                <textarea id="motivation" class="goal-input" rows="4" placeholder="Escribe aquí por qué quieres lograr esta meta..."></textarea>
+                
+                <h3>🎨 Visualiza tu Éxito</h3>
+                <p>Imagina que ya lograste tu meta. ¿Cómo te sientes? ¿Qué ves? ¿Qué escuchas?</p>
+                <textarea id="visualization" class="goal-input" rows="4" placeholder="Describe cómo se verá tu éxito..."></textarea>
+                
+                <button onclick="setMotivation()" class="action-button">Guardar Motivación</button>
+            </div>
+        </div>
+
+        <div id="tracking-section" style="display: none;">
+            <div class="future-card">
+                <h2>📊 Paso 4: Rastrea tu Progreso</h2>
+                <p>Tu meta: <strong id="displayGoal"></strong></p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p>Progreso: <span id="progressText">0%</span></p>
+                
+                <h3>✅ ¿Qué has logrado hoy?</h3>
+                <input type="text" id="dailyProgress" class="goal-input" placeholder="Describe lo que hiciste hoy para avanzar hacia tu meta">
+                <button onclick="updateProgress()" class="action-button">Actualizar Progreso</button>
+                
+                <h3>📝 Registro de Actividades</h3>
+                <div id="activityLog"></div>
+            </div>
+        </div>
+
+        <div id="celebration-section" style="display: none;">
+            <div class="motivation-box">
+                <h2>🎉 ¡Plan Creado Exitosamente!</h2>
+                <p>Has creado un plan sólido para alcanzar tu meta. ¡Ahora es momento de ponerlo en acción!</p>
+                
+                <h3>🌟 Consejos para el Éxito:</h3>
+                <ul style="text-align: left;">
+                    <li>Revisa tu plan todos los días</li>
+                    <li>Celebra cada pequeño logro</li>
+                    <li>No te rindas si algo no sale como esperabas</li>
+                    <li>Ajusta tu plan si es necesario</li>
+                    <li>Mantén tu motivación visible</li>
+                </ul>
+                
+                <button onclick="startOver()" class="action-button">Crear Nueva Meta</button>
+            </div>
+        </div>
+
+        <script>
+            let currentStep = 1;
+            let totalProgress = 0;
+            let activities = [];
+
+            function setGoal() {
+                const goal = document.getElementById('mainGoal').value.trim();
+                if (goal) {
+                    document.getElementById('planning-section').style.display = 'block';
+                    document.getElementById('mainGoal').disabled = true;
+                } else {
+                    alert('Por favor, escribe tu meta');
+                }
+            }
+
+            function addStep() {
+                currentStep++;
+                const stepsContainer = document.getElementById('steps-container');
+                const newStep = document.createElement('div');
+                newStep.className = 'step-card';
+                newStep.innerHTML = `
+                    <h3>Paso ${currentStep}:</h3>
+                    <input type="text" class="goal-input step-input" placeholder="¿Cuál es el siguiente paso?">
+                `;
+                stepsContainer.appendChild(newStep);
+            }
+
+            function createPlan() {
+                const steps = document.querySelectorAll('.step-input');
+                let validSteps = 0;
+                
+                steps.forEach(step => {
+                    if (step.value.trim()) validSteps++;
+                });
+                
+                if (validSteps > 0) {
+                    document.getElementById('motivation-section').style.display = 'block';
+                } else {
+                    alert('Por favor, agrega al menos un paso a tu plan');
+                }
+            }
+
+            function setMotivation() {
+                const motivation = document.getElementById('motivation').value.trim();
+                const visualization = document.getElementById('visualization').value.trim();
+                
+                if (motivation || visualization) {
+                    document.getElementById('tracking-section').style.display = 'block';
+                    document.getElementById('displayGoal').textContent = document.getElementById('mainGoal').value;
+                    document.getElementById('motivation').disabled = true;
+                    document.getElementById('visualization').disabled = true;
+                } else {
+                    alert('Por favor, escribe tu motivación o visualización');
+                }
+            }
+
+            function updateProgress() {
+                const progress = document.getElementById('dailyProgress').value.trim();
+                if (progress) {
+                    activities.unshift({
+                        date: new Date().toLocaleDateString(),
+                        activity: progress
+                    });
+                    
+                    // Update progress (simple increment)
+                    totalProgress += 10;
+                    if (totalProgress > 100) totalProgress = 100;
+                    
+                    document.getElementById('progressFill').style.width = totalProgress + '%';
+                    document.getElementById('progressText').textContent = totalProgress + '%';
+                    
+                    // Update activity log
+                    updateActivityLog();
+                    
+                    document.getElementById('dailyProgress').value = '';
+                    
+                    if (totalProgress >= 100) {
+                        setTimeout(() => {
+                            document.getElementById('celebration-section').style.display = 'block';
+                        }, 1000);
+                    }
+                } else {
+                    alert('Por favor, describe lo que hiciste hoy');
+                }
+            }
+
+            function updateActivityLog() {
+                const logContainer = document.getElementById('activityLog');
+                logContainer.innerHTML = '';
+                
+                activities.slice(0, 5).forEach(activity => {
+                    const activityDiv = document.createElement('div');
+                    activityDiv.style.background = '#f8f9fa';
+                    activityDiv.style.padding = '1rem';
+                    activityDiv.style.margin = '0.5rem 0';
+                    activityDiv.style.borderRadius = '8px';
+                    activityDiv.innerHTML = `
+                        <strong>${activity.date}:</strong> ${activity.activity}
+                    `;
+                    logContainer.appendChild(activityDiv);
+                });
+            }
+
+            function startOver() {
+                location.reload();
+            }
+        </script>
+    </div>
+</body>
+</html> 

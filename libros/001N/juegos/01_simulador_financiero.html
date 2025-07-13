@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Financiero</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .money-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .scenario-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .feedback {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Simulador Financiero</h1>
+        <p>¡Aprende a manejar tu dinero de manera inteligente! Toma decisiones y ve cómo afectan tu futuro financiero.</p>
+
+        <div class="money-display">
+            Dinero Actual: $<span id="currentMoney">1000</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <p>Progreso: <span id="progress">0</span>%</p>
+
+        <div class="game-container" id="scenario1">
+            <h3>🎯 Escenario 1: Tu Primera Mesada</h3>
+            <div class="scenario-card">
+                <p>Acabas de recibir $100 de mesada. ¿Qué haces con el dinero?</p>
+                
+                <button class="choice-button" onclick="makeChoice(1, 'spend')">A) Gastar todo en videojuegos y ropa</button>
+                <button class="choice-button" onclick="makeChoice(1, 'save')">B) Guardar $50 y gastar $50</button>
+                <button class="choice-button" onclick="makeChoice(1, 'invest')">C) Invertir $30, ahorrar $40, gastar $30</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h3>🎯 Escenario 2: Oportunidad de Trabajo</h3>
+            <div class="scenario-card">
+                <p>Un vecino te ofrece $50 por cortar el césped. ¿Qué haces?</p>
+                
+                <button class="choice-button" onclick="makeChoice(2, 'refuse')">A) No, prefiero jugar videojuegos</button>
+                <button class="choice-button" onclick="makeChoice(2, 'accept')">B) ¡Sí! Trabajo por el dinero</button>
+                <button class="choice-button" onclick="makeChoice(2, 'negotiate')">C) ¿Me pagas $60? Es mucho trabajo</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h3>🎯 Escenario 3: Decisión de Compra</h3>
+            <div class="scenario-card">
+                <p>Quieres comprar algo que cuesta $200. ¿Qué estrategia usas?</p>
+                
+                <button class="choice-button" onclick="makeChoice(3, 'credit')">A) Usar la tarjeta de crédito de mis papás</button>
+                <button class="choice-button" onclick="makeChoice(3, 'save')">B) Ahorrar $50 al mes hasta tenerlo</button>
+                <button class="choice-button" onclick="makeChoice(3, 'wait')">C) Esperar a que esté en oferta</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="scenario4" style="display: none;">
+            <h3>🎯 Escenario 4: Inversión</h3>
+            <div class="scenario-card">
+                <p>Tienes $500 ahorrados. ¿Qué haces con ellos?</p>
+                
+                <button class="choice-button" onclick="makeChoice(4, 'spend')">A) Comprar cosas que quiero ahora</button>
+                <button class="choice-button" onclick="makeChoice(4, 'bank')">B) Ponerlos en el banco para emergencias</button>
+                <button class="choice-button" onclick="makeChoice(4, 'invest')">C) Invertir parte en un fondo para jóvenes</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="scenario5" style="display: none;">
+            <h3>🎯 Escenario 5: Planificación</h3>
+            <div class="scenario-card">
+                <p>Quieres ahorrar para la universidad. ¿Cuál es tu plan?</p>
+                
+                <button class="choice-button" onclick="makeChoice(5, 'none')">A) No pienso en eso ahora</button>
+                <button class="choice-button" onclick="makeChoice(5, 'basic')">B) Ahorrar lo que pueda cuando pueda</button>
+                <button class="choice-button" onclick="makeChoice(5, 'plan')">C) Crear un plan: $100 al mes durante 4 años</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Simulación Completada!</h2>
+            <div class="money-display">
+                <h3>Dinero Final: $<span id="finalMoney">1000</span></h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="scenario-card">
+                <h3>🎯 Lo que Aprendiste:</h3>
+                <ul>
+                    <li><strong>Ahorrar es importante:</strong> Siempre guarda algo de tu dinero</li>
+                    <li><strong>Invertir es inteligente:</strong> Haz que tu dinero trabaje para ti</li>
+                    <li><strong>Planificar es clave:</strong> Ten un plan para tus metas financieras</li>
+                    <li><strong>Evita deudas:</strong> No gastes dinero que no tienes</li>
+                </ul>
+                
+                <h3>💡 Consejos para el Futuro:</h3>
+                <ol>
+                    <li>Guarda al menos 20% de tu dinero</li>
+                    <li>Invierte desde joven</li>
+                    <li>Ten un fondo de emergencia</li>
+                    <li>Planifica tus gastos grandes</li>
+                    <li>Aprende sobre finanzas continuamente</li>
+                </ol>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentMoney = 1000;
+        let currentScenario = 1;
+        const totalScenarios = 5;
+
+        function makeChoice(scenario, choice) {
+            const buttons = document.querySelectorAll(`#scenario${scenario} .choice-button`);
+            const feedback = document.getElementById(`feedback${scenario}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            let moneyChange = 0;
+            let message = '';
+            let isPositive = true;
+            
+            switch(scenario) {
+                case 1:
+                    if (choice === 'spend') {
+                        moneyChange = -100;
+                        message = '❌ Gastaste todo tu dinero. No es una buena estrategia a largo plazo.';
+                        isPositive = false;
+                    } else if (choice === 'save') {
+                        moneyChange = 0;
+                        message = '✅ Buena decisión. Ahorrar es importante, pero también puedes invertir.';
+                    } else if (choice === 'invest') {
+                        moneyChange = 50;
+                        message = '🎉 ¡Excelente! Invertir desde joven es la mejor estrategia.';
+                    }
+                    break;
+                case 2:
+                    if (choice === 'refuse') {
+                        moneyChange = 0;
+                        message = '❌ Perdiste la oportunidad de ganar dinero.';
+                        isPositive = false;
+                    } else if (choice === 'accept') {
+                        moneyChange = 50;
+                        message = '✅ ¡Bien! Ganar dinero trabajando es una excelente idea.';
+                    } else if (choice === 'negotiate') {
+                        moneyChange = 60;
+                        message = '🎉 ¡Genial! Saber negociar es una habilidad valiosa.';
+                    }
+                    break;
+                case 3:
+                    if (choice === 'credit') {
+                        moneyChange = -50;
+                        message = '❌ Usar crédito sin plan es peligroso. Puede crear deudas.';
+                        isPositive = false;
+                    } else if (choice === 'save') {
+                        moneyChange = 0;
+                        message = '✅ Ahorrar es una buena estrategia. También puedes buscar ofertas.';
+                    } else if (choice === 'wait') {
+                        moneyChange = 100;
+                        message = '🎉 ¡Inteligente! Esperar ofertas puede ahorrarte mucho dinero.';
+                    }
+                    break;
+                case 4:
+                    if (choice === 'spend') {
+                        moneyChange = -200;
+                        message = '❌ Gastar todo tu ahorro no es una buena idea.';
+                        isPositive = false;
+                    } else if (choice === 'bank') {
+                        moneyChange = 25;
+                        message = '✅ Guardar dinero es bueno, pero también puedes invertir parte.';
+                    } else if (choice === 'invest') {
+                        moneyChange = 100;
+                        message = '🎉 ¡Perfecto! Invertir es la mejor manera de hacer crecer tu dinero.';
+                    }
+                    break;
+                case 5:
+                    if (choice === 'none') {
+                        moneyChange = -100;
+                        message = '❌ No planificar puede costarte mucho en el futuro.';
+                        isPositive = false;
+                    } else if (choice === 'basic') {
+                        moneyChange = 0;
+                        message = '✅ Ahorrar es bueno, pero un plan específico es mejor.';
+                    } else if (choice === 'plan') {
+                        moneyChange = 200;
+                        message = '🎉 ¡Excelente! Tener un plan específico te ayudará a alcanzar tus metas.';
+                    }
+                    break;
+            }
+            
+            currentMoney += moneyChange;
+            
+            feedback.innerHTML = `<strong>${message}</strong>`;
+            feedback.className = `feedback ${isPositive ? 'positive' : 'negative'}`;
+            feedback.style.display = 'block';
+            
+            // Actualizar display
+            updateDisplay();
+            
+            // Mostrar siguiente escenario después de 2 segundos
+            setTimeout(() => {
+                if (scenario < totalScenarios) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 2000);
+        }
+        
+        function updateDisplay() {
+            document.getElementById('currentMoney').textContent = currentMoney;
+            document.getElementById('finalMoney').textContent = currentMoney;
+            
+            const progress = Math.min(((currentMoney - 1000) / 500) * 100, 100);
+            document.getElementById('progress').textContent = Math.round(progress);
+            document.getElementById('progressBar').style.width = Math.max(progress, 0) + '%';
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`scenario${totalScenarios}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentMoney >= 1500) {
+                finalMessage.textContent = '¡Excelente! Eres un experto financiero joven. ¡Sigue así!';
+            } else if (currentMoney >= 1200) {
+                finalMessage.textContent = '¡Bien! Tienes buenas bases financieras. Con práctica serás aún mejor.';
+            } else if (currentMoney >= 1000) {
+                finalMessage.textContent = 'Estás en el camino correcto. Sigue aprendiendo sobre finanzas.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con práctica aprenderás a manejar mejor tu dinero.';
+            }
+        }
+        
+        function restartGame() {
+            currentMoney = 1000;
+            currentScenario = 1;
+            
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= totalScenarios; i++) {
+                document.getElementById(`scenario${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primer escenario
+            document.getElementById('scenario1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateDisplay();
+        }
+    </script>
+</body>
+</html> 

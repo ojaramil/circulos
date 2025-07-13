@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Decisiones</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .decision-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            text-align: left;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.incorrect {
+            background: #dc3545;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Juego de Decisiones</h1>
+        <p>¡Toma decisiones importantes y ve cómo afectan tu camino hacia el éxito! Cada decisión cuenta.</p>
+
+        <div class="score-display">
+            <h3>Puntuación: <span id="score">0</span>/100</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p>Progreso: <span id="progress">0</span>/5 decisiones</p>
+        </div>
+
+        <div class="game-container">
+            <h2>🎮 ¿Cómo Jugar?</h2>
+            <p>Lee cada situación y elige la mejor decisión basada en los principios de Napoleon Hill. ¡Cada decisión correcta te acerca más al éxito!</p>
+        </div>
+
+        <div class="game-container" id="decision1">
+            <h3>🎯 Decisión 1: El Proyecto de la Escuela</h3>
+            <div class="decision-card">
+                <p>Tienes un proyecto importante de la escuela que vale el 30% de tu nota. Es difícil y tienes solo 2 semanas. ¿Qué haces?</p>
+                
+                <button class="choice-button" onclick="checkDecision(1, 'good')">A) Crear un plan detallado, dividir el trabajo en partes pequeñas, y trabajar un poco cada día. Buscar ayuda si la necesito.</button>
+                <button class="choice-button" onclick="checkDecision(1, 'bad')">B) Dejarlo para el último día y hacer lo que pueda en una noche.</button>
+                <button class="choice-button" onclick="checkDecision(1, 'bad')">C) Copiar el trabajo de un compañero para terminarlo rápido.</button>
+                <button class="choice-button" onclick="checkDecision(1, 'bad')">D) No hacer nada y aceptar una mala nota.</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="decision2" style="display: none;">
+            <h3>🎯 Decisión 2: El Negocio de Limonada</h3>
+            <div class="decision-card">
+                <p>Quieres ganar dinero vendiendo limonada. Tienes $10 para empezar. ¿Qué decisión tomas?</p>
+                
+                <button class="choice-button" onclick="checkDecision(2, 'bad')">A) Gastar todo el dinero en limonada y esperar que la gente la compre.</button>
+                <button class="choice-button" onclick="checkDecision(2, 'good')">B) Investigar los precios, hacer un plan de marketing, y usar el dinero sabiamente para maximizar las ganancias.</button>
+                <button class="choice-button" onclick="checkDecision(2, 'bad')">C) No hacer nada porque es muy difícil.</button>
+                <button class="choice-button" onclick="checkDecision(2, 'bad')">D) Pedirle dinero a tus padres para comprar más cosas.</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="decision3" style="display: none;">
+            <h3>🎯 Decisión 3: El Equipo de Deportes</h3>
+            <div class="decision-card">
+                <p>Quieres entrar al equipo de fútbol pero no eres el mejor jugador. ¿Qué haces?</p>
+                
+                <button class="choice-button" onclick="checkDecision(3, 'bad')">A) No intentar porque otros son mejores que tú.</button>
+                <button class="choice-button" onclick="checkDecision(3, 'bad')">B) Intentar una vez y si no funciona, rendirte.</button>
+                <button class="choice-button" onclick="checkDecision(3, 'good')">C) Practicar todos los días, ver videos de técnicas, pedir ayuda a jugadores mejores, y no rendirte hasta lograrlo.</button>
+                <button class="choice-button" onclick="checkDecision(3, 'bad')">D) Quejarte de que el entrenador no te da oportunidad.</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="decision4" style="display: none;">
+            <h3>🎯 Decisión 4: El Ahorro</h3>
+            <div class="decision-card">
+                <p>Quieres ahorrar $200 para un viaje. ¿Cuál es la mejor estrategia?</p>
+                
+                <button class="choice-button" onclick="checkDecision(4, 'bad')">A) Esperar a que tus padres te den el dinero.</button>
+                <button class="choice-button" onclick="checkDecision(4, 'bad')">A) Gastar todo tu dinero y esperar milagros.</button>
+                <button class="choice-button" onclick="checkDecision(4, 'good')">C) Crear un plan: ahorrar $20 por semana, buscar trabajos extra, y reducir gastos innecesarios.</button>
+                <button class="choice-button" onclick="checkDecision(4, 'bad')">D) Pedir prestado a amigos.</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="decision5" style="display: none;">
+            <h3>🎯 Decisión 5: El Aprendizaje</h3>
+            <div class="decision-card">
+                <p>Quieres aprender a programar pero no sabes por dónde empezar. ¿Qué haces?</p>
+                
+                <button class="choice-button" onclick="checkDecision(5, 'bad')">A) Comprar libros caros y esperar aprender solo.</button>
+                <button class="choice-button" onclick="checkDecision(5, 'bad')">B) No hacer nada porque es muy complicado.</button>
+                <button class="choice-button" onclick="checkDecision(5, 'good')">C) Investigar recursos gratuitos online, empezar con tutoriales básicos, unirse a comunidades de programadores, y practicar todos los días.</button>
+                <button class="choice-button" onclick="checkDecision(5, 'bad')">D) Contratar un tutor caro inmediatamente.</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Juego Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            <div class="decision-summary" id="decisionSummary"></div>
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentDecision = 1;
+        const totalDecisions = 5;
+
+        function checkDecision(decision, choice) {
+            const buttons = document.querySelectorAll(`#decision${decision} .choice-button`);
+            const feedback = document.getElementById(`feedback${decision}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            if (choice === 'good') {
+                currentScore += 20;
+                feedback.innerHTML = '<strong>✅ ¡Excelente decisión!</strong> Esa opción muestra planificación, persistencia y acción específica. ¡Sigues los principios de Napoleon Hill!';
+                feedback.className = 'feedback positive';
+            } else {
+                feedback.innerHTML = '<strong>❌ No es la mejor decisión.</strong> Las buenas decisiones incluyen planificación, persistencia y acción específica. ¡Intenta de nuevo!';
+                feedback.className = 'feedback negative';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Actualizar puntuación
+            updateScore();
+            
+            // Mostrar siguiente decisión después de 3 segundos
+            setTimeout(() => {
+                if (decision < totalDecisions) {
+                    document.getElementById(`decision${decision}`).style.display = 'none';
+                    document.getElementById(`decision${decision + 1}`).style.display = 'block';
+                    currentDecision++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('finalScore').textContent = currentScore;
+            
+            const progressFill = document.getElementById('progressFill');
+            const progress = document.getElementById('progress');
+            
+            const progressPercent = (currentDecision / totalDecisions) * 100;
+            progressFill.style.width = progressPercent + '%';
+            progress.textContent = currentDecision;
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`decision${totalDecisions}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentScore >= 80) {
+                finalMessage.textContent = '¡Increíble! Tienes excelente criterio para tomar decisiones. ¡Eres un líder nato!';
+            } else if (currentScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu capacidad de decisión está mejorando. Con práctica serás excelente.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos aprendemos a tomar decisiones. Con práctica mejorarás mucho.';
+            }
+        }
+        
+        function restartGame() {
+            currentScore = 0;
+            currentDecision = 1;
+            
+            // Ocultar todas las decisiones
+            for (let i = 1; i <= totalDecisions; i++) {
+                document.getElementById(`decision${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primera decisión
+            document.getElementById('decision1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateScore();
+        }
+    </script>
+</body>
+</html> 

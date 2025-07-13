@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Fondos Índice - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">❓ Quiz: Fondos Índice</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>Este quiz se enfoca específicamente en fondos índice, la herramienta principal recomendada en "Inquebrantable". Pon a prueba tu conocimiento sobre esta estrategia de inversión.</p>
+        </div>
+
+        <div id="quiz-start" class="card">
+            <h2>🚀 Comenzar Quiz</h2>
+            <p>¿Estás listo para demostrar tu conocimiento sobre fondos índice?</p>
+            <button class="btn" onclick="startQuiz()">Comenzar Quiz</button>
+        </div>
+
+        <div id="quiz-question" class="card" style="display: none;">
+            <h2>Pregunta <span id="question-number">1</span> de <span id="total-questions">8</span></h2>
+            <p id="question-text"></p>
+            
+            <div id="question-options">
+                <!-- Las opciones se generarán dinámicamente -->
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="quiz-result" class="card" style="display: none;">
+            <h2>🎯 Resultado</h2>
+            <div id="result-content"></div>
+            <button class="btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="quiz-summary" class="card" style="display: none;">
+            <h2>🏆 Resumen del Quiz</h2>
+            <div id="summary-content"></div>
+            <button class="btn" onclick="restartQuiz()">Hacer Quiz de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let totalQuestions = 8;
+        
+        const questions = [
+            {
+                text: "¿Qué es un fondo índice?",
+                options: [
+                    "Un fondo que intenta superar el rendimiento del mercado",
+                    "Un fondo que replica el rendimiento de un índice específico",
+                    "Un fondo que invierte solo en acciones de crecimiento",
+                    "Un fondo que cambia frecuentemente sus inversiones"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! Un fondo índice replica el rendimiento de un índice específico como el S&P 500, comprando todas las acciones en ese índice."
+            },
+            {
+                text: "¿Cuál es la principal ventaja de los fondos índice?",
+                options: [
+                    "Siempre superan al mercado",
+                    "Tienen costos muy bajos",
+                    "No requieren diversificación",
+                    "Pagan dividendos más altos"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! Los fondos índice tienen costos muy bajos (típicamente menos del 0.1% anual), lo que significa que más de tu dinero trabaja para ti."
+            },
+            {
+                text: "¿Quién fundó el primer fondo índice?",
+                options: [
+                    "Warren Buffett",
+                    "John C. Bogle",
+                    "Peter Lynch",
+                    "Ray Dalio"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! John C. Bogle fundó Vanguard y creó el primer fondo índice en 1975."
+            },
+            {
+                text: "¿Por qué los fondos índice superan a la mayoría de fondos activos?",
+                options: [
+                    "Porque tienen mejores gerentes",
+                    "Porque tienen menores costos y mayor diversificación",
+                    "Porque invierten en mejores empresas",
+                    "Porque cambian sus inversiones más frecuentemente"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! Los fondos índice superan a la mayoría de fondos activos debido a sus menores costos y mayor diversificación."
+            },
+            {
+                text: "¿Cuál es el índice más comúnmente replicado por fondos índice?",
+                options: [
+                    "Dow Jones Industrial Average",
+                    "S&P 500",
+                    "NASDAQ",
+                    "Russell 2000"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! El S&P 500 es el índice más comúnmente replicado, representando las 500 empresas más grandes de Estados Unidos."
+            },
+            {
+                text: "¿Qué significa 'expense ratio' en un fondo índice?",
+                options: [
+                    "El porcentaje de ganancias que paga el fondo",
+                    "El costo anual de administrar el fondo",
+                    "La tasa de rotación del portafolio",
+                    "El rendimiento mínimo garantizado"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! El expense ratio es el costo anual de administrar el fondo, expresado como porcentaje del patrimonio del fondo."
+            },
+            {
+                text: "¿Cuál es la estrategia recomendada para usar fondos índice?",
+                options: [
+                    "Comprar y vender frecuentemente",
+                    "Comprar y mantener a largo plazo",
+                    "Usar solo durante mercados alcistas",
+                    "Combinar con timing del mercado"
+                ],
+                correct: 1,
+                explanation: "✅ Correcto! La estrategia recomendada es comprar y mantener a largo plazo, aprovechando el poder del interés compuesto."
+            },
+            {
+                text: "¿Qué porcentaje de fondos activos superan a sus índices de referencia a largo plazo?",
+                options: [
+                    "Más del 50%",
+                    "Aproximadamente 25%",
+                    "Menos del 20%",
+                    "Casi el 100%"
+                ],
+                correct: 2,
+                explanation: "✅ Correcto! Menos del 20% de los fondos activos superan a sus índices de referencia a largo plazo después de costos."
+            }
+        ];
+
+        function startQuiz() {
+            document.getElementById('quiz-start').style.display = 'none';
+            document.getElementById('quiz-question').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.text;
+            document.getElementById('question-number').textContent = currentQuestion + 1;
+            document.getElementById('total-questions').textContent = totalQuestions;
+            
+            const optionsContainer = document.getElementById('question-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.style.margin = '10px';
+                button.style.width = '100%';
+                button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            updateProgress();
+        }
+
+        function selectAnswer(userAnswer) {
+            const question = questions[currentQuestion];
+            const isCorrect = userAnswer === question.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            document.getElementById('quiz-question').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            const resultContent = document.getElementById('result-content');
+            resultContent.innerHTML = `
+                <div class="alert ${isCorrect ? 'alert-success' : 'alert-error'}">
+                    <h3>${isCorrect ? '✅ Correcto!' : '❌ Incorrecto'}</h3>
+                    <p><strong>Tu respuesta:</strong> ${String.fromCharCode(65 + userAnswer)}. ${question.options[userAnswer]}</p>
+                    <p><strong>Respuesta correcta:</strong> ${String.fromCharCode(65 + question.correct)}. ${question.options[question.correct]}</p>
+                    <p><strong>Explicación:</strong> ${question.explanation}</p>
+                    <p><strong>Puntuación actual: ${score}/${currentQuestion + 1}</strong></p>
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= totalQuestions) {
+                showSummary();
+            } else {
+                document.getElementById('quiz-result').style.display = 'none';
+                document.getElementById('quiz-question').style.display = 'block';
+                showQuestion();
+            }
+        }
+
+        function showSummary() {
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('quiz-summary').style.display = 'block';
+            
+            const percentage = (score / totalQuestions) * 100;
+            
+            let grade, message;
+            if (percentage >= 90) {
+                grade = "A+";
+                message = "¡Excelente! Eres un experto en fondos índice.";
+            } else if (percentage >= 80) {
+                grade = "A";
+                message = "¡Muy bien! Tienes un sólido conocimiento de los fondos índice.";
+            } else if (percentage >= 70) {
+                grade = "B";
+                message = "Buen trabajo. Hay algunas áreas para mejorar.";
+            } else if (percentage >= 60) {
+                grade = "C";
+                message = "Aceptable. Necesitas más educación sobre fondos índice.";
+            } else {
+                grade = "D";
+                message = "Necesitas estudiar más sobre fondos índice y sus beneficios.";
+            }
+            
+            document.getElementById('summary-content').innerHTML = `
+                <div class="result result-success">
+                    <h3>Puntuación Final: ${score}/${totalQuestions} (${percentage.toFixed(1)}%)</h3>
+                    <h3>Calificación: ${grade}</h3>
+                    <p><strong>${message}</strong></p>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>💡 Beneficios Clave de los Fondos Índice:</h3>
+                    <ul>
+                        <li>Costos muy bajos (menos del 0.1% anual)</li>
+                        <li>Diversificación automática</li>
+                        <li>Transparencia total</li>
+                        <li>Eficiencia fiscal</li>
+                        <li>Rendimiento consistente</li>
+                        <li>Simplicidad de gestión</li>
+                        <li>Acceso a todo el mercado</li>
+                        <li>Menor rotación de portafolio</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-summary').style.display = 'none';
+            document.getElementById('quiz-start').style.display = 'block';
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+    </script>
+</body>
+</html> 

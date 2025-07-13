@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío de Perspectivas - Optimismo Joven</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .challenge-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .perspective-option {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .perspective-option:hover {
+            border-color: #667eea;
+            background: #e8f4fd;
+        }
+        .perspective-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .perspective-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .feedback-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Desafío de Perspectivas</h1>
+        <p>¿Puedes ver las situaciones desde diferentes ángulos? Este juego te ayudará a desarrollar tu capacidad de cambiar tu perspectiva y encontrar el lado positivo.</p>
+
+        <div class="score-display">
+            <h2>Puntuación: <span id="score">0</span> / <span id="total">0</span></h2>
+        </div>
+
+        <div id="game-container">
+            <div class="challenge-card">
+                <h2>🎮 Instrucciones</h2>
+                <p>Lee cada situación y elige la perspectiva más optimista. ¡Recuerda que el optimismo no es ignorar los problemas, sino ver las oportunidades!</p>
+                <button onclick="startGame()" style="background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer;">¡Comenzar Juego!</button>
+            </div>
+        </div>
+
+        <script>
+            let currentQuestion = 0;
+            let score = 0;
+            let totalQuestions = 0;
+
+            const challenges = [
+                {
+                    situation: "Perdiste el autobús para ir a la escuela",
+                    options: [
+                        "¡Qué mala suerte! Ahora voy a llegar tarde",
+                        "Ahora tengo tiempo para caminar y hacer ejercicio",
+                        "Es culpa del conductor por no esperarme",
+                        "Voy a llamar a mis papás para que me lleven"
+                    ],
+                    correct: 1,
+                    explanation: "¡Excelente! Ver el ejercicio como una oportunidad es una perspectiva optimista."
+                },
+                {
+                    situation: "No te invitaron a la fiesta de cumpleaños de tu amigo",
+                    options: [
+                        "Nunca más voy a hablar con esa persona",
+                        "Puedo organizar mi propia fiesta divertida",
+                        "Seguro que se olvidaron de mí",
+                        "Voy a quejarme con otros amigos"
+                    ],
+                    correct: 1,
+                    explanation: "¡Perfecto! Crear tu propia diversión es una respuesta optimista y proactiva."
+                },
+                {
+                    situation: "Reprobaste un examen de matemáticas",
+                    options: [
+                        "Soy tonto, nunca voy a aprender matemáticas",
+                        "Ahora sé qué necesito estudiar más para el próximo examen",
+                        "El profesor me tiene manía",
+                        "Las matemáticas no son importantes"
+                    ],
+                    correct: 1,
+                    explanation: "¡Excelente! Ver el error como una oportunidad de aprendizaje es muy optimista."
+                },
+                {
+                    situation: "Se rompió tu teléfono favorito",
+                    options: [
+                        "Mi vida se arruinó, no puedo vivir sin mi teléfono",
+                        "Ahora puedo pasar más tiempo con mi familia y amigos",
+                        "Es culpa de mis papás por no comprarme uno mejor",
+                        "Voy a llorar todo el día"
+                    ],
+                    correct: 1,
+                    explanation: "¡Muy bien! Ver el lado positivo de pasar tiempo con seres queridos es optimista."
+                },
+                {
+                    situation: "Tu equipo perdió el partido de fútbol",
+                    options: [
+                        "Somos los peores, nunca vamos a ganar",
+                        "Perdimos, pero jugamos bien y nos divertimos",
+                        "Es culpa del árbitro",
+                        "No voy a jugar más fútbol"
+                    ],
+                    correct: 1,
+                    explanation: "¡Perfecto! Apreciar el esfuerzo y la diversión es una perspectiva optimista."
+                },
+                {
+                    situation: "Se canceló la excursión de la escuela por lluvia",
+                    options: [
+                        "¡Qué aburrido! Ahora no tengo nada que hacer",
+                        "Puedo leer un libro interesante o jugar con mis hermanos",
+                        "Es culpa del director por no planear bien",
+                        "Voy a quejarme con mis papás"
+                    ],
+                    correct: 1,
+                    explanation: "¡Excelente! Encontrar alternativas divertidas es muy optimista."
+                },
+                {
+                    situation: "Tu amigo se mudó a otra ciudad",
+                    options: [
+                        "Nunca más voy a tener amigos",
+                        "Puedo hacer nuevos amigos y mantener contacto con el viejo",
+                        "Es culpa de sus papás por mudarse",
+                        "Voy a estar triste para siempre"
+                    ],
+                    correct: 1,
+                    explanation: "¡Muy bien! Ver la oportunidad de hacer nuevos amigos es optimista."
+                },
+                {
+                    situation: "No tienes dinero para comprar el videojuego que querías",
+                    options: [
+                        "Mis papás son malos por no comprármelo",
+                        "Puedo ahorrar mi dinero o encontrar juegos gratis divertidos",
+                        "Nunca voy a tener las cosas que quiero",
+                        "Voy a llorar hasta que me lo compren"
+                    ],
+                    correct: 1,
+                    explanation: "¡Perfecto! Buscar alternativas y ser responsable con el dinero es optimista."
+                }
+            ];
+
+            function startGame() {
+                currentQuestion = 0;
+                score = 0;
+                totalQuestions = challenges.length;
+                document.getElementById('score').textContent = score;
+                document.getElementById('total').textContent = totalQuestions;
+                showQuestion();
+            }
+
+            function showQuestion() {
+                if (currentQuestion >= challenges.length) {
+                    endGame();
+                    return;
+                }
+
+                const challenge = challenges[currentQuestion];
+                const gameContainer = document.getElementById('game-container');
+                
+                gameContainer.innerHTML = `
+                    <div class="challenge-card">
+                        <h2>Situación ${currentQuestion + 1} de ${challenges.length}</h2>
+                        <p><strong>${challenge.situation}</strong></p>
+                        <p>¿Cuál es la perspectiva más optimista?</p>
+                        
+                        ${challenge.options.map((option, index) => `
+                            <div class="perspective-option" onclick="selectOption(${index})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            function selectOption(selectedIndex) {
+                const challenge = challenges[currentQuestion];
+                const options = document.querySelectorAll('.perspective-option');
+                
+                // Disable all options
+                options.forEach(option => option.style.pointerEvents = 'none');
+                
+                // Show correct/incorrect
+                options.forEach((option, index) => {
+                    if (index === challenge.correct) {
+                        option.classList.add('correct');
+                    } else if (index === selectedIndex && index !== challenge.correct) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Update score
+                if (selectedIndex === challenge.correct) {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                }
+
+                // Show feedback
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback-box';
+                feedback.innerHTML = `
+                    <h3>${selectedIndex === challenge.correct ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                    <p>${challenge.explanation}</p>
+                    <button onclick="nextQuestion()" style="background: #667eea; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem;">Siguiente</button>
+                `;
+                document.getElementById('game-container').appendChild(feedback);
+            }
+
+            function nextQuestion() {
+                currentQuestion++;
+                showQuestion();
+            }
+
+            function endGame() {
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = '';
+                let emoji = '';
+
+                if (percentage >= 80) {
+                    message = '¡Eres un experto en optimismo! Tienes una gran capacidad para ver el lado positivo de las situaciones.';
+                    emoji = '🌟';
+                } else if (percentage >= 60) {
+                    message = '¡Muy bien! Tienes buenas habilidades optimistas. Con práctica, serás aún mejor.';
+                    emoji = '👍';
+                } else if (percentage >= 40) {
+                    message = '¡Buen intento! El optimismo es una habilidad que se puede desarrollar. Sigue practicando.';
+                    emoji = '💪';
+                } else {
+                    message = 'No te preocupes, el optimismo se aprende. Sigue practicando y verás cómo mejora tu perspectiva.';
+                    emoji = '🌱';
+                }
+
+                document.getElementById('game-container').innerHTML = `
+                    <div class="challenge-card">
+                        <h2>${emoji} ¡Juego Terminado! ${emoji}</h2>
+                        <p>Tu puntuación final: <strong>${score} de ${totalQuestions}</strong> (${percentage}%)</p>
+                        <p>${message}</p>
+                        
+                        <h3>🎯 Consejos para mejorar tu optimismo:</h3>
+                        <ul>
+                            <li>Practica el "reframe" todos los días</li>
+                            <li>Busca oportunidades en los desafíos</li>
+                            <li>Recuerda que los errores son oportunidades de aprendizaje</li>
+                            <li>Mantén un diario de gratitud</li>
+                            <li>Usa afirmaciones positivas</li>
+                        </ul>
+                        
+                        <button onclick="startGame()" style="background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem;">Jugar de Nuevo</button>
+                    </div>
+                `;
+            }
+        </script>
+    </div>
+</body>
+</html> 

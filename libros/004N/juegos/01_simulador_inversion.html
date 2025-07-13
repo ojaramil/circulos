@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Inversión</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .scenario-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .investment-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .investment-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .investment-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .result-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .money-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .game-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .game-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        .game-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Simulador de Inversión para Jóvenes</h1>
+        <p>¡Aprende a invertir sin arriesgar dinero real! Practica con diferentes estrategias y ve cómo crece tu dinero.</p>
+
+        <div class="game-container">
+            <h2>🎮 ¿Cómo Jugar?</h2>
+            <ul>
+                <li>Elige tu estrategia de inversión</li>
+                <li>Ve cómo crece tu dinero con el tiempo</li>
+                <li>Aprende sobre diferentes tipos de inversiones</li>
+                <li>¡Sin riesgo de perder dinero real!</li>
+            </ul>
+        </div>
+
+        <div class="game-container">
+            <h2>💰 Tu Dinero Inicial</h2>
+            <div class="money-display" id="initialMoney">$1,000</div>
+            <p>Este es el dinero con el que vas a practicar. ¡No es real, así que no te preocupes!</p>
+        </div>
+
+        <div class="game-container">
+            <h2>📊 Escenario 1: ¿Dónde Invertir tu Dinero?</h2>
+            <div class="scenario-card">
+                <h3>🎯 Situación:</h3>
+                <p>Tienes $1,000 y quieres invertirlos. ¿Qué estrategia eliges?</p>
+            </div>
+
+            <div class="investment-option" onclick="selectOption(this, 'conservative')">
+                <h4>🛡️ Estrategia Conservadora</h4>
+                <p><strong>70% Bonos + 30% Acciones</strong></p>
+                <p>Menos riesgo, ganancias más pequeñas pero estables</p>
+                <div class="tip-box">
+                    <strong>💡 Para:</strong> Personas que prefieren seguridad sobre ganancias grandes
+                </div>
+            </div>
+
+            <div class="investment-option" onclick="selectOption(this, 'balanced')">
+                <h4>⚖️ Estrategia Balanceada</h4>
+                <p><strong>50% Acciones + 50% Bonos</strong></p>
+                <p>Balance entre riesgo y ganancias</p>
+                <div class="tip-box">
+                    <strong>💡 Para:</strong> La mayoría de jóvenes que quieren crecer sin mucho riesgo
+                </div>
+            </div>
+
+            <div class="investment-option" onclick="selectOption(this, 'aggressive')">
+                <h4>🚀 Estrategia Agresiva</h4>
+                <p><strong>80% Acciones + 20% Bonos</strong></p>
+                <p>Más riesgo, pero ganancias potencialmente mayores</p>
+                <div class="tip-box">
+                    <strong>💡 Para:</strong> Jóvenes que pueden esperar y quieren maximizar ganancias
+                </div>
+            </div>
+
+            <button class="game-button" onclick="simulateInvestment()" id="simulateBtn" disabled>¡Simular Inversión!</button>
+        </div>
+
+        <div class="game-container" id="resultsContainer" style="display: none;">
+            <h2>📈 Resultados de tu Inversión</h2>
+            
+            <div class="result-display">
+                <h3>🎯 Tu Estrategia: <span id="strategyName"></span></h3>
+                <div class="money-display" id="finalMoney"></div>
+                <p>Después de 10 años de inversión</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <h3>📊 Comparación con Otras Estrategias:</h3>
+            <div id="comparisonResults"></div>
+
+            <div class="tip-box">
+                <h4>🎓 Lo Que Aprendiste:</h4>
+                <div id="learningPoints"></div>
+            </div>
+
+            <button class="game-button" onclick="nextScenario()">Siguiente Escenario →</button>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h2>🔄 Escenario 2: Rebalanceo</h2>
+            <div class="scenario-card">
+                <h3>🎯 Situación:</h3>
+                <p>Han pasado 5 años y tu portafolio se ha desbalanceado. ¿Qué haces?</p>
+            </div>
+
+            <div class="investment-option" onclick="selectRebalanceOption(this, 'rebalance')">
+                <h4>🔄 Rebalancear</h4>
+                <p>Vender algunas acciones y comprar bonos para volver a tu proporción original</p>
+                <div class="tip-box">
+                    <strong>💡 Beneficio:</strong> Mantiene tu nivel de riesgo controlado
+                </div>
+            </div>
+
+            <div class="investment-option" onclick="selectRebalanceOption(this, 'hold')">
+                <h4>⏸️ No Hacer Nada</h4>
+                <p>Dejar que el portafolio siga creciendo sin cambios</p>
+                <div class="tip-box">
+                    <strong>💡 Riesgo:</strong> Puede volverse más arriesgado con el tiempo
+                </div>
+            </div>
+
+            <button class="game-button" onclick="simulateRebalancing()" id="rebalanceBtn" disabled>¡Simular Rebalanceo!</button>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h2>📱 Escenario 3: Apps de Inversión</h2>
+            <div class="scenario-card">
+                <h3>🎯 Situación:</h3>
+                <p>Quieres empezar a invertir con apps. ¿Cuál eliges?</p>
+            </div>
+
+            <div class="investment-option" onclick="selectAppOption(this, 'acorns')">
+                <h4>🌰 Acorns</h4>
+                <p>Invierte automáticamente el cambio de tus compras</p>
+                <div class="tip-box">
+                    <strong>💡 Perfecto para:</strong> Principiantes que quieren empezar sin pensar mucho
+                </div>
+            </div>
+
+            <div class="investment-option" onclick="selectAppOption(this, 'robinhood')">
+                <h4>🦅 Robinhood</h4>
+                <p>Compra acciones individuales sin comisiones</p>
+                <div class="tip-box">
+                    <strong>💡 Perfecto para:</strong> Jóvenes que quieren aprender sobre acciones específicas
+                </div>
+            </div>
+
+            <div class="investment-option" onclick="selectAppOption(this, 'stash')">
+                <h4>📦 Stash</h4>
+                <p>Invierte en fondos temáticos (tecnología, medio ambiente, etc.)</p>
+                <div class="tip-box">
+                    <strong>💡 Perfecto para:</strong> Jóvenes que quieren invertir en cosas que les interesan
+                </div>
+            </div>
+
+            <button class="game-button" onclick="simulateAppChoice()" id="appBtn" disabled>¡Elegir App!</button>
+        </div>
+
+        <div class="game-container">
+            <h2>🏆 Tu Puntuación</h2>
+            <div class="money-display" id="totalScore">0 puntos</div>
+            <p>Gana puntos por tomar buenas decisiones financieras</p>
+        </div>
+
+    </div>
+
+    <script>
+        let currentMoney = 1000;
+        let selectedStrategy = '';
+        let totalScore = 0;
+        let currentScenario = 1;
+
+        function selectOption(element, strategy) {
+            // Remove selection from all options
+            document.querySelectorAll('.investment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select clicked option
+            element.classList.add('selected');
+            selectedStrategy = strategy;
+            
+            // Enable simulate button
+            document.getElementById('simulateBtn').disabled = false;
+        }
+
+        function simulateInvestment() {
+            if (!selectedStrategy) return;
+
+            let finalMoney = currentMoney;
+            let strategyName = '';
+            let learningPoints = '';
+
+            switch(selectedStrategy) {
+                case 'conservative':
+                    finalMoney = currentMoney * Math.pow(1.05, 10); // 5% anual
+                    strategyName = 'Conservadora';
+                    learningPoints = '• Menos riesgo, pero ganancias más pequeñas<br>• Buena para principiantes<br>• Protege tu dinero en crisis';
+                    break;
+                case 'balanced':
+                    finalMoney = currentMoney * Math.pow(1.07, 10); // 7% anual
+                    strategyName = 'Balanceada';
+                    learningPoints = '• Balance perfecto entre riesgo y ganancias<br>• Recomendada para la mayoría<br>• Crecimiento estable a largo plazo';
+                    break;
+                case 'aggressive':
+                    finalMoney = currentMoney * Math.pow(1.09, 10); // 9% anual
+                    strategyName = 'Agresiva';
+                    learningPoints = '• Mayor potencial de ganancias<br>• Más volatilidad (sube y baja más)<br>• Ideal para jóvenes con tiempo';
+                    break;
+            }
+
+            // Update display
+            document.getElementById('strategyName').textContent = strategyName;
+            document.getElementById('finalMoney').textContent = `$${finalMoney.toFixed(2)}`;
+            document.getElementById('learningPoints').innerHTML = learningPoints;
+
+            // Show comparison
+            const conservative = currentMoney * Math.pow(1.05, 10);
+            const balanced = currentMoney * Math.pow(1.07, 10);
+            const aggressive = currentMoney * Math.pow(1.09, 10);
+
+            document.getElementById('comparisonResults').innerHTML = `
+                <p><strong>Conservadora:</strong> $${conservative.toFixed(2)}</p>
+                <p><strong>Balanceada:</strong> $${balanced.toFixed(2)}</p>
+                <p><strong>Agresiva:</strong> $${aggressive.toFixed(2)}</p>
+            `;
+
+            // Update progress bar
+            const progress = ((finalMoney - currentMoney) / (aggressive - currentMoney)) * 100;
+            document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+
+            // Show results
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            // Add score
+            totalScore += Math.floor(finalMoney - currentMoney);
+            document.getElementById('totalScore').textContent = `${totalScore} puntos`;
+        }
+
+        function nextScenario() {
+            currentScenario = 2;
+            document.getElementById('scenario2').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        function selectRebalanceOption(element, option) {
+            document.querySelectorAll('#scenario2 .investment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('rebalanceBtn').disabled = false;
+        }
+
+        function simulateRebalancing() {
+            const result = document.createElement('div');
+            result.className = 'result-display';
+            result.innerHTML = `
+                <h3>🔄 Resultado del Rebalanceo</h3>
+                <p>Si rebalanceas: Mantienes tu nivel de riesgo controlado</p>
+                <p>Si no haces nada: Tu portafolio puede volverse más arriesgado</p>
+                <div class="tip-box">
+                    <strong>💡 Lección:</strong> El rebalanceo es importante para mantener tu estrategia original
+                </div>
+            `;
+            
+            document.getElementById('scenario2').appendChild(result);
+            totalScore += 50;
+            document.getElementById('totalScore').textContent = `${totalScore} puntos`;
+            
+            // Show next scenario
+            setTimeout(() => {
+                document.getElementById('scenario3').style.display = 'block';
+            }, 2000);
+        }
+
+        function selectAppOption(element, app) {
+            document.querySelectorAll('#scenario3 .investment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('appBtn').disabled = false;
+        }
+
+        function simulateAppChoice() {
+            const result = document.createElement('div');
+            result.className = 'result-display';
+            result.innerHTML = `
+                <h3>📱 ¡Excelente Elección!</h3>
+                <p>Todas las apps son buenas para empezar. Lo importante es comenzar a invertir.</p>
+                <div class="tip-box">
+                    <strong>💡 Consejo:</strong> Empieza con poco dinero y ve aprendiendo
+                </div>
+            `;
+            
+            document.getElementById('scenario3').appendChild(result);
+            totalScore += 100;
+            document.getElementById('totalScore').textContent = `${totalScore} puntos`;
+        }
+    </script>
+</body>
+</html> 

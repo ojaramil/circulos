@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rompe Mitos - Optimismo Joven</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .myth-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .myth-statement {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-weight: bold;
+            color: #721c24;
+        }
+        .truth-statement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: #155724;
+        }
+        .myth-button {
+            background: #dc3545;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .myth-button:hover {
+            background: #c82333;
+        }
+        .truth-button {
+            background: #28a745;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .truth-button:hover {
+            background: #218838;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .explanation-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💥 Rompe Mitos del Optimismo</h1>
+        <p>Hay muchas ideas falsas sobre el optimismo. ¡Es hora de romper esos mitos y descubrir la verdad!</p>
+
+        <div class="score-display">
+            <h2>Mitos Rotos: <span id="score">0</span> / <span id="total">0</span></h2>
+        </div>
+
+        <div id="game-container">
+            <div class="myth-card">
+                <h2>🎮 Instrucciones</h2>
+                <p>Lee cada declaración y decide si es un <strong>MITO</strong> (falso) o la <strong>VERDAD</strong> sobre el optimismo. ¡Ayúdanos a romper los mitos!</p>
+                <button onclick="startGame()" style="background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer;">¡Comenzar Juego!</button>
+            </div>
+        </div>
+
+        <script>
+            let currentQuestion = 0;
+            let score = 0;
+            let totalQuestions = 0;
+
+            const myths = [
+                {
+                    statement: "Los optimistas son ingenuos y no ven la realidad",
+                    isMyth: true,
+                    explanation: "¡MITO! Los optimistas realistas ven los problemas, pero también ven las oportunidades y soluciones. No ignoran la realidad, la interpretan de manera constructiva."
+                },
+                {
+                    statement: "El optimismo se puede aprender y desarrollar",
+                    isMyth: false,
+                    explanation: "¡VERDAD! El optimismo es una habilidad que se puede desarrollar con práctica. La neuroplasticidad permite que tu cerebro cambie y mejore."
+                },
+                {
+                    statement: "Los optimistas nunca se sienten tristes o frustrados",
+                    isMyth: true,
+                    explanation: "¡MITO! Los optimistas sienten todas las emociones, pero tienen herramientas para manejar mejor los momentos difíciles y recuperarse más rápido."
+                },
+                {
+                    statement: "El optimismo mejora la salud física y mental",
+                    isMyth: false,
+                    explanation: "¡VERDAD! Los estudios científicos muestran que los optimistas tienen mejor salud, viven más tiempo y manejan mejor el estrés."
+                },
+                {
+                    statement: "Solo las personas felices pueden ser optimistas",
+                    isMyth: true,
+                    explanation: "¡MITO! Cualquiera puede desarrollar el optimismo, sin importar su situación actual. Es una elección y una habilidad que se puede aprender."
+                },
+                {
+                    statement: "El optimismo te ayuda a alcanzar tus metas",
+                    isMyth: false,
+                    explanation: "¡VERDAD! Los optimistas perseveran más, ven oportunidades donde otros ven obstáculos, y tienen más probabilidades de alcanzar sus objetivos."
+                },
+                {
+                    statement: "Ser optimista significa ignorar los problemas",
+                    isMyth: true,
+                    explanation: "¡MITO! El optimismo realista reconoce los problemas pero busca soluciones activas. No es evadir, es enfrentar con esperanza."
+                },
+                {
+                    statement: "Los optimistas tienen mejores relaciones sociales",
+                    isMyth: false,
+                    explanation: "¡VERDAD! Los optimistas atraen más personas, resuelven conflictos mejor, y crean conexiones más fuertes y positivas."
+                },
+                {
+                    statement: "El optimismo es solo para personas ricas o exitosas",
+                    isMyth: true,
+                    explanation: "¡MITO! El optimismo no depende del dinero o el éxito. Personas de todas las condiciones sociales pueden ser optimistas y beneficiarse de ello."
+                },
+                {
+                    statement: "El optimismo te hace más resiliente ante los fracasos",
+                    isMyth: false,
+                    explanation: "¡VERDAD! Los optimistas ven los fracasos como oportunidades de aprendizaje y se recuperan más rápido de las dificultades."
+                },
+                {
+                    statement: "Los optimistas son menos inteligentes que los pesimistas",
+                    isMyth: true,
+                    explanation: "¡MITO! No hay relación entre optimismo e inteligencia. De hecho, los optimistas suelen ser más creativos en la resolución de problemas."
+                },
+                {
+                    statement: "El optimismo se puede practicar todos los días",
+                    isMyth: false,
+                    explanation: "¡VERDAD! El optimismo se fortalece con la práctica diaria: gratitud, reframing, afirmaciones positivas, etc."
+                }
+            ];
+
+            function startGame() {
+                currentQuestion = 0;
+                score = 0;
+                totalQuestions = myths.length;
+                document.getElementById('score').textContent = score;
+                document.getElementById('total').textContent = totalQuestions;
+                showQuestion();
+            }
+
+            function showQuestion() {
+                if (currentQuestion >= myths.length) {
+                    endGame();
+                    return;
+                }
+
+                const myth = myths[currentQuestion];
+                const gameContainer = document.getElementById('game-container');
+                
+                gameContainer.innerHTML = `
+                    <div class="myth-card">
+                        <h2>Declaración ${currentQuestion + 1} de ${myths.length}</h2>
+                        <div class="myth-statement">
+                            "${myth.statement}"
+                        </div>
+                        <p>¿Es esto un MITO o la VERDAD?</p>
+                        
+                        <button onclick="selectAnswer(true)" class="myth-button">🚫 ES UN MITO</button>
+                        <button onclick="selectAnswer(false)" class="truth-button">✅ ES LA VERDAD</button>
+                    </div>
+                `;
+            }
+
+            function selectAnswer(isMyth) {
+                const myth = myths[currentQuestion];
+                const isCorrect = (isMyth === myth.isMyth);
+                
+                if (isCorrect) {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                }
+
+                // Show explanation
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <h3>${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                    <p>${myth.explanation}</p>
+                    <button onclick="nextQuestion()" style="background: #667eea; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem;">Siguiente</button>
+                `;
+                document.getElementById('game-container').appendChild(explanation);
+            }
+
+            function nextQuestion() {
+                currentQuestion++;
+                showQuestion();
+            }
+
+            function endGame() {
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = '';
+                let emoji = '';
+
+                if (percentage >= 80) {
+                    message = '¡Eres un experto en romper mitos! Conoces muy bien la verdad sobre el optimismo.';
+                    emoji = '🌟';
+                } else if (percentage >= 60) {
+                    message = '¡Muy bien! Tienes buenos conocimientos sobre el optimismo. Sigue aprendiendo.';
+                    emoji = '👍';
+                } else if (percentage >= 40) {
+                    message = '¡Buen intento! Ahora sabes más sobre el optimismo. Sigue rompiendo mitos.';
+                    emoji = '💪';
+                } else {
+                    message = 'No te preocupes, ahora tienes más información para distinguir mitos de verdades sobre el optimismo.';
+                    emoji = '🌱';
+                }
+
+                document.getElementById('game-container').innerHTML = `
+                    <div class="myth-card">
+                        <h2>${emoji} ¡Juego Terminado! ${emoji}</h2>
+                        <p>Mitos rotos: <strong>${score} de ${totalQuestions}</strong> (${percentage}%)</p>
+                        <p>${message}</p>
+                        
+                        <h3>🎯 Lo que aprendiste:</h3>
+                        <ul>
+                            <li>El optimismo es una habilidad que se puede desarrollar</li>
+                            <li>Los optimistas no ignoran los problemas, buscan soluciones</li>
+                            <li>Cualquiera puede ser optimista, sin importar su situación</li>
+                            <li>El optimismo mejora la salud y las relaciones</li>
+                            <li>Se puede practicar todos los días</li>
+                        </ul>
+                        
+                        <button onclick="startGame()" style="background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem;">Jugar de Nuevo</button>
+                    </div>
+                `;
+            }
+        </script>
+    </div>
+</body>
+</html> 

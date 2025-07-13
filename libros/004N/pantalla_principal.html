@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inquebrantable Joven - Interactivo</title>
+  <link rel="stylesheet" href="nuevo-style.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="logo">IJ</div>
+      <div class="header-title">
+        <span class="module-name">Círculo de Lectura • Finanzas para Jóvenes</span>
+        <span class="content-title">Inquebrantable Joven - Tony Robbins</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="#" class="nav-link">Ver Otros Libros</a>
+      <a href="#" class="nav-link" data-src="lecciones/glosario.html">Glosario</a>
+      <a href="#" class="nav-link" data-src="lecciones/enlaces_interes.html">Recursos Cool</a>
+      <a href="https://amzn.to/3TWawtm" class="nav-link">Conseguir libro</a>
+    </nav>
+  </header>
+  <div class="main-layout">
+    <nav class="sidebar left">
+      <h2>🎓 Aprende</h2>
+      <ul>
+        <li><a href="#" data-src="lecciones/01_introduccion.html" class="active"><span class="icon-placeholder">🚀</span>¡Hola! ¿Qué es esto?</a></li>
+        <li><a href="#" data-src="lecciones/02_resumen_teorico.html"><span class="icon-placeholder">💡</span>Conceptos Básicos</a></li>
+        <li><a href="#" data-src="lecciones/03_ejemplos_practicos.html"><span class="icon-placeholder">✨</span>Ejemplos Reales</a></li>
+        <li><a href="#" data-src="lecciones/04_herramientas_tecnicas.html"><span class="icon-placeholder">🛠️</span>Herramientas Geniales</a></li>
+        <li><a href="#" data-src="lecciones/05_conclusion_modulo.html"><span class="icon-placeholder">🏆</span>¡Lo Lograste!</a></li>
+      </ul>
+      <h2>📚 Recursos Extra</h2>
+      <ul>
+        <li><a href="#" data-src="lecciones/glosario.html"><span class="icon-placeholder">📖</span>Diccionario Financiero</a></li>
+        <li><a href="#" data-src="lecciones/enlaces_interes.html"><span class="icon-placeholder">🔗</span>Recursos Cool</a></li>
+      </ul>
+    </nav>
+    <main class="content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+    <nav class="sidebar right">
+      <h2>🎮 Juega y Aprende</h2>
+      <ul>
+        <li><a href="#" data-src="juegos/01_simulador_inversion.html"><span class="icon-placeholder">🎯</span>Simulador de Inversión</a></li>
+        <li><a href="#" data-src="juegos/02_juego_decisiones_financieras.html"><span class="icon-placeholder">🎲</span>Juego de Decisiones</a></li>
+        <li><a href="#" data-src="juegos/03_verdadero_falso_inversion.html"><span class="icon-placeholder">✅</span>Verdadero o Falso</a></li>
+        <li><a href="#" data-src="juegos/04_quiz_fondos_indice.html"><span class="icon-placeholder">🧠</span>Quiz de Fondos</a></li>
+        <li><a href="#" data-src="juegos/05_crea_plan_financiero.html"><span class="icon-placeholder">📝</span>Crea tu Plan</a></li>
+        <li><a href="#" data-src="juegos/06_simulador_crisis.html"><span class="icon-placeholder">🛡️</span>Simulador de Crisis</a></li>
+        <li><a href="#" data-src="juegos/07_calculadora_retiro.html"><span class="icon-placeholder">💰</span>Calculadora de Futuro</a></li>
+      </ul>
+      <h2>🎯 Actividades Extra</h2>
+      <ul>
+        <li><a href="#" data-src="juegos/verdadero_falso.html"><span class="icon-placeholder">✅</span>Verdadero o Falso (Demo)</a></li>
+        <li><a href="#" data-src="juegos/flashcard.html"><span class="icon-placeholder">🧠</span>Flashcards (Demo)</a></li>
+      </ul>
+    </nav>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    // Sidebar izquierda
+    document.querySelectorAll('.sidebar.left a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar.left a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Sidebar derecha
+    document.querySelectorAll('.sidebar.right a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Menú superior (dentro del wrapper)
+    document.querySelectorAll('.main-nav .nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

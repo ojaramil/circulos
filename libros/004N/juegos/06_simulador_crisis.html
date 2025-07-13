@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Crisis Financiera</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .crisis-scenario {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .crisis-option {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .crisis-option:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        .crisis-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        .stats-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .result-feedback {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .warning-feedback {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Simulador de Crisis Financiera</h1>
+        <p>¡Aprende a manejar situaciones financieras difíciles! Este simulador te ayudará a desarrollar resiliencia financiera.</p>
+
+        <div class="stats-display">
+            <h3>Estado Financiero</h3>
+            <p>Fondo de Emergencia: $<span id="emergencyFund">1000</span></p>
+            <p>Deudas: $<span id="debt">0</span></p>
+            <p>Puntuación de Resiliencia: <span id="resilienceScore">100</span>/100</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="resilienceBar" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <div class="game-container" id="scenario1">
+            <h2>🌧️ Crisis #1: Pérdida de Ingresos</h2>
+            <div class="crisis-scenario">
+                <p><strong>Situación:</strong> Tu trabajo de medio tiempo se canceló temporalmente debido a una crisis económica. No tendrás ingresos por 2 meses.</p>
+                <p><strong>Tu situación actual:</strong> Tienes $1000 en tu fondo de emergencia y gastos mensuales de $300.</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="crisis-option" onclick="selectOption(1, 'a')">
+                <strong>A) Usar todo el fondo de emergencia para cubrir gastos</strong>
+                <p>Gastarías $600 en 2 meses, quedándote con $400</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(1, 'b')">
+                <strong>B) Reducir gastos al mínimo y buscar trabajo temporal</strong>
+                <p>Gastarías solo $200 por mes, buscando ingresos alternativos</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(1, 'c')">
+                <strong>C) Pedir prestado dinero a familiares</strong>
+                <p>Evitarías usar tu fondo de emergencia</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(1, 'd')">
+                <strong>D) Vender algunas de tus pertenencias</strong>
+                <p>Generarías ingresos adicionales rápidamente</p>
+            </div>
+            
+            <button class="btn" onclick="submitAnswer(1)" id="submit1" disabled>Continuar</button>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h2>💸 Crisis #2: Gastos Inesperados</h2>
+            <div class="crisis-scenario">
+                <p><strong>Situación:</strong> Tu computadora se dañó y necesitas una nueva para la escuela. Cuesta $800.</p>
+                <p><strong>Tu situación actual:</strong> Tienes $400 en tu fondo de emergencia después de la crisis anterior.</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="crisis-option" onclick="selectOption(2, 'a')">
+                <strong>A) Comprar la computadora de inmediato con tu fondo</strong>
+                <p>Quedarías sin fondo de emergencia</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(2, 'b')">
+                <strong>B) Buscar opciones más baratas o usadas</strong>
+                <p>Podrías encontrar algo por $400-500</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(2, 'c')">
+                <strong>C) Pedir prestado y pagar en cuotas</strong>
+                <p>Mantendrías tu fondo de emergencia</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(2, 'd')">
+                <strong>D) Ahorrar por 2 meses antes de comprar</strong>
+                <p>Reconstruirías tu fondo primero</p>
+            </div>
+            
+            <button class="btn" onclick="submitAnswer(2)" id="submit2" disabled>Continuar</button>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h2>📈 Crisis #3: Mercado en Caída</h2>
+            <div class="crisis-scenario">
+                <p><strong>Situación:</strong> El mercado de valores está cayendo fuertemente. Tus inversiones han perdido 20% de su valor.</p>
+                <p><strong>Tu situación actual:</strong> Tienes $2000 invertidos en fondos índice.</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="crisis-option" onclick="selectOption(3, 'a')">
+                <strong>A) Vender todo para evitar más pérdidas</strong>
+                <p>Realizarías las pérdidas de $400</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(3, 'b')">
+                <strong>B) Mantener las inversiones y no hacer nada</strong>
+                <p>Esperarías a que el mercado se recupere</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(3, 'c')">
+                <strong>C) Comprar más mientras los precios están bajos</strong>
+                <p>Invertirías $500 adicionales</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(3, 'd')">
+                <strong>D) Diversificar en otros tipos de inversiones</strong>
+                <p>Reducirías el riesgo</p>
+            </div>
+            
+            <button class="btn" onclick="submitAnswer(3)" id="submit3" disabled>Continuar</button>
+        </div>
+
+        <div class="game-container" id="scenario4" style="display: none;">
+            <h2>🎓 Crisis #4: Oportunidad de Educación</h2>
+            <div class="crisis-scenario">
+                <p><strong>Situación:</strong> Te ofrecen un curso de programación muy valioso que cuesta $1200, pero solo tienes $800 ahorrados.</p>
+                <p><strong>Tu situación actual:</strong> El curso podría mejorar significativamente tus ingresos futuros.</p>
+            </div>
+            
+            <h3>¿Qué harías?</h3>
+            <div class="crisis-option" onclick="selectOption(4, 'a')">
+                <strong>A) Pedir prestado los $400 que faltan</strong>
+                <p>Invertirías en tu futuro inmediatamente</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(4, 'b')">
+                <strong>B) Ahorrar por 2 meses más antes de tomar el curso</strong>
+                <p>Esperarías hasta tener todo el dinero</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(4, 'c')">
+                <strong>C) Buscar becas o descuentos</strong>
+                <p>Reducirías el costo total</p>
+            </div>
+            <div class="crisis-option" onclick="selectOption(4, 'd')">
+                <strong>D) Buscar un curso similar más barato</strong>
+                <p>Encontrarías una alternativa más económica</p>
+            </div>
+            
+            <button class="btn" onclick="submitAnswer(4)" id="submit4" disabled>Continuar</button>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 Simulación Completada</h2>
+            <div class="stats-display">
+                <h3>Puntuación Final de Resiliencia: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="result-feedback">
+                <h3>🎯 Lo que Aprendiste sobre Resiliencia Financiera:</h3>
+                <ul>
+                    <li><strong>Fondo de emergencia:</strong> Siempre mantén 3-6 meses de gastos ahorrados</li>
+                    <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                    <li><strong>Pensamiento a largo plazo:</strong> Las crisis son temporales</li>
+                    <li><strong>Flexibilidad:</strong> Adapta tu plan según las circunstancias</li>
+                    <li><strong>Inversión en ti mismo:</strong> La educación es la mejor inversión</li>
+                </ul>
+                
+                <h3>💡 Estrategias para Crisis Financieras:</h3>
+                <ol>
+                    <li><strong>Mantén la calma:</strong> No tomes decisiones impulsivas</li>
+                    <li><strong>Prioriza gastos:</strong> Necesidades antes que deseos</li>
+                    <li><strong>Busca ingresos alternativos:</strong> Trabajos temporales, freelancing</li>
+                    <li><strong>Negocia:</strong> Con bancos, proveedores, etc.</li>
+                    <li><strong>Aprende:</strong> Cada crisis es una oportunidad de aprendizaje</li>
+                </ol>
+            </div>
+            
+            <button class="btn" onclick="restartSimulation()">🔄 Jugar de Nuevo</button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScenario = 1;
+        let emergencyFund = 1000;
+        let debt = 0;
+        let resilienceScore = 100;
+        let selectedOptions = {};
+
+        function selectOption(scenario, option) {
+            // Remover selección previa
+            document.querySelectorAll(`#scenario${scenario} .crisis-option`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.crisis-option').classList.add('selected');
+            selectedOptions[scenario] = option;
+            
+            // Habilitar botón de continuar
+            document.getElementById(`submit${scenario}`).disabled = false;
+        }
+
+        function submitAnswer(scenario) {
+            const option = selectedOptions[scenario];
+            
+            // Aplicar consecuencias según la opción seleccionada
+            switch(scenario) {
+                case 1:
+                    switch(option) {
+                        case 'a': // Usar todo el fondo
+                            emergencyFund -= 600;
+                            resilienceScore -= 15;
+                            break;
+                        case 'b': // Reducir gastos y buscar trabajo
+                            emergencyFund -= 400;
+                            resilienceScore += 10;
+                            break;
+                        case 'c': // Pedir prestado
+                            debt += 600;
+                            resilienceScore -= 5;
+                            break;
+                        case 'd': // Vender pertenencias
+                            emergencyFund -= 200;
+                            resilienceScore += 5;
+                            break;
+                    }
+                    break;
+                    
+                case 2:
+                    switch(option) {
+                        case 'a': // Comprar inmediatamente
+                            emergencyFund -= 800;
+                            resilienceScore -= 20;
+                            break;
+                        case 'b': // Buscar opciones más baratas
+                            emergencyFund -= 450;
+                            resilienceScore += 15;
+                            break;
+                        case 'c': // Pedir prestado
+                            debt += 800;
+                            resilienceScore -= 10;
+                            break;
+                        case 'd': // Ahorrar primero
+                            resilienceScore += 20;
+                            break;
+                    }
+                    break;
+                    
+                case 3:
+                    switch(option) {
+                        case 'a': // Vender todo
+                            resilienceScore -= 25;
+                            break;
+                        case 'b': // Mantener inversiones
+                            resilienceScore += 10;
+                            break;
+                        case 'c': // Comprar más
+                            emergencyFund -= 500;
+                            resilienceScore += 15;
+                            break;
+                        case 'd': // Diversificar
+                            resilienceScore += 5;
+                            break;
+                    }
+                    break;
+                    
+                case 4:
+                    switch(option) {
+                        case 'a': // Pedir prestado
+                            debt += 400;
+                            resilienceScore += 10;
+                            break;
+                        case 'b': // Ahorrar primero
+                            resilienceScore += 15;
+                            break;
+                        case 'c': // Buscar becas
+                            emergencyFund -= 800;
+                            resilienceScore += 20;
+                            break;
+                        case 'd': // Curso más barato
+                            emergencyFund -= 600;
+                            resilienceScore += 10;
+                            break;
+                    }
+                    break;
+            }
+            
+            // Asegurar que la puntuación esté entre 0 y 100
+            resilienceScore = Math.max(0, Math.min(100, resilienceScore));
+            
+            // Actualizar display
+            updateStats();
+            
+            // Mostrar feedback
+            showFeedback(scenario, option);
+            
+            // Continuar al siguiente escenario o mostrar resultado final
+            setTimeout(() => {
+                if (scenario < 4) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function showFeedback(scenario, option) {
+            const feedbacks = {
+                1: {
+                    a: "Usar todo el fondo de emergencia te deja vulnerable. Es mejor mantener algo de reserva.",
+                    b: "¡Excelente! Reducir gastos y buscar ingresos alternativos es una estrategia sólida.",
+                    c: "Pedir prestado puede ser necesario, pero aumenta tu deuda. Considera otras opciones.",
+                    d: "Vender pertenencias puede generar ingresos rápidos, pero no es sostenible a largo plazo."
+                },
+                2: {
+                    a: "Quedarte sin fondo de emergencia es muy arriesgado. Busca alternativas.",
+                    b: "¡Bien pensado! Buscar opciones más económicas es una excelente estrategia.",
+                    c: "El préstamo te permite mantener tu fondo, pero aumenta tu deuda.",
+                    d: "Reconstruir tu fondo primero es una estrategia muy responsable."
+                },
+                3: {
+                    a: "Vender en pánico es lo peor que puedes hacer. El mercado se recupera con el tiempo.",
+                    b: "Mantener las inversiones es generalmente la mejor estrategia a largo plazo.",
+                    c: "Comprar cuando los precios están bajos puede ser una excelente oportunidad.",
+                    d: "Diversificar es siempre una buena estrategia para reducir el riesgo."
+                },
+                4: {
+                    a: "Invertir en educación es importante, pero considera el costo del préstamo.",
+                    b: "Ahorrar primero es una estrategia muy responsable y segura.",
+                    c: "¡Excelente! Buscar becas y descuentos es una estrategia inteligente.",
+                    d: "Encontrar alternativas más económicas es una buena estrategia de ahorro."
+                }
+            };
+            
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'result-feedback';
+            feedbackDiv.innerHTML = `<p><strong>Feedback:</strong> ${feedbacks[scenario][option]}</p>`;
+            
+            const scenarioDiv = document.getElementById(`scenario${scenario}`);
+            scenarioDiv.appendChild(feedbackDiv);
+        }
+
+        function updateStats() {
+            document.getElementById('emergencyFund').textContent = emergencyFund;
+            document.getElementById('debt').textContent = debt;
+            document.getElementById('resilienceScore').textContent = resilienceScore;
+            document.getElementById('resilienceBar').style.width = resilienceScore + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('scenario4').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            document.getElementById('finalScore').textContent = resilienceScore;
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (resilienceScore >= 80) {
+                finalMessage.textContent = '¡Excelente! Tienes una gran resiliencia financiera. ¡Sigue así!';
+            } else if (resilienceScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu resiliencia financiera está creciendo. Con práctica serás un experto.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con este curso aprenderás a manejar mejor las crisis.';
+            }
+        }
+
+        function restartSimulation() {
+            // Resetear variables
+            currentScenario = 1;
+            emergencyFund = 1000;
+            debt = 0;
+            resilienceScore = 100;
+            selectedOptions = {};
+            
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`scenario${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primer escenario
+            document.getElementById('scenario1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.crisis-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Deshabilitar botones
+            document.querySelectorAll('[id^="submit"]').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Remover feedbacks
+            document.querySelectorAll('.result-feedback').forEach(feedback => {
+                feedback.remove();
+            });
+            
+            // Actualizar stats
+            updateStats();
+            
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 

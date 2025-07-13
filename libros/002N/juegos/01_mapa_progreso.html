@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Progreso Optimista</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .progress-map {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+        }
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .map-tile {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .map-tile:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        .map-tile.completed {
+            background: #28a745;
+            border-color: #20c997;
+        }
+        .map-tile.current {
+            background: #ffc107;
+            border-color: #ffca2c;
+            color: #000;
+        }
+        .map-tile.locked {
+            background: rgba(255,255,255,0.1);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .challenge-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .feedback {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .stats-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Mapa de Progreso Optimista</h1>
+        <p>¡Navega por tu camino hacia el optimismo! Completa desafíos y construye tu mentalidad positiva.</p>
+
+        <div class="stats-display">
+            <div>Nivel de Optimismo: <span id="optimismLevel">0</span>%</div>
+            <div>Desafíos Completados: <span id="completedChallenges">0</span>/10</div>
+        </div>
+
+        <div class="progress-map">
+            <h2>🌟 Tu Camino hacia el Optimismo</h2>
+            <div class="map-grid" id="mapGrid">
+                <!-- Los tiles se generarán con JavaScript -->
+            </div>
+        </div>
+
+        <div class="game-container" id="challengeContainer">
+            <h3>🎯 Desafío Actual</h3>
+            <div class="challenge-card" id="currentChallenge">
+                <p>Haz clic en un tile del mapa para comenzar un desafío.</p>
+            </div>
+            
+            <div class="feedback" id="challengeFeedback"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Camino Completado!</h2>
+            <div class="stats-display">
+                <h3>¡Felicidades! Has completado tu mapa de optimismo</h3>
+                <p>Nivel Final de Optimismo: <span id="finalOptimism">0</span>%</p>
+            </div>
+            
+            <div class="challenge-card">
+                <h3>🎯 Lo que Has Logrado:</h3>
+                <ul>
+                    <li><strong>Pensamiento Positivo:</strong> Aprendiste a ver el lado bueno de las cosas</li>
+                    <li><strong>Gratitud:</strong> Desarrollaste el hábito de agradecer</li>
+                    <li><strong>Resiliencia:</strong> Te hiciste más fuerte ante los desafíos</li>
+                    <li><strong>Esperanza:</strong> Cultivaste la fe en un futuro mejor</li>
+                    <li><strong>Acción:</strong> Aprendiste a tomar acción positiva</li>
+                </ul>
+                
+                <h3>💡 Consejos para Mantener tu Optimismo:</h3>
+                <ol>
+                    <li>Practica la gratitud diariamente</li>
+                    <li>Rodéate de personas positivas</li>
+                    <li>Celebra tus logros, por pequeños que sean</li>
+                    <li>Ayuda a otros a ser más optimistas</li>
+                    <li>Mantén una mentalidad de crecimiento</li>
+                </ol>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let completedChallenges = 0;
+        let optimismLevel = 0;
+        
+        const challenges = [
+            {
+                title: "Pensamiento Positivo",
+                description: "¿Qué haces cuando algo sale mal?",
+                options: [
+                    { text: "Me quejo y me rindo", optimism: -5 },
+                    { text: "Me siento triste pero sigo adelante", optimism: 5 },
+                    { text: "Veo el problema como una oportunidad de aprender", optimism: 15 }
+                ]
+            },
+            {
+                title: "Gratitud",
+                description: "¿Cómo empiezas tu día?",
+                options: [
+                    { text: "Me quejo de tener que levantarme", optimism: -5 },
+                    { text: "Me levanto sin pensar mucho", optimism: 0 },
+                    { text: "Agradezco por un nuevo día y las oportunidades", optimism: 15 }
+                ]
+            },
+            {
+                title: "Resiliencia",
+                description: "¿Qué haces cuando fallas en algo?",
+                options: [
+                    { text: "Me doy por vencido y no lo intento de nuevo", optimism: -10 },
+                    { text: "Me siento mal pero lo intento otra vez", optimism: 5 },
+                    { text: "Aprendo de mi error y mejoro mi estrategia", optimism: 15 }
+                ]
+            },
+            {
+                title: "Esperanza",
+                description: "¿Cómo ves tu futuro?",
+                options: [
+                    { text: "Creo que todo va a salir mal", optimism: -10 },
+                    { text: "No sé qué pasará", optimism: 0 },
+                    { text: "Creo que puedo crear un futuro brillante", optimism: 15 }
+                ]
+            },
+            {
+                title: "Acción Positiva",
+                description: "¿Qué haces cuando ves a alguien triste?",
+                options: [
+                    { text: "Lo ignoro, no es mi problema", optimism: -5 },
+                    { text: "Me siento mal por ellos", optimism: 0 },
+                    { text: "Los animo y les ofrezco ayuda", optimism: 15 }
+                ]
+            },
+            {
+                title: "Mentalidad de Crecimiento",
+                description: "¿Qué piensas cuando algo es difícil?",
+                options: [
+                    { text: "No soy bueno en esto, mejor lo dejo", optimism: -10 },
+                    { text: "Es difícil pero lo intento", optimism: 5 },
+                    { text: "Los desafíos me hacen más fuerte y hábil", optimism: 15 }
+                ]
+            },
+            {
+                title: "Optimismo Contagioso",
+                description: "¿Cómo reaccionas cuando otros están negativos?",
+                options: [
+                    { text: "Me contagio de su negatividad", optimism: -5 },
+                    { text: "Los evito para no sentirme mal", optimism: 0 },
+                    { text: "Los animo y les muestro el lado positivo", optimism: 15 }
+                ]
+            },
+            {
+                title: "Celebración de Logros",
+                description: "¿Qué haces cuando logras algo pequeño?",
+                options: [
+                    { text: "No es gran cosa, sigo adelante", optimism: 0 },
+                    { text: "Me siento bien por un momento", optimism: 5 },
+                    { text: "Lo celebro y me motivo para el siguiente logro", optimism: 15 }
+                ]
+            },
+            {
+                title: "Visualización Positiva",
+                description: "¿Qué haces antes de un desafío importante?",
+                options: [
+                    { text: "Me imagino todo lo que puede salir mal", optimism: -10 },
+                    { text: "No pienso mucho en ello", optimism: 0 },
+                    { text: "Me visualizo teniendo éxito y me preparo", optimism: 15 }
+                ]
+            },
+            {
+                title: "Optimismo Sostenible",
+                description: "¿Cómo mantienes tu optimismo en tiempos difíciles?",
+                options: [
+                    { text: "Me rindo y me siento víctima", optimism: -10 },
+                    { text: "Espero a que pasen los malos tiempos", optimism: 0 },
+                    { text: "Busco oportunidades y mantengo la fe en el futuro", optimism: 15 }
+                ]
+            }
+        ];
+
+        function initializeMap() {
+            const mapGrid = document.getElementById('mapGrid');
+            mapGrid.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const tile = document.createElement('div');
+                tile.className = 'map-tile';
+                tile.innerHTML = `
+                    <div style="font-size: 2rem;">${getTileEmoji(i)}</div>
+                    <div style="font-size: 0.8rem;">${challenges[i].title}</div>
+                `;
+                
+                if (i < currentLevel) {
+                    tile.classList.add('completed');
+                } else if (i === currentLevel) {
+                    tile.classList.add('current');
+                } else {
+                    tile.classList.add('locked');
+                }
+                
+                tile.onclick = () => selectChallenge(i);
+                mapGrid.appendChild(tile);
+            }
+        }
+
+        function getTileEmoji(index) {
+            const emojis = ['🌟', '😊', '💪', '🎯', '🚀', '🌈', '⭐', '🎉', '💎', '🏆'];
+            return emojis[index];
+        }
+
+        function selectChallenge(index) {
+            if (index > currentLevel) return;
+            
+            const challenge = challenges[index];
+            const container = document.getElementById('currentChallenge');
+            
+            container.innerHTML = `
+                <h4>${challenge.title}</h4>
+                <p>${challenge.description}</p>
+                <div style="margin-top: 1rem;">
+                    ${challenge.options.map((option, i) => 
+                        `<button class="choice-button" onclick="makeChoice(${index}, ${i})">${option.text}</button>`
+                    ).join('')}
+                </div>
+            `;
+        }
+
+        function makeChoice(challengeIndex, choiceIndex) {
+            const challenge = challenges[challengeIndex];
+            const choice = challenge.options[choiceIndex];
+            
+            optimismLevel += choice.optimism;
+            if (optimismLevel < 0) optimismLevel = 0;
+            if (optimismLevel > 100) optimismLevel = 100;
+            
+            if (challengeIndex === currentLevel) {
+                completedChallenges++;
+                currentLevel++;
+            }
+            
+            const feedback = document.getElementById('challengeFeedback');
+            let message = '';
+            let isPositive = choice.optimism > 0;
+            
+            if (choice.optimism >= 15) {
+                message = '🎉 ¡Excelente elección! Eres muy optimista.';
+            } else if (choice.optimism >= 5) {
+                message = '✅ Buena decisión. Sigues en el camino correcto.';
+            } else if (choice.optimism >= 0) {
+                message = '🤔 Interesante perspectiva. Hay espacio para mejorar.';
+            } else {
+                message = '💭 Esa respuesta es más pesimista. Intenta ver el lado positivo.';
+            }
+            
+            feedback.innerHTML = `<strong>${message}</strong>`;
+            feedback.className = `feedback ${isPositive ? 'positive' : 'negative'}`;
+            feedback.style.display = 'block';
+            
+            updateDisplay();
+            initializeMap();
+            
+            if (completedChallenges >= 10) {
+                setTimeout(showFinalResult, 2000);
+            } else {
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                    document.getElementById('currentChallenge').innerHTML = '<p>Haz clic en un tile del mapa para continuar.</p>';
+                }, 2000);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('optimismLevel').textContent = optimismLevel;
+            document.getElementById('completedChallenges').textContent = completedChallenges;
+        }
+
+        function showFinalResult() {
+            document.getElementById('challengeContainer').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            document.getElementById('finalOptimism').textContent = optimismLevel;
+        }
+
+        function restartGame() {
+            currentLevel = 0;
+            completedChallenges = 0;
+            optimismLevel = 0;
+            
+            document.getElementById('challengeContainer').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('challengeFeedback').style.display = 'none';
+            document.getElementById('currentChallenge').innerHTML = '<p>Haz clic en un tile del mapa para comenzar un desafío.</p>';
+            
+            updateDisplay();
+            initializeMap();
+        }
+
+        // Inicializar el juego
+        initializeMap();
+        updateDisplay();
+    </script>
+</body>
+</html> 

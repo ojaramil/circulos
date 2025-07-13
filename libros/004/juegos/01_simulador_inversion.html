@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Inversión - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🧮 Simulador de Inversión Inquebrantable</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>Este simulador te permite experimentar con diferentes estrategias de inversión y ver cómo los costos, la diversificación y el tiempo afectan tus retornos. Usa los controles para ajustar los parámetros y observa los resultados.</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 Configuración de Inversión</h2>
+            
+            <div class="form-group">
+                <label for="initialInvestment">Inversión inicial ($):</label>
+                <input type="number" id="initialInvestment" value="10000" min="1000" step="1000">
+            </div>
+            
+            <div class="form-group">
+                <label for="monthlyContribution">Contribución mensual ($):</label>
+                <input type="number" id="monthlyContribution" value="500" min="0" step="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="years">Años de inversión:</label>
+                <input type="number" id="years" value="30" min="1" max="50">
+            </div>
+            
+            <div class="form-group">
+                <label for="marketReturn">Retorno anual del mercado (%):</label>
+                <input type="number" id="marketReturn" value="7" min="1" max="15" step="0.5">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💰 Comparación de Estrategias</h2>
+            
+            <div class="form-group">
+                <label for="strategy1Cost">Costo anual Estrategia A (%):</label>
+                <input type="number" id="strategy1Cost" value="1.5" min="0" max="5" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="strategy2Cost">Costo anual Estrategia B (%):</label>
+                <input type="number" id="strategy2Cost" value="0.1" min="0" max="5" step="0.1">
+            </div>
+            
+            <button class="btn" onclick="runSimulation()">Ejecutar Simulación</button>
+        </div>
+
+        <div id="results" class="card" style="display: none;">
+            <h2>📈 Resultados de la Simulación</h2>
+            
+            <div class="result result-success">
+                <h3>Estrategia A (Alto Costo)</h3>
+                <div id="strategy1Results"></div>
+            </div>
+            
+            <div class="result result-success">
+                <h3>Estrategia B (Bajo Costo)</h3>
+                <div id="strategy2Results"></div>
+            </div>
+            
+            <div class="result result-info">
+                <h3>Diferencia</h3>
+                <div id="differenceResults"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Análisis de Diversificación</h2>
+            
+            <div class="form-group">
+                <label for="usStocks">Acciones EEUU (%):</label>
+                <input type="number" id="usStocks" value="40" min="0" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="internationalStocks">Acciones Internacionales (%):</label>
+                <input type="number" id="internationalStocks" value="20" min="0" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="bonds">Bonos (%):</label>
+                <input type="number" id="bonds" value="30" min="0" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="reits">Bienes Raíces (%):</label>
+                <input type="number" id="reits" value="10" min="0" max="100">
+            </div>
+            
+            <button class="btn" onclick="analyzeDiversification()">Analizar Diversificación</button>
+            
+            <div id="diversificationResults" class="alert alert-info" style="display: none;">
+                <h3>Análisis de Riesgo y Retorno</h3>
+                <div id="diversificationDetails"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔄 Simulador de Rebalanceo</h2>
+            
+            <div class="form-group">
+                <label for="rebalanceFrequency">Frecuencia de rebalanceo:</label>
+                <select id="rebalanceFrequency">
+                    <option value="never">Nunca</option>
+                    <option value="yearly">Anualmente</option>
+                    <option value="quarterly">Trimestralmente</option>
+                    <option value="monthly">Mensualmente</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="rebalanceThreshold">Umbral de rebalanceo (%):</label>
+                <input type="number" id="rebalanceThreshold" value="5" min="1" max="20">
+            </div>
+            
+            <button class="btn" onclick="simulateRebalancing()">Simular Rebalanceo</button>
+            
+            <div id="rebalancingResults" class="alert alert-success" style="display: none;">
+                <h3>Impacto del Rebalanceo</h3>
+                <div id="rebalancingDetails"></div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h3>⚠️ Descargo de Responsabilidad</h3>
+            <p>Este simulador es solo con fines educativos. Los resultados son estimaciones basadas en retornos históricos y no garantizan rendimientos futuros. Siempre consulta con un profesional financiero antes de tomar decisiones de inversión.</p>
+        </div>
+    </div>
+
+    <script>
+        function runSimulation() {
+            const initial = parseFloat(document.getElementById('initialInvestment').value);
+            const monthly = parseFloat(document.getElementById('monthlyContribution').value);
+            const years = parseInt(document.getElementById('years').value);
+            const marketReturn = parseFloat(document.getElementById('marketReturn').value) / 100;
+            const cost1 = parseFloat(document.getElementById('strategy1Cost').value) / 100;
+            const cost2 = parseFloat(document.getElementById('strategy2Cost').value) / 100;
+            
+            const netReturn1 = marketReturn - cost1;
+            const netReturn2 = marketReturn - cost2;
+            
+            let futureValue1 = initial;
+            let futureValue2 = initial;
+            
+            for (let year = 1; year <= years; year++) {
+                futureValue1 = futureValue1 * (1 + netReturn1) + (monthly * 12);
+                futureValue2 = futureValue2 * (1 + netReturn2) + (monthly * 12);
+            }
+            
+            const difference = futureValue2 - futureValue1;
+            const percentageDiff = (difference / futureValue1) * 100;
+            
+            document.getElementById('strategy1Results').innerHTML = `
+                <p><strong>Valor final:</strong> $${futureValue1.toLocaleString()}</p>
+                <p><strong>Retorno neto anual:</strong> ${(netReturn1 * 100).toFixed(2)}%</p>
+                <p><strong>Costos totales pagados:</strong> $${(initial * cost1 * years + monthly * 12 * cost1 * years).toLocaleString()}</p>
+            `;
+            
+            document.getElementById('strategy2Results').innerHTML = `
+                <p><strong>Valor final:</strong> $${futureValue2.toLocaleString()}</p>
+                <p><strong>Retorno neto anual:</strong> ${(netReturn2 * 100).toFixed(2)}%</p>
+                <p><strong>Costos totales pagados:</strong> $${(initial * cost2 * years + monthly * 12 * cost2 * years).toLocaleString()}</p>
+            `;
+            
+            document.getElementById('differenceResults').innerHTML = `
+                <p><strong>Diferencia absoluta:</strong> $${difference.toLocaleString()}</p>
+                <p><strong>Diferencia porcentual:</strong> ${percentageDiff.toFixed(1)}%</p>
+                <p><strong>Lección:</strong> Los costos bajos pueden agregar significativamente a tu riqueza a largo plazo.</p>
+            `;
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function analyzeDiversification() {
+            const usStocks = parseInt(document.getElementById('usStocks').value);
+            const internationalStocks = parseInt(document.getElementById('internationalStocks').value);
+            const bonds = parseInt(document.getElementById('bonds').value);
+            const reits = parseInt(document.getElementById('reits').value);
+            
+            const total = usStocks + internationalStocks + bonds + reits;
+            
+            if (total !== 100) {
+                alert('Los porcentajes deben sumar 100%. Actualmente suman: ' + total + '%');
+                return;
+            }
+            
+            // Estimaciones de retorno y riesgo (simplificadas)
+            const expectedReturn = (usStocks * 0.07 + internationalStocks * 0.06 + bonds * 0.04 + reits * 0.08) / 100;
+            const riskLevel = (usStocks * 0.15 + internationalStocks * 0.18 + bonds * 0.05 + reits * 0.20) / 100;
+            
+            let riskCategory;
+            if (riskLevel < 0.08) riskCategory = "Muy Conservador";
+            else if (riskLevel < 0.12) riskCategory = "Conservador";
+            else if (riskLevel < 0.16) riskCategory = "Moderado";
+            else if (riskLevel < 0.20) riskCategory = "Agresivo";
+            else riskCategory = "Muy Agresivo";
+            
+            document.getElementById('diversificationDetails').innerHTML = `
+                <p><strong>Retorno esperado anual:</strong> ${(expectedReturn * 100).toFixed(2)}%</p>
+                <p><strong>Nivel de riesgo:</strong> ${(riskLevel * 100).toFixed(1)}%</p>
+                <p><strong>Categoría de riesgo:</strong> ${riskCategory}</p>
+                <p><strong>Diversificación:</strong> ${getDiversificationScore(usStocks, internationalStocks, bonds, reits)}</p>
+                <p><strong>Recomendación:</strong> ${getRecommendation(riskLevel, expectedReturn)}</p>
+            `;
+            
+            document.getElementById('diversificationResults').style.display = 'block';
+        }
+        
+        function getDiversificationScore(us, int, bonds, reits) {
+            const scores = [];
+            if (us > 0) scores.push(us);
+            if (int > 0) scores.push(int);
+            if (bonds > 0) scores.push(bonds);
+            if (reits > 0) scores.push(reits);
+            
+            if (scores.length >= 4) return "Excelente - Muy bien diversificado";
+            if (scores.length >= 3) return "Buena - Bien diversificado";
+            if (scores.length >= 2) return "Aceptable - Moderadamente diversificado";
+            return "Pobre - Poco diversificado";
+        }
+        
+        function getRecommendation(risk, return_) {
+            if (risk > 0.15 && return_ < 0.06) {
+                return "Considera reducir el riesgo agregando más bonos.";
+            } else if (risk < 0.08 && return_ < 0.05) {
+                return "Considera agregar más acciones para aumentar el retorno potencial.";
+            } else {
+                return "Tu asignación parece equilibrada para tu perfil de riesgo.";
+            }
+        }
+        
+        function simulateRebalancing() {
+            const frequency = document.getElementById('rebalanceFrequency').value;
+            const threshold = parseInt(document.getElementById('rebalanceThreshold').value);
+            
+            let rebalancingBenefit = 0;
+            let explanation = "";
+            
+            switch(frequency) {
+                case 'never':
+                    rebalancingBenefit = -0.5;
+                    explanation = "Sin rebalanceo, tu portafolio puede desviarse significativamente de tu objetivo de riesgo.";
+                    break;
+                case 'yearly':
+                    rebalancingBenefit = 0.2;
+                    explanation = "Rebalanceo anual mantiene tu portafolio alineado con tus objetivos.";
+                    break;
+                case 'quarterly':
+                    rebalancingBenefit = 0.4;
+                    explanation = "Rebalanceo trimestral proporciona disciplina y puede mejorar retornos.";
+                    break;
+                case 'monthly':
+                    rebalancingBenefit = 0.3;
+                    explanation = "Rebalanceo mensual puede ser excesivo y generar costos de transacción.";
+                    break;
+            }
+            
+            document.getElementById('rebalancingDetails').innerHTML = `
+                <p><strong>Beneficio estimado del rebalanceo:</strong> ${rebalancingBenefit > 0 ? '+' : ''}${rebalancingBenefit.toFixed(1)}% anual</p>
+                <p><strong>Umbral de rebalanceo:</strong> ${threshold}%</p>
+                <p><strong>Explicación:</strong> ${explanation}</p>
+                <p><strong>Recomendación:</strong> ${frequency === 'quarterly' ? 'Excelente elección' : frequency === 'yearly' ? 'Buena elección' : 'Considera ajustar la frecuencia'}</p>
+            `;
+            
+            document.getElementById('rebalancingResults').style.display = 'block';
+        }
+        
+        // Ejecutar simulación inicial
+        window.onload = function() {
+            runSimulation();
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescate de Negocio</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .business-scenario {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .business-option {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .business-option:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        .business-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        .stats-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .result-feedback {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .warning-feedback {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Rescate de Negocio</h1>
+        <p>¡Aprende a rescatar un negocio en problemas usando los principios de Napoleon Hill! Este simulador te enseñará estrategias de liderazgo y persistencia.</p>
+
+        <div class="stats-display">
+            <h3>Estado del Negocio</h3>
+            <p>Ventas: $<span id="sales">1000</span>/mes</p>
+            <p>Deudas: $<span id="debt">5000</span></p>
+            <p>Moral del Equipo: <span id="teamMoral">30</span>/100</p>
+            <p>Puntuación de Liderazgo: <span id="leadershipScore">0</span>/100</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="leadershipBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-container" id="scenario1">
+            <h2>🏪 Crisis #1: Caída en Ventas</h2>
+            <div class="business-scenario">
+                <p><strong>Situación:</strong> Tu tienda de videojuegos ha tenido una caída del 50% en ventas este mes. Los clientes se quejan de que no tienes los juegos más nuevos.</p>
+                <p><strong>Estado actual:</strong> Ventas: $1000/mes, Deudas: $5000, Moral del equipo: 30%</p>
+            </div>
+            
+            <h3>¿Qué estrategia aplicarías?</h3>
+            <div class="business-option" onclick="selectStrategy(1, 'a')">
+                <strong>A) Cerrar la tienda y buscar otro trabajo</strong>
+                <p>Es mejor cortar las pérdidas</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(1, 'b')">
+                <strong>B) Invertir en inventario nuevo y hacer marketing agresivo</strong>
+                <p>Usar el principio de persistencia y decisión</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(1, 'c')">
+                <strong>C) Reducir precios para atraer más clientes</strong>
+                <p>Competir por precio</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(1, 'd')">
+                <strong>D) Pedir préstamo para expandir el negocio</strong>
+                <p>Crecer para salvar el negocio</p>
+            </div>
+            
+            <div class="result-feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h2>👥 Crisis #2: Problemas con el Equipo</h2>
+            <div class="business-scenario">
+                <p><strong>Situación:</strong> Dos empleados quieren renunciar porque no ven futuro en el negocio. El resto del equipo está desmotivado.</p>
+                <p><strong>Estado actual:</strong> Ventas: $1200/mes, Deudas: $4800, Moral del equipo: 25%</p>
+            </div>
+            
+            <h3>¿Cómo manejarías la situación?</h3>
+            <div class="business-option" onclick="selectStrategy(2, 'a')">
+                <strong>A) Dejar que se vayan y contratar nuevos empleados</strong>
+                <p>Empezar de nuevo con gente nueva</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(2, 'b')">
+                <strong>B) Reunir al equipo y compartir tu visión de futuro</strong>
+                <p>Usar el poder del cerebro maestro</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(2, 'c')">
+                <strong>C) Ofrecer aumentos de sueldo para que se queden</strong>
+                <p>Comprar su lealtad</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(2, 'd')">
+                <strong>D) Reducir personal y trabajar más horas tú mismo</strong>
+                <p>Hacer más con menos</p>
+            </div>
+            
+            <div class="result-feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h2>💡 Crisis #3: Necesidad de Innovación</h2>
+            <div class="business-scenario">
+                <p><strong>Situación:</strong> La competencia ha abierto una tienda más grande con mejores precios. Necesitas diferenciarte.</p>
+                <p><strong>Estado actual:</strong> Ventas: $1500/mes, Deudas: $4500, Moral del equipo: 40%</p>
+            </div>
+            
+            <h3>¿Qué estrategia de innovación aplicarías?</h3>
+            <div class="business-option" onclick="selectStrategy(3, 'a')">
+                <strong>A) Copiar exactamente lo que hace la competencia</strong>
+                <p>Si funciona para ellos, funcionará para ti</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(3, 'b')">
+                <strong>B) Usar tu imaginación para crear servicios únicos</strong>
+                <p>Implementar torneos, eventos y comunidad</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(3, 'c')">
+                <strong>C) Enfocarte solo en juegos retro y vintage</strong>
+                <p>Encontrar un nicho específico</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(3, 'd')">
+                <strong>D) Esperar a que la competencia falle</strong>
+                <p>El tiempo resolverá el problema</p>
+            </div>
+            
+            <div class="result-feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="scenario4" style="display: none;">
+            <h2>💰 Crisis #4: Problemas Financieros</h2>
+            <div class="business-scenario">
+                <p><strong>Situación:</strong> El banco amenaza con cerrar tu línea de crédito. Necesitas $3000 para pagar deudas urgentes.</p>
+                <p><strong>Estado actual:</strong> Ventas: $2000/mes, Deudas: $4000, Moral del equipo: 60%</p>
+            </div>
+            
+            <h3>¿Cómo resolverías la crisis financiera?</h3>
+            <div class="business-option" onclick="selectStrategy(4, 'a')">
+                <strong>A) Declarar bancarrota y empezar de nuevo</strong>
+                <p>Es la opción más fácil</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(4, 'b')">
+                <strong>B) Crear un plan de pago y negociar con el banco</strong>
+                <p>Mostrar responsabilidad y planificación</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(4, 'c')">
+                <strong>C) Vender parte del negocio para obtener capital</strong>
+                <p>Buscar inversores</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(4, 'd')">
+                <strong>D) Pedir dinero prestado a familiares</strong>
+                <p>Usar recursos personales</p>
+            </div>
+            
+            <div class="result-feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="scenario5" style="display: none;">
+            <h2>🎯 Crisis #5: Decisión Final</h2>
+            <div class="business-scenario">
+                <p><strong>Situación:</strong> Después de 6 meses de lucha, el negocio está estable pero no crece. Tienes una oferta para venderlo por $15,000.</p>
+                <p><strong>Estado actual:</strong> Ventas: $3000/mes, Deudas: $2000, Moral del equipo: 80%</p>
+            </div>
+            
+            <h3>¿Qué decisión tomarías?</h3>
+            <div class="business-option" onclick="selectStrategy(5, 'a')">
+                <strong>A) Vender el negocio y tomar las ganancias</strong>
+                <p>Es una buena oferta y ya no hay riesgo</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(5, 'b')">
+                <strong>B) Rechazar la oferta y seguir creciendo</strong>
+                <p>El negocio tiene potencial para ser mucho más grande</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(5, 'c')">
+                <strong>C) Negociar una mejor oferta</strong>
+                <p>El negocio vale más de $15,000</p>
+            </div>
+            <div class="business-option" onclick="selectStrategy(5, 'd')">
+                <strong>D) Buscar un socio para expandir</strong>
+                <p>Compartir el riesgo y las ganancias</p>
+            </div>
+            
+            <div class="result-feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Rescate Completado!</h2>
+            <div class="stats-display">
+                <h3>Estado Final del Negocio</h3>
+                <p>Ventas Finales: $<span id="finalSales">0</span>/mes</p>
+                <p>Deudas Restantes: $<span id="finalDebt">0</span></p>
+                <p>Moral Final del Equipo: <span id="finalMoral">0</span>/100</p>
+                <p>Puntuación de Liderazgo: <span id="finalScore">0</span>/100</p>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="result-feedback">
+                <h3>🎯 Lo que Aprendiste sobre Rescate de Negocios:</h3>
+                <ul>
+                    <li><strong>Persistencia:</strong> Los negocios exitosos superan múltiples crisis</li>
+                    <li><strong>Liderazgo:</strong> Un buen líder mantiene la moral del equipo alta</li>
+                    <li><strong>Innovación:</strong> La diferenciación es clave para el éxito</li>
+                    <li><strong>Planificación financiera:</strong> El dinero debe manejarse sabiamente</li>
+                    <li><strong>Decisión:</strong> Las decisiones difíciles definen el futuro</li>
+                </ul>
+                
+                <h3>💡 Principios de Napoleon Hill Aplicados:</h3>
+                <ol>
+                    <li><strong>Deseo ardiente:</strong> Querer salvar el negocio más que nada</li>
+                    <li><strong>Fe:</strong> Creer en que el negocio puede recuperarse</li>
+                    <li><strong>Autosugestión:</strong> Programar tu mente para el éxito</li>
+                    <li><strong>Conocimiento especializado:</strong> Aprender sobre gestión empresarial</li>
+                    <li><strong>Imaginación:</strong> Crear soluciones innovadoras</li>
+                    <li><strong>Decisión:</strong> Tomar acción inmediata</li>
+                    <li><strong>Persistencia:</strong> No rendirse ante los obstáculos</li>
+                    <li><strong>Cerebro maestro:</strong> Trabajar en equipo</li>
+                </ol>
+                
+                <h3>🚀 Estrategias para Jóvenes Emprendedores:</h3>
+                <ul>
+                    <li><strong>Empieza pequeño:</strong> Aprende con negocios pequeños</li>
+                    <li><strong>Rodeate de mentores:</strong> Busca personas exitosas que te guíen</li>
+                    <li><strong>Invierte en educación:</strong> Aprende sobre finanzas y marketing</li>
+                    <li><strong>Construye una red:</strong> Las conexiones son valiosas</li>
+                    <li><strong>Mantén la pasión:</strong> El amor por lo que haces te mantendrá motivado</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="restartSimulation()">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 1;
+        let sales = 1000;
+        let debt = 5000;
+        let teamMoral = 30;
+        let leadershipScore = 0;
+        let selectedStrategies = {};
+
+        function selectStrategy(scenario, strategy) {
+            // Remover selección previa
+            document.querySelectorAll(`#scenario${scenario} .business-option`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.business-option').classList.add('selected');
+            selectedStrategies[scenario] = strategy;
+            
+            // Aplicar consecuencias según la estrategia seleccionada
+            switch(scenario) {
+                case 1:
+                    switch(strategy) {
+                        case 'a': // Cerrar tienda
+                            sales = 0;
+                            debt = 5000;
+                            teamMoral = 0;
+                            leadershipScore -= 30;
+                            break;
+                        case 'b': // Invertir en inventario
+                            sales += 500;
+                            debt += 2000;
+                            teamMoral += 20;
+                            leadershipScore += 25;
+                            break;
+                        case 'c': // Reducir precios
+                            sales += 200;
+                            debt += 500;
+                            teamMoral += 10;
+                            leadershipScore += 10;
+                            break;
+                        case 'd': // Pedir préstamo
+                            sales += 300;
+                            debt += 3000;
+                            teamMoral += 5;
+                            leadershipScore += 5;
+                            break;
+                    }
+                    break;
+                    
+                case 2:
+                    switch(strategy) {
+                        case 'a': // Dejar que se vayan
+                            sales -= 200;
+                            debt -= 100;
+                            teamMoral -= 20;
+                            leadershipScore -= 20;
+                            break;
+                        case 'b': // Compartir visión
+                            sales += 300;
+                            debt -= 200;
+                            teamMoral += 30;
+                            leadershipScore += 30;
+                            break;
+                        case 'c': // Aumentos de sueldo
+                            sales += 100;
+                            debt += 500;
+                            teamMoral += 15;
+                            leadershipScore += 10;
+                            break;
+                        case 'd': // Reducir personal
+                            sales -= 100;
+                            debt -= 300;
+                            teamMoral -= 10;
+                            leadershipScore += 5;
+                            break;
+                    }
+                    break;
+                    
+                case 3:
+                    switch(strategy) {
+                        case 'a': // Copiar competencia
+                            sales += 100;
+                            debt += 200;
+                            teamMoral += 5;
+                            leadershipScore -= 10;
+                            break;
+                        case 'b': // Servicios únicos
+                            sales += 800;
+                            debt += 500;
+                            teamMoral += 25;
+                            leadershipScore += 35;
+                            break;
+                        case 'c': // Nicho específico
+                            sales += 400;
+                            debt += 200;
+                            teamMoral += 15;
+                            leadershipScore += 20;
+                            break;
+                        case 'd': // Esperar
+                            sales -= 200;
+                            debt += 100;
+                            teamMoral -= 15;
+                            leadershipScore -= 15;
+                            break;
+                    }
+                    break;
+                    
+                case 4:
+                    switch(strategy) {
+                        case 'a': // Bancarrota
+                            sales = 0;
+                            debt = 0;
+                            teamMoral = 0;
+                            leadershipScore -= 40;
+                            break;
+                        case 'b': // Plan de pago
+                            sales += 200;
+                            debt -= 1000;
+                            teamMoral += 20;
+                            leadershipScore += 30;
+                            break;
+                        case 'c': // Vender parte
+                            sales += 300;
+                            debt -= 2000;
+                            teamMoral += 10;
+                            leadershipScore += 15;
+                            break;
+                        case 'd': // Pedir a familiares
+                            sales += 100;
+                            debt -= 500;
+                            teamMoral += 5;
+                            leadershipScore += 5;
+                            break;
+                    }
+                    break;
+                    
+                case 5:
+                    switch(strategy) {
+                        case 'a': // Vender negocio
+                            sales = 0;
+                            debt = 0;
+                            teamMoral = 0;
+                            leadershipScore += 10;
+                            break;
+                        case 'b': // Seguir creciendo
+                            sales += 1000;
+                            debt -= 500;
+                            teamMoral += 20;
+                            leadershipScore += 40;
+                            break;
+                        case 'c': // Negociar mejor oferta
+                            sales += 500;
+                            debt -= 200;
+                            teamMoral += 10;
+                            leadershipScore += 25;
+                            break;
+                        case 'd': // Buscar socio
+                            sales += 800;
+                            debt -= 300;
+                            teamMoral += 15;
+                            leadershipScore += 30;
+                            break;
+                    }
+                    break;
+            }
+            
+            // Asegurar que los valores estén en rangos válidos
+            sales = Math.max(0, sales);
+            debt = Math.max(0, debt);
+            teamMoral = Math.max(0, Math.min(100, teamMoral));
+            leadershipScore = Math.max(0, Math.min(100, leadershipScore));
+            
+            // Actualizar display
+            updateStats();
+            
+            // Mostrar feedback
+            showFeedback(scenario, strategy);
+            
+            // Continuar al siguiente escenario o mostrar resultado final
+            setTimeout(() => {
+                if (scenario < 5) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function showFeedback(scenario, strategy) {
+            const feedbacks = {
+                1: {
+                    a: "Cerrar el negocio es rendirse. Los grandes líderes persisten.",
+                    b: "¡Excelente! Invertir y hacer marketing muestra verdadero liderazgo.",
+                    c: "Reducir precios puede ayudar, pero no es una estrategia a largo plazo.",
+                    d: "Pedir préstamo puede ser necesario, pero aumenta el riesgo."
+                },
+                2: {
+                    a: "Dejar que se vaya el equipo debilita el negocio.",
+                    b: "¡Perfecto! Compartir tu visión inspira y motiva al equipo.",
+                    c: "Los aumentos de sueldo pueden ayudar, pero no resuelven el problema de fondo.",
+                    d: "Trabajar más horas puede ser necesario temporalmente."
+                },
+                3: {
+                    a: "Copiar a la competencia no te hace único.",
+                    b: "¡Brillante! La innovación y diferenciación son claves del éxito.",
+                    c: "Encontrar un nicho específico es una buena estrategia.",
+                    d: "Esperar que otros fallen no es una estrategia proactiva."
+                },
+                4: {
+                    a: "La bancarrota es el último recurso, no la primera opción.",
+                    b: "¡Excelente! Mostrar responsabilidad financiera es clave.",
+                    c: "Buscar inversores puede ser una buena estrategia.",
+                    d: "Usar recursos personales puede ser necesario."
+                },
+                5: {
+                    a: "Vender puede ser la opción correcta en algunas situaciones.",
+                    b: "¡Increíble! Creer en el potencial del negocio muestra verdadero liderazgo.",
+                    c: "Negociar es una habilidad importante en los negocios.",
+                    d: "Buscar un socio puede ser una excelente estrategia de crecimiento."
+                }
+            };
+            
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'result-feedback';
+            feedbackDiv.innerHTML = `<p><strong>Feedback:</strong> ${feedbacks[scenario][strategy]}</p>`;
+            
+            const scenarioDiv = document.getElementById(`scenario${scenario}`);
+            scenarioDiv.appendChild(feedbackDiv);
+        }
+
+        function updateStats() {
+            document.getElementById('sales').textContent = sales;
+            document.getElementById('debt').textContent = debt;
+            document.getElementById('teamMoral').textContent = teamMoral;
+            document.getElementById('leadershipScore').textContent = leadershipScore;
+            document.getElementById('leadershipBar').style.width = leadershipScore + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('scenario5').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            document.getElementById('finalSales').textContent = sales;
+            document.getElementById('finalDebt').textContent = debt;
+            document.getElementById('finalMoral').textContent = teamMoral;
+            document.getElementById('finalScore').textContent = leadershipScore;
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (leadershipScore >= 80) {
+                finalMessage.textContent = '¡Increíble! Has demostrado un liderazgo excepcional. ¡Eres un verdadero emprendedor!';
+            } else if (leadershipScore >= 60) {
+                finalMessage.textContent = '¡Excelente! Tu liderazgo ha mejorado significativamente. ¡Sigue así!';
+            } else if (leadershipScore >= 40) {
+                finalMessage.textContent = '¡Bien! Has aprendido valiosas lecciones de liderazgo. Con práctica serás un gran líder.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con este curso aprenderás mucho más sobre liderazgo empresarial.';
+            }
+        }
+
+        function restartSimulation() {
+            // Resetear variables
+            currentScenario = 1;
+            sales = 1000;
+            debt = 5000;
+            teamMoral = 30;
+            leadershipScore = 0;
+            selectedStrategies = {};
+            
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`scenario${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primer escenario
+            document.getElementById('scenario1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.business-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Remover feedbacks
+            document.querySelectorAll('.result-feedback').forEach(feedback => {
+                feedback.remove();
+            });
+            
+            // Actualizar stats
+            updateStats();
+            
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 

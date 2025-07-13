@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Decisiones Financieras</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .scenario-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .decision-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .decision-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .decision-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .result-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .game-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .game-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        .game-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Juego de Decisiones Financieras</h1>
+        <p>¡Toma decisiones financieras inteligentes y aprende de tus errores sin arriesgar dinero real!</p>
+
+        <div class="game-container">
+            <h2>🎮 ¿Cómo Jugar?</h2>
+            <ul>
+                <li>Lee cada situación financiera</li>
+                <li>Elige la mejor opción</li>
+                <li>Aprende de los resultados</li>
+                <li>¡Gana puntos por decisiones inteligentes!</li>
+            </ul>
+        </div>
+
+        <div class="game-container">
+            <h2>🏆 Tu Puntuación</h2>
+            <div class="score-display" id="totalScore">0 puntos</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <p>Progreso: <span id="currentQuestion">0</span> de <span id="totalQuestions">5</span> preguntas</p>
+        </div>
+
+        <div class="game-container" id="questionContainer">
+            <h2>❓ Pregunta <span id="questionNumber">1</span></h2>
+            
+            <div class="scenario-card" id="scenarioText">
+                <!-- Scenario text will be loaded here -->
+            </div>
+
+            <div id="optionsContainer">
+                <!-- Options will be loaded here -->
+            </div>
+
+            <button class="game-button" onclick="submitAnswer()" id="submitBtn" disabled>¡Enviar Respuesta!</button>
+        </div>
+
+        <div class="game-container" id="resultsContainer" style="display: none;">
+            <h2>📊 Resultados Finales</h2>
+            
+            <div class="result-display">
+                <h3>🎯 Tu Puntuación Final</h3>
+                <div class="score-display" id="finalScore"></div>
+                <p id="finalMessage"></p>
+            </div>
+
+            <div class="tip-box">
+                <h4>💡 Consejos para el Futuro:</h4>
+                <ul id="finalTips"></ul>
+            </div>
+
+            <button class="game-button" onclick="restartGame()">¡Jugar de Nuevo!</button>
+        </div>
+
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                question: "Tienes $200 de tu cumpleaños. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Gastar todo en ropa y videojuegos",
+                        points: 0,
+                        explanation: "Gastar todo de una vez no es una buena estrategia financiera."
+                    },
+                    {
+                        text: "Guardar todo en el banco sin hacer nada",
+                        points: 20,
+                        explanation: "Ahorrar es bueno, pero el dinero pierde valor con la inflación."
+                    },
+                    {
+                        text: "Gastar $100 en cosas que quieres e invertir $100",
+                        points: 50,
+                        explanation: "¡Excelente! Balanceas diversión con construcción de futuro."
+                    },
+                    {
+                        text: "Invertir todo en fondos índice",
+                        points: 40,
+                        explanation: "Muy bueno para el futuro, pero también necesitas diversión."
+                    }
+                ]
+            },
+            {
+                question: "El mercado de acciones está bajando. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Vender todo porque tienes miedo",
+                        points: 0,
+                        explanation: "Vender en pánico es el peor error. Los mercados siempre se recuperan."
+                    },
+                    {
+                        text: "No hacer nada y esperar",
+                        points: 30,
+                        explanation: "Es mejor que vender, pero podrías aprovechar los precios bajos."
+                    },
+                    {
+                        text: "Comprar más porque las acciones están 'en oferta'",
+                        points: 50,
+                        explanation: "¡Perfecto! Es como comprar en rebajas. Los precios bajos son oportunidades."
+                    },
+                    {
+                        text: "Esperar a que baje más para comprar",
+                        points: 20,
+                        explanation: "Es difícil predecir el fondo del mercado. Mejor comprar gradualmente."
+                    }
+                ]
+            },
+            {
+                question: "Ganas $500 de tu primer trabajo. ¿Cómo los usas?",
+                options: [
+                    {
+                        text: "Gastar todo en cosas que quieres",
+                        points: 10,
+                        explanation: "Es normal querer recompensarte, pero piensa en el futuro."
+                    },
+                    {
+                        text: "Ahorrar todo para la universidad",
+                        points: 40,
+                        explanation: "Muy responsable, pero también puedes divertirte un poco."
+                    },
+                    {
+                        text: "60% gastar, 25% ahorrar, 15% invertir",
+                        points: 50,
+                        explanation: "¡Excelente plan! Balanceas presente y futuro perfectamente."
+                    },
+                    {
+                        text: "Invertir todo en criptomonedas",
+                        points: 0,
+                        explanation: "Muy arriesgado para principiantes. Empieza con inversiones más seguras."
+                    }
+                ]
+            },
+            {
+                question: "Tus amigos te invitan a comprar acciones de una empresa 'que va a explotar'. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Comprar inmediatamente porque confías en tus amigos",
+                        points: 0,
+                        explanation: "Nunca inviertas en algo que no entiendes, sin importar quién te lo recomiende."
+                    },
+                    {
+                        text: "Investigar la empresa primero",
+                        points: 50,
+                        explanation: "¡Perfecto! Siempre investiga antes de invertir."
+                    },
+                    {
+                        text: "Comprar solo un poco para no perdértelo",
+                        points: 20,
+                        explanation: "Mejor que comprar mucho, pero aún arriesgado sin investigación."
+                    },
+                    {
+                        text: "Decir que no y explicar por qué",
+                        points: 40,
+                        explanation: "Muy maduro. Es mejor decir no que hacer algo que no entiendes."
+                    }
+                ]
+            },
+            {
+                question: "Quieres comprar algo que cuesta $300 pero solo tienes $200. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Usar una tarjeta de crédito para comprarlo ahora",
+                        points: 0,
+                        explanation: "Usar crédito para cosas que no puedes pagar es una trampa financiera."
+                    },
+                    {
+                        text: "Ahorrar hasta tener los $300",
+                        points: 50,
+                        explanation: "¡Excelente! La paciencia es una virtud financiera."
+                    },
+                    {
+                        text: "Pedir prestado a tus papás",
+                        points: 20,
+                        explanation: "Mejor que usar tarjeta de crédito, pero aprende a ahorrar."
+                    },
+                    {
+                        text: "Comprar algo más barato por $200",
+                        points: 30,
+                        explanation: "Buena alternativa, pero también puedes ahorrar para lo que realmente quieres."
+                    }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+        let selectedOption = null;
+
+        function loadQuestion() {
+            if (currentQuestion >= scenarios.length) {
+                showFinalResults();
+                return;
+            }
+
+            const scenario = scenarios[currentQuestion];
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('scenarioText').innerHTML = `<h3>🎯 Situación:</h3><p>${scenario.question}</p>`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            scenario.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'decision-option';
+                optionDiv.onclick = () => selectOption(optionDiv, index);
+                optionDiv.innerHTML = `
+                    <h4>Opción ${index + 1}</h4>
+                    <p>${option.text}</p>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('submitBtn').disabled = true;
+            selectedOption = null;
+        }
+
+        function selectOption(element, optionIndex) {
+            document.querySelectorAll('.decision-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedOption = optionIndex;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (selectedOption === null) return;
+
+            const scenario = scenarios[currentQuestion];
+            const selectedAnswer = scenario.options[selectedOption];
+            
+            totalScore += selectedAnswer.points;
+            
+            // Show result
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'result-display';
+            resultDiv.innerHTML = `
+                <h3>📊 Resultado</h3>
+                <p><strong>Puntos ganados:</strong> ${selectedAnswer.points}</p>
+                <p><strong>Explicación:</strong> ${selectedAnswer.explanation}</p>
+            `;
+            
+            document.getElementById('questionContainer').appendChild(resultDiv);
+            
+            // Update score and progress
+            document.getElementById('totalScore').textContent = `${totalScore} puntos`;
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            const progress = ((currentQuestion + 1) / scenarios.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Disable submit button
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Move to next question after 3 seconds
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuestion();
+                // Remove result div
+                if (resultDiv.parentNode) {
+                    resultDiv.parentNode.removeChild(resultDiv);
+                }
+            }, 3000);
+        }
+
+        function showFinalResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            document.getElementById('finalScore').textContent = `${totalScore} puntos`;
+            
+            let message = '';
+            let tips = [];
+            
+            if (totalScore >= 200) {
+                message = '¡Excelente! Eres un genio financiero.';
+                tips = [
+                    'Continúa aprendiendo sobre inversiones',
+                    'Ayuda a otros a aprender sobre finanzas',
+                    'Considera estudiar finanzas en la universidad'
+                ];
+            } else if (totalScore >= 150) {
+                message = '¡Muy bien! Tienes buenos instintos financieros.';
+                tips = [
+                    'Lee más sobre finanzas personales',
+                    'Practica con simuladores de inversión',
+                    'Habla con adultos sobre sus experiencias financieras'
+                ];
+            } else if (totalScore >= 100) {
+                message = '¡Bien! Estás en el camino correcto.';
+                tips = [
+                    'Aprende más sobre conceptos básicos',
+                    'Practica ahorrando regularmente',
+                    'Evita las deudas de tarjetas de crédito'
+                ];
+            } else {
+                message = 'Necesitas aprender más sobre finanzas.';
+                tips = [
+                    'Lee libros básicos sobre finanzas personales',
+                    'Habla con tus papás sobre dinero',
+                    'Empieza a ahorrar aunque sea poco'
+                ];
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+            
+            const tipsList = document.getElementById('finalTips');
+            tipsList.innerHTML = '';
+            tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                tipsList.appendChild(li);
+            });
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            totalScore = 0;
+            selectedOption = null;
+            
+            document.getElementById('totalScore').textContent = '0 puntos';
+            document.getElementById('currentQuestion').textContent = '0';
+            document.getElementById('progressBar').style.width = '0%';
+            
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            
+            loadQuestion();
+        }
+
+        // Initialize game
+        document.getElementById('totalQuestions').textContent = scenarios.length;
+        loadQuestion();
+    </script>
+</body>
+</html> 

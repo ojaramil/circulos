@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Crisis - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🏅 Simulador de Crisis Financiera</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>Este simulador te permite experimentar cómo mantener la disciplina durante las crisis del mercado. Verás cómo diferentes estrategias se comportan durante períodos de volatilidad extrema.</p>
+        </div>
+
+        <div id="crisis-setup" class="card">
+            <h2>📊 Configuración de la Crisis</h2>
+            
+            <div class="form-group">
+                <label for="initial-portfolio">Portafolio inicial ($):</label>
+                <input type="number" id="initial-portfolio" value="100000" min="10000" step="10000">
+            </div>
+            
+            <div class="form-group">
+                <label for="monthly-contribution">Contribución mensual ($):</label>
+                <input type="number" id="monthly-contribution" value="1000" min="0" step="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="crisis-severity">Severidad de la crisis:</label>
+                <select id="crisis-severity">
+                    <option value="mild">Leve (20% caída)</option>
+                    <option value="moderate" selected>Moderada (35% caída)</option>
+                    <option value="severe">Severa (50% caída)</option>
+                    <option value="extreme">Extrema (70% caída)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="crisis-duration">Duración de la crisis (meses):</label>
+                <input type="number" id="crisis-duration" value="18" min="6" max="36">
+            </div>
+            
+            <button class="btn" onclick="startCrisisSimulation()">Iniciar Simulación de Crisis</button>
+        </div>
+
+        <div id="crisis-simulation" class="card" style="display: none;">
+            <h2>📉 Simulación de Crisis en Progreso</h2>
+            
+            <div id="simulation-timeline"></div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="crisis-progress"></div>
+            </div>
+            
+            <div id="current-status"></div>
+            
+            <div id="decision-points"></div>
+        </div>
+
+        <div id="crisis-results" class="card" style="display: none;">
+            <h2>🎯 Resultados de la Crisis</h2>
+            
+            <div id="results-content"></div>
+            
+            <button class="btn" onclick="restartCrisis()">Nueva Simulación</button>
+        </div>
+    </div>
+
+    <script>
+        let simulationData = {};
+        let currentMonth = 0;
+        let portfolioValue = 0;
+        let totalContributed = 0;
+        let decisions = [];
+        
+        function startCrisisSimulation() {
+            const initialPortfolio = parseFloat(document.getElementById('initial-portfolio').value);
+            const monthlyContribution = parseFloat(document.getElementById('monthly-contribution').value);
+            const crisisSeverity = document.getElementById('crisis-severity').value;
+            const crisisDuration = parseInt(document.getElementById('crisis-duration').value);
+            
+            // Configurar parámetros de crisis
+            let maxDecline, recoveryTime;
+            switch(crisisSeverity) {
+                case 'mild':
+                    maxDecline = 0.20;
+                    recoveryTime = 12;
+                    break;
+                case 'moderate':
+                    maxDecline = 0.35;
+                    recoveryTime = 18;
+                    break;
+                case 'severe':
+                    maxDecline = 0.50;
+                    recoveryTime = 24;
+                    break;
+                case 'extreme':
+                    maxDecline = 0.70;
+                    recoveryTime = 36;
+                    break;
+            }
+            
+            simulationData = {
+                initialPortfolio,
+                monthlyContribution,
+                maxDecline,
+                crisisDuration,
+                recoveryTime,
+                totalMonths: crisisDuration + recoveryTime
+            };
+            
+            portfolioValue = initialPortfolio;
+            totalContributed = 0;
+            currentMonth = 0;
+            decisions = [];
+            
+            document.getElementById('crisis-setup').style.display = 'none';
+            document.getElementById('crisis-simulation').style.display = 'block';
+            
+            runSimulation();
+        }
+        
+        function runSimulation() {
+            if (currentMonth >= simulationData.totalMonths) {
+                showResults();
+                return;
+            }
+            
+            // Calcular retorno del mes
+            let monthlyReturn;
+            if (currentMonth < simulationData.crisisDuration) {
+                // Fase de crisis - caída gradual
+                const declineProgress = currentMonth / simulationData.crisisDuration;
+                monthlyReturn = -simulationData.maxDecline * declineProgress / simulationData.crisisDuration;
+            } else {
+                // Fase de recuperación
+                const recoveryProgress = (currentMonth - simulationData.crisisDuration) / simulationData.recoveryTime;
+                monthlyReturn = simulationData.maxDecline * recoveryProgress / simulationData.recoveryTime;
+            }
+            
+            // Aplicar retorno y contribución
+            portfolioValue = portfolioValue * (1 + monthlyReturn) + simulationData.monthlyContribution;
+            totalContributed += simulationData.monthlyContribution;
+            
+            // Mostrar estado actual
+            updateDisplay();
+            
+            // Preguntar por decisiones en momentos clave
+            if (shouldAskDecision()) {
+                showDecisionPoint();
+            } else {
+                currentMonth++;
+                setTimeout(runSimulation, 1000);
+            }
+        }
+        
+        function shouldAskDecision() {
+            const crisisPoints = [3, 6, 9, 12, 15];
+            const recoveryPoints = [simulationData.crisisDuration + 3, simulationData.crisisDuration + 6];
+            return crisisPoints.includes(currentMonth) || recoveryPoints.includes(currentMonth);
+        }
+        
+        function showDecisionPoint() {
+            const decisionContainer = document.getElementById('decision-points');
+            const isCrisis = currentMonth < simulationData.crisisDuration;
+            
+            decisionContainer.innerHTML = `
+                <div class="alert ${isCrisis ? 'alert-error' : 'alert-info'}">
+                    <h3>${isCrisis ? '📉 Crisis en Progreso' : '📈 Recuperación en Progreso'}</h3>
+                    <p>Mes ${currentMonth + 1}: Tu portafolio vale $${portfolioValue.toLocaleString()}</p>
+                    <p>¿Qué decides hacer?</p>
+                    
+                    <button class="btn" onclick="makeDecision('hold')" style="margin: 5px;">✅ Mantener estrategia</button>
+                    <button class="btn" onclick="makeDecision('sell')" style="margin: 5px;">❌ Vender todo</button>
+                    <button class="btn" onclick="makeDecision('buy')" style="margin: 5px;">💰 Comprar más</button>
+                    <button class="btn" onclick="makeDecision('reduce')" style="margin: 5px;">⚠️ Reducir contribuciones</button>
+                </div>
+            `;
+        }
+        
+        function makeDecision(decision) {
+            decisions.push({
+                month: currentMonth,
+                decision: decision,
+                portfolioValue: portfolioValue
+            });
+            
+            // Aplicar consecuencias de la decisión
+            switch(decision) {
+                case 'sell':
+                    portfolioValue = totalContributed * 0.8; // Pérdida por vender en crisis
+                    break;
+                case 'buy':
+                    // Aumentar contribución temporalmente
+                    simulationData.monthlyContribution *= 1.5;
+                    break;
+                case 'reduce':
+                    simulationData.monthlyContribution *= 0.5;
+                    break;
+                // 'hold' no cambia nada
+            }
+            
+            document.getElementById('decision-points').innerHTML = '';
+            currentMonth++;
+            setTimeout(runSimulation, 500);
+        }
+        
+        function updateDisplay() {
+            const timeline = document.getElementById('simulation-timeline');
+            const status = document.getElementById('current-status');
+            const progress = document.getElementById('crisis-progress');
+            
+            const phase = currentMonth < simulationData.crisisDuration ? 'Crisis' : 'Recuperación';
+            const progressPercent = (currentMonth / simulationData.totalMonths) * 100;
+            
+            timeline.innerHTML = `
+                <h3>📅 Mes ${currentMonth + 1} de ${simulationData.totalMonths} - ${phase}</h3>
+                <p><strong>Valor del portafolio:</strong> $${portfolioValue.toLocaleString()}</p>
+                <p><strong>Total contribuido:</strong> $${totalContributed.toLocaleString()}</p>
+                <p><strong>Ganancia/Pérdida:</strong> $${(portfolioValue - totalContributed).toLocaleString()}</p>
+            `;
+            
+            status.innerHTML = `
+                <div class="alert ${currentMonth < simulationData.crisisDuration ? 'alert-error' : 'alert-success'}">
+                    <h4>Estado: ${phase}</h4>
+                    <p>${getStatusMessage()}</p>
+                </div>
+            `;
+            
+            progress.style.width = progressPercent + '%';
+        }
+        
+        function getStatusMessage() {
+            if (currentMonth < simulationData.crisisDuration) {
+                const declinePercent = ((simulationData.initialPortfolio - portfolioValue) / simulationData.initialPortfolio) * 100;
+                return `El mercado ha caído ${declinePercent.toFixed(1)}%. Mantén la calma y continúa invirtiendo.`;
+            } else {
+                const recoveryPercent = ((portfolioValue - simulationData.initialPortfolio) / simulationData.initialPortfolio) * 100;
+                return `El mercado se está recuperando. Tu disciplina está siendo recompensada.`;
+            }
+        }
+        
+        function showResults() {
+            document.getElementById('crisis-simulation').style.display = 'none';
+            document.getElementById('crisis-results').style.display = 'block';
+            
+            const finalReturn = ((portfolioValue - simulationData.initialPortfolio) / simulationData.initialPortfolio) * 100;
+            const totalReturn = ((portfolioValue - totalContributed) / totalContributed) * 100;
+            
+            let strategyGrade = 'A';
+            let strategyMessage = 'Excelente disciplina durante la crisis.';
+            
+            // Evaluar decisiones tomadas
+            const badDecisions = decisions.filter(d => d.decision === 'sell' || d.decision === 'reduce').length;
+            const goodDecisions = decisions.filter(d => d.decision === 'hold' || d.decision === 'buy').length;
+            
+            if (badDecisions > goodDecisions) {
+                strategyGrade = 'C';
+                strategyMessage = 'Las decisiones emocionales afectaron tu rendimiento.';
+            } else if (badDecisions > 0) {
+                strategyGrade = 'B';
+                strategyMessage = 'Buen trabajo, pero algunas decisiones podrían haber sido mejores.';
+            }
+            
+            document.getElementById('results-content').innerHTML = `
+                <div class="result result-success">
+                    <h3>📊 Resultados Finales</h3>
+                    <ul>
+                        <li><strong>Portafolio final:</strong> $${portfolioValue.toLocaleString()}</li>
+                        <li><strong>Total contribuido:</strong> $${totalContributed.toLocaleString()}</li>
+                        <li><strong>Ganancia total:</strong> $${(portfolioValue - totalContributed).toLocaleString()}</li>
+                        <li><strong>Retorno total:</strong> ${totalReturn.toFixed(1)}%</li>
+                        <li><strong>Retorno vs portafolio inicial:</strong> ${finalReturn.toFixed(1)}%</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>🎯 Evaluación de Estrategia</h3>
+                    <p><strong>Calificación:</strong> ${strategyGrade}</p>
+                    <p><strong>Comentario:</strong> ${strategyMessage}</p>
+                    
+                    <h4>Decisiones tomadas:</h4>
+                    <ul>
+                        ${decisions.map(d => `<li>Mes ${d.month + 1}: ${getDecisionText(d.decision)}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h3>💡 Lecciones Clave</h3>
+                    <ul>
+                        <li><strong>Mantén la disciplina:</strong> Las crisis son temporales, pero las decisiones emocionales pueden ser permanentes</li>
+                        <li><strong>Continúa invirtiendo:</strong> Las crisis son oportunidades para comprar a precios más bajos</li>
+                        <li><strong>No vendas en pánico:</strong> Vender en el fondo de una crisis es el error más costoso</li>
+                        <li><strong>Mantén perspectiva:</strong> El mercado siempre se ha recuperado históricamente</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        function getDecisionText(decision) {
+            switch(decision) {
+                case 'hold': return '✅ Mantener estrategia';
+                case 'sell': return '❌ Vender todo';
+                case 'buy': return '💰 Comprar más';
+                case 'reduce': return '⚠️ Reducir contribuciones';
+                default: return decision;
+            }
+        }
+        
+        function restartCrisis() {
+            document.getElementById('crisis-results').style.display = 'none';
+            document.getElementById('crisis-setup').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

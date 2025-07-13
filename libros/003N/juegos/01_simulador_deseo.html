@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Deseo</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .desire-meter {
+            width: 100%;
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .desire-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .scenario-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #3498db;
+        }
+        .choice-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .choice-button:hover {
+            background: #2980b9;
+        }
+        .choice-button.correct {
+            background: #27ae60;
+        }
+        .choice-button.incorrect {
+            background: #e74c3c;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d5f4e6;
+            border-left: 4px solid #27ae60;
+            color: #1e8449;
+        }
+        .feedback.negative {
+            background: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Simulador de Deseo</h1>
+        <p>¡Aprende a crear deseos ardientes! En este juego, practicarás cómo convertir tus sueños en realidad.</p>
+
+        <div class="score-display">
+            <h3>Tu Puntuación: <span id="score">0</span>/100</h3>
+            <div class="desire-meter">
+                <div class="desire-fill" id="desireFill"></div>
+            </div>
+            <p>Nivel de Deseo: <span id="desireLevel">Débil</span></p>
+        </div>
+
+        <div class="game-container">
+            <h2>🎮 ¿Cómo Jugar?</h2>
+            <p>Lee cada escenario y elige la respuesta que muestre un <strong>deseo ardiente</strong> en lugar de un deseo débil. ¡Cada respuesta correcta aumenta tu nivel de deseo!</p>
+        </div>
+
+        <div class="game-container" id="scenario1">
+            <h3>🎯 Escenario 1: El Videojuego</h3>
+            <div class="scenario-card">
+                <p>Quieres un videojuego nuevo que cuesta $60. ¿Cuál de estas respuestas muestra un deseo ardiente?</p>
+                
+                <button class="choice-button" onclick="checkAnswer(1, 'weak')">A) "Me gustaría tener ese juego, pero es muy caro."</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'strong')">B) "Voy a conseguir ese juego sin importar qué. Trabajaré, ahorraré, haré lo que sea necesario."</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'weak')">C) "Sería bonito tenerlo, pero si no lo consigo no pasa nada."</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="scenario2" style="display: none;">
+            <h3>🎯 Escenario 2: Las Matemáticas</h3>
+            <div class="scenario-card">
+                <p>Quieres ser mejor en matemáticas. ¿Cuál respuesta muestra un deseo ardiente?</p>
+                
+                <button class="choice-button" onclick="checkAnswer(2, 'weak')">A) "Ojalá fuera mejor en matemáticas."</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'weak')">B) "Me gustaría mejorar un poco."</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'strong')">C) "Voy a ser el mejor de mi clase en matemáticas. Estudiaré todos los días, buscaré ayuda extra, y no me rendiré hasta lograrlo."</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="scenario3" style="display: none;">
+            <h3>🎯 Escenario 3: El Negocio</h3>
+            <div class="scenario-card">
+                <p>Quieres crear tu propio negocio. ¿Cuál respuesta muestra un deseo ardiente?</p>
+                
+                <button class="choice-button" onclick="checkAnswer(3, 'strong')">A) "Voy a crear mi negocio y será exitoso. Aprenderé todo lo necesario, trabajaré duro, y no me rendiré hasta que funcione."</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'weak')">B) "Sería interesante tener un negocio algún día."</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'weak')">C) "Me gustaría intentarlo, pero no sé si funcionará."</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="scenario4" style="display: none;">
+            <h3>🎯 Escenario 4: El Deporte</h3>
+            <div class="scenario-card">
+                <p>Quieres ser el mejor jugador de tu equipo. ¿Cuál respuesta muestra un deseo ardiente?</p>
+                
+                <button class="choice-button" onclick="checkAnswer(4, 'weak')">A) "Me gustaría mejorar un poco."</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'strong')">B) "Voy a ser el mejor jugador del equipo. Practicaré todos los días, veré videos de técnicas, y me esforzaré más que nadie."</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'weak')">C) "Sería bonito ser bueno en deportes."</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="scenario5" style="display: none;">
+            <h3>🎯 Escenario 5: La Universidad</h3>
+            <div class="scenario-card">
+                <p>Quieres ir a una universidad específica. ¿Cuál respuesta muestra un deseo ardiente?</p>
+                
+                <button class="choice-button" onclick="checkAnswer(5, 'weak')">A) "Me gustaría ir a esa universidad si es posible."</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'weak')">B) "Sería interesante estudiar ahí."</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'strong')">C) "Voy a entrar a esa universidad. Sacaré las mejores notas, participaré en actividades extracurriculares, y haré todo lo necesario para ser aceptado."</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Juego Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="scenario-card">
+                <h3>🎯 Lo que Aprendiste:</h3>
+                <ul>
+                    <li><strong>Deseo Débil:</strong> "Me gustaría", "Sería bonito", "Ojalá"</li>
+                    <li><strong>Deseo Ardiente:</strong> "Voy a", "Haré lo que sea necesario", "No me rendiré hasta lograrlo"</li>
+                </ul>
+                
+                <h3>💡 Consejos para Crear Deseos Ardientes:</h3>
+                <ol>
+                    <li>Usa palabras de acción: "Voy a", "Haré", "Lograré"</li>
+                    <li>Incluye un plan específico</li>
+                    <li>Menciona que no te rendirás</li>
+                    <li>Expresa emoción y pasión</li>
+                    <li>Visualiza el resultado final</li>
+                </ol>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentScenario = 1;
+        const totalScenarios = 5;
+
+        function checkAnswer(scenario, choice) {
+            const buttons = document.querySelectorAll(`#scenario${scenario} .choice-button`);
+            const feedback = document.getElementById(`feedback${scenario}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            if (choice === 'strong') {
+                currentScore += 20;
+                feedback.innerHTML = '<strong>✅ ¡Correcto!</strong> Esa respuesta muestra un deseo ardiente. Usa palabras de acción y muestra determinación.';
+                feedback.className = 'feedback positive';
+            } else {
+                feedback.innerHTML = '<strong>❌ Incorrecto.</strong> Esa respuesta muestra un deseo débil. Un deseo ardiente usa palabras como "Voy a", "Haré", "No me rendiré".';
+                feedback.className = 'feedback negative';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Actualizar puntuación
+            updateScore();
+            
+            // Mostrar siguiente escenario después de 2 segundos
+            setTimeout(() => {
+                if (scenario < totalScenarios) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 2000);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('finalScore').textContent = currentScore;
+            
+            const desireFill = document.getElementById('desireFill');
+            const desireLevel = document.getElementById('desireLevel');
+            
+            desireFill.style.width = currentScore + '%';
+            
+            if (currentScore < 40) {
+                desireLevel.textContent = 'Débil';
+                desireFill.style.background = '#dc3545';
+            } else if (currentScore < 80) {
+                desireLevel.textContent = 'Medio';
+                desireFill.style.background = '#ffc107';
+            } else {
+                desireLevel.textContent = '¡Ardiente!';
+                desireFill.style.background = '#28a745';
+            }
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`scenario${totalScenarios}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentScore >= 80) {
+                finalMessage.textContent = '¡Excelente! Tienes un deseo ardiente muy fuerte. ¡Sigue así!';
+            } else if (currentScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu deseo está creciendo. Con práctica será más fuerte.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con práctica aprenderás a crear deseos ardientes.';
+            }
+        }
+        
+        function restartGame() {
+            currentScore = 0;
+            currentScenario = 1;
+            
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= totalScenarios; i++) {
+                document.getElementById(`scenario${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primer escenario
+            document.getElementById('scenario1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateScore();
+        }
+    </script>
+</body>
+</html> 

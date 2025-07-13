@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea tu Plan Financiero - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">📝 Crea tu Plan Financiero Inquebrantable</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>Esta herramienta te ayudará a crear un plan financiero personal basado en los principios de "Inquebrantable". Completa la información y obtendrás un plan personalizado.</p>
+        </div>
+
+        <div id="plan-form" class="card">
+            <h2>📊 Información Personal</h2>
+            
+            <div class="form-group">
+                <label for="age">Edad:</label>
+                <input type="number" id="age" min="18" max="100" value="30">
+            </div>
+            
+            <div class="form-group">
+                <label for="income">Ingreso anual ($):</label>
+                <input type="number" id="income" value="50000" min="10000">
+            </div>
+            
+            <div class="form-group">
+                <label for="savings">Ahorros actuales ($):</label>
+                <input type="number" id="savings" value="10000" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="expenses">Gastos mensuales ($):</label>
+                <input type="number" id="expenses" value="3000" min="500">
+            </div>
+            
+            <div class="form-group">
+                <label for="risk-tolerance">Tolerancia al riesgo:</label>
+                <select id="risk-tolerance">
+                    <option value="conservative">Conservador</option>
+                    <option value="moderate" selected>Moderado</option>
+                    <option value="aggressive">Agresivo</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="retirement-age">Edad de jubilación objetivo:</label>
+                <input type="number" id="retirement-age" value="65" min="45" max="80">
+            </div>
+            
+            <div class="form-group">
+                <label for="retirement-income">Ingreso mensual deseado en jubilación ($):</label>
+                <input type="number" id="retirement-income" value="5000" min="1000">
+            </div>
+            
+            <button class="btn" onclick="generatePlan()">Generar Plan Financiero</button>
+        </div>
+
+        <div id="plan-results" class="card" style="display: none;">
+            <h2>🎯 Tu Plan Financiero Inquebrantable</h2>
+            
+            <div id="plan-content"></div>
+            
+            <button class="btn" onclick="printPlan()">Imprimir Plan</button>
+            <button class="btn btn-secondary" onclick="editPlan()">Editar Información</button>
+        </div>
+    </div>
+
+    <script>
+        function generatePlan() {
+            const age = parseInt(document.getElementById('age').value);
+            const income = parseFloat(document.getElementById('income').value);
+            const savings = parseFloat(document.getElementById('savings').value);
+            const expenses = parseFloat(document.getElementById('expenses').value);
+            const riskTolerance = document.getElementById('risk-tolerance').value;
+            const retirementAge = parseInt(document.getElementById('retirement-age').value);
+            const retirementIncome = parseFloat(document.getElementById('retirement-income').value);
+            
+            const yearsToRetirement = retirementAge - age;
+            const monthlyIncome = income / 12;
+            const emergencyFund = expenses * 6;
+            const annualRetirementIncome = retirementIncome * 12;
+            const retirementSavingsNeeded = annualRetirementIncome * 25; // Regla del 4%
+            
+            // Calcular asignación de activos
+            let stockAllocation, bondAllocation, internationalAllocation;
+            
+            if (riskTolerance === 'conservative') {
+                stockAllocation = Math.max(100 - age - 10, 20);
+                bondAllocation = 100 - stockAllocation - 10;
+                internationalAllocation = 10;
+            } else if (riskTolerance === 'moderate') {
+                stockAllocation = Math.max(100 - age, 30);
+                bondAllocation = 100 - stockAllocation - 20;
+                internationalAllocation = 20;
+            } else {
+                stockAllocation = Math.max(100 - age + 10, 40);
+                bondAllocation = 100 - stockAllocation - 30;
+                internationalAllocation = 30;
+            }
+            
+            // Calcular ahorro necesario
+            const monthlySavingsNeeded = (retirementSavingsNeeded - savings) / (yearsToRetirement * 12);
+            const savingsRate = (monthlySavingsNeeded / monthlyIncome) * 100;
+            
+            document.getElementById('plan-content').innerHTML = `
+                <div class="alert alert-success">
+                    <h3>📈 Resumen de tu Situación</h3>
+                    <ul>
+                        <li><strong>Edad:</strong> ${age} años</li>
+                        <li><strong>Años hasta jubilación:</strong> ${yearsToRetirement} años</li>
+                        <li><strong>Ingreso anual:</strong> $${income.toLocaleString()}</li>
+                        <li><strong>Ahorros actuales:</strong> $${savings.toLocaleString()}</li>
+                        <li><strong>Gastos mensuales:</strong> $${expenses.toLocaleString()}</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>🎯 Metas Financieras</h3>
+                    <ul>
+                        <li><strong>Fondo de emergencia objetivo:</strong> $${emergencyFund.toLocaleString()}</li>
+                        <li><strong>Ahorros para jubilación necesarios:</strong> $${retirementSavingsNeeded.toLocaleString()}</li>
+                        <li><strong>Ahorro mensual necesario:</strong> $${monthlySavingsNeeded.toLocaleString()}</li>
+                        <li><strong>Tasa de ahorro recomendada:</strong> ${savingsRate.toFixed(1)}%</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h3>📊 Asignación de Activos Recomendada</h3>
+                    <ul>
+                        <li><strong>Acciones EEUU:</strong> ${stockAllocation - internationalAllocation}%</li>
+                        <li><strong>Acciones Internacionales:</strong> ${internationalAllocation}%</li>
+                        <li><strong>Bonos:</strong> ${bondAllocation}%</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>🚀 Plan de Acción Inquebrantable</h3>
+                    
+                    <h4>Paso 1: Fondo de Emergencia (Prioridad Alta)</h4>
+                    <ul>
+                        <li>Objetivo: $${emergencyFund.toLocaleString()}</li>
+                        <li>Fondo actual: $${Math.min(savings, emergencyFund).toLocaleString()}</li>
+                        <li>Falta: $${Math.max(0, emergencyFund - savings).toLocaleString()}</li>
+                        <li>Recomendación: Guardar en cuenta de ahorros de alto rendimiento</li>
+                    </ul>
+                    
+                    <h4>Paso 2: Maximizar Cuentas con Beneficios Fiscales</h4>
+                    <ul>
+                        <li>401(k): Contribuir al máximo permitido ($${Math.min(income * 0.15, 22500).toLocaleString()} anual)</li>
+                        <li>Roth IRA: Contribuir $${Math.min(income * 0.05, 6500).toLocaleString()} anual</li>
+                        <li>HSA: Si calificas, contribuir al máximo</li>
+                    </ul>
+                    
+                    <h4>Paso 3: Estrategia de Inversión</h4>
+                    <ul>
+                        <li>Usar solo fondos índice de bajo costo</li>
+                        <li>Configurar contribuciones automáticas</li>
+                        <li>Rebalancear anualmente</li>
+                        <li>Mantener perspectiva a largo plazo</li>
+                    </ul>
+                    
+                    <h4>Paso 4: Fondos Índice Recomendados</h4>
+                    <ul>
+                        <li><strong>Acciones EEUU:</strong> Vanguard Total Stock Market (VTSAX) - 0.04%</li>
+                        <li><strong>Acciones Internacionales:</strong> Vanguard Total International (VTIAX) - 0.08%</li>
+                        <li><strong>Bonos:</strong> Vanguard Total Bond Market (VBTLX) - 0.05%</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>💡 Consejos Adicionales</h3>
+                    <ul>
+                        <li><strong>Automatiza todo:</strong> Configura contribuciones automáticas para eliminar emociones</li>
+                        <li><strong>Mantén la disciplina:</strong> No cambies tu estrategia durante crisis del mercado</li>
+                        <li><strong>Educación continua:</strong> Sigue aprendiendo sobre finanzas personales</li>
+                        <li><strong>Revisa regularmente:</strong> Revisa tu plan anualmente y ajusta según cambios en tu vida</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h3>⚠️ Descargo de Responsabilidad</h3>
+                    <p>Este plan es solo con fines educativos y no constituye asesoramiento financiero personal. Siempre consulta con un profesional financiero antes de tomar decisiones de inversión importantes.</p>
+                </div>
+            `;
+            
+            document.getElementById('plan-form').style.display = 'none';
+            document.getElementById('plan-results').style.display = 'block';
+        }
+        
+        function printPlan() {
+            window.print();
+        }
+        
+        function editPlan() {
+            document.getElementById('plan-results').style.display = 'none';
+            document.getElementById('plan-form').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

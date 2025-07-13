@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso Inversión - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">✔️ Verdadero o Falso: Conceptos de Inversión</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>Pon a prueba tus conocimientos sobre inversión con este quiz de verdadero o falso. Cada pregunta está basada en los principios de "Inquebrantable" de Tony Robbins.</p>
+        </div>
+
+        <div id="quiz-start" class="card">
+            <h2>🚀 Comenzar Quiz</h2>
+            <p>¿Estás listo para demostrar tu conocimiento sobre inversión inquebrantable?</p>
+            <button class="btn" onclick="startQuiz()">Comenzar Quiz</button>
+        </div>
+
+        <div id="quiz-question" class="card" style="display: none;">
+            <h2>Pregunta <span id="question-number">1</span> de <span id="total-questions">10</span></h2>
+            <p id="question-text"></p>
+            
+            <div class="form-group">
+                <button class="btn" onclick="selectAnswer(true)" style="margin: 10px; width: 45%;">✅ Verdadero</button>
+                <button class="btn" onclick="selectAnswer(false)" style="margin: 10px; width: 45%;">❌ Falso</button>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="quiz-result" class="card" style="display: none;">
+            <h2>🎯 Resultado</h2>
+            <div id="result-content"></div>
+            <button class="btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="quiz-summary" class="card" style="display: none;">
+            <h2>🏆 Resumen del Quiz</h2>
+            <div id="summary-content"></div>
+            <button class="btn" onclick="restartQuiz()">Hacer Quiz de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let totalQuestions = 10;
+        
+        const questions = [
+            {
+                text: "Los fondos índice de bajo costo consistentemente superan a la mayoría de fondos activos a largo plazo.",
+                answer: true,
+                explanation: "✅ Verdadero. Los fondos índice tienen menores costos y consistentemente superan a la mayoría de fondos activos debido a la eficiencia del mercado."
+            },
+            {
+                text: "Intentar cronometrar el mercado es una estrategia efectiva para la mayoría de inversores.",
+                answer: false,
+                explanation: "❌ Falso. El timing del mercado es extremadamente difícil y la mayoría de inversores que lo intentan obtienen peores resultados que simplemente mantener sus inversiones."
+            },
+            {
+                text: "La diversificación es la única estrategia gratuita para reducir el riesgo sin sacrificar retornos potenciales.",
+                answer: true,
+                explanation: "✅ Verdadero. La diversificación es efectivamente gratuita y es la mejor manera de reducir el riesgo específico de las inversiones."
+            },
+            {
+                text: "Los costos de inversión no importan mucho si el fondo tiene buenos retornos.",
+                answer: false,
+                explanation: "❌ Falso. Los costos son el enemigo número uno de los retornos. Cada punto porcentual de costo puede reducir significativamente tu riqueza a largo plazo."
+            },
+            {
+                text: "El rebalanceo regular puede mejorar los retornos a largo plazo.",
+                answer: true,
+                explanation: "✅ Verdadero. El rebalanceo mantiene tu nivel de riesgo objetivo y te hace comprar bajo y vender alto automáticamente."
+            },
+            {
+                text: "Las correcciones del mercado son normales y temporales.",
+                answer: true,
+                explanation: "✅ Verdadero. Las correcciones del 10-20% son normales y el mercado siempre se ha recuperado históricamente."
+            },
+            {
+                text: "Los fondos activos siempre superan a los fondos índice.",
+                answer: false,
+                explanation: "❌ Falso. La mayoría de fondos activos no superan a sus índices de referencia después de costos."
+            },
+            {
+                text: "La automatización de inversiones puede eliminar las emociones destructivas.",
+                answer: true,
+                explanation: "✅ Verdadero. Las contribuciones automáticas eliminan la tentación de saltarse inversiones durante mercados volátiles."
+            },
+            {
+                text: "Los asesores financieros siempre actúan en el mejor interés del cliente.",
+                answer: false,
+                explanation: "❌ Falso. Solo los asesores fiduciarios están legalmente obligados a actuar en el mejor interés del cliente."
+            },
+            {
+                text: "El interés compuesto es la octava maravilla del mundo.",
+                answer: true,
+                explanation: "✅ Verdadero. Albert Einstein dijo que el interés compuesto es la octava maravilla del mundo. El tiempo es tu aliado en la inversión."
+            }
+        ];
+
+        function startQuiz() {
+            document.getElementById('quiz-start').style.display = 'none';
+            document.getElementById('quiz-question').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.text;
+            document.getElementById('question-number').textContent = currentQuestion + 1;
+            document.getElementById('total-questions').textContent = totalQuestions;
+            updateProgress();
+        }
+
+        function selectAnswer(userAnswer) {
+            const question = questions[currentQuestion];
+            const isCorrect = userAnswer === question.answer;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            document.getElementById('quiz-question').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            const resultContent = document.getElementById('result-content');
+            resultContent.innerHTML = `
+                <div class="alert ${isCorrect ? 'alert-success' : 'alert-error'}">
+                    <h3>${isCorrect ? '✅ Correcto!' : '❌ Incorrecto'}</h3>
+                    <p><strong>Tu respuesta:</strong> ${userAnswer ? 'Verdadero' : 'Falso'}</p>
+                    <p><strong>Respuesta correcta:</strong> ${question.answer ? 'Verdadero' : 'Falso'}</p>
+                    <p><strong>Explicación:</strong> ${question.explanation}</p>
+                    <p><strong>Puntuación actual: ${score}/${currentQuestion + 1}</strong></p>
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= totalQuestions) {
+                showSummary();
+            } else {
+                document.getElementById('quiz-result').style.display = 'none';
+                document.getElementById('quiz-question').style.display = 'block';
+                showQuestion();
+            }
+        }
+
+        function showSummary() {
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('quiz-summary').style.display = 'block';
+            
+            const percentage = (score / totalQuestions) * 100;
+            
+            let grade, message;
+            if (percentage >= 90) {
+                grade = "A+";
+                message = "¡Excelente! Eres un experto en inversión inquebrantable.";
+            } else if (percentage >= 80) {
+                grade = "A";
+                message = "¡Muy bien! Tienes un sólido conocimiento de los principios.";
+            } else if (percentage >= 70) {
+                grade = "B";
+                message = "Buen trabajo. Hay algunas áreas para mejorar.";
+            } else if (percentage >= 60) {
+                grade = "C";
+                message = "Aceptable. Necesitas más educación financiera.";
+            } else {
+                grade = "D";
+                message = "Necesitas estudiar más los principios de inversión inquebrantable.";
+            }
+            
+            document.getElementById('summary-content').innerHTML = `
+                <div class="result result-success">
+                    <h3>Puntuación Final: ${score}/${totalQuestions} (${percentage.toFixed(1)}%)</h3>
+                    <h3>Calificación: ${grade}</h3>
+                    <p><strong>${message}</strong></p>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>💡 Conceptos Clave Revisados:</h3>
+                    <ul>
+                        <li>Fondos índice vs fondos activos</li>
+                        <li>Timing del mercado</li>
+                        <li>Diversificación</li>
+                        <li>Importancia de los costos</li>
+                        <li>Rebalanceo</li>
+                        <li>Correcciones del mercado</li>
+                        <li>Automatización</li>
+                        <li>Asesores fiduciarios</li>
+                        <li>Interés compuesto</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-summary').style.display = 'none';
+            document.getElementById('quiz-start').style.display = 'block';
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+    </script>
+</body>
+</html> 

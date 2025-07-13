@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Futuro</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .calculator-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .form-group {
+            margin: 1rem 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .result-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .result-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #333;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .tips {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Calculadora de Futuro</h1>
+        <p>¡Descubre cómo el tiempo y el interés compuesto pueden hacer crecer tu dinero! Esta calculadora te mostrará el poder de invertir desde joven.</p>
+
+        <div class="game-container">
+            <h2>🎯 Calcula tu Futuro Financiero</h2>
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="currentAge">Tu edad actual:</label>
+                    <input type="number" id="currentAge" value="15" min="10" max="25">
+                </div>
+                
+                <div class="form-group">
+                    <label for="retirementAge">¿A qué edad quieres retirarte?</label>
+                    <input type="number" id="retirementAge" value="65" min="40" max="80">
+                </div>
+                
+                <div class="form-group">
+                    <label for="monthlyInvestment">¿Cuánto puedes invertir al mes?</label>
+                    <input type="number" id="monthlyInvestment" value="100" min="10" max="10000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="annualReturn">Retorno anual esperado (%):</label>
+                    <select id="annualReturn">
+                        <option value="6">6% (Conservador)</option>
+                        <option value="8" selected>8% (Moderado)</option>
+                        <option value="10">10% (Agresivo)</option>
+                        <option value="12">12% (Muy Agresivo)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inflation">Inflación anual esperada (%):</label>
+                    <input type="number" id="inflation" value="3" min="0" max="10" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="monthlyExpenses">Gastos mensuales esperados en retiro:</label>
+                    <input type="number" id="monthlyExpenses" value="3000" min="1000" max="50000">
+                </div>
+            </div>
+            
+            <button class="btn btn-success" onclick="calculateRetirement()">🚀 Calcular mi Futuro</button>
+        </div>
+
+        <div class="game-container" id="results" style="display: none;">
+            <h2>📊 Resultados de tu Plan de Futuro</h2>
+            
+            <div class="result-display">
+                <h3>💰 Resumen Financiero</h3>
+                <div class="result-section">
+                    <h4>Total Ahorrado:</h4>
+                    <p><strong>$<span id="totalSaved"></span></strong></p>
+                    <p>Este es el dinero que habrás invertido durante tu vida laboral.</p>
+                </div>
+                
+                <div class="result-section">
+                    <h4>Valor Final de Inversiones:</h4>
+                    <p><strong>$<span id="finalValue"></span></strong></p>
+                    <p>Este es el valor total de tus inversiones al momento del retiro.</p>
+                </div>
+                
+                <div class="result-section">
+                    <h4>Ganancias por Interés Compuesto:</h4>
+                    <p><strong>$<span id="interestEarned"></span></strong></p>
+                    <p>¡Este es el dinero "extra" que generó el interés compuesto!</p>
+                </div>
+            </div>
+            
+            <div class="result-display">
+                <h3>📈 Análisis de Retiro</h3>
+                <div class="result-section">
+                    <h4>Necesidad Anual en Retiro:</h4>
+                    <p><strong>$<span id="annualNeed"></span></strong></p>
+                    <p>Dinero que necesitarás cada año para vivir cómodamente.</p>
+                </div>
+                
+                <div class="result-section">
+                    <h4>¿Alcanza tu ahorro?</h4>
+                    <p id="sufficiencyMessage"></p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="sufficiencyBar"></div>
+                    </div>
+                </div>
+                
+                <div class="result-section">
+                    <h4>Años que durará tu dinero:</h4>
+                    <p><strong><span id="yearsLast"></span> años</strong></p>
+                    <p>Con un retiro del 4% anual (regla estándar).</p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Visualización de Crecimiento</h3>
+                <div class="result-section">
+                    <h4>Comparación: Dinero Invertido vs. Valor Final</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="investmentBar" style="width: 0%">Dinero Invertido</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="finalBar" style="width: 0%">Valor Final</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tips">
+                <h3>💡 Consejos para Mejorar tu Futuro:</h3>
+                <ul>
+                    <li><strong>Empieza temprano:</strong> Cada año que esperes puede costarte miles de dólares</li>
+                    <li><strong>Aumenta gradualmente:</strong> Incrementa tus inversiones cuando puedas</li>
+                    <li><strong>Diversifica:</strong> No pongas todo en un solo lugar</li>
+                    <li><strong>Revisa regularmente:</strong> Ajusta tu plan según cambien tus circunstancias</li>
+                    <li><strong>Considera la inflación:</strong> Los precios suben con el tiempo</li>
+                </ul>
+                
+                <h3>🎯 Estrategias para Jóvenes:</h3>
+                <ol>
+                    <li><strong>Automatiza:</strong> Configura transferencias automáticas</li>
+                    <li><strong>Reinvierte ganancias:</strong> Deja que el interés compuesto haga su magia</li>
+                    <li><strong>Educación financiera:</strong> Sigue aprendiendo sobre inversiones</li>
+                    <li><strong>Fondo de emergencia:</strong> Mantén 3-6 meses de gastos ahorrados</li>
+                    <li><strong>Invierte en ti mismo:</strong> La educación es la mejor inversión</li>
+                </ol>
+            </div>
+            
+            <button class="btn" onclick="saveCalculation()">💾 Guardar Cálculo</button>
+            <button class="btn" onclick="printResults()">🖨️ Imprimir Resultados</button>
+            <button class="btn" onclick="newCalculation()">🔄 Nuevo Cálculo</button>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateRetirement() {
+            // Obtener valores del formulario
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
+            const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value);
+            
+            // Validar entradas
+            if (retirementAge <= currentAge) {
+                alert('La edad de retiro debe ser mayor que tu edad actual.');
+                return;
+            }
+            
+            // Calcular años de inversión
+            const yearsToRetirement = retirementAge - currentAge;
+            const monthsToRetirement = yearsToRetirement * 12;
+            
+            // Calcular valor futuro usando la fórmula del interés compuesto
+            const monthlyRate = annualReturn / 12;
+            const totalSaved = monthlyInvestment * monthsToRetirement;
+            
+            // Fórmula para valor futuro de pagos mensuales
+            let finalValue = 0;
+            if (monthlyRate > 0) {
+                finalValue = monthlyInvestment * ((Math.pow(1 + monthlyRate, monthsToRetirement) - 1) / monthlyRate);
+            } else {
+                finalValue = totalSaved;
+            }
+            
+            // Calcular ganancias por interés
+            const interestEarned = finalValue - totalSaved;
+            
+            // Calcular necesidades en retiro (ajustadas por inflación)
+            const yearsToRetirementForInflation = yearsToRetirement;
+            const inflatedMonthlyExpenses = monthlyExpenses * Math.pow(1 + inflation, yearsToRetirementForInflation);
+            const annualNeed = inflatedMonthlyExpenses * 12;
+            
+            // Calcular suficiencia (usando regla del 4%)
+            const safeWithdrawalRate = 0.04;
+            const annualWithdrawal = finalValue * safeWithdrawalRate;
+            const sufficiencyPercentage = (annualWithdrawal / annualNeed) * 100;
+            const yearsLast = finalValue / (annualNeed * safeWithdrawalRate);
+            
+            // Mostrar resultados
+            document.getElementById('totalSaved').textContent = totalSaved.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('finalValue').textContent = finalValue.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('interestEarned').textContent = interestEarned.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('annualNeed').textContent = annualNeed.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            // Mostrar mensaje de suficiencia
+            const sufficiencyMessage = document.getElementById('sufficiencyMessage');
+            if (sufficiencyPercentage >= 100) {
+                sufficiencyMessage.innerHTML = '<strong>✅ ¡Excelente! Tu plan es suficiente para el retiro.</strong>';
+                sufficiencyMessage.style.color = '#28a745';
+            } else if (sufficiencyPercentage >= 75) {
+                sufficiencyMessage.innerHTML = '<strong>⚠️ Casi suficiente. Considera aumentar tus inversiones.</strong>';
+                sufficiencyMessage.style.color = '#ffc107';
+            } else {
+                sufficiencyMessage.innerHTML = '<strong>❌ Insuficiente. Necesitas ajustar tu plan.</strong>';
+                sufficiencyMessage.style.color = '#dc3545';
+            }
+            
+            document.getElementById('sufficiencyBar').style.width = Math.min(sufficiencyPercentage, 100) + '%';
+            document.getElementById('sufficiencyBar').textContent = Math.round(sufficiencyPercentage) + '%';
+            
+            document.getElementById('yearsLast').textContent = yearsLast.toFixed(1);
+            
+            // Actualizar barras de visualización
+            const maxValue = Math.max(totalSaved, finalValue);
+            const investmentBarWidth = (totalSaved / maxValue) * 100;
+            const finalBarWidth = (finalValue / maxValue) * 100;
+            
+            document.getElementById('investmentBar').style.width = investmentBarWidth + '%';
+            document.getElementById('investmentBar').textContent = '$' + totalSaved.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            document.getElementById('finalBar').style.width = finalBarWidth + '%';
+            document.getElementById('finalBar').textContent = '$' + finalValue.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            // Mostrar resultados
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll a resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function saveCalculation() {
+            const calculationData = {
+                currentAge: document.getElementById('currentAge').value,
+                retirementAge: document.getElementById('retirementAge').value,
+                monthlyInvestment: document.getElementById('monthlyInvestment').value,
+                annualReturn: document.getElementById('annualReturn').value,
+                inflation: document.getElementById('inflation').value,
+                monthlyExpenses: document.getElementById('monthlyExpenses').value,
+                totalSaved: document.getElementById('totalSaved').textContent,
+                finalValue: document.getElementById('finalValue').textContent,
+                interestEarned: document.getElementById('interestEarned').textContent,
+                date: new Date().toLocaleDateString()
+            };
+            
+            localStorage.setItem('retirementCalculation', JSON.stringify(calculationData));
+            alert('¡Cálculo guardado exitosamente! Puedes recuperarlo más tarde.');
+        }
+        
+        function printResults() {
+            window.print();
+        }
+        
+        function newCalculation() {
+            // Limpiar formulario
+            document.getElementById('currentAge').value = 15;
+            document.getElementById('retirementAge').value = 65;
+            document.getElementById('monthlyInvestment').value = 100;
+            document.getElementById('annualReturn').value = 8;
+            document.getElementById('inflation').value = 3;
+            document.getElementById('monthlyExpenses').value = 3000;
+            
+            // Ocultar resultados
+            document.getElementById('results').style.display = 'none';
+            
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Cargar cálculo guardado si existe
+        window.onload = function() {
+            const savedCalculation = localStorage.getItem('retirementCalculation');
+            if (savedCalculation) {
+                const calc = JSON.parse(savedCalculation);
+                document.getElementById('currentAge').value = calc.currentAge || 15;
+                document.getElementById('retirementAge').value = calc.retirementAge || 65;
+                document.getElementById('monthlyInvestment').value = calc.monthlyInvestment || 100;
+                document.getElementById('annualReturn').value = calc.annualReturn || 8;
+                document.getElementById('inflation').value = calc.inflation || 3;
+                document.getElementById('monthlyExpenses').value = calc.monthlyExpenses || 3000;
+            }
+        };
+    </script>
+</body>
+</html> 

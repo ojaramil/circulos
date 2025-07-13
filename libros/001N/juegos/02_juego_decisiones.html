@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Decisiones Financieras</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .scenario-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .choice-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+        .choice-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .choice-button.wrong {
+            background: #dc3545;
+        }
+        .choice-button.wrong:hover {
+            background: #c82333;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.correct:hover {
+            background: #218838;
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .highlight-box {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Juego de Decisiones Financieras</h1>
+        <p>¡Toma decisiones inteligentes y ve cómo afectan tu futuro financiero!</p>
+
+        <div class="highlight-box">
+            <h2>🌟 ¿Cómo Jugar?</h2>
+            <p>Lee cada escenario y elige la mejor opción financiera. ¡Cada decisión cuenta para tu puntuación final!</p>
+        </div>
+
+        <div class="score-display">
+            <div>Puntuación: <span id="score">0</span> / <span id="total">0</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div id="gameArea">
+            <div class="game-container">
+                <div class="scenario-card">
+                    <h2>🎮 Escenario 1: El Videojuego Nuevo</h2>
+                    <p>Tienes $100 ahorrados y ves un videojuego nuevo que cuesta $80. ¿Qué haces?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="choice-button" onclick="makeChoice(1, 'A', 10)">
+                        A) Comprar el videojuego inmediatamente
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(1, 'B', 20)">
+                        B) Esperar 24 horas y pensar si realmente lo necesitas
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(1, 'C', 30)">
+                        C) Investigar si hay ofertas o versiones más baratas
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(1, 'D', 40)">
+                        D) Ahorrar $20 más y comprar algo mejor
+                    </button>
+                </div>
+
+                <div class="result-box" id="result1">
+                    <h3>💡 Resultado:</h3>
+                    <div id="resultText1"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="scenario2" style="display: none;">
+                <div class="scenario-card">
+                    <h2>💰 Escenario 2: La Mesada</h2>
+                    <p>Recibes $50 de mesada semanal. ¿Cómo la distribuyes?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="choice-button" onclick="makeChoice(2, 'A', 10)">
+                        A) Gastar todo en entretenimiento
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(2, 'B', 20)">
+                        B) Guardar $10 y gastar $40
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(2, 'C', 30)">
+                        C) Usar la regla 50/30/20 (necesidades/deseos/ahorro)
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(2, 'D', 40)">
+                        D) Ahorrar todo para una meta grande
+                    </button>
+                </div>
+
+                <div class="result-box" id="result2">
+                    <h3>💡 Resultado:</h3>
+                    <div id="resultText2"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="scenario3" style="display: none;">
+                <div class="scenario-card">
+                    <h2>📱 Escenario 3: El Teléfono Nuevo</h2>
+                    <p>Tu teléfono actual funciona bien, pero quieres el último modelo que cuesta $800. ¿Qué haces?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="choice-button" onclick="makeChoice(3, 'A', 10)">
+                        A) Pedir prestado dinero para comprarlo
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(3, 'B', 20)">
+                        B) Vender cosas para juntar el dinero
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(3, 'C', 30)">
+                        C) Ahorrar $100 al mes durante 8 meses
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(3, 'D', 40)">
+                        D) Mantener tu teléfono actual hasta que realmente lo necesites
+                    </button>
+                </div>
+
+                <div class="result-box" id="result3">
+                    <h3>💡 Resultado:</h3>
+                    <div id="resultText3"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="scenario4" style="display: none;">
+                <div class="scenario-card">
+                    <h2>🎓 Escenario 4: Educación vs Entretenimiento</h2>
+                    <p>Tienes $200 y debes elegir entre un curso de programación ($150) o un videojuego ($60). ¿Qué eliges?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="choice-button" onclick="makeChoice(4, 'A', 10)">
+                        A) Comprar el videojuego y gastar el resto en comida
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(4, 'B', 20)">
+                        B) Comprar ambos (pedir prestado $10)
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(4, 'C', 30)">
+                        C) Comprar el curso y ahorrar $50
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(4, 'D', 40)">
+                        D) Comprar el curso y usar los $50 para materiales adicionales
+                    </button>
+                </div>
+
+                <div class="result-box" id="result4">
+                    <h3>💡 Resultado:</h3>
+                    <div id="resultText4"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="scenario5" style="display: none;">
+                <div class="scenario-card">
+                    <h2>🏦 Escenario 5: La Cuenta de Ahorro</h2>
+                    <p>Tu abuelo te da $500 de regalo. ¿Qué haces con el dinero?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="choice-button" onclick="makeChoice(5, 'A', 10)">
+                        A) Gastar todo en ropa y accesorios
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(5, 'B', 20)">
+                        B) Gastar $300 y guardar $200
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(5, 'C', 30)">
+                        C) Poner $400 en una cuenta de ahorro y gastar $100
+                    </button>
+                    <button class="choice-button" onclick="makeChoice(5, 'D', 40)">
+                        D) Invertir $300, ahorrar $150, y gastar $50
+                    </button>
+                </div>
+
+                <div class="result-box" id="result5">
+                    <h3>💡 Resultado:</h3>
+                    <div id="resultText5"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="finalResult" style="display: none;">
+                <div class="highlight-box">
+                    <h2>🏆 ¡Juego Completado!</h2>
+                    <p>Tu puntuación final: <span id="finalScore">0</span> / <span id="finalTotal">0</span></p>
+                    <div id="finalMessage"></div>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Lecciones Aprendidas:</h3>
+                    <ul>
+                        <li><strong>Piensa antes de comprar:</strong> La técnica de 24 horas te ayuda a evitar compras impulsivas</li>
+                        <li><strong>Prioriza el ahorro:</strong> Siempre guarda una parte de tus ingresos</li>
+                        <li><strong>Invierte en educación:</strong> El conocimiento es la mejor inversión</li>
+                        <li><strong>Evita las deudas:</strong> No pidas prestado para gastos innecesarios</li>
+                        <li><strong>Ten metas claras:</strong> Ahorra para algo específico</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="choice-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentScenario = 1;
+        const totalScenarios = 5;
+        const maxScore = 40 * totalScenarios;
+
+        function makeChoice(scenario, choice, points) {
+            // Deshabilitar botones
+            const buttons = document.querySelectorAll(`#scenario${scenario} .choice-button`);
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Mostrar resultado
+            const resultBox = document.getElementById(`result${scenario}`);
+            const resultText = document.getElementById(`resultText${scenario}`);
+            
+            let message = '';
+            let isCorrect = false;
+
+            switch(scenario) {
+                case 1:
+                    if (choice === 'D') {
+                        message = '¡Excelente! Ahorrar para algo mejor es una decisión inteligente. Aprender a posponer la gratificación te ayudará a construir riqueza.';
+                        isCorrect = true;
+                    } else if (choice === 'C') {
+                        message = '¡Muy bien! Investigar precios es una buena práctica. Siempre busca la mejor oferta antes de comprar.';
+                        isCorrect = true;
+                    } else if (choice === 'B') {
+                        message = '¡Bueno! Esperar 24 horas es una buena técnica para evitar compras impulsivas.';
+                    } else {
+                        message = '¡Cuidado! Comprar inmediatamente sin pensar puede llevar a arrepentimientos. Siempre evalúa si realmente necesitas algo.';
+                    }
+                    break;
+                case 2:
+                    if (choice === 'C') {
+                        message = '¡Perfecto! La regla 50/30/20 es una excelente estrategia para manejar tu dinero de manera equilibrada.';
+                        isCorrect = true;
+                    } else if (choice === 'D') {
+                        message = '¡Muy bien! Ahorrar todo puede ser bueno para metas específicas, pero también necesitas algo para gastos diarios.';
+                        isCorrect = true;
+                    } else if (choice === 'B') {
+                        message = '¡Bueno! Ahorrar algo es mejor que nada, pero podrías ser más sistemático.';
+                    } else {
+                        message = '¡Cuidado! Gastar todo no te deja nada para emergencias o metas futuras.';
+                    }
+                    break;
+                case 3:
+                    if (choice === 'D') {
+                        message = '¡Excelente! Mantener lo que funciona es una decisión financiera inteligente. No necesitas el último modelo si el actual funciona bien.';
+                        isCorrect = true;
+                    } else if (choice === 'C') {
+                        message = '¡Muy bien! Ahorrar sistemáticamente es una excelente estrategia para compras grandes.';
+                        isCorrect = true;
+                    } else if (choice === 'B') {
+                        message = '¡Bueno! Vender cosas que no usas puede ser una buena estrategia, pero asegúrate de que realmente no las necesites.';
+                    } else {
+                        message = '¡Cuidado! Pedir prestado para cosas que no necesitas puede crear deudas innecesarias.';
+                    }
+                    break;
+                case 4:
+                    if (choice === 'D') {
+                        message = '¡Perfecto! Invertir en educación y tener materiales adicionales maximiza el valor de tu inversión.';
+                        isCorrect = true;
+                    } else if (choice === 'C') {
+                        message = '¡Excelente! Invertir en educación es una de las mejores decisiones que puedes tomar.';
+                        isCorrect = true;
+                    } else if (choice === 'B') {
+                        message = '¡Cuidado! Pedir prestado para entretenimiento no es una buena práctica financiera.';
+                    } else {
+                        message = '¡Cuidado! Priorizar entretenimiento sobre educación puede limitar tus oportunidades futuras.';
+                    }
+                    break;
+                case 5:
+                    if (choice === 'D') {
+                        message = '¡Perfecto! Diversificar tu dinero entre inversión, ahorro y gasto es una estrategia financiera madura.';
+                        isCorrect = true;
+                    } else if (choice === 'C') {
+                        message = '¡Muy bien! Ahorrar la mayor parte es una excelente decisión.';
+                        isCorrect = true;
+                    } else if (choice === 'B') {
+                        message = '¡Bueno! Al menos guardaste algo, pero podrías ser más conservador con el gasto.';
+                    } else {
+                        message = '¡Cuidado! Gastar todo un regalo sin pensar en el futuro no es una buena práctica financiera.';
+                    }
+                    break;
+            }
+
+            resultText.innerHTML = message;
+            resultBox.style.display = 'block';
+
+            // Actualizar puntuación
+            currentScore += points;
+            updateScore();
+
+            // Mostrar siguiente escenario después de 3 segundos
+            setTimeout(() => {
+                if (scenario < totalScenarios) {
+                    document.getElementById(`scenario${scenario}`).style.display = 'none';
+                    document.getElementById(`scenario${scenario + 1}`).style.display = 'block';
+                    currentScenario++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('total').textContent = maxScore;
+            const percentage = (currentScore / maxScore) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('gameArea').innerHTML = '';
+            
+            const finalContainer = document.createElement('div');
+            finalContainer.className = 'game-container';
+            finalContainer.id = 'finalResult';
+            finalContainer.style.display = 'block';
+
+            const percentage = (currentScore / maxScore) * 100;
+            let message = '';
+
+            if (percentage >= 80) {
+                message = '🎉 ¡Eres un experto financiero! Tienes excelente criterio para tomar decisiones de dinero.';
+            } else if (percentage >= 60) {
+                message = '👍 ¡Muy bien! Tienes buenos fundamentos financieros, pero puedes mejorar.';
+            } else if (percentage >= 40) {
+                message = '📚 ¡Buen intento! Tienes algunas buenas ideas, pero necesitas aprender más sobre finanzas.';
+            } else {
+                message = '💡 ¡No te preocupes! Todos empezamos en algún lugar. Sigue aprendiendo y mejorando.';
+            }
+
+            finalContainer.innerHTML = `
+                <div class="highlight-box">
+                    <h2>🏆 ¡Juego Completado!</h2>
+                    <p>Tu puntuación final: ${currentScore} / ${maxScore} (${Math.round(percentage)}%)</p>
+                    <p>${message}</p>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Lecciones Aprendidas:</h3>
+                    <ul>
+                        <li><strong>Piensa antes de comprar:</strong> La técnica de 24 horas te ayuda a evitar compras impulsivas</li>
+                        <li><strong>Prioriza el ahorro:</strong> Siempre guarda una parte de tus ingresos</li>
+                        <li><strong>Invierte en educación:</strong> El conocimiento es la mejor inversión</li>
+                        <li><strong>Evita las deudas:</strong> No pidas prestado para gastos innecesarios</li>
+                        <li><strong>Ten metas claras:</strong> Ahorra para algo específico</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="choice-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('gameArea').appendChild(finalContainer);
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

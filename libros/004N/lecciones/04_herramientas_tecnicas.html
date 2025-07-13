@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas Geniales</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .tool-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tool-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            transition: all 0.3s ease;
+        }
+        .calculator {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .calculator input {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .calculator button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+        .calculator button:hover {
+            background: #5a6fd8;
+        }
+        .result {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .checklist {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 5px;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-right: 1rem;
+            transform: scale(1.2);
+        }
+        .app-recommendation {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .age-specific {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ Herramientas Geniales para tu Dinero</h1>
+        
+        <div class="tool-card">
+            <h2>🧮 Calculadora de Interés Compuesto</h2>
+            <p>Ve cómo crece tu dinero con el tiempo. ¡Es mágico!</p>
+            
+            <div class="calculator">
+                <label>¿Cuánto dinero tienes ahora?</label>
+                <input type="number" id="initialAmount" placeholder="Ej: 100" value="100">
+                
+                <label>¿Cuánto vas a ahorrar cada mes?</label>
+                <input type="number" id="monthlyAmount" placeholder="Ej: 50" value="50">
+                
+                <label>¿A qué edad quieres ver el resultado?</label>
+                <input type="number" id="targetAge" placeholder="Ej: 25" value="25">
+                
+                <label>¿Cuál es tu edad actual?</label>
+                <input type="number" id="currentAge" placeholder="Ej: 15" value="15">
+                
+                <button onclick="calculateCompoundInterest()">¡Calcula mi Futuro!</button>
+                
+                <div id="compoundResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>📊 Calculadora de Asignación de Activos</h2>
+            <p>Descubre cómo deberías dividir tu dinero según tu edad.</p>
+            
+            <div class="calculator">
+                <label>¿Cuál es tu edad?</label>
+                <input type="number" id="ageForAllocation" placeholder="Ej: 16" value="16">
+                
+                <label>¿Cuánto dinero tienes para invertir?</label>
+                <input type="number" id="totalMoney" placeholder="Ej: 1000" value="1000">
+                
+                <button onclick="calculateAssetAllocation()">¡Calcula mi Asignación!</button>
+                
+                <div id="allocationResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>✅ Checklist: ¿Estás Listo para Invertir?</h2>
+            <p>Marca las cosas que ya tienes y ve qué te falta.</p>
+            
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" id="check1">
+                    <label for="check1">Tengo una cuenta de banco</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check2">
+                    <label for="check2">Entiendo qué es invertir</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check3">
+                    <label for="check3">Tengo dinero extra cada mes</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check4">
+                    <label for="check4">Mis papás me apoyan</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check5">
+                    <label for="check5">He investigado sobre fondos índice</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check6">
+                    <label for="check6">Tengo un plan de ahorro</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check7">
+                    <label for="check7">Sé que el mercado sube y baja</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check8">
+                    <label for="check8">Tengo paciencia para esperar</label>
+                </div>
+            </div>
+            
+            <button onclick="checkReadiness()" style="background: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer;">¿Estoy Listo?</button>
+            <div id="readinessResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="tool-card">
+            <h2>📱 Apps Recomendadas para Jóvenes</h2>
+            
+            <div class="app-recommendation">
+                <h3>🏦 Para Ahorrar</h3>
+                <ul>
+                    <li><strong>Acorns:</strong> Invierte el cambio de tus compras</li>
+                    <li><strong>Stash:</strong> Invierte con solo $5</li>
+                    <li><strong>Robinhood:</strong> Compra acciones sin comisiones</li>
+                </ul>
+            </div>
+            
+            <div class="app-recommendation">
+                <h3>📊 Para Aprender</h3>
+                <ul>
+                    <li><strong>Investopedia:</strong> Diccionario financiero</li>
+                    <li><strong>Yahoo Finance:</strong> Noticias del mercado</li>
+                    <li><strong>Khan Academy:</strong> Cursos gratis de finanzas</li>
+                </ul>
+            </div>
+            
+            <div class="app-recommendation">
+                <h3>🎯 Para Planificar</h3>
+                <ul>
+                    <li><strong>Mint:</strong> Organiza tu dinero</li>
+                    <li><strong>YNAB:</strong> Presupuesto mensual</li>
+                    <li><strong>Personal Capital:</strong> Ve todo tu dinero en un lugar</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>🎯 Plan de Acción Personal</h2>
+            <p>Crea tu propio plan paso a paso.</p>
+            
+            <div class="calculator">
+                <h3>Paso 1: Define tus Metas</h3>
+                <label>¿Qué quieres comprar en 1 año?</label>
+                <input type="text" id="goal1" placeholder="Ej: Una laptop">
+                
+                <label>¿Cuánto cuesta?</label>
+                <input type="number" id="cost1" placeholder="Ej: 800">
+                
+                <label>¿Qué quieres comprar en 5 años?</label>
+                <input type="text" id="goal2" placeholder="Ej: Un carro">
+                
+                <label>¿Cuánto cuesta?</label>
+                <input type="number" id="cost2" placeholder="Ej: 5000">
+                
+                <button onclick="createActionPlan()">¡Crea mi Plan!</button>
+                
+                <div id="actionPlanResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>📈 Fondos Índice Recomendados para Jóvenes</h2>
+            
+            <div class="age-specific">
+                <h3>🎯 Para Principiantes (15-18 años)</h3>
+                <ul>
+                    <li><strong>VTI (Vanguard Total Stock Market):</strong> Todo el mercado de EE.UU.</li>
+                    <li><strong>VOO (Vanguard S&P 500):</strong> Las 500 empresas más grandes</li>
+                    <li><strong>VT (Vanguard Total World):</strong> Todo el mundo</li>
+                </ul>
+            </div>
+            
+            <div class="age-specific">
+                <h3>🚀 Para Intermedios (18-25 años)</h3>
+                <ul>
+                    <li><strong>VTI + VXUS:</strong> EE.UU. + resto del mundo</li>
+                    <li><strong>QQQ (Nasdaq):</strong> Empresas de tecnología</li>
+                    <li><strong>BND (Vanguard Total Bond):</strong> Para estabilidad</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>🧠 Test de Tolerancia al Riesgo</h2>
+            <p>Descubre qué tipo de inversor eres.</p>
+            
+            <div class="calculator">
+                <h3>Pregunta 1:</h3>
+                <p>Si pierdes $100 en una inversión, ¿qué haces?</p>
+                <input type="radio" name="risk1" value="1"> Me asusto y vendo todo<br>
+                <input type="radio" name="risk1" value="2"> Espero a que se recupere<br>
+                <input type="radio" name="risk1" value="3"> Compro más porque está barato<br>
+                
+                <h3>Pregunta 2:</h3>
+                <p>¿Qué prefieres?</p>
+                <input type="radio" name="risk2" value="1"> Ganancias pequeñas pero seguras<br>
+                <input type="radio" name="risk2" value="2"> Ganancias moderadas con algo de riesgo<br>
+                <input type="radio" name="risk2" value="3"> Ganancias grandes aunque sea arriesgado<br>
+                
+                <h3>Pregunta 3:</h3>
+                <p>¿Por cuánto tiempo planeas invertir?</p>
+                <input type="radio" name="risk3" value="1"> 1-2 años<br>
+                <input type="radio" name="risk3" value="2"> 3-5 años<br>
+                <input type="radio" name="risk3" value="3"> 10+ años<br>
+                
+                <button onclick="calculateRiskTolerance()">¡Descubre mi Perfil!</button>
+                
+                <div id="riskResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>💡 Consejos por Edad</h2>
+            
+            <div class="age-specific">
+                <h3>🎯 15-17 años</h3>
+                <ul>
+                    <li>Pide a tus papás que te ayuden a abrir una cuenta</li>
+                    <li>Empieza con $20-50 al mes</li>
+                    <li>Lee sobre finanzas personales</li>
+                    <li>Practica con simuladores</li>
+                </ul>
+            </div>
+            
+            <div class="age-specific">
+                <h3>🚀 18-20 años</h3>
+                <ul>
+                    <li>Abre tu propia cuenta de inversión</li>
+                    <li>Invierte 10-15% de tus ingresos</li>
+                    <li>Diversifica tu dinero</li>
+                    <li>Evita las tarjetas de crédito</li>
+                </ul>
+            </div>
+            
+            <div class="age-specific">
+                <h3>💪 21-25 años</h3>
+                <ul>
+                    <li>Invierte 15-20% de tus ingresos</li>
+                    <li>Construye un fondo de emergencia</li>
+                    <li>Considera invertir en tu educación</li>
+                    <li>Planifica para el largo plazo</li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        function calculateCompoundInterest() {
+            const initial = parseFloat(document.getElementById('initialAmount').value);
+            const monthly = parseFloat(document.getElementById('monthlyAmount').value);
+            const targetAge = parseInt(document.getElementById('targetAge').value);
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            
+            const years = targetAge - currentAge;
+            const months = years * 12;
+            const annualRate = 0.07; // 7% anual
+            const monthlyRate = annualRate / 12;
+            
+            let futureValue = initial * Math.pow(1 + annualRate, years);
+            futureValue += monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            
+            const result = document.getElementById('compoundResult');
+            result.innerHTML = `¡En ${years} años tendrás $${futureValue.toFixed(2)}!`;
+            result.style.display = 'block';
+        }
+
+        function calculateAssetAllocation() {
+            const age = parseInt(document.getElementById('ageForAllocation').value);
+            const total = parseFloat(document.getElementById('totalMoney').value);
+            
+            let stocks, bonds;
+            if (age <= 18) {
+                stocks = 0.85;
+                bonds = 0.15;
+            } else if (age <= 25) {
+                stocks = 0.80;
+                bonds = 0.20;
+            } else {
+                stocks = 0.75;
+                bonds = 0.25;
+            }
+            
+            const result = document.getElementById('allocationResult');
+            result.innerHTML = `Recomendación: $${(total * stocks).toFixed(2)} en acciones (${(stocks * 100).toFixed(0)}%) y $${(total * bonds).toFixed(2)} en bonos (${(bonds * 100).toFixed(0)}%)`;
+            result.style.display = 'block';
+        }
+
+        function checkReadiness() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            let checked = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) checked++;
+            });
+            
+            const result = document.getElementById('readinessResult');
+            const percentage = (checked / checkboxes.length) * 100;
+            
+            if (percentage >= 80) {
+                result.innerHTML = `¡Excelente! Estás ${percentage.toFixed(0)}% listo para invertir. ¡Ve por ello!`;
+                result.style.background = '#28a745';
+            } else if (percentage >= 60) {
+                result.innerHTML = `¡Bien! Estás ${percentage.toFixed(0)}% listo. Trabaja en lo que falta.`;
+                result.style.background = '#ffc107';
+                result.style.color = 'black';
+            } else {
+                result.innerHTML = `Necesitas trabajar más. Estás ${percentage.toFixed(0)}% listo. Sigue aprendiendo.`;
+                result.style.background = '#dc3545';
+            }
+            result.style.display = 'block';
+        }
+
+        function createActionPlan() {
+            const goal1 = document.getElementById('goal1').value;
+            const cost1 = parseFloat(document.getElementById('cost1').value);
+            const goal2 = document.getElementById('goal2').value;
+            const cost2 = parseFloat(document.getElementById('cost2').value);
+            
+            const monthly1 = cost1 / 12;
+            const monthly2 = cost2 / 60;
+            
+            const result = document.getElementById('actionPlanResult');
+            result.innerHTML = `
+                <h4>Tu Plan de Acción:</h4>
+                <p><strong>Meta 1:</strong> ${goal1} - Ahorra $${monthly1.toFixed(2)} al mes</p>
+                <p><strong>Meta 2:</strong> ${goal2} - Ahorra $${monthly2.toFixed(2)} al mes</p>
+                <p><strong>Total mensual:</strong> $${(monthly1 + monthly2).toFixed(2)}</p>
+            `;
+            result.style.display = 'block';
+        }
+
+        function calculateRiskTolerance() {
+            const answers = [];
+            for (let i = 1; i <= 3; i++) {
+                const selected = document.querySelector(`input[name="risk${i}"]:checked`);
+                if (selected) {
+                    answers.push(parseInt(selected.value));
+                }
+            }
+            
+            if (answers.length < 3) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+            
+            const average = answers.reduce((a, b) => a + b, 0) / answers.length;
+            const result = document.getElementById('riskResult');
+            
+            if (average <= 1.5) {
+                result.innerHTML = 'Perfil: Conservador. Prefieres seguridad sobre ganancias grandes.';
+                result.style.background = '#28a745';
+            } else if (average <= 2.5) {
+                result.innerHTML = 'Perfil: Moderado. Balance entre riesgo y seguridad.';
+                result.style.background = '#ffc107';
+                result.style.color = 'black';
+            } else {
+                result.innerHTML = 'Perfil: Agresivo. Prefieres ganancias grandes aunque sea arriesgado.';
+                result.style.background = '#dc3545';
+            }
+            result.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

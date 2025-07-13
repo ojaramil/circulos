@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Conceptos Financieros</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .answer-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+        }
+        .answer-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .answer-button.correct {
+            background: #28a745;
+            animation: pulse 0.5s;
+        }
+        .answer-button.incorrect {
+            background: #dc3545;
+            animation: shake 0.5s;
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .highlight-box {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Quiz de Conceptos Financieros</h1>
+        <p>¡Demuestra cuánto sabes sobre finanzas con este quiz!</p>
+
+        <div class="highlight-box">
+            <h2>🌟 ¿Cómo Jugar?</h2>
+            <p>Lee cada pregunta y elige la respuesta correcta. ¡Cada respuesta correcta te da puntos!</p>
+        </div>
+
+        <div class="score-display">
+            <div>Puntuación: <span id="score">0</span> / <span id="total">0</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div id="gameArea">
+            <div class="game-container">
+                <div class="question-card">
+                    <h2>Pregunta 1</h2>
+                    <p>¿Qué significa la regla 50/30/20?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(1, 'A', false)">
+                        A) Gastar 50% en ropa, 30% en comida, 20% en entretenimiento
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(1, 'B', false)">
+                        B) Ahorrar 50%, gastar 30%, invertir 20%
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(1, 'C', true)">
+                        C) 50% necesidades, 30% deseos, 20% ahorro
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(1, 'D', false)">
+                        D) 50% inversión, 30% ahorro, 20% gastos
+                    </button>
+                </div>
+
+                <div class="result-box" id="result1">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation1"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question2" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 2</h2>
+                    <p>¿Qué es el interés compuesto?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(2, 'A', false)">
+                        A) El dinero que ganas por trabajar
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(2, 'B', false)">
+                        B) El dinero que gastas en compras
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(2, 'C', false)">
+                        C) El dinero que guardas en el banco
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(2, 'D', true)">
+                        D) Ganas interés sobre tu interés
+                    </button>
+                </div>
+
+                <div class="result-box" id="result2">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation2"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question3" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 3</h2>
+                    <p>¿Cuál es la mejor estrategia para evitar compras impulsivas?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(3, 'A', false)">
+                        A) Comprar inmediatamente antes de que se agote
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(3, 'B', false)">
+                        B) Pedir prestado dinero para comprar
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(3, 'C', true)">
+                        C) Esperar 24 horas antes de comprar
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(3, 'D', false)">
+                        D) Comprar solo en ofertas especiales
+                    </button>
+                </div>
+
+                <div class="result-box" id="result3">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation3"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question4" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 4</h2>
+                    <p>¿Qué es un presupuesto?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(4, 'A', false)">
+                        A) Una lista de cosas que quieres comprar
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(4, 'B', true)">
+                        B) Un plan para gastar tu dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(4, 'C', false)">
+                        C) El dinero que tienes en el banco
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(4, 'D', false)">
+                        D) Una cuenta de ahorro
+                    </button>
+                </div>
+
+                <div class="result-box" id="result4">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation4"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question5" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 5</h2>
+                    <p>¿Por qué es importante ahorrar desde joven?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(5, 'A', false)">
+                        A) Para poder gastar más dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(5, 'B', false)">
+                        B) Para impresionar a tus amigos
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(5, 'C', false)">
+                        C) Para evitar trabajar cuando seas mayor
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(5, 'D', true)">
+                        D) Para aprovechar el poder del tiempo y el interés compuesto
+                    </button>
+                </div>
+
+                <div class="result-box" id="result5">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation5"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question6" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 6</h2>
+                    <p>¿Qué es una meta financiera?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(6, 'A', false)">
+                        A) Ganar mucho dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(6, 'B', false)">
+                        B) Gastar todo tu dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(6, 'C', true)">
+                        C) Algo específico que quieres lograr con tu dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(6, 'D', false)">
+                        D) Tener una tarjeta de crédito
+                    </button>
+                </div>
+
+                <div class="result-box" id="result6">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation6"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question7" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 7</h2>
+                    <p>¿Qué significa diversificar en inversiones?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(7, 'A', false)">
+                        A) Invertir todo tu dinero en una sola cosa
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(7, 'B', true)">
+                        B) Invertir en diferentes tipos de cosas para reducir el riesgo
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(7, 'C', false)">
+                        C) Invertir solo en cosas que conoces
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(7, 'D', false)">
+                        D) Invertir solo en acciones
+                    </button>
+                </div>
+
+                <div class="result-box" id="result7">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation7"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question8" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 8</h2>
+                    <p>¿Cuál es la mejor inversión que puedes hacer?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(8, 'A', false)">
+                        A) Comprar ropa de marca
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(8, 'B', false)">
+                        B) Comprar videojuegos
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(8, 'C', true)">
+                        C) Invertir en tu educación
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(8, 'D', false)">
+                        D) Comprar un carro
+                    </button>
+                </div>
+
+                <div class="result-box" id="result8">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation8"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question9" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 9</h2>
+                    <p>¿Qué es un fondo de emergencia?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(9, 'A', false)">
+                        A) Dinero para comprar cosas que quieres
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(9, 'B', false)">
+                        B) Dinero para ir de vacaciones
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(9, 'C', true)">
+                        C) Dinero guardado para situaciones inesperadas
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(9, 'D', false)">
+                        D) Dinero para invertir en acciones
+                    </button>
+                </div>
+
+                <div class="result-box" id="result9">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation9"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question10" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 10</h2>
+                    <p>¿Por qué es malo pedir prestado para gastos innecesarios?</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(10, 'A', false)">
+                        A) Porque los bancos no te prestan dinero
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(10, 'B', false)">
+                        B) Porque es ilegal
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(10, 'C', false)">
+                        C) Porque tus padres se enojan
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(10, 'D', true)">
+                        D) Porque crea deudas innecesarias y problemas financieros
+                    </button>
+                </div>
+
+                <div class="result-box" id="result10">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation10"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="finalResult" style="display: none;">
+                <div class="highlight-box">
+                    <h2>🏆 ¡Quiz Completado!</h2>
+                    <p>Tu puntuación final: <span id="finalScore">0</span> / <span id="finalTotal">0</span></p>
+                    <div id="finalMessage"></div>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Conceptos Clave Aprendidos:</h3>
+                    <ul>
+                        <li><strong>Regla 50/30/20:</strong> Distribuye tu dinero entre necesidades, deseos y ahorro</li>
+                        <li><strong>Interés compuesto:</strong> Tu dinero crece exponencialmente con el tiempo</li>
+                        <li><strong>Técnica de 24 horas:</strong> Espera antes de comprar para evitar impulsos</li>
+                        <li><strong>Presupuesto:</strong> Un plan para manejar tu dinero inteligentemente</li>
+                        <li><strong>Ahorro temprano:</strong> El tiempo es tu mejor aliado financiero</li>
+                        <li><strong>Metas financieras:</strong> Objetivos específicos para tu dinero</li>
+                        <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                        <li><strong>Educación:</strong> La mejor inversión que puedes hacer</li>
+                        <li><strong>Fondo de emergencia:</strong> Dinero para situaciones inesperadas</li>
+                        <li><strong>Evitar deudas:</strong> No pidas prestado para cosas innecesarias</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="answer-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentQuestion = 1;
+        const totalQuestions = 10;
+
+        const explanations = {
+            1: "✅ Respuesta correcta: C) 50% necesidades, 30% deseos, 20% ahorro<br><br>Esta regla te ayuda a distribuir tu dinero de manera equilibrada. Las necesidades son cosas que realmente necesitas (comida, transporte), los deseos son cosas que quieres pero no necesitas (entretenimiento), y el ahorro es para tu futuro.",
+            2: "✅ Respuesta correcta: D) Ganas interés sobre tu interés<br><br>El interés compuesto es como una bola de nieve que crece mientras rueda. Primero ganas interés sobre tu dinero original, luego ganas interés sobre ese interés, haciendo que tu dinero crezca más rápido.",
+            3: "✅ Respuesta correcta: C) Esperar 24 horas antes de comprar<br><br>Esta técnica te ayuda a evitar compras impulsivas. Después de 24 horas, muchas veces ya no quieres comprar esa cosa, ahorrando dinero y evitando arrepentimientos.",
+            4: "✅ Respuesta correcta: B) Un plan para gastar tu dinero<br><br>Un presupuesto es como una lista de compras que te ayuda a planificar cómo vas a gastar tu dinero y evitar gastar de más.",
+            5: "✅ Respuesta correcta: D) Para aprovechar el poder del tiempo y el interés compuesto<br><br>Cuanto más joven empieces a ahorrar, más tiempo tendrá tu dinero para crecer. El interés compuesto funciona mejor cuando tienes tiempo de tu lado.",
+            6: "✅ Respuesta correcta: C) Algo específico que quieres lograr con tu dinero<br><br>Una meta financiera es como tener un destino en un viaje. Te ayuda a mantenerte enfocado y tomar mejores decisiones con tu dinero.",
+            7: "✅ Respuesta correcta: B) Invertir en diferentes tipos de cosas para reducir el riesgo<br><br>Diversificar significa no poner todos tus huevos en una canasta. Si una inversión va mal, las otras pueden compensar las pérdidas.",
+            8: "✅ Respuesta correcta: C) Invertir en tu educación<br><br>La educación te da habilidades y conocimientos que pueden aumentar tus ingresos futuros. Es una inversión que siempre te dará retornos.",
+            9: "✅ Respuesta correcta: C) Dinero guardado para situaciones inesperadas<br><br>Un fondo de emergencia es como un paracaídas financiero. Te protege cuando algo inesperado pasa, como cuando se rompe tu teléfono o necesitas dinero rápido.",
+            10: "✅ Respuesta correcta: D) Porque crea deudas innecesarias y problemas financieros<br><br>Pedir prestado para cosas que no necesitas puede crear un ciclo de deuda difícil de romper. Es mejor ahorrar para las cosas que quieres."
+        };
+
+        function checkAnswer(question, choice, isCorrect) {
+            // Deshabilitar botones
+            const buttons = document.querySelectorAll(`#question${question} .answer-button`);
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (isCorrect) {
+                    btn.classList.add('correct');
+                } else {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Mostrar resultado
+            const resultBox = document.getElementById(`result${question}`);
+            const explanationDiv = document.getElementById(`explanation${question}`);
+            
+            if (isCorrect) {
+                currentScore++;
+                explanationDiv.innerHTML = explanations[question];
+            } else {
+                explanationDiv.innerHTML = explanations[question];
+            }
+
+            resultBox.style.display = 'block';
+            updateScore();
+
+            // Mostrar siguiente pregunta después de 4 segundos
+            setTimeout(() => {
+                if (question < totalQuestions) {
+                    document.getElementById(`question${question}`).style.display = 'none';
+                    document.getElementById(`question${question + 1}`).style.display = 'block';
+                    currentQuestion++;
+                } else {
+                    showFinalResult();
+                }
+            }, 4000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('total').textContent = totalQuestions;
+            const percentage = (currentScore / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('gameArea').innerHTML = '';
+            
+            const finalContainer = document.createElement('div');
+            finalContainer.className = 'game-container';
+            finalContainer.id = 'finalResult';
+            finalContainer.style.display = 'block';
+
+            const percentage = (currentScore / totalQuestions) * 100;
+            let message = '';
+
+            if (percentage >= 90) {
+                message = '🎉 ¡Eres un experto financiero! Tienes excelente conocimiento sobre conceptos financieros.';
+            } else if (percentage >= 70) {
+                message = '👍 ¡Muy bien! Tienes buenos fundamentos financieros, pero puedes mejorar en algunos conceptos.';
+            } else if (percentage >= 50) {
+                message = '📚 ¡Buen intento! Tienes algunas buenas ideas, pero necesitas aprender más sobre finanzas.';
+            } else {
+                message = '💡 ¡No te preocupes! Todos empezamos en algún lugar. Sigue estudiando y mejorando tu conocimiento financiero.';
+            }
+
+            finalContainer.innerHTML = `
+                <div class="highlight-box">
+                    <h2>🏆 ¡Quiz Completado!</h2>
+                    <p>Tu puntuación final: ${currentScore} / ${totalQuestions} (${Math.round(percentage)}%)</p>
+                    <p>${message}</p>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Conceptos Clave Aprendidos:</h3>
+                    <ul>
+                        <li><strong>Regla 50/30/20:</strong> Distribuye tu dinero entre necesidades, deseos y ahorro</li>
+                        <li><strong>Interés compuesto:</strong> Tu dinero crece exponencialmente con el tiempo</li>
+                        <li><strong>Técnica de 24 horas:</strong> Espera antes de comprar para evitar impulsos</li>
+                        <li><strong>Presupuesto:</strong> Un plan para manejar tu dinero inteligentemente</li>
+                        <li><strong>Ahorro temprano:</strong> El tiempo es tu mejor aliado financiero</li>
+                        <li><strong>Metas financieras:</strong> Objetivos específicos para tu dinero</li>
+                        <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                        <li><strong>Educación:</strong> La mejor inversión que puedes hacer</li>
+                        <li><strong>Fondo de emergencia:</strong> Dinero para situaciones inesperadas</li>
+                        <li><strong>Evitar deudas:</strong> No pidas prestado para cosas innecesarias</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="answer-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('gameArea').appendChild(finalContainer);
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

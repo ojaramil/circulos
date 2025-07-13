@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .answer-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            margin: 1rem;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        .answer-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .answer-button.correct {
+            background: #28a745;
+            animation: pulse 0.5s;
+        }
+        .answer-button.incorrect {
+            background: #dc3545;
+            animation: shake 0.5s;
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .highlight-box {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅❌ Verdadero o Falso - Finanzas</h1>
+        <p>¡Pon a prueba tu conocimiento financiero con estas preguntas!</p>
+
+        <div class="highlight-box">
+            <h2>🌟 ¿Cómo Jugar?</h2>
+            <p>Lee cada afirmación y decide si es verdadera o falsa. ¡Cada respuesta correcta te da puntos!</p>
+        </div>
+
+        <div class="score-display">
+            <div>Puntuación: <span id="score">0</span> / <span id="total">0</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div id="gameArea">
+            <div class="game-container">
+                <div class="question-card">
+                    <h2>Pregunta 1</h2>
+                    <p>Es mejor gastar todo tu dinero inmediatamente que ahorrar una parte.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(1, false)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(1, true)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result1">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation1"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question2" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 2</h2>
+                    <p>Invertir dinero desde joven te da más tiempo para que crezca.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(2, true)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(2, false)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result2">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation2"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question3" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 3</h2>
+                    <p>Pedir prestado dinero para comprar cosas que no necesitas es una buena idea.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(3, false)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(3, true)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result3">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation3"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question4" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 4</h2>
+                    <p>La regla 50/30/20 significa gastar 50% en necesidades, 30% en deseos, y 20% en ahorro.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(4, true)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(4, false)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result4">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation4"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question5" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 5</h2>
+                    <p>El interés compuesto significa que ganas interés sobre tu interés.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(5, true)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(5, false)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result5">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation5"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question6" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 6</h2>
+                    <p>Es mejor comprar cosas inmediatamente cuando las ves que esperar y pensar.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(6, false)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(6, true)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result6">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation6"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question7" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 7</h2>
+                    <p>Invertir en educación es una de las mejores inversiones que puedes hacer.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(7, true)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(7, false)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result7">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation7"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question8" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 8</h2>
+                    <p>No necesitas tener metas financieras para manejar bien tu dinero.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(8, false)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(8, true)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result8">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation8"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question9" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 9</h2>
+                    <p>Las apps de finanzas pueden ayudarte a controlar mejor tus gastos.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(9, true)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(9, false)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result9">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation9"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="question10" style="display: none;">
+                <div class="question-card">
+                    <h2>Pregunta 10</h2>
+                    <p>Es mejor tener todo tu dinero en una sola inversión que diversificar.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="answer-button" onclick="checkAnswer(10, false)">
+                        ✅ VERDADERO
+                    </button>
+                    <button class="answer-button" onclick="checkAnswer(10, true)">
+                        ❌ FALSO
+                    </button>
+                </div>
+
+                <div class="result-box" id="result10">
+                    <h3>💡 Explicación:</h3>
+                    <div id="explanation10"></div>
+                </div>
+            </div>
+
+            <div class="game-container" id="finalResult" style="display: none;">
+                <div class="highlight-box">
+                    <h2>🏆 ¡Juego Completado!</h2>
+                    <p>Tu puntuación final: <span id="finalScore">0</span> / <span id="finalTotal">0</span></p>
+                    <div id="finalMessage"></div>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Conceptos Clave Aprendidos:</h3>
+                    <ul>
+                        <li><strong>Ahorro:</strong> Siempre guarda una parte de tus ingresos</li>
+                        <li><strong>Inversión temprana:</strong> El tiempo es tu mejor aliado</li>
+                        <li><strong>Evitar deudas:</strong> No pidas prestado para gastos innecesarios</li>
+                        <li><strong>Presupuesto:</strong> Usa la regla 50/30/20</li>
+                        <li><strong>Interés compuesto:</strong> Tu dinero puede crecer exponencialmente</li>
+                        <li><strong>Pensar antes de comprar:</strong> Evita compras impulsivas</li>
+                        <li><strong>Educación:</strong> La mejor inversión que puedes hacer</li>
+                        <li><strong>Metas:</strong> Ten objetivos financieros claros</li>
+                        <li><strong>Herramientas:</strong> Usa apps para controlar tus finanzas</li>
+                        <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="answer-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentQuestion = 1;
+        const totalQuestions = 10;
+
+        const explanations = {
+            1: "❌ FALSO - Es mejor ahorrar una parte de tu dinero para emergencias, metas futuras, e inversiones. Gastar todo inmediatamente no te deja nada para el futuro.",
+            2: "✅ VERDADERO - Cuanto más joven empieces a invertir, más tiempo tendrá tu dinero para crecer gracias al interés compuesto.",
+            3: "❌ FALSO - Pedir prestado para cosas que no necesitas puede crear deudas innecesarias y problemas financieros.",
+            4: "✅ VERDADERO - Esta regla te ayuda a distribuir tu dinero de manera equilibrada entre necesidades, deseos y ahorro.",
+            5: "✅ VERDADERO - El interés compuesto significa que ganas interés sobre tu interés, haciendo que tu dinero crezca más rápido.",
+            6: "❌ FALSO - Es mejor esperar y pensar antes de comprar para evitar compras impulsivas y arrepentimientos.",
+            7: "✅ VERDADERO - La educación te da habilidades que pueden aumentar tus ingresos futuros, siendo una excelente inversión.",
+            8: "❌ FALSO - Tener metas financieras claras te ayuda a tomar mejores decisiones y mantenerte enfocado.",
+            9: "✅ VERDADERO - Las apps de finanzas te ayudan a ver dónde gastas tu dinero y crear presupuestos efectivos.",
+            10: "❌ FALSO - Diversificar (tener diferentes tipos de inversiones) reduce el riesgo y es una estrategia más segura."
+        };
+
+        function checkAnswer(question, isCorrect) {
+            // Deshabilitar botones
+            const buttons = document.querySelectorAll(`#question${question} .answer-button`);
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (isCorrect) {
+                    btn.classList.add('correct');
+                } else {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Mostrar resultado
+            const resultBox = document.getElementById(`result${question}`);
+            const explanationDiv = document.getElementById(`explanation${question}`);
+            
+            if (isCorrect) {
+                currentScore++;
+                explanationDiv.innerHTML = explanations[question];
+            } else {
+                explanationDiv.innerHTML = explanations[question];
+            }
+
+            resultBox.style.display = 'block';
+            updateScore();
+
+            // Mostrar siguiente pregunta después de 3 segundos
+            setTimeout(() => {
+                if (question < totalQuestions) {
+                    document.getElementById(`question${question}`).style.display = 'none';
+                    document.getElementById(`question${question + 1}`).style.display = 'block';
+                    currentQuestion++;
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('total').textContent = totalQuestions;
+            const percentage = (currentScore / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function showFinalResult() {
+            document.getElementById('gameArea').innerHTML = '';
+            
+            const finalContainer = document.createElement('div');
+            finalContainer.className = 'game-container';
+            finalContainer.id = 'finalResult';
+            finalContainer.style.display = 'block';
+
+            const percentage = (currentScore / totalQuestions) * 100;
+            let message = '';
+
+            if (percentage >= 90) {
+                message = '🎉 ¡Eres un experto financiero! Tienes excelente conocimiento sobre finanzas personales.';
+            } else if (percentage >= 70) {
+                message = '👍 ¡Muy bien! Tienes buenos fundamentos financieros, pero puedes mejorar en algunos conceptos.';
+            } else if (percentage >= 50) {
+                message = '📚 ¡Buen intento! Tienes algunas buenas ideas, pero necesitas aprender más sobre finanzas.';
+            } else {
+                message = '💡 ¡No te preocupes! Todos empezamos en algún lugar. Sigue estudiando y mejorando tu conocimiento financiero.';
+            }
+
+            finalContainer.innerHTML = `
+                <div class="highlight-box">
+                    <h2>🏆 ¡Juego Completado!</h2>
+                    <p>Tu puntuación final: ${currentScore} / ${totalQuestions} (${Math.round(percentage)}%)</p>
+                    <p>${message}</p>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Conceptos Clave Aprendidos:</h3>
+                    <ul>
+                        <li><strong>Ahorro:</strong> Siempre guarda una parte de tus ingresos</li>
+                        <li><strong>Inversión temprana:</strong> El tiempo es tu mejor aliado</li>
+                        <li><strong>Evitar deudas:</strong> No pidas prestado para gastos innecesarios</li>
+                        <li><strong>Presupuesto:</strong> Usa la regla 50/30/20</li>
+                        <li><strong>Interés compuesto:</strong> Tu dinero puede crecer exponencialmente</li>
+                        <li><strong>Pensar antes de comprar:</strong> Evita compras impulsivas</li>
+                        <li><strong>Educación:</strong> La mejor inversión que puedes hacer</li>
+                        <li><strong>Metas:</strong> Ten objetivos financieros claros</li>
+                        <li><strong>Herramientas:</strong> Usa apps para controlar tus finanzas</li>
+                        <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="answer-button" onclick="restartGame()" style="background: #667eea;">
+                        🔄 Jugar de Nuevo
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('gameArea').appendChild(finalContainer);
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

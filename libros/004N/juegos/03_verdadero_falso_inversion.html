@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso - Inversiones</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 45%;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.incorrect {
+            background: #dc3545;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Verdadero o Falso - Inversiones</h1>
+        <p>¡Pon a prueba tu conocimiento sobre inversiones! Responde verdadero o falso a estas preguntas.</p>
+
+        <div class="score-display">
+            <h3>Puntuación: <span id="score">0</span>/100</h3>
+            <p>Pregunta: <span id="questionNumber">1</span>/10</p>
+        </div>
+
+        <div class="game-container" id="question1">
+            <h3>🎯 Pregunta 1</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Invertir es solo para personas ricas.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(1, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(1, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="question2" style="display: none;">
+            <h3>🎯 Pregunta 2</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Los fondos índice son una forma segura de invertir en muchas empresas a la vez.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(2, true)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(2, false)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="question3" style="display: none;">
+            <h3>🎯 Pregunta 3</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Es mejor invertir todo tu dinero en una sola empresa.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(3, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(3, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="question4" style="display: none;">
+            <h3>🎯 Pregunta 4</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Mientras más joven empieces a invertir, mejor será tu futuro financiero.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(4, true)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(4, false)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="question5" style="display: none;">
+            <h3>🎯 Pregunta 5</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Las inversiones siempre suben de valor.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(5, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(5, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="question6" style="display: none;">
+            <h3>🎯 Pregunta 6</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Es importante tener un fondo de emergencia antes de invertir.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(6, true)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(6, false)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback6"></div>
+        </div>
+
+        <div class="game-container" id="question7" style="display: none;">
+            <h3>🎯 Pregunta 7</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Los bonos son más arriesgados que las acciones.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(7, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(7, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback7"></div>
+        </div>
+
+        <div class="game-container" id="question8" style="display: none;">
+            <h3>🎯 Pregunta 8</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> La diversificación significa poner todos tus huevos en una canasta.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(8, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(8, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback8"></div>
+        </div>
+
+        <div class="game-container" id="question9" style="display: none;">
+            <h3>🎯 Pregunta 9</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> El interés compuesto es cuando tu dinero genera más dinero.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(9, true)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(9, false)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback9"></div>
+        </div>
+
+        <div class="game-container" id="question10" style="display: none;">
+            <h3>🎯 Pregunta 10</h3>
+            <div class="question-card">
+                <p><strong>Verdadero o Falso:</strong> Es mejor esperar hasta ser adulto para empezar a invertir.</p>
+                
+                <button class="choice-button" onclick="checkAnswer(10, false)">✅ VERDADERO</button>
+                <button class="choice-button" onclick="checkAnswer(10, true)">❌ FALSO</button>
+            </div>
+            
+            <div class="feedback" id="feedback10"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Juego Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="question-card">
+                <h3>🎯 Lo que Aprendiste:</h3>
+                <ul>
+                    <li><strong>Invertir es para todos:</strong> No necesitas ser rico para empezar</li>
+                    <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                    <li><strong>Tiempo es dinero:</strong> Mientras más joven empieces, mejor</li>
+                    <li><strong>Fondo de emergencia:</strong> Siempre ten dinero guardado</li>
+                    <li><strong>Interés compuesto:</strong> Tu dinero puede generar más dinero</li>
+                </ul>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentQuestion = 1;
+        const totalQuestions = 10;
+
+        function checkAnswer(question, isCorrect) {
+            const buttons = document.querySelectorAll(`#question${question} .choice-button`);
+            const feedback = document.getElementById(`feedback${question}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            if (isCorrect) {
+                currentScore += 10;
+                feedback.innerHTML = '<strong>✅ ¡Correcto!</strong> ¡Excelente conocimiento sobre inversiones!';
+                feedback.className = 'feedback positive';
+            } else {
+                feedback.innerHTML = '<strong>❌ Incorrecto.</strong> ¡No te preocupes, es parte del aprendizaje!';
+                feedback.className = 'feedback negative';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Actualizar puntuación
+            updateScore();
+            
+            // Mostrar siguiente pregunta después de 2 segundos
+            setTimeout(() => {
+                if (question < totalQuestions) {
+                    document.getElementById(`question${question}`).style.display = 'none';
+                    document.getElementById(`question${question + 1}`).style.display = 'block';
+                    currentQuestion++;
+                } else {
+                    showFinalResult();
+                }
+            }, 2000);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('finalScore').textContent = currentScore;
+            document.getElementById('questionNumber').textContent = currentQuestion;
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`question${totalQuestions}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentScore >= 80) {
+                finalMessage.textContent = '¡Excelente! Tienes un gran conocimiento sobre inversiones. ¡Sigue aprendiendo!';
+            } else if (currentScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu conocimiento está creciendo. Con práctica serás un experto.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con este curso aprenderás mucho más.';
+            }
+        }
+        
+        function restartGame() {
+            currentScore = 0;
+            currentQuestion = 1;
+            
+            // Ocultar todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primera pregunta
+            document.getElementById('question1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateScore();
+        }
+    </script>
+</body>
+</html> 

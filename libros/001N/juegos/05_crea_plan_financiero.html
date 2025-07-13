@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea tu Plan Financiero</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .plan-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .input-group {
+            margin: 1.5rem 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .plan-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        .plan-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .highlight-box {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .budget-display {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        .goal-card {
+            background: #e9ecef;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+            font-weight: bold;
+        }
+        .step.active {
+            background: #667eea;
+            color: white;
+        }
+        .step.completed {
+            background: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Crea tu Plan Financiero</h1>
+        <p>¡Diseña tu propio plan financiero personalizado!</p>
+
+        <div class="highlight-box">
+            <h2>🌟 ¿Cómo Funciona?</h2>
+            <p>Responde algunas preguntas y crearemos un plan financiero personalizado para ti.</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active" id="step1">1</div>
+            <div class="step" id="step2">2</div>
+            <div class="step" id="step3">3</div>
+            <div class="step" id="step4">4</div>
+        </div>
+
+        <div id="gameArea">
+            <!-- Paso 1: Información Básica -->
+            <div class="game-container" id="step1Container">
+                <div class="plan-card">
+                    <h2>📊 Paso 1: Información Básica</h2>
+                    <p>Cuéntanos sobre tu situación financiera actual</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="income">💰 ¿Cuánto dinero recibes al mes? (mesada, trabajo, etc.)</label>
+                    <input type="number" id="income" placeholder="Ej: 100" min="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="age">🎂 ¿Cuántos años tienes?</label>
+                    <input type="number" id="age" placeholder="Ej: 15" min="10" max="25">
+                </div>
+
+                <div class="input-group">
+                    <label for="savings">🏦 ¿Cuánto dinero tienes ahorrado actualmente?</label>
+                    <input type="number" id="savings" placeholder="Ej: 50" min="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="expenses">💸 ¿Cuánto gastas al mes en promedio?</label>
+                    <input type="number" id="expenses" placeholder="Ej: 80" min="0">
+                </div>
+
+                <button class="plan-button" onclick="nextStep(1)">Siguiente Paso →</button>
+            </div>
+
+            <!-- Paso 2: Metas Financieras -->
+            <div class="game-container" id="step2Container" style="display: none;">
+                <div class="plan-card">
+                    <h2>🎯 Paso 2: Tus Metas Financieras</h2>
+                    <p>¿Qué quieres lograr con tu dinero?</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="shortGoal">📅 Meta a corto plazo (1-6 meses)</label>
+                    <input type="text" id="shortGoal" placeholder="Ej: Comprar un videojuego nuevo">
+                </div>
+
+                <div class="input-group">
+                    <label for="shortAmount">💰 ¿Cuánto cuesta?</label>
+                    <input type="number" id="shortAmount" placeholder="Ej: 60" min="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="mediumGoal">📅 Meta a mediano plazo (6 meses-2 años)</label>
+                    <input type="text" id="mediumGoal" placeholder="Ej: Comprar una bicicleta">
+                </div>
+
+                <div class="input-group">
+                    <label for="mediumAmount">💰 ¿Cuánto cuesta?</label>
+                    <input type="number" id="mediumAmount" placeholder="Ej: 300" min="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="longGoal">📅 Meta a largo plazo (2+ años)</label>
+                    <input type="text" id="longGoal" placeholder="Ej: Ahorrar para la universidad">
+                </div>
+
+                <div class="input-group">
+                    <label for="longAmount">💰 ¿Cuánto necesitas?</label>
+                    <input type="number" id="longAmount" placeholder="Ej: 5000" min="0">
+                </div>
+
+                <button class="plan-button" onclick="nextStep(2)">Siguiente Paso →</button>
+            </div>
+
+            <!-- Paso 3: Estrategia de Ahorro -->
+            <div class="game-container" id="step3Container" style="display: none;">
+                <div class="plan-card">
+                    <h2>💡 Paso 3: Estrategia de Ahorro</h2>
+                    <p>¿Cómo quieres distribuir tu dinero?</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="savingsStrategy">📊 ¿Qué estrategia prefieres?</label>
+                    <select id="savingsStrategy">
+                        <option value="502030">Regla 50/30/20 (50% necesidades, 30% deseos, 20% ahorro)</option>
+                        <option value="603010">60% deseos, 30% ahorro, 10% necesidades</option>
+                        <option value="custom">Personalizada</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="emergencyFund">🆘 ¿Quieres crear un fondo de emergencia?</label>
+                    <select id="emergencyFund">
+                        <option value="yes">Sí, es importante</option>
+                        <option value="no">No por ahora</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="investmentInterest">📈 ¿Te interesa aprender sobre inversiones?</label>
+                    <select id="investmentInterest">
+                        <option value="high">¡Mucho! Quiero empezar a invertir</option>
+                        <option value="medium">Un poco, pero primero quiero ahorrar</option>
+                        <option value="low">No por ahora, solo quiero ahorrar</option>
+                    </select>
+                </div>
+
+                <button class="plan-button" onclick="nextStep(3)">Siguiente Paso →</button>
+            </div>
+
+            <!-- Paso 4: Tu Plan Personalizado -->
+            <div class="game-container" id="step4Container" style="display: none;">
+                <div class="plan-card">
+                    <h2>🎉 Paso 4: Tu Plan Financiero Personalizado</h2>
+                    <p>¡Aquí está tu plan financiero!</p>
+                </div>
+
+                <div id="planResult">
+                    <!-- El plan se generará aquí -->
+                </div>
+
+                <button class="plan-button" onclick="generatePlan()" style="background: #667eea;">
+                    🎯 Generar mi Plan
+                </button>
+            </div>
+
+            <!-- Resultado Final -->
+            <div class="game-container" id="finalPlan" style="display: none;">
+                <div class="highlight-box">
+                    <h2>🏆 ¡Tu Plan Financiero Está Listo!</h2>
+                    <p>Aquí tienes tu plan personalizado para alcanzar tus metas financieras</p>
+                </div>
+
+                <div id="finalPlanContent">
+                    <!-- Contenido del plan final -->
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Consejos para Seguir tu Plan:</h3>
+                    <ul>
+                        <li><strong>Revisa tu plan semanalmente</strong> y ajusta según necesites</li>
+                        <li><strong>Usa apps de finanzas</strong> para hacer seguimiento</li>
+                        <li><strong>Celebra tus logros</strong> cuando alcances metas</li>
+                        <li><strong>No te desanimes</strong> si no sigues el plan perfectamente</li>
+                        <li><strong>Comparte tu plan</strong> con tus padres para que te apoyen</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="plan-button" onclick="restartPlan()" style="background: #667eea;">
+                        🔄 Crear Nuevo Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let planData = {};
+
+        function nextStep(step) {
+            // Validar datos del paso actual
+            if (!validateStep(step)) {
+                alert('Por favor completa todos los campos requeridos.');
+                return;
+            }
+
+            // Guardar datos del paso actual
+            saveStepData(step);
+
+            // Ocultar paso actual
+            document.getElementById(`step${step}Container`).style.display = 'none';
+
+            // Mostrar siguiente paso
+            if (step < 4) {
+                document.getElementById(`step${step + 1}Container`).style.display = 'block';
+                currentStep = step + 1;
+            }
+
+            // Actualizar indicadores de pasos
+            updateStepIndicators();
+        }
+
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    return document.getElementById('income').value && 
+                           document.getElementById('age').value && 
+                           document.getElementById('savings').value !== '' && 
+                           document.getElementById('expenses').value !== '';
+                case 2:
+                    return document.getElementById('shortGoal').value && 
+                           document.getElementById('shortAmount').value && 
+                           document.getElementById('mediumGoal').value && 
+                           document.getElementById('mediumAmount').value;
+                case 3:
+                    return document.getElementById('savingsStrategy').value && 
+                           document.getElementById('emergencyFund').value && 
+                           document.getElementById('investmentInterest').value;
+                default:
+                    return true;
+            }
+        }
+
+        function saveStepData(step) {
+            switch(step) {
+                case 1:
+                    planData.income = parseFloat(document.getElementById('income').value);
+                    planData.age = parseInt(document.getElementById('age').value);
+                    planData.savings = parseFloat(document.getElementById('savings').value) || 0;
+                    planData.expenses = parseFloat(document.getElementById('expenses').value) || 0;
+                    break;
+                case 2:
+                    planData.shortGoal = document.getElementById('shortGoal').value;
+                    planData.shortAmount = parseFloat(document.getElementById('shortAmount').value);
+                    planData.mediumGoal = document.getElementById('mediumGoal').value;
+                    planData.mediumAmount = parseFloat(document.getElementById('mediumAmount').value);
+                    planData.longGoal = document.getElementById('longGoal').value;
+                    planData.longAmount = parseFloat(document.getElementById('longAmount').value) || 0;
+                    break;
+                case 3:
+                    planData.savingsStrategy = document.getElementById('savingsStrategy').value;
+                    planData.emergencyFund = document.getElementById('emergencyFund').value;
+                    planData.investmentInterest = document.getElementById('investmentInterest').value;
+                    break;
+            }
+        }
+
+        function updateStepIndicators() {
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    stepElement.className = 'step completed';
+                } else if (i === currentStep) {
+                    stepElement.className = 'step active';
+                } else {
+                    stepElement.className = 'step';
+                }
+            }
+        }
+
+        function generatePlan() {
+            // Calcular distribución del presupuesto
+            let budgetDistribution = {};
+            let monthlySavings = 0;
+
+            switch(planData.savingsStrategy) {
+                case '502030':
+                    budgetDistribution = {
+                        needs: planData.income * 0.5,
+                        wants: planData.income * 0.3,
+                        savings: planData.income * 0.2
+                    };
+                    monthlySavings = budgetDistribution.savings;
+                    break;
+                case '603010':
+                    budgetDistribution = {
+                        needs: planData.income * 0.1,
+                        wants: planData.income * 0.6,
+                        savings: planData.income * 0.3
+                    };
+                    monthlySavings = budgetDistribution.savings;
+                    break;
+                case 'custom':
+                    budgetDistribution = {
+                        needs: planData.income * 0.2,
+                        wants: planData.income * 0.5,
+                        savings: planData.income * 0.3
+                    };
+                    monthlySavings = budgetDistribution.savings;
+                    break;
+            }
+
+            // Calcular tiempos para alcanzar metas
+            const shortTime = Math.ceil(planData.shortAmount / monthlySavings);
+            const mediumTime = Math.ceil(planData.mediumAmount / monthlySavings);
+            const longTime = planData.longAmount > 0 ? Math.ceil(planData.longAmount / monthlySavings) : 0;
+
+            // Generar contenido del plan
+            const planContent = `
+                <div class="budget-display">
+                    <h3>💰 Tu Presupuesto Mensual</h3>
+                    <p><strong>Ingresos totales:</strong> $${planData.income}</p>
+                    <p><strong>Necesidades (${Math.round(budgetDistribution.needs/planData.income*100)}%):</strong> $${Math.round(budgetDistribution.needs)}</p>
+                    <p><strong>Deseos (${Math.round(budgetDistribution.wants/planData.income*100)}%):</strong> $${Math.round(budgetDistribution.wants)}</p>
+                    <p><strong>Ahorro (${Math.round(budgetDistribution.savings/planData.income*100)}%):</strong> $${Math.round(budgetDistribution.savings)}</p>
+                </div>
+
+                <div class="goal-card">
+                    <h3>🎯 Tus Metas y Tiempos</h3>
+                    <p><strong>Meta a corto plazo:</strong> ${planData.shortGoal} - $${planData.shortAmount}</p>
+                    <p><strong>Tiempo estimado:</strong> ${shortTime} meses</p>
+                    
+                    <p><strong>Meta a mediano plazo:</strong> ${planData.mediumGoal} - $${planData.mediumAmount}</p>
+                    <p><strong>Tiempo estimado:</strong> ${mediumTime} meses</p>
+                    
+                    ${planData.longGoal ? `
+                    <p><strong>Meta a largo plazo:</strong> ${planData.longGoal} - $${planData.longAmount}</p>
+                    <p><strong>Tiempo estimado:</strong> ${longTime} meses</p>
+                    ` : ''}
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Recomendaciones Específicas</h3>
+                    <ul>
+                        <li><strong>Ahorro automático:</strong> Configura transferencias automáticas de $${Math.round(monthlySavings)} al mes</li>
+                        <li><strong>Fondo de emergencia:</strong> ${planData.emergencyFund === 'yes' ? 'Construye un fondo de $500 para emergencias' : 'Considera crear un fondo de emergencia más adelante'}</li>
+                        <li><strong>Inversiones:</strong> ${planData.investmentInterest === 'high' ? '¡Excelente! Empieza a investigar sobre inversiones para jóvenes' : planData.investmentInterest === 'medium' ? 'Cuando tengas $1000 ahorrados, considera empezar a invertir' : 'Enfócate en ahorrar primero, las inversiones pueden esperar'}</li>
+                        <li><strong>Revisión mensual:</strong> Revisa tu progreso cada mes y ajusta según necesites</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('finalPlanContent').innerHTML = planContent;
+            document.getElementById('step4Container').style.display = 'none';
+            document.getElementById('finalPlan').style.display = 'block';
+        }
+
+        function restartPlan() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

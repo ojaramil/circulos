@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Decisiones Financieras - Inquebrantable</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🎲 Juego de Decisiones Financieras</h1>
+        
+        <div class="game-instructions">
+            <h3>Instrucciones:</h3>
+            <p>En este juego, enfrentarás diferentes escenarios financieros y deberás tomar decisiones basadas en los principios de "Inquebrantable". Cada decisión te dará puntos y te enseñará lecciones valiosas sobre inversión.</p>
+        </div>
+
+        <div id="game-start" class="card">
+            <h2>🚀 Comenzar el Juego</h2>
+            <p>¿Estás listo para poner a prueba tus conocimientos sobre inversión inquebrantable?</p>
+            <button class="btn" onclick="startGame()">Comenzar</button>
+        </div>
+
+        <div id="game-scenario" class="card" style="display: none;">
+            <h2 id="scenario-title">Escenario</h2>
+            <p id="scenario-description"></p>
+            
+            <div id="scenario-options">
+                <!-- Las opciones se generarán dinámicamente -->
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p>Progreso: <span id="progress-text">0/5</span></p>
+        </div>
+
+        <div id="game-result" class="card" style="display: none;">
+            <h2>🎯 Resultado de tu Decisión</h2>
+            <div id="result-content"></div>
+            <button class="btn" onclick="nextScenario()">Siguiente Escenario</button>
+        </div>
+
+        <div id="game-summary" class="card" style="display: none;">
+            <h2>🏆 Resumen del Juego</h2>
+            <div id="summary-content"></div>
+            <button class="btn" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = 0;
+        let totalScenarios = 5;
+        
+        const scenarios = [
+            {
+                title: "Crisis del Mercado",
+                description: "El mercado ha caído 20% en las últimas semanas. Los medios están hablando de una nueva crisis financiera. Tu portafolio ha perdido $10,000. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Vendo todo y me quedo en efectivo hasta que pase la tormenta",
+                        points: 0,
+                        explanation: "❌ Vender en pánico es el error más común. Las correcciones son normales y el mercado siempre se ha recuperado."
+                    },
+                    {
+                        text: "Mantengo mi estrategia y continúo invirtiendo regularmente",
+                        points: 10,
+                        explanation: "✅ Excelente! Mantener la disciplina durante las crisis es la clave del éxito. Estás comprando acciones a precios más bajos."
+                    },
+                    {
+                        text: "Vendo parte de mis inversiones y espero a que mejore",
+                        points: 5,
+                        explanation: "⚠️ Parcialmente correcto. Es mejor mantener la estrategia, pero al menos no vendiste todo."
+                    },
+                    {
+                        text: "Invierto todo mi dinero extra aprovechando los precios bajos",
+                        points: 8,
+                        explanation: "✅ Muy bien! Aprovechar las caídas del mercado es una estrategia inteligente, pero asegúrate de mantener tu fondo de emergencia."
+                    }
+                ]
+            },
+            {
+                title: "Selección de Fondos",
+                description: "Estás eligiendo fondos para tu 401(k). Tu empleador ofrece varias opciones. ¿Cuál eliges?",
+                options: [
+                    {
+                        text: "Fondo activo con 1.5% de comisión anual que ha tenido buenos retornos",
+                        points: 2,
+                        explanation: "⚠️ Los fondos activos raramente superan al mercado a largo plazo, y las altas comisiones reducen tus retornos."
+                    },
+                    {
+                        text: "Fondo índice S&P 500 con 0.05% de comisión anual",
+                        points: 10,
+                        explanation: "✅ Perfecto! Los fondos índice de bajo costo son la base de cualquier estrategia inquebrantable."
+                    },
+                    {
+                        text: "Fondo de bonos con 0.8% de comisión",
+                        points: 6,
+                        explanation: "✅ Los bonos son buenos para diversificación, pero busca opciones de menor costo."
+                    },
+                    {
+                        text: "Fondo de tecnología que ha subido mucho últimamente",
+                        points: 0,
+                        explanation: "❌ Perseguir rendimientos pasados es una estrategia perdedora. La diversificación es clave."
+                    }
+                ]
+            },
+            {
+                title: "Planificación de Jubilación",
+                description: "Tienes 35 años y quieres planificar tu jubilación. ¿Cuál es tu estrategia?",
+                options: [
+                    {
+                        text: "Contribuyo solo el mínimo a mi 401(k) y guardo el resto en el banco",
+                        points: 2,
+                        explanation: "⚠️ El dinero en el banco pierde valor por inflación. Necesitas invertir para crecer tu riqueza."
+                    },
+                    {
+                        text: "Maximizo mi 401(k), abro un Roth IRA y automatizo las contribuciones",
+                        points: 10,
+                        explanation: "✅ Excelente estrategia! Estás aprovechando los beneficios fiscales y la automatización."
+                    },
+                    {
+                        text: "Invierto todo en acciones individuales que conozco bien",
+                        points: 4,
+                        explanation: "⚠️ Las acciones individuales son más riesgosas. La diversificación con fondos índice es más segura."
+                    },
+                    {
+                        text: "Espero hasta tener más dinero para empezar a invertir",
+                        points: 0,
+                        explanation: "❌ El tiempo es tu aliado. Cuanto antes empieces, más poderoso será el interés compuesto."
+                    }
+                ]
+            },
+            {
+                title: "Rebalanceo del Portafolio",
+                description: "Tu portafolio ha cambiado de 60% acciones/40% bonos a 70% acciones/30% bonos debido al crecimiento del mercado. ¿Qué haces?",
+                options: [
+                    {
+                        text: "No hago nada, las acciones están subiendo bien",
+                        points: 3,
+                        explanation: "⚠️ Sin rebalanceo, tu portafolio se vuelve más riesgoso. Es importante mantener tu asignación objetivo."
+                    },
+                    {
+                        text: "Vendo algunas acciones y compro bonos para restaurar la asignación 60/40",
+                        points: 10,
+                        explanation: "✅ Perfecto! El rebalanceo mantiene tu nivel de riesgo objetivo y te hace comprar bajo, vender alto."
+                    },
+                    {
+                        text: "Vendo todos los bonos y compro más acciones",
+                        points: 2,
+                        explanation: "⚠️ Esto aumenta significativamente tu riesgo. Mantén tu plan original."
+                    },
+                    {
+                        text: "Espero a que las acciones bajen para rebalancear",
+                        text: 5,
+                        explanation: "⚠️ El rebalanceo debe ser regular, no basado en predicciones del mercado."
+                    }
+                ]
+            },
+            {
+                title: "Asesor Financiero",
+                description: "Un asesor financiero te ofrece un plan de inversión con fondos activos y comisiones del 2% anual. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Acepto porque el asesor parece muy profesional y confiable",
+                        points: 2,
+                        explanation: "⚠️ Los asesores pueden ser útiles, pero busca uno fiduciario que use fondos de bajo costo."
+                    },
+                    {
+                        text: "Pregunto si es fiduciario y qué fondos de bajo costo recomienda",
+                        points: 10,
+                        explanation: "✅ Excelente! Siempre pregunta si es fiduciario y busca opciones de bajo costo."
+                    },
+                    {
+                        text: "Rechazo y busco un asesor que use solo fondos índice",
+                        points: 8,
+                        explanation: "✅ Muy bien! Los fondos índice son la base de una estrategia inquebrantable."
+                    },
+                    {
+                        text: "Decido no usar asesor y hacerlo todo yo mismo",
+                        points: 6,
+                        explanation: "✅ Puede funcionar si te educas bien, pero un buen asesor fiduciario puede ser valioso."
+                    }
+                ]
+            }
+        ];
+
+        function startGame() {
+            document.getElementById('game-start').style.display = 'none';
+            document.getElementById('game-scenario').style.display = 'block';
+            showScenario();
+        }
+
+        function showScenario() {
+            const scenario = scenarios[currentScenario];
+            document.getElementById('scenario-title').textContent = scenario.title;
+            document.getElementById('scenario-description').textContent = scenario.description;
+            
+            const optionsContainer = document.getElementById('scenario-options');
+            optionsContainer.innerHTML = '';
+            
+            scenario.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.style.margin = '10px';
+                button.style.width = '100%';
+                button.textContent = option.text;
+                button.onclick = () => selectOption(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            updateProgress();
+        }
+
+        function selectOption(optionIndex) {
+            const scenario = scenarios[currentScenario];
+            const selectedOption = scenario.options[optionIndex];
+            
+            score += selectedOption.points;
+            
+            document.getElementById('game-scenario').style.display = 'none';
+            document.getElementById('game-result').style.display = 'block';
+            
+            const resultContent = document.getElementById('result-content');
+            resultContent.innerHTML = `
+                <div class="alert ${selectedOption.points >= 8 ? 'alert-success' : selectedOption.points >= 5 ? 'alert-info' : 'alert-warning'}">
+                    <h3>Puntos ganados: ${selectedOption.points}/10</h3>
+                    <p><strong>Explicación:</strong> ${selectedOption.explanation}</p>
+                    <p><strong>Puntuación total: ${score}</strong></p>
+                </div>
+            `;
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            
+            if (currentScenario >= totalScenarios) {
+                showSummary();
+            } else {
+                document.getElementById('game-result').style.display = 'none';
+                document.getElementById('game-scenario').style.display = 'block';
+                showScenario();
+            }
+        }
+
+        function showSummary() {
+            document.getElementById('game-result').style.display = 'none';
+            document.getElementById('game-summary').style.display = 'block';
+            
+            const maxScore = totalScenarios * 10;
+            const percentage = (score / maxScore) * 100;
+            
+            let grade, message;
+            if (percentage >= 90) {
+                grade = "A+";
+                message = "¡Excelente! Eres un inversor inquebrantable.";
+            } else if (percentage >= 80) {
+                grade = "A";
+                message = "¡Muy bien! Tienes una sólida comprensión de los principios.";
+            } else if (percentage >= 70) {
+                grade = "B";
+                message = "Buen trabajo. Hay algunas áreas para mejorar.";
+            } else if (percentage >= 60) {
+                grade = "C";
+                message = "Aceptable. Necesitas más educación financiera.";
+            } else {
+                grade = "D";
+                message = "Necesitas estudiar más los principios de inversión inquebrantable.";
+            }
+            
+            document.getElementById('summary-content').innerHTML = `
+                <div class="result result-success">
+                    <h3>Puntuación Final: ${score}/${maxScore} (${percentage.toFixed(1)}%)</h3>
+                    <h3>Calificación: ${grade}</h3>
+                    <p><strong>${message}</strong></p>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h3>💡 Lecciones Clave:</h3>
+                    <ul>
+                        <li>Mantén la disciplina durante las crisis del mercado</li>
+                        <li>Usa fondos índice de bajo costo</li>
+                        <li>Diversifica tu portafolio</li>
+                        <li>Rebalancea regularmente</li>
+                        <li>Automatiza tus inversiones</li>
+                        <li>Busca asesores fiduciarios</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            currentScenario = 0;
+            score = 0;
+            document.getElementById('game-summary').style.display = 'none';
+            document.getElementById('game-start').style.display = 'block';
+        }
+
+        function updateProgress() {
+            const progress = ((currentScenario + 1) / totalScenarios) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${currentScenario + 1}/${totalScenarios}`;
+        }
+    </script>
+</body>
+</html> 

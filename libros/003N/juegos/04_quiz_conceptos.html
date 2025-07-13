@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Conceptos de Éxito</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .game-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .choice-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            text-align: left;
+        }
+        .choice-button:hover {
+            background: #5a6fd8;
+        }
+        .choice-button.correct {
+            background: #28a745;
+        }
+        .choice-button.incorrect {
+            background: #dc3545;
+        }
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Quiz de Conceptos de Éxito</h1>
+        <p>¡Aprende sobre los conceptos clave del éxito según Napoleon Hill! Este quiz te ayudará a entender mejor los principios.</p>
+
+        <div class="score-display">
+            <h3>Puntuación: <span id="score">0</span>/100</h3>
+            <p>Pregunta: <span id="questionNumber">1</span>/8</p>
+        </div>
+
+        <div class="game-container" id="question1">
+            <h3>🎯 Pregunta 1</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es el deseo ardiente según Napoleon Hill?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(1, 'a')">A) Un deseo tan fuerte que se convierte en una obsesión positiva</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'b')">B) Un simple deseo pasajero</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'c')">C) Un sueño imposible</button>
+                <button class="choice-button" onclick="checkAnswer(1, 'd')">D) Una meta a corto plazo</button>
+            </div>
+            
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="game-container" id="question2" style="display: none;">
+            <h3>🎯 Pregunta 2</h3>
+            <div class="question-card">
+                <p><strong>¿Qué significa la autosugestión?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(2, 'b')">A) Escuchar música motivacional</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'a')">B) Programar tu mente con pensamientos positivos repetidamente</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'c')">C) Leer libros de autoayuda</button>
+                <button class="choice-button" onclick="checkAnswer(2, 'd')">D) Hacer ejercicio</button>
+            </div>
+            
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="game-container" id="question3" style="display: none;">
+            <h3>🎯 Pregunta 3</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es el cerebro maestro?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(3, 'c')">A) Un grupo de amigos</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'b')">B) Un mentor personal</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'a')">C) Un grupo de personas que se reúnen para ayudarse mutuamente</button>
+                <button class="choice-button" onclick="checkAnswer(3, 'd')">D) Un libro de estrategias</button>
+            </div>
+            
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <div class="game-container" id="question4" style="display: none;">
+            <h3>🎯 Pregunta 4</h3>
+            <div class="question-card">
+                <p><strong>¿Qué significa la persistencia?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(4, 'a')">A) Continuar trabajando hacia tu meta sin importar los obstáculos</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'b')">B) Trabajar duro por un día</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'c')">C) Esperar a que las cosas pasen</button>
+                <button class="choice-button" onclick="checkAnswer(4, 'd')">D) Hacer lo mínimo necesario</button>
+            </div>
+            
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <div class="game-container" id="question5" style="display: none;">
+            <h3>🎯 Pregunta 5</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es la transmutación del sexo?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(5, 'b')">A) Cambiar de género</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'a')">B) Convertir la energía sexual en creatividad y logros</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'c')">C) Una técnica de meditación</button>
+                <button class="choice-button" onclick="checkAnswer(5, 'd')">D) Un tipo de ejercicio</button>
+            </div>
+            
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <div class="game-container" id="question6" style="display: none;">
+            <h3>🎯 Pregunta 6</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es la imaginación sintética?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(6, 'c')">A) Crear cosas de la nada</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'b')">B) Soñar despierto</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'a')">C) Combinar ideas existentes de manera nueva</button>
+                <button class="choice-button" onclick="checkAnswer(6, 'd')">D) Copiar ideas de otros</button>
+            </div>
+            
+            <div class="feedback" id="feedback6"></div>
+        </div>
+
+        <div class="game-container" id="question7" style="display: none;">
+            <h3>🎯 Pregunta 7</h3>
+            <div class="question-card">
+                <p><strong>¿Qué es el subconsciente?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(7, 'a')">A) La parte de tu mente que trabaja automáticamente sin que te des cuenta</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'b')">B) Tu cerebro</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'c')">C) Tu memoria</button>
+                <button class="choice-button" onclick="checkAnswer(7, 'd')">D) Tu imaginación</button>
+            </div>
+            
+            <div class="feedback" id="feedback7"></div>
+        </div>
+
+        <div class="game-container" id="question8" style="display: none;">
+            <h3>🎯 Pregunta 8</h3>
+            <div class="question-card">
+                <p><strong>¿Cuál es la clave del éxito según Napoleon Hill?</strong></p>
+                
+                <button class="choice-button" onclick="checkAnswer(8, 'b')">A) Tener mucha suerte</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'a')">B) Aplicar todos los 13 principios de manera consistente</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'c')">C) Nacer en una familia rica</button>
+                <button class="choice-button" onclick="checkAnswer(8, 'd')">D) Tener talento natural</button>
+            </div>
+            
+            <div class="feedback" id="feedback8"></div>
+        </div>
+
+        <div class="game-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Quiz Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>/100</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="question-card">
+                <h3>🎯 Lo que Aprendiste sobre el Éxito:</h3>
+                <ul>
+                    <li><strong>Deseo ardiente:</strong> El combustible que impulsa tus metas</li>
+                    <li><strong>Autosugestión:</strong> Programar tu mente para el éxito</li>
+                    <li><strong>Cerebro maestro:</strong> El poder de trabajar en equipo</li>
+                    <li><strong>Persistencia:</strong> La clave para superar obstáculos</li>
+                    <li><strong>Imaginación:</strong> La fábrica de tus ideas creativas</li>
+                    <li><strong>Subconsciente:</strong> Tu aliado automático para el éxito</li>
+                </ul>
+                
+                <h3>💡 Cómo Aplicar estos Conceptos:</h3>
+                <ol>
+                    <li><strong>Define tu deseo ardiente:</strong> ¿Qué quieres realmente?</li>
+                    <li><strong>Crea afirmaciones diarias:</strong> Repite tus metas en voz alta</li>
+                    <li><strong>Únete a grupos positivos:</strong> Rodeate de personas que te inspiren</li>
+                    <li><strong>Nunca te rindas:</strong> Los obstáculos son oportunidades</li>
+                    <li><strong>Usa tu imaginación:</strong> Visualiza tu éxito</li>
+                    <li><strong>Confía en tu subconsciente:</strong> Deja que trabaje mientras duermes</li>
+                </ol>
+            </div>
+            
+            <button class="choice-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentQuestion = 1;
+        const totalQuestions = 8;
+
+        function checkAnswer(question, correctAnswer) {
+            const buttons = document.querySelectorAll(`#question${question} .choice-button`);
+            const feedback = document.getElementById(`feedback${question}`);
+            
+            // Deshabilitar todos los botones
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            });
+            
+            // Obtener la respuesta seleccionada
+            const selectedButton = event.target;
+            const selectedAnswer = selectedButton.textContent.charAt(0).toLowerCase();
+            
+            if (selectedAnswer === correctAnswer) {
+                currentScore += 12.5;
+                feedback.innerHTML = '<strong>✅ ¡Correcto!</strong> ¡Excelente comprensión del concepto!';
+                feedback.className = 'feedback positive';
+            } else {
+                feedback.innerHTML = '<strong>❌ Incorrecto.</strong> ¡No te preocupes, es parte del aprendizaje!';
+                feedback.className = 'feedback negative';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Actualizar puntuación
+            updateScore();
+            
+            // Mostrar siguiente pregunta después de 2 segundos
+            setTimeout(() => {
+                if (question < totalQuestions) {
+                    document.getElementById(`question${question}`).style.display = 'none';
+                    document.getElementById(`question${question + 1}`).style.display = 'block';
+                    currentQuestion++;
+                } else {
+                    showFinalResult();
+                }
+            }, 2000);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = Math.round(currentScore);
+            document.getElementById('finalScore').textContent = Math.round(currentScore);
+            document.getElementById('questionNumber').textContent = currentQuestion;
+        }
+        
+        function showFinalResult() {
+            document.getElementById(`question${totalQuestions}`).style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const finalMessage = document.getElementById('finalMessage');
+            if (currentScore >= 80) {
+                finalMessage.textContent = '¡Excelente! Tienes un gran entendimiento de los conceptos del éxito. ¡Eres un experto!';
+            } else if (currentScore >= 60) {
+                finalMessage.textContent = '¡Bien! Tu comprensión está creciendo. Con práctica dominarás estos conceptos.';
+            } else {
+                finalMessage.textContent = 'No te preocupes, todos empezamos así. Con este curso aprenderás mucho más sobre el éxito.';
+            }
+        }
+        
+        function restartGame() {
+            currentScore = 0;
+            currentQuestion = 1;
+            
+            // Ocultar todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).style.display = 'none';
+            }
+            
+            // Mostrar primera pregunta
+            document.getElementById('question1').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            // Resetear botones
+            const buttons = document.querySelectorAll('.choice-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Ocultar feedbacks
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+            
+            updateScore();
+        }
+    </script>
+</body>
+</html> 

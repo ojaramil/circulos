@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Optimistas</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .flashcard-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .flashcard {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+        .flashcard.flipped {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        .controls {
+            margin: 2rem 0;
+        }
+        .control-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .control-button:hover {
+            background: #5a6fd8;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .stats {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Flashcards Optimistas</h1>
+        <p>¡Practica los conceptos del optimismo más importantes! Haz clic en las tarjetas para ver las definiciones.</p>
+
+        <div class="stats">
+            <strong>Progreso:</strong> <span id="currentCard">1</span> de <span id="totalCards">10</span> | 
+            <strong>Correctas:</strong> <span id="correctAnswers">0</span> | 
+            <strong>Incorrectas:</strong> <span id="incorrectAnswers">0</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 10%"></div>
+        </div>
+
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div id="cardContent">Haz clic para comenzar</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-button" onclick="previousCard()">← Anterior</button>
+            <button class="control-button" onclick="flipCard()">🔄 Voltear</button>
+            <button class="control-button" onclick="nextCard()">Siguiente →</button>
+            <button class="control-button" onclick="shuffleCards()">🔀 Mezclar</button>
+        </div>
+
+        <div class="controls">
+            <button class="control-button" onclick="markCorrect()" style="background: #28a745;">✅ Correcta</button>
+            <button class="control-button" onclick="markIncorrect()" style="background: #dc3545;">❌ Incorrecta</button>
+        </div>
+
+        <div class="flashcard-container" id="finalResult" style="display: none;">
+            <h2>🏆 ¡Sesión Completada!</h2>
+            <div class="stats">
+                <h3>Resultados:</h3>
+                <p><strong>Respuestas Correctas:</strong> <span id="finalCorrect">0</span></p>
+                <p><strong>Respuestas Incorrectas:</strong> <span id="finalIncorrect">0</span></p>
+                <p><strong>Porcentaje de Éxito:</strong> <span id="successRate">0</span>%</p>
+            </div>
+            <button class="control-button" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const flashcards = [
+            {
+                term: "Optimismo",
+                definition: "Ver el lado bueno de las cosas y creer que todo va a salir bien. Es como tener gafas mágicas que te hacen ver el mundo de manera más bonita."
+            },
+            {
+                term: "Gratitud",
+                definition: "Sentir y expresar agradecimiento por lo que tienes. Es como hacer una lista de todas las cosas buenas en tu vida."
+            },
+            {
+                term: "Resiliencia",
+                definition: "La capacidad de recuperarte rápido de los problemas y seguir adelante. Es como un resorte que se estira pero siempre vuelve a su forma."
+            },
+            {
+                term: "Esperanza",
+                definition: "Creer que el futuro será mejor. Es como tener fe en que las cosas buenas están por venir."
+            },
+            {
+                term: "Mentalidad de Crecimiento",
+                definition: "Creer que puedes mejorar y aprender de los errores. Es como pensar que tu cerebro es un músculo que se hace más fuerte con el ejercicio."
+            },
+            {
+                term: "Pensamiento Positivo",
+                definition: "Enfocarte en las cosas buenas y las soluciones en lugar de los problemas. Es como buscar la luz en lugar de la sombra."
+            },
+            {
+                term: "Visualización",
+                definition: "Imaginar en tu mente que logras tus metas. Es como crear una película en tu cabeza donde eres exitoso."
+            },
+            {
+                term: "Atención Plena",
+                definition: "Estar presente en el momento actual sin preocuparte por el pasado o el futuro. Es como disfrutar cada bocado de tu comida favorita."
+            },
+            {
+                term: "Empatía",
+                definition: "Ponerse en el lugar de otra persona y entender sus sentimientos. Es como caminar con los zapatos de alguien más."
+            },
+            {
+                term: "Perseverancia",
+                definition: "No rendirse cuando las cosas se ponen difíciles. Es como seguir escalando una montaña aunque estés cansado."
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let shuffledCards = [...flashcards];
+
+        function initializeGame() {
+            document.getElementById('totalCards').textContent = flashcards.length;
+            updateDisplay();
+            showCard();
+        }
+
+        function showCard() {
+            const card = shuffledCards[currentCardIndex];
+            const cardContent = document.getElementById('cardContent');
+            const flashcard = document.getElementById('flashcard');
+            
+            if (isFlipped) {
+                cardContent.textContent = card.definition;
+                flashcard.classList.add('flipped');
+            } else {
+                cardContent.textContent = card.term;
+                flashcard.classList.remove('flipped');
+            }
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            showCard();
+        }
+
+        function nextCard() {
+            if (currentCardIndex < shuffledCards.length - 1) {
+                currentCardIndex++;
+                isFlipped = false;
+                updateDisplay();
+                showCard();
+            } else {
+                showFinalResult();
+            }
+        }
+
+        function previousCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                isFlipped = false;
+                updateDisplay();
+                showCard();
+            }
+        }
+
+        function shuffleCards() {
+            shuffledCards = [...flashcards].sort(() => Math.random() - 0.5);
+            currentCardIndex = 0;
+            isFlipped = false;
+            updateDisplay();
+            showCard();
+        }
+
+        function markCorrect() {
+            correctAnswers++;
+            updateDisplay();
+            setTimeout(nextCard, 1000);
+        }
+
+        function markIncorrect() {
+            incorrectAnswers++;
+            updateDisplay();
+            setTimeout(nextCard, 1000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('incorrectAnswers').textContent = incorrectAnswers;
+            
+            const progress = ((currentCardIndex + 1) / shuffledCards.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showFinalResult() {
+            document.querySelector('.flashcard-container').style.display = 'none';
+            document.querySelector('.controls').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'block';
+            
+            const successRate = Math.round((correctAnswers / (correctAnswers + incorrectAnswers)) * 100) || 0;
+            
+            document.getElementById('finalCorrect').textContent = correctAnswers;
+            document.getElementById('finalIncorrect').textContent = incorrectAnswers;
+            document.getElementById('successRate').textContent = successRate;
+        }
+
+        function restartGame() {
+            currentCardIndex = 0;
+            isFlipped = false;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            shuffledCards = [...flashcards];
+            
+            document.querySelector('.flashcard-container').style.display = 'block';
+            document.querySelector('.controls').style.display = 'block';
+            document.getElementById('finalResult').style.display = 'none';
+            
+            updateDisplay();
+            showCard();
+        }
+
+        // Inicializar el juego
+        initializeGame();
+    </script>
+</body>
+</html> 

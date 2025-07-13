@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Línea de Tiempo de Inversión ⏳</title>
+    <style>
+        /* Estilos encapsulados para el Gestor de Línea de Tiempo de Inversión */
+        .gestor-inversion-wrapper {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 20px; 
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .gestor-inversion-wrapper .game-container {
+            background-color: #ffffff; 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .gestor-inversion-wrapper h1 {
+            color: #005BAA; /* Azul de acento principal de la plataforma */
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .gestor-inversion-wrapper .setup-area,
+        .gestor-inversion-wrapper .status-area,
+        .gestor-inversion-wrapper .controls-area,
+        .gestor-inversion-wrapper .event-area,
+        .gestor-inversion-wrapper .summary-area {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f9f9f9; 
+            border: 1px solid #e0e0e0;
+        }
+
+        .gestor-inversion-wrapper .setup-area label,
+        .gestor-inversion-wrapper .controls-area label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .gestor-inversion-wrapper .setup-area input[type="number"],
+        .gestor-inversion-wrapper .setup-area select {
+            width: calc(50% - 12px);
+            padding: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .gestor-inversion-wrapper .status-area p,
+        .gestor-inversion-wrapper .summary-area p {
+            margin: 8px 0;
+            font-size: 1.05em;
+        }
+
+        .gestor-inversion-wrapper .status-area strong,
+        .gestor-inversion-wrapper .summary-area strong {
+            color: #005BAA; /* Usar azul de acento para destacar */
+        }
+
+        .gestor-inversion-wrapper .controls-area .strategy-buttons button {
+            background-color: #59A9D9; /* Azul brillante de plataforma para no activo */
+            color: white;
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .gestor-inversion-wrapper .controls-area .strategy-buttons button.active {
+            background-color: #005BAA; /* Azul principal de plataforma para activo */
+            box-shadow: 0 0 8px rgba(0, 91, 170, 0.5);
+        }
+
+        .gestor-inversion-wrapper .controls-area .strategy-buttons button:hover:not(.active) {
+            background-color: #7FB3D5; 
+        }
+
+        .gestor-inversion-wrapper #advanceYearButton,
+        .gestor-inversion-wrapper #startGameButton {
+            background-color: #005BAA; /* Azul principal de plataforma */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top:10px;
+            display: block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.2s ease;
+        }
+        .gestor-inversion-wrapper #advanceYearButton:hover,
+        .gestor-inversion-wrapper #startGameButton:hover {
+            background-color: #004C8C; /* Azul más oscuro para hover */
+        }
+
+        .gestor-inversion-wrapper #restartGameButton {
+            background-color: #59A9D9; /* Azul brillante de plataforma */
+            color: white; 
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top:10px;
+            display: block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.2s ease;
+        }
+        .gestor-inversion-wrapper #restartGameButton:hover {
+            background-color: #4A8BCD; /* Tono más oscuro del azul brillante */
+        }
+
+        .gestor-inversion-wrapper .event-area {
+            background-color: #fff5e6; /* Naranja claro para eventos, distintivo */
+            border-color: #ffe0b3;
+            min-height: 50px;
+        }
+        .gestor-inversion-wrapper .event-area p {
+            color: #d98200; 
+            font-weight: bold;
+        }
+        .gestor-inversion-wrapper .event-area .choices button {
+            background-color: #005BAA; /* Botones de elección con azul de plataforma */
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            margin: 5px;
+            border:none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+         .gestor-inversion-wrapper .event-area .choices button:hover {
+            background-color: #004C8C;
+         }
+
+        .gestor-inversion-wrapper #wealthChartContainer {
+            margin-top: 15px;
+            width: 100%;
+            height: 200px;
+            background-color: #e0e7ef; /* Un gris claro de la paleta de la plataforma */
+            border: 1px solid #bdc3c7;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gestor-inversion-wrapper .chart-bar {
+            position: absolute;
+            bottom: 0;
+            background-color: #59A9D9; /* Azul brillante de plataforma para barras */
+            border-right: 1px solid #4A8BCD; /* Un poco más oscuro para borde de barra */
+            transition: height 0.3s ease-out;
+        }
+
+        .gestor-inversion-wrapper .tooltip {
+            position: absolute;
+            background-color: rgba(0,0,0,0.75); 
+            color: white;
+            padding: 5px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            z-index: 100;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="gestor-inversion-wrapper">
+        <div class="game-container">
+            <h1>Gestor de Línea de Tiempo de Inversión ⏳</h1>
+
+            <div class="setup-area" id="setupArea">
+                <h2>Configuración Inicial</h2>
+                <div>
+                    <label for="startingCapital">Capital Inicial (€):</label>
+                    <input type="number" id="startingCapital" value="20000" min="0">
+                </div>
+                <div>
+                    <label for="annualContribution">Aporte Anual (€):</label>
+                    <input type="number" id="annualContribution" value="5000" min="0">
+                </div>
+                <div>
+                    <label for="initialGoalYears">Años para la Meta (ej. Jubilación):</label>
+                    <input type="number" id="initialGoalYears" value="30" min="1" max="50">
+                </div>
+                <button id="startGameButton" onclick="startGame()">Empezar Simulación</button>
+            </div>
+
+            <div id="gameplayArea" style="display:none;">
+                <div class="status-area">
+                    <p>Año Actual: <strong id="currentYearDisplay">0</strong> / <strong id="goalYearsDisplay">30</strong></p>
+                    <p>Patrimonio Actual: <strong id="currentWealthDisplay">€0</strong></p>
+                    <p>Meta de Patrimonio (Estimada): <strong id="goalWealthDisplay">€0</strong> <small>(Basado en gastos deseados de €40k/año con regla del 4%)</small></p>
+                    <p>Estrategia Actual: <strong id="currentStrategyDisplay">-</strong></p>
+                </div>
+
+                <div class="controls-area">
+                    <label>Elige tu Estrategia de Inversión para el Próximo Año:</label>
+                    <div class="strategy-buttons">
+                        <button id="stratConservative" onclick="selectStrategy('conservative')">Conservadora</button>
+                        <button id="stratModerate" onclick="selectStrategy('moderate')">Moderada</button>
+                        <button id="stratAggressive" onclick="selectStrategy('aggressive')">Agresiva</button>
+                    </div>
+                </div>
+
+                <div id="wealthChartContainer">
+                     <div class="tooltip" id="chartTooltip"></div>
+                </div>
+
+                <button id="advanceYearButton" onclick="advanceYear()" disabled>Avanzar 1 Año ➔</button>
+
+                <div class="event-area" id="eventArea" style="display:none;">
+                    <p id="eventMessage"></p>
+                    <div id="eventChoices"></div>
+                </div>
+            </div>
+
+            <div class="summary-area" id="summaryArea" style="display:none;">
+                <h2>Fin de la Simulación</h2>
+                <p id="summaryMessage"></p>
+                <p>Años Simulados: <strong id="summaryYears"></strong></p>
+                <p>Patrimonio Final: <strong id="summaryWealth"></strong></p>
+                <p>Meta de Patrimonio: <strong id="summaryGoalWealth"></strong></p>
+                <button id="restartGameButton" onclick="restartGame()">Jugar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Envolvemos todo el script en un IIFE
+    (function() {
+        let currentYear, currentWealth, annualContribution, goalYears, goalWealth;
+        let currentStrategy = '';
+        let wealthHistory = [];
+        const MAX_YEARS_SIMULATION = 50;
+        const DESIRED_RETIREMENT_INCOME = 40000;
+        const WITHDRAWAL_RATE_SUMMARY = 0.04;
+
+        const strategies = {
+            conservative: { name: "Conservadora", avgReturn: 0.03, volatility: 0.05 },
+            moderate:     { name: "Moderada",     avgReturn: 0.06, volatility: 0.10 },
+            aggressive:   { name: "Agresiva",   avgReturn: 0.09, volatility: 0.20 }
+        };
+
+        const lifeEvents = [
+            { name: "Crash del Mercado", message: "¡Caída fuerte del mercado! Tus inversiones sufren este año.", type: "market_modifier", modifier: -0.15, duration: 1, chance: 0.05 },
+            { name: "Boom Económico", message: "¡La economía está en auge! Retornos extra este año.", type: "market_modifier", modifier: 0.10, duration: 1, chance: 0.05 },
+            { name: "Bono Inesperado", message: "¡Felicidades! Recibes un bono de €10,000.", type: "wealth_change", amount: 10000, chance: 0.07 },
+            { name: "Emergencia Médica", message: "Gasto médico inesperado de €15,000.", type: "wealth_change", amount: -15000, chance: 0.06 },
+            { name: "Cambio de Carrera", message: "Decides cambiar de carrera. Implica un coste inicial de €5,000 pero podría aumentar tus aportes futuros.", type: "choice", cost: -5000, future_contrib_increase: 2000, chance: 0.04,
+                prompt: "¿Aceptas el cambio de carrera (coste €5k, posible +€2k aporte anual futuro)?" },
+            { name: "Nuevas Metas Familiares", message: "Tus metas cambian. Ahora consideras jubilarte 3 años antes.", type: "goal_change_years", yearsChange: -3, chance: 0.03 },
+            { name: "Herencia Modesta", message: "Recibes una pequeña herencia de €20,000.", type: "wealth_change", amount: 20000, chance: 0.02 },
+            { name: "Gran Oportunidad de Inversión", message: "Surge una oportunidad única de invertir €25,000 en un proyecto con alto potencial (o alta pérdida).", type: "choice", cost: -25000, potentialReturn: 50000, potentialLoss: -25000, successRate: 0.4, chance: 0.03,
+                prompt: "¿Inviertes €25k? (40% de ganar €50k, 60% de perderlo todo)"}
+        ];
+        let activeMarketModifier = { modifier: 0, duration: 0 };
+
+        // Las referencias a elementos del DOM son seguras porque los IDs son únicos
+        // y se buscan después de que el HTML del juego es inyectado.
+        const setupAreaElement = document.getElementById('setupArea');
+        const gameplayAreaElement = document.getElementById('gameplayArea');
+        const summaryAreaElement = document.getElementById('summaryArea');
+        const eventAreaElement = document.getElementById('eventArea');
+        const eventMessageElement = document.getElementById('eventMessage');
+        const eventChoicesElement = document.getElementById('eventChoices');
+        const currentYearDisplayElement = document.getElementById('currentYearDisplay');
+        const goalYearsDisplayElement = document.getElementById('goalYearsDisplay');
+        const currentWealthDisplayElement = document.getElementById('currentWealthDisplay');
+        const goalWealthDisplayElement = document.getElementById('goalWealthDisplay');
+        const currentStrategyDisplayElement = document.getElementById('currentStrategyDisplay');
+        const advanceYearButtonElement = document.getElementById('advanceYearButton');
+        const chartContainerElement = document.getElementById('wealthChartContainer');
+        const chartTooltipElement = document.getElementById('chartTooltip');
+        const summaryMessageElement = document.getElementById('summaryMessage');
+        const summaryYearsElement = document.getElementById('summaryYears');
+        const summaryWealthElement = document.getElementById('summaryWealth');
+        const summaryGoalWealthElement = document.getElementById('summaryGoalWealth');
+
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+
+        function startGameInternal() {
+            currentYear = 0;
+            currentWealth = parseFloat(document.getElementById('startingCapital').value); // ID es global
+            annualContribution = parseFloat(document.getElementById('annualContribution').value);
+            goalYears = parseInt(document.getElementById('initialGoalYears').value);
+            goalWealth = DESIRED_RETIREMENT_INCOME / WITHDRAWAL_RATE_SUMMARY;
+            wealthHistory = [currentWealth];
+            activeMarketModifier = { modifier: 0, duration: 0 };
+
+            if(setupAreaElement) setupAreaElement.style.display = 'none';
+            if(gameplayAreaElement) gameplayAreaElement.style.display = 'block';
+            if(summaryAreaElement) summaryAreaElement.style.display = 'none';
+            if(eventAreaElement) eventAreaElement.style.display = 'none';
+            if(eventMessageElement) eventMessageElement.textContent = '';
+            if(eventChoicesElement) eventChoicesElement.innerHTML = '';
+
+            if (goalYears > MAX_YEARS_SIMULATION) goalYears = MAX_YEARS_SIMULATION;
+
+            updateDisplays();
+            renderChart();
+            if(advanceYearButtonElement) advanceYearButtonElement.disabled = true;
+            document.querySelectorAll('.gestor-inversion-wrapper .strategy-buttons button').forEach(btn => btn.classList.remove('active'));
+            if(currentStrategyDisplayElement) currentStrategyDisplayElement.textContent = "Selecciona una estrategia";
+        }
+
+        function selectStrategyInternal(strategyName) {
+            currentStrategy = strategyName;
+            if(currentStrategyDisplayElement) currentStrategyDisplayElement.textContent = strategies[strategyName].name;
+            document.querySelectorAll('.gestor-inversion-wrapper .strategy-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.id === `strat${strategyName.charAt(0).toUpperCase() + strategyName.slice(1)}`) {
+                    btn.classList.add('active');
+                }
+            });
+            if(advanceYearButtonElement) advanceYearButtonElement.disabled = false;
+        }
+
+        function advanceYearInternal() {
+            if (!currentStrategy) {
+                alert("Debes seleccionar una estrategia primero.");
+                return;
+            }
+            if (currentYear >= goalYears || currentYear >= MAX_YEARS_SIMULATION || currentWealth < 0) {
+                endGameInternal();
+                return;
+            }
+
+            currentYear++;
+            currentWealth += annualContribution;
+
+            const strat = strategies[currentStrategy];
+            let marketReturn = strat.avgReturn + (Math.random() * strat.volatility * 2) - strat.volatility;
+
+            let eventTextForYear = "";
+            if (activeMarketModifier.duration > 0) {
+                marketReturn += activeMarketModifier.modifier;
+                activeMarketModifier.duration--;
+                eventTextForYear += `Efecto de mercado: ${(activeMarketModifier.modifier * 100).toFixed(0)}% extra. `;
+                if(activeMarketModifier.duration === 0) eventTextForYear += " (Efecto terminado).";
+            }
+
+            currentWealth = currentWealth * (1 + marketReturn);
+            if (currentWealth < 0) currentWealth = 0;
+            wealthHistory.push(currentWealth);
+
+            if(eventAreaElement) eventAreaElement.style.display = 'none';
+            if(eventMessageElement) eventMessageElement.textContent = eventTextForYear.trim() || "Año normal.";
+            if(eventChoicesElement) eventChoicesElement.innerHTML = '';
+
+            let eventTriggered = false;
+            for (const event of lifeEvents) {
+                if (Math.random() < event.chance) {
+                    eventTriggered = true;
+                    handleLifeEvent(event);
+                    break; 
+                }
+            }
+             if (!eventTriggered && !eventTextForYear.trim() && eventAreaElement) {
+                 eventAreaElement.style.display = 'block';
+            }
+
+            updateDisplays();
+            renderChart();
+
+            if (currentYear >= goalYears || currentYear >= MAX_YEARS_SIMULATION || currentWealth <= 0) {
+                endGameInternal();
+            }
+        }
+        
+        function handleLifeEvent(event) { // Local
+            if(eventAreaElement) eventAreaElement.style.display = 'block';
+            let message = event.message;
+            if(eventChoicesElement) eventChoicesElement.innerHTML = '';
+
+            switch (event.type) {
+                case "market_modifier":
+                    activeMarketModifier = { modifier: event.modifier, duration: event.duration };
+                    break;
+                case "wealth_change":
+                    currentWealth += event.amount;
+                    if (currentWealth < 0) currentWealth = 0;
+                    message += ` (Impacto: ${formatCurrency(event.amount)})`;
+                    break;
+                case "goal_change_years":
+                    goalYears += event.yearsChange;
+                    if (goalYears < currentYear + 1) goalYears = currentYear + 1;
+                    if (goalYears > MAX_YEARS_SIMULATION) goalYears = MAX_YEARS_SIMULATION;
+                    message += ` (Nueva meta en ${goalYears - currentYear} años).`;
+                    break;
+                case "choice":
+                    if(advanceYearButtonElement) advanceYearButtonElement.disabled = true;
+                    const yesButton = document.createElement('button');
+                    yesButton.textContent = "Sí";
+                    yesButton.onclick = () => resolveChoice(event, true); // resolveChoice es local
+                    
+                    const noButton = document.createElement('button');
+                    noButton.textContent = "No";
+                    noButton.onclick = () => resolveChoice(event, false); // resolveChoice es local
+                    
+                    if(eventChoicesElement) {
+                        eventChoicesElement.appendChild(yesButton);
+                        eventChoicesElement.appendChild(noButton);
+                    }
+                    message = event.prompt || event.message;
+                    break;
+            }
+            if(eventMessageElement) eventMessageElement.textContent = message;
+        }
+
+        function resolveChoice(event, userChoseYes) { // Local
+            let choiceMessage = "";
+            if (userChoseYes) {
+                currentWealth += event.cost; 
+                 choiceMessage += `Decidiste aceptar. Coste: ${formatCurrency(event.cost)}. `;
+
+                if (event.future_contrib_increase) {
+                    annualContribution += event.future_contrib_increase;
+                    choiceMessage += `Tu aporte anual futuro aumenta. `;
+                }
+                if (typeof event.potentialReturn !== 'undefined') {
+                    if (Math.random() < event.successRate) {
+                        currentWealth += event.potentialReturn;
+                        choiceMessage += `¡La inversión fue un éxito! Ganaste ${formatCurrency(event.potentialReturn)}. `;
+                    } else {
+                        choiceMessage += `La inversión no tuvo el resultado esperado. `;
+                    }
+                }
+            } else {
+                 choiceMessage = "Decidiste no aceptar la oportunidad/cambio.";
+            }
+
+            if (currentWealth < 0) currentWealth = 0;
+            if(eventMessageElement) eventMessageElement.textContent = choiceMessage;
+            if(eventChoicesElement) eventChoicesElement.innerHTML = '';
+            if(advanceYearButtonElement) advanceYearButtonElement.disabled = false;
+            updateDisplays();
+            renderChart();
+        }
+
+        function updateDisplays() { // Local
+            if(currentYearDisplayElement) currentYearDisplayElement.textContent = currentYear;
+            if(goalYearsDisplayElement) goalYearsDisplayElement.textContent = goalYears;
+            if(currentWealthDisplayElement) currentWealthDisplayElement.textContent = formatCurrency(currentWealth);
+            if(goalWealthDisplayElement) goalWealthDisplayElement.textContent = formatCurrency(goalWealth);
+        }
+        
+       function renderChart() { // Local
+            if (!chartContainerElement) return;
+            chartContainerElement.innerHTML = ''; 
+            if (chartTooltipElement) chartContainerElement.appendChild(chartTooltipElement);
+
+            if (wealthHistory.length === 0) return;
+
+            const maxValue = Math.max(...wealthHistory, goalWealth); 
+            const barWidth = chartContainerElement.clientWidth / Math.max(wealthHistory.length, goalYears || 1);
+
+            wealthHistory.forEach((value, index) => {
+                const bar = document.createElement('div');
+                bar.classList.add('chart-bar');
+                const barHeightPercentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+                bar.style.height = `${Math.max(0, barHeightPercentage)}%`; 
+                bar.style.width = `${Math.max(1, barWidth -1)}px`; 
+                bar.style.left = `${index * barWidth}px`;
+                
+                bar.onmouseover = (e) => {
+                    if (!chartTooltipElement) return;
+                    chartTooltipElement.textContent = `Año ${index}: ${formatCurrency(value)}`;
+                    chartTooltipElement.style.display = 'block';
+                    let left = e.pageX - chartContainerElement.getBoundingClientRect().left + 10;
+                    let top = e.pageY - chartContainerElement.getBoundingClientRect().top - 35;
+                    
+                    if (left + chartTooltipElement.offsetWidth > chartContainerElement.clientWidth) {
+                        left = chartContainerElement.clientWidth - chartTooltipElement.offsetWidth - 5;
+                    }
+                    if (left < 0) {
+                        left = 5;
+                    }
+                    chartTooltipElement.style.left = `${left}px`;
+                    chartTooltipElement.style.top = `${top}px`;
+                };
+                bar.onmouseout = () => {
+                    if (chartTooltipElement) chartTooltipElement.style.display = 'none';
+                };
+                chartContainerElement.appendChild(bar);
+            });
+
+            if (maxValue > 0) {
+                const goalLine = document.createElement('div');
+                goalLine.style.position = 'absolute';
+                goalLine.style.width = '100%';
+                goalLine.style.borderTop = '1px dashed #dc3545';
+                const goalHeightPercentage = (goalWealth / maxValue) * 100;
+                goalLine.style.bottom = `${goalHeightPercentage}%`;
+                goalLine.style.left = '0';
+                goalLine.setAttribute('data-title', `Meta: ${formatCurrency(goalWealth)}`);
+                if(goalHeightPercentage <= 100 && goalHeightPercentage >=0) chartContainerElement.appendChild(goalLine);
+            }
+        }
+
+        function endGameInternal() {
+            if(gameplayAreaElement) gameplayAreaElement.style.display = 'none';
+            if(summaryAreaElement) summaryAreaElement.style.display = 'block';
+
+            let message = "";
+            if (currentWealth >= goalWealth && currentYear <= goalYears) {
+                message = `¡Felicidades! Alcanzaste tu meta de patrimonio en ${currentYear} años.`;
+            } else if (currentWealth <= 0 || (currentYear >= MAX_YEARS_SIMULATION && currentWealth < goalWealth)) {
+                message = `La simulación ha terminado (${currentYear} años), pero no alcanzaste tu meta de patrimonio. ¡Intenta ajustar tu estrategia!`;
+            } else {
+                message = `Terminaste la simulación después de ${currentYear} años.`;
+            }
+
+            if(summaryMessageElement) summaryMessageElement.textContent = message;
+            if(summaryYearsElement) summaryYearsElement.textContent = currentYear;
+            if(summaryWealthElement) summaryWealthElement.textContent = formatCurrency(currentWealth);
+            if(summaryGoalWealthElement) summaryGoalWealthElement.textContent = formatCurrency(goalWealth);
+        }
+        
+        function restartGameInternal() {
+            if(setupAreaElement) setupAreaElement.style.display = 'block';
+            if(gameplayAreaElement) gameplayAreaElement.style.display = 'none';
+            if(summaryAreaElement) summaryAreaElement.style.display = 'none';
+            if(currentStrategyDisplayElement) currentStrategyDisplayElement.textContent = "-";
+            document.querySelectorAll('.gestor-inversion-wrapper .strategy-buttons button').forEach(btn => btn.classList.remove('active'));
+            if(advanceYearButtonElement) advanceYearButtonElement.disabled = true;
+        }
+
+        // Exponer las funciones necesarias al objeto window
+        window.startGame = startGameInternal;
+        window.selectStrategy = selectStrategyInternal;
+        window.advanceYear = advanceYearInternal;
+        window.restartGame = restartGameInternal;
+
+        // El juego no se inicia automáticamente, sino a través del botón "Empezar Simulación".
+        // console.log("Gestor de Inversión (con IIFE) script listo.");
+
+    })(); // Fin del IIFE
+    </script>
+</body>
+</html>

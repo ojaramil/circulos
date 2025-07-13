@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detective de Riqueza 🕵️ (Actualizado)</title>
+    <style>
+        /* Estilos encapsulados para Detective de Riqueza con colores de la plataforma */
+        .detective-riqueza-wrapper {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px; 
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .detective-riqueza-wrapper .game-inner-wrapper { /* Renombrado de .game-wrapper */
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .detective-riqueza-wrapper h1 {
+            color: #005BAA; /* Azul de acento de la plataforma */
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .detective-riqueza-wrapper .instructions {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            color: #555; 
+        }
+
+        .detective-riqueza-wrapper .profiles-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .detective-riqueza-wrapper .profile-card {
+            background-color: #fff; 
+            border: 1px solid #d1d9de;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: transform 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detective-riqueza-wrapper .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .detective-riqueza-wrapper .profile-card h2 {
+            color: #59A9D9; /* Azul brillante de acento de la plataforma */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #59A9D9; 
+            padding-bottom: 8px;
+            font-size: 1.4em;
+        }
+
+        .detective-riqueza-wrapper .profile-card .section-title {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333; 
+        }
+
+        .detective-riqueza-wrapper .profile-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .detective-riqueza-wrapper .profile-card ul li {
+            background-color: #f8f9fa;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+            color: #495057;
+            border-left: 3px solid #59A9D9; /* Azul brillante de acento */
+        }
+
+        .detective-riqueza-wrapper .financial-details {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .detective-riqueza-wrapper .financial-details p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .detective-riqueza-wrapper .financial-details strong {
+            color: #28a745; /* Verde para ahorros/positivos */
+        }
+
+        .detective-riqueza-wrapper .financial-details .debt {
+            color: #dc3545; /* Rojo para deudas */
+        }
+
+        .detective-riqueza-wrapper .description-text {
+            font-style:italic;
+            font-size:0.85em;
+            margin-top:10px;
+            color: #555; 
+        }
+       
+        .detective-riqueza-wrapper .action-button {
+            background-color: #005BAA; /* Azul de acento de la plataforma */
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .detective-riqueza-wrapper .action-button:hover {
+            background-color: #004C8C; /* Azul más oscuro para hover */
+        }
+
+        .detective-riqueza-wrapper .action-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .detective-riqueza-wrapper .button-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .detective-riqueza-wrapper .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .detective-riqueza-wrapper .feedback-correct { 
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .detective-riqueza-wrapper .feedback-incorrect { 
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .detective-riqueza-wrapper .score {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #005BAA; /* Azul de acento de la plataforma */
+        }
+    </style>
+</head>
+<body>
+    <div class="detective-riqueza-wrapper">
+        <div class="game-inner-wrapper"> 
+            <h1>Detective de Riqueza 🕵️</h1>
+            <p class="instructions">Observa los "Bienes Visibles" de cada persona. ¿Quién crees que tiene un mayor PATRIMONIO NETO real?</p>
+
+            <div class="profiles-container">
+                <div class="profile-card" id="profileCardA">
+                    <h2 id="nameA"></h2>
+                    <p class="section-title">Bienes Visibles:</p>
+                    <ul id="visibleItemsA"></ul>
+                    <div class="financial-details" id="financialsA" style="display:none;">
+                        <p class="section-title">Detalles Financieros:</p>
+                        <p>Ingresos Anuales: <span id="incomeA"></span></p>
+                        <p>Ahorros/Inversiones: <strong id="savingsA"></strong></p>
+                        <p>Deudas: <span class="debt" id="debtA"></span></p>
+                        <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthA"></strong></p>
+                        <p class="description-text" id="descriptionA"></p>
+                    </div>
+                    <button class="action-button guess-button" id="guessAButton" onclick="handleGuess(0)">Elegir a <span id="guessNameA"></span></button>
+                </div>
+                <div class="profile-card" id="profileCardB">
+                    <h2 id="nameB"></h2>
+                    <p class="section-title">Bienes Visibles:</p>
+                    <ul id="visibleItemsB"></ul>
+                    <div class="financial-details" id="financialsB" style="display:none;">
+                        <p class="section-title">Detalles Financieros:</p>
+                        <p>Ingresos Anuales: <span id="incomeB"></span></p>
+                        <p>Ahorros/Inversiones: <strong id="savingsB"></strong></p>
+                        <p>Deudas: <span class="debt" id="debtB"></span></p>
+                        <p><strong>Patrimonio Neto Real:</strong> <strong id="netWorthB"></strong></p>
+                        <p class="description-text" id="descriptionB"></p>
+                    </div>
+                    <button class="action-button guess-button" id="guessBButton" onclick="handleGuess(1)">Elegir a <span id="guessNameB"></span></button>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button class="action-button" id="revealButton" onclick="revealDetails()">Revelar Detalles (sin adivinar)</button>
+                <button class="action-button" id="nextPairButton" onclick="loadNextPair()" style="display:none;">Siguiente Par</button>
+            </div>
+
+            <div class="feedback-area" id="feedbackArea" style="display:none;"></div>
+            <p class="score">Puntuación: <span id="scoreDisplay">0</span></p>
+        </div>
+    </div>
+
+    <script>
+    // Envolvemos todo el script en un IIFE
+    (function() {
+        const characters = [
+            { name: "Alex Afluente", visibleItems: ["Coche deportivo de lujo", "Reloj de marca exclusivo", "Viajes exóticos en Instagram", "Apartamento moderno en zona cara"], income: 80000, savings: 15000, debt: 75000, description: "Alex vive al día y usa mucho crédito para mantener su imagen de éxito, pero en realidad tiene más deudas que activos." },
+            { name: "Sara Sensata", visibleItems: ["Coche compacto usado", "Vacaciones locales ocasionales", "Ropa funcional y duradera", "Piso alquilado sencillo"], income: 60000, savings: 150000, debt: 5000, description: "Sara prioriza el ahorro y la inversión a largo plazo sobre los lujos inmediatos. Su riqueza no es obvia, pero es sólida." },
+            { name: "Carlos Carísimo", visibleItems: ["Trajes de diseñador", "Cenas en restaurantes de moda", "Membresía en club exclusivo", "Tecnología de última generación"], income: 120000, savings: 30000, debt: 90000, description: "Carlos gasta la mayor parte de sus altos ingresos en mantener un estilo de vida lujoso, acumulando deudas considerables." },
+            { name: "Laura Laboriosa", visibleItems: ["Bicicleta para transportarse", "Libros de la biblioteca", "Comida casera", "Ropa de segunda mano de calidad"], income: 45000, savings: 80000, debt: 2000, description: "Laura vive de forma austera pero intencionada, lo que le permite ahorrar una gran parte de sus ingresos y construir riqueza silenciosamente." },
+            { name: "Víctor Vistoso", visibleItems: ["Gran casa en las afueras (hipotecada)", "Barco recreativo (financiado)", "Fiestas frecuentes y ostentosas"], income: 90000, savings: 20000, debt: 350000, description: "Víctor proyecta una imagen de gran riqueza con bienes financiados, pero sus deudas superan con creces sus ahorros líquidos." },
+            { name: "Elena Estratega", visibleItems: ["Tablet para leer y aprender", "Curso online de inversión", "Plan de pensiones visible en sus metas", "Invierte en fondos indexados discretamente"], income: 70000, savings: 250000, debt: 10000, description: "Elena se enfoca en la educación financiera y la inversión disciplinada. Su riqueza crece constantemente aunque no la ostente." },
+            { name: "Miguel Minimalista", visibleItems: ["Mochila de buena calidad", "Apartamento pequeño y ordenado", "Pocas posesiones visibles", "Bicicleta como transporte principal"], income: 55000, savings: 120000, debt: 1000, description: "Miguel valora las experiencias sobre las posesiones. Sus bajos gastos le permiten ahorrar e invertir agresivamente, construyendo una riqueza sólida y no visible." },
+            { name: "Diana Dinámica (Influencer)", visibleItems: ["Ropa de diseñador (a menudo prestada o de canje)", "Fotos en destinos exóticos (colaboraciones)", "Último modelo de smartphone", "Siempre en eventos de moda"], income: 40000, savings: 5000, debt: 15000, description: "Diana proyecta una vida de lujo en redes, pero muchos de sus 'bienes' son temporales o financiados. Sus ingresos son variables y sus ahorros escasos." },
+            { name: "Roberto Retirado (Prudente)", visibleItems: ["Casa modesta pagada", "Coche antiguo bien cuidado", "Pasa tiempo en el jardín", "Ropa cómoda y sencilla"], income: 30000, savings: 350000, debt: 0, description: "Roberto vivió una vida de ahorro constante. Ahora disfruta de una jubilación tranquila y sin deudas, con un patrimonio considerable que no ostenta." },
+            { name: "Patricia Profesional (Presionada)", visibleItems: ["Coche de gama media-alta (leasing)", "Bolso de marca reconocido", "Vive en un barrio de moda (alquiler caro)", "Tecnología nueva para el trabajo"], income: 75000, savings: 25000, debt: 40000, description: "Patricia siente la presión de mantener una imagen profesional acorde a su entorno, lo que limita su capacidad de ahorro a pesar de un buen sueldo." },
+            { name: "Andrés Austero (Millonario Secreto)", visibleItems: ["Camioneta vieja", "Herramientas de trabajo manual", "Vive en una casa sencilla en las afueras", "No usa redes sociales"], income: 65000, savings: 1200000, debt: 5000, description: "Andrés heredó un negocio familiar que gestiona con prudencia y vive muy por debajo de sus posibilidades. Pocos conocen su verdadera fortuna." },
+            { name: "Beatriz \"House Poor\"", visibleItems: ["Casa impresionante y muy grande", "Muebles de diseño en las áreas visibles", "Coche familiar nuevo y espacioso"], income: 110000, savings: 10000, debt: 600000, description: "Beatriz y su pareja invirtieron todo en una casa muy por encima de sus posibilidades. Gran parte de sus ingresos se va en la hipoteca, dejándolos con poco ahorro líquido." },
+            { name: "Tomás Tecnológico (Emprendedor Inicial)", visibleItems: ["Oficina compartida (coworking)", "Portátil potente", "Mucha cafeína", "Ropa casual de startup"], income: 25000, savings: 3000, debt: 20000, description: "Tomás está invirtiendo todo su tiempo y dinero en su nueva empresa tecnológica. Vive al límite con la esperanza de un gran éxito futuro." },
+            { name: "Gabriela Gastrónoma (Chef Exitosa)", visibleItems: ["Restaurante propio concurrido", "Apariciones en medios locales", "Viaja para inspirarse culinariamente", "Viste con estilo pero sin ostentación"], income: 150000, savings: 400000, debt: 50000, description: "Gabriela ha construido un negocio rentable. Reinvertir y ahorrar son parte de su estrategia, viviendo bien pero enfocada en la solidez financiera." },
+            { name: "Fernando Funcionario (Estable)", visibleItems: ["Piso de tamaño medio en propiedad (casi pagado)", "Coche familiar fiable", "Vacaciones anuales modestas", "Aficiones sencillas"], income: 50000, savings: 180000, debt: 20000, description: "Fernando tiene un empleo estable y ha sido constante con sus ahorros y el pago de su hipoteca. Disfruta de una seguridad financiera sin grandes lujos." },
+            { name: "Olivia Ostentosa (Heredera Imprudente)", visibleItems: ["Múltiples coches deportivos", "Guardarropa lleno de alta costura", "Asidua a las fiestas más exclusivas", "Joyas llamativas"], income: 20000, savings: 50000, debt: 30000, description: "Olivia heredó una suma considerable, pero sus gastos extravagantes están mermando rápidamente su capital. Su estilo de vida supera con creces sus ingresos actuales." }
+        ];
+
+        let currentPair = [];
+        let score = 0;
+        let revealedThisTurn = false; 
+        let characterIndicesUsedInCurrentSession = new Set(); 
+
+        const nameADisplay = document.getElementById('nameA');
+        const visibleItemsADisplay = document.getElementById('visibleItemsA');
+        const financialsADisplay = document.getElementById('financialsA');
+        const incomeADisplay = document.getElementById('incomeA');
+        const savingsADisplay = document.getElementById('savingsA');
+        const debtADisplay = document.getElementById('debtA');
+        const netWorthADisplay = document.getElementById('netWorthA');
+        const descriptionADisplay = document.getElementById('descriptionA');
+        const guessNameADisplayA = document.querySelector('#guessAButton span');
+
+
+        const nameBDisplay = document.getElementById('nameB');
+        const visibleItemsBDisplay = document.getElementById('visibleItemsB');
+        const financialsBDisplay = document.getElementById('financialsB');
+        const incomeBDisplay = document.getElementById('incomeB');
+        const savingsBDisplay = document.getElementById('savingsB');
+        const debtBDisplay = document.getElementById('debtB');
+        const netWorthBDisplay = document.getElementById('netWorthB');
+        const descriptionBDisplay = document.getElementById('descriptionB');
+        const guessNameADisplayB = document.querySelector('#guessBButton span');
+
+
+        const guessAButton = document.getElementById('guessAButton');
+        const guessBButton = document.getElementById('guessBButton');
+        const revealButton = document.getElementById('revealButton');
+        const nextPairButton = document.getElementById('nextPairButton');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+        }
+
+        function calculateNetWorth(character) {
+            if (!character || typeof character.savings === 'undefined' || typeof character.debt === 'undefined') {
+                console.error("Personaje inválido para calcular patrimonio neto:", character);
+                return 0; 
+            }
+            return character.savings - character.debt;
+        }
+
+        function getRandomIndices(count, maxIndex) {
+            const indices = new Set();
+            while (indices.size < count) {
+                let randomIndex = Math.floor(Math.random() * maxIndex);
+                if (characterIndicesUsedInCurrentSession.has(randomIndex) && characterIndicesUsedInCurrentSession.size < maxIndex -1 ) { 
+                    continue; 
+                }
+                indices.add(randomIndex);
+            }
+            return Array.from(indices);
+        }
+
+        function showFinancialDetails() { // Se mantiene local
+            const [charA, charB] = currentPair;
+            const netWorthA = calculateNetWorth(charA);
+            const netWorthB = calculateNetWorth(charB);
+
+            incomeADisplay.textContent = formatCurrency(charA.income);
+            savingsADisplay.textContent = formatCurrency(charA.savings);
+            debtADisplay.textContent = formatCurrency(charA.debt);
+            netWorthADisplay.textContent = formatCurrency(netWorthA);
+            descriptionADisplay.textContent = charA.description;
+            financialsADisplay.style.display = 'block';
+
+            incomeBDisplay.textContent = formatCurrency(charB.income);
+            savingsBDisplay.textContent = formatCurrency(charB.savings);
+            debtBDisplay.textContent = formatCurrency(charB.debt);
+            netWorthBDisplay.textContent = formatCurrency(netWorthB);
+            descriptionBDisplay.textContent = charB.description;
+            financialsBDisplay.style.display = 'block';
+        }
+        
+        function revealDetailsInternal() { // Renombrada
+            if (revealedThisTurn) return;
+            revealedThisTurn = true;
+            showFinancialDetails();
+            
+            feedbackArea.textContent = "Detalles revelados. ¡Ahora haz clic en 'Siguiente Par' para continuar!";
+            feedbackArea.className = 'feedback-area'; 
+            feedbackArea.style.display = 'block';
+            
+            guessAButton.disabled = true;
+            guessBButton.disabled = true;
+            revealButton.style.display = 'none';
+            nextPairButton.style.display = 'inline-block';
+        }
+
+        function handleGuessInternal(guessedIndex) { // Renombrada
+            if (revealedThisTurn) return; 
+            revealedThisTurn = true;
+            
+            showFinancialDetails();
+
+            const [charA, charB] = currentPair;
+            const netWorthA = calculateNetWorth(charA);
+            const netWorthB = calculateNetWorth(charB);
+
+            const wealthierCharIndex = netWorthA > netWorthB ? 0 : (netWorthB > netWorthA ? 1 : -1); 
+            let guessedCorrectly = false;
+            
+            if (wealthierCharIndex === -1) { 
+                 feedbackArea.textContent = `¡Es un empate en patrimonio neto! Ambos tienen ${formatCurrency(netWorthA)}.`;
+                 feedbackArea.className = 'feedback-area'; 
+            } else {
+                guessedCorrectly = guessedIndex === wealthierCharIndex;
+                if (guessedCorrectly) {
+                    feedbackArea.textContent = `¡Correcto! ${currentPair[wealthierCharIndex].name} es realmente más rico/a.`;
+                    feedbackArea.className = 'detective-riqueza-wrapper feedback-area feedback-correct'; // Asegurar clase base del wrapper no se pierda
+                    score++;
+                } else {
+                    feedbackArea.textContent = `Incorrecto. ${currentPair[wealthierCharIndex].name} era más rico/a.`;
+                    feedbackArea.className = 'detective-riqueza-wrapper feedback-area feedback-incorrect'; // Asegurar clase base del wrapper no se pierda
+                }
+            }
+            feedbackArea.style.display = 'block';
+            scoreDisplay.textContent = score;
+
+            guessAButton.disabled = true;
+            guessBButton.disabled = true;
+            revealButton.style.display = 'none';
+            nextPairButton.style.display = 'inline-block';
+        }
+
+        function loadNextPairInternal() { // Renombrada
+            revealedThisTurn = false;
+            if (characterIndicesUsedInCurrentSession.size >= characters.length -1) {
+                characterIndicesUsedInCurrentSession.clear(); 
+            }
+
+            const [indexA, indexB] = getRandomIndices(2, characters.length);
+            
+            currentPair = [characters[indexA], characters[indexB]];
+            characterIndicesUsedInCurrentSession.add(indexA);
+            characterIndicesUsedInCurrentSession.add(indexB);
+
+            const [charA, charB] = currentPair;
+
+            nameADisplay.textContent = charA.name;
+            if(guessNameADisplayA) guessNameADisplayA.textContent = charA.name;
+            visibleItemsADisplay.innerHTML = charA.visibleItems.map(item => `<li>${item}</li>`).join('');
+            financialsADisplay.style.display = 'none';
+
+            nameBDisplay.textContent = charB.name;
+            if(guessNameADisplayB) guessNameADisplayB.textContent = charB.name;
+            visibleItemsBDisplay.innerHTML = charB.visibleItems.map(item => `<li>${item}</li>`).join('');
+            financialsBDisplay.style.display = 'none';
+
+            feedbackArea.style.display = 'none';
+            feedbackArea.className = 'feedback-area'; // Reset class
+            guessAButton.disabled = false;
+            guessBButton.disabled = false;
+            revealButton.style.display = 'inline-block'; 
+            nextPairButton.style.display = 'none';
+        }
+        
+        // Exponer las funciones necesarias al objeto window
+        window.handleGuess = handleGuessInternal;
+        window.revealDetails = revealDetailsInternal;
+        window.loadNextPair = loadNextPairInternal;
+
+        // Iniciar el juego
+        loadNextPairInternal(); // Usar la función interna renombrada
+        // console.log("Detective de Riqueza (con IIFE) script listo.");
+    })(); // Fin del IIFE
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadena de Innovaciones</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f3f0ff; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #6c5ce7; text-align: center; }
+    .puzzle { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0; }
+    .item, .slot { width: 120px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; user-select: none; }
+    .item { background: #a29bfe; color: #fff; border: 2px solid #6c5ce7; margin-bottom: 8px; }
+    .slot { background: #dfe6e9; color: #636e72; border: 2px dashed #6c5ce7; }
+    .slot.filled { background: #6c5ce7; color: #fff; border-style: solid; }
+    .result { text-align: center; font-size: 1.2rem; color: #6c5ce7; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cadena de Innovaciones</h1>
+    <p>Arrastra cada innovación a su lugar en la cadena histórica correcta:</p>
+    <div class="puzzle" id="slots"></div>
+    <div class="puzzle" id="items"></div>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    (function() {
+      const chain = [
+        { name: "Imprenta (1440)", key: "imprenta" },
+        { name: "Electricidad (siglo XIX)", key: "electricidad" },
+        { name: "Penicilina (1928)", key: "penicilina" },
+        { name: "Internet (1969)", key: "internet" },
+        { name: "Smartphone (2007)", key: "smartphone" }
+      ];
+      let items = [
+        { label: "Internet (1969)", key: "internet" },
+        { label: "Imprenta (1440)", key: "imprenta" },
+        { label: "Smartphone (2007)", key: "smartphone" },
+        { label: "Penicilina (1928)", key: "penicilina" },
+        { label: "Electricidad (siglo XIX)", key: "electricidad" }
+      ];
+      let filled = Array(chain.length).fill(null);
+      function renderPuzzle() {
+        document.getElementById('slots').innerHTML = chain.map((c, i) =>
+          `<div class="slot${filled[i] ? ' filled' : ''}" ondragover="event.preventDefault()" ondrop="drop(event,${i})" id="slot${i}">${filled[i] ? filled[i].label : 'Arrastra aquí'}</div>`
+        ).join('');
+        document.getElementById('items').innerHTML = items.map((item, i) =>
+          `<div class="item" draggable="true" ondragstart="drag(event,${i})" id="item${i}">${item.label}</div>`
+        ).join('');
+        if (filled.every(f => f)) {
+          let correct = filled.every((f, i) => f.key === chain[i].key);
+          document.getElementById('result').textContent = correct ? '¡Correcto! Has conectado la cadena de innovaciones.' : 'Algunas conexiones no son correctas. Intenta de nuevo.';
+        } else {
+          document.getElementById('result').textContent = '';
+        }
+      }
+      function drag(ev, idx) {
+        ev.dataTransfer.setData('itemIdx', idx);
+      }
+      function drop(ev, slotIdx) {
+        const itemIdx = ev.dataTransfer.getData('itemIdx');
+        if (filled[slotIdx]) return;
+        filled[slotIdx] = items[itemIdx];
+        items.splice(itemIdx, 1);
+        renderPuzzle();
+      }
+      window.drag = drag;
+      window.drop = drop;
+      renderPuzzle();
+    })();
+  </script>
+</body>
+</html> 

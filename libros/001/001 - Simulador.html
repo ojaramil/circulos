@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Interés Compuesto 💰</title>
+    <style>
+        /* Estilos encapsulados para el Simulador de Interés Compuesto */
+        .simulador-wrapper {
+            font-family: Arial, sans-serif;
+            padding: 20px; 
+            background-color: #F0F8FF; /* Fondo del lienzo de la plataforma */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%; 
+            box-sizing: border-box;
+            overflow-y: auto; 
+        }
+
+        .simulador-wrapper .container { 
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px; 
+        }
+
+        .simulador-wrapper h1 {
+            color: #005BAA; /* Azul de acento de la plataforma */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .simulador-wrapper .input-group {
+            margin-bottom: 15px;
+        }
+
+        .simulador-wrapper label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .simulador-wrapper input[type="number"],
+        .simulador-wrapper select {
+            width: 100%; 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; 
+        }
+
+        .simulador-wrapper button {
+            background-color: #005BAA; /* Azul de acento de la plataforma */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .simulador-wrapper button:hover {
+            background-color: #004C8C; /* Azul más oscuro para hover */
+        }
+
+        .simulador-wrapper .results {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e9f5ff; /* Un azul muy claro para resultados */
+            border: 1px solid #b8daff; /* Borde azul claro */
+            border-radius: 4px;
+        }
+
+        .simulador-wrapper .results h2 {
+            color: #005BAA; /* Azul de acento */
+            margin-top: 0;
+            border-bottom: 1px solid #adb5bd; /* Gris claro para separador */
+            padding-bottom: 5px;
+        }
+
+        .simulador-wrapper .results p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+
+        .simulador-wrapper .results span {
+            font-weight: bold;
+            color: #59A9D9; /* Azul brillante de plataforma para destacar */
+        }
+
+        .simulador-wrapper .year-breakdown {
+            margin-top: 15px;
+            max-height: 200px; 
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            font-size: 0.9em;
+            background-color: #fff; /* Fondo blanco para el desglose */
+        }
+        
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 3px;
+        }
+        .simulador-wrapper .year-breakdown::-webkit-scrollbar-track {
+            background-color: #f0f0f0;
+        }
+
+        .simulador-wrapper .year-breakdown div {
+            padding: 3px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .simulador-wrapper .year-breakdown div:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="simulador-wrapper">
+        <div class="container">
+            <h1>Simulador de Interés Compuesto 📈</h1>
+
+            <div class="input-group">
+                <label for="initialInvestment">Inversión Inicial (€):</label>
+                <input type="number" id="initialInvestment" value="1000" min="0">
+            </div>
+
+            <div class="input-group">
+                <label for="annualInterestRate">Tasa de Interés Anual (%):</label>
+                <input type="number" id="annualInterestRate" value="7" min="0" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label for="years">Número de Años:</label>
+                <input type="number" id="years" value="10" min="1">
+            </div>
+
+            <div class="input-group">
+                <label for="contributionAmount">Aporte Adicional (€):</label>
+                <input type="number" id="contributionAmount" value="100" min="0">
+            </div>
+
+            <div class="input-group">
+                <label for="contributionFrequency">Frecuencia del Aporte:</label>
+                <select id="contributionFrequency">
+                    <option value="monthly">Mensual</option>
+                    <option value="annually">Anual</option>
+                </select>
+            </div>
+
+            <button onclick="calculateCompoundInterest()">Simular ✨</button>
+
+            <div class="results" id="resultsArea" style="display:none;">
+                <h2>Resultados de la Simulación:</h2>
+                <p>Saldo Final: <span id="finalBalance"></span></p>
+                <p>Total de Aportes: <span id="totalContributions"></span></p>
+                <p>Total de Intereses Ganados: <span id="totalInterest"></span></p>
+                <div class="year-breakdown" id="yearBreakdown">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Envolvemos todo el script en un IIFE
+    (function() {
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+
+        function calculateCompoundInterest() {
+            // Obtener valores de los inputs
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            const annualInterestRate = parseFloat(document.getElementById('annualInterestRate').value) / 100 || 0;
+            const years = parseInt(document.getElementById('years').value) || 0;
+            const contributionAmount = parseFloat(document.getElementById('contributionAmount').value) || 0;
+            const contributionFrequency = document.getElementById('contributionFrequency').value;
+
+            if (years <= 0) {
+                alert("El número de años debe ser mayor que cero.");
+                return;
+            }
+
+            let currentBalance = initialInvestment;
+            let totalContributionsMade = initialInvestment; 
+            let yearBreakdownHTML = "<h3>Desglose Anual:</h3>";
+
+            for (let i = 1; i <= years; i++) {
+                let yearlyContribution = 0;
+                if (contributionAmount > 0) {
+                    if (contributionFrequency === 'monthly') {
+                        for (let month = 0; month < 12; month++) {
+                            currentBalance += contributionAmount;
+                        }
+                        yearlyContribution = contributionAmount * 12;
+                    } else { // Annually
+                        currentBalance += contributionAmount;
+                        yearlyContribution = contributionAmount;
+                    }
+                    // totalContributionsMade se calculará de forma más precisa al final
+                }
+                
+                const interestEarnedThisYear = currentBalance * annualInterestRate;
+                currentBalance += interestEarnedThisYear;
+
+                yearBreakdownHTML += `<div>Año ${i}: Saldo ${formatCurrency(currentBalance)} (Interés ganado: ${formatCurrency(interestEarnedThisYear)})</div>`;
+            }
+            
+            // Cálculo preciso del total de aportes
+            let periodicContributionsTotal = 0;
+            if (contributionAmount > 0) {
+                if (contributionFrequency === 'monthly') {
+                    periodicContributionsTotal = contributionAmount * 12 * years;
+                } else { // Annually
+                    periodicContributionsTotal = contributionAmount * years;
+                }
+            }
+            totalContributionsMade = initialInvestment + periodicContributionsTotal;
+
+            const totalInterestEarned = currentBalance - totalContributionsMade;
+
+            document.getElementById('finalBalance').textContent = formatCurrency(currentBalance);
+            document.getElementById('totalContributions').textContent = formatCurrency(totalContributionsMade);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterestEarned);
+            document.getElementById('yearBreakdown').innerHTML = yearBreakdownHTML;
+            document.getElementById('resultsArea').style.display = 'block';
+        }
+
+        // Exponer la función calculateCompoundInterest al ámbito global para que el onclick HTML la encuentre
+        window.calculateCompoundInterest = calculateCompoundInterest;
+
+        // console.log("Simulador de Interés Compuesto (con IIFE) script listo.");
+
+    })(); // Fin del IIFE
+    </script>
+</body>
+</html>

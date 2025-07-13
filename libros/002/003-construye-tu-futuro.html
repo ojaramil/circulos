@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construye tu Futuro</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f7fff7; margin: 0; padding: 0; }
+    .container { max-width: 520px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #1b9aaa; text-align: center; }
+    .sim-step { margin: 24px 0; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    button { background: #1b9aaa; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #16697a; }
+    .result { text-align: center; font-size: 1.2rem; color: #1b9aaa; margin-top: 24px; }
+    .summary { background: #e0f7fa; border-radius: 8px; padding: 16px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Construye tu Futuro</h1>
+    <div class="sim-step" id="sim-step"></div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+    <div class="summary" id="summary"></div>
+  </div>
+  <script>
+    (function() {
+      const steps = [
+        { q: "¿Qué eliges hacer primero?", options: [ { text: "Invertir en educación", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "Ahorrar dinero", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Cuidar tu salud", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Recibes un bono inesperado. ¿Qué haces?", options: [ { text: "Invertir en un fondo indexado", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Tomar un curso online", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "Viajar y descansar", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Te ofrecen un trabajo en otra ciudad. ¿Qué decides?", options: [ { text: "Aceptar y mudarte", impact: { educ: 1, inv: 1, salud: 1 } }, { text: "Quedarte y buscar oportunidades locales", impact: { educ: 1, inv: 1, salud: 0 } }, { text: "Rechazar y priorizar tu bienestar actual", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Te enfrentas a un gasto inesperado. ¿Qué haces?", options: [ { text: "Uso mi fondo de emergencia", impact: { educ: 0, inv: 1, salud: 1 } }, { text: "Pido un préstamo", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Reduzco otros gastos", impact: { educ: 1, inv: 1, salud: 0 } } ] },
+        { q: "Tienes tiempo libre. ¿Cómo lo aprovechas?", options: [ { text: "Aprendo algo nuevo", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "Descanso y cuido mi salud", impact: { educ: 0, inv: 0, salud: 2 } }, { text: "Busco oportunidades de inversión", impact: { educ: 0, inv: 2, salud: 0 } } ] },
+        { q: "Recibes una crítica constructiva. ¿Qué haces?", options: [ { text: "La tomo como aprendizaje", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "La ignoro", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Me desanimo", impact: { educ: 0, inv: 0, salud: 0 } } ] },
+        { q: "Te ofrecen un curso gratuito. ¿Qué decides?", options: [ { text: "Lo aprovecho", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "No tengo tiempo", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Prefiero invertir el tiempo en otra cosa", impact: { educ: 0, inv: 1, salud: 0 } } ] },
+        { q: "Debes elegir entre dos trabajos. ¿Qué priorizas?", options: [ { text: "El que ofrece más aprendizaje", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "El que paga más", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "El que permite mejor balance vida-trabajo", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Te enfrentas a un problema de salud. ¿Qué haces?", options: [ { text: "Busco atención médica", impact: { educ: 0, inv: 0, salud: 2 } }, { text: "Ignoro el problema", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Investigo sobre el tema", impact: { educ: 1, inv: 0, salud: 1 } } ] },
+        { q: "Recibes una herencia. ¿Qué haces?", options: [ { text: "Invierto una parte", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Pago deudas", impact: { educ: 0, inv: 1, salud: 1 } }, { text: "Me doy un gusto", impact: { educ: 0, inv: 0, salud: 1 } } ] },
+        { q: "Te ofrecen mentoría. ¿Qué haces?", options: [ { text: "La acepto", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "No tengo tiempo", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Prefiero aprender solo", impact: { educ: 1, inv: 0, salud: 0 } } ] },
+        { q: "Debes mudarte a una ciudad más cara. ¿Qué priorizas?", options: [ { text: "Buscar ingresos extra", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Reducir gastos", impact: { educ: 0, inv: 1, salud: 1 } }, { text: "Mejorar mi salud mental", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Te enfrentas a un despido. ¿Qué haces?", options: [ { text: "Actualizo mi formación", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "Busco nuevas inversiones", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Cuido mi bienestar emocional", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Recibes una oferta de voluntariado. ¿Qué haces?", options: [ { text: "La acepto para aprender y ayudar", impact: { educ: 2, inv: 0, salud: 1 } }, { text: "No tengo tiempo", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Prefiero invertir ese tiempo", impact: { educ: 0, inv: 2, salud: 0 } } ] },
+        { q: "Debes elegir entre viajar o estudiar. ¿Qué eliges?", options: [ { text: "Estudiar", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "Viajar", impact: { educ: 0, inv: 0, salud: 2 } }, { text: "Invertir el dinero", impact: { educ: 0, inv: 2, salud: 0 } } ] },
+        { q: "Te enfrentas a una crisis económica. ¿Qué haces?", options: [ { text: "Busco nuevas fuentes de ingreso", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "Reduzco gastos", impact: { educ: 0, inv: 1, salud: 1 } }, { text: "Cuido mi salud mental", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Recibes una beca. ¿Qué haces?", options: [ { text: "La aprovecho para formarme", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "La ahorro", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "La uso para descansar", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Te ofrecen un ascenso. ¿Qué priorizas?", options: [ { text: "El aprendizaje y el reto", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "El aumento de sueldo", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "El balance vida-trabajo", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Debes elegir entre tres cursos. ¿Cuál tomas?", options: [ { text: "El que más me interesa", impact: { educ: 2, inv: 0, salud: 0 } }, { text: "El que es más rentable", impact: { educ: 0, inv: 2, salud: 0 } }, { text: "El que mejora mi bienestar", impact: { educ: 0, inv: 0, salud: 2 } } ] },
+        { q: "Finalizas el ciclo de decisiones. ¿Qué haces?", options: [ { text: "Reflexiono y comparto lo aprendido", impact: { educ: 1, inv: 1, salud: 1 } }, { text: "No hago nada", impact: { educ: 0, inv: 0, salud: 0 } }, { text: "Busco un nuevo reto", impact: { educ: 1, inv: 1, salud: 1 } } ] }
+      ];
+      let current = 0;
+      let stats = { educ: 0, inv: 0, salud: 0 };
+      function renderStep() {
+        if (current < steps.length) {
+          document.getElementById('sim-step').textContent = steps[current].q;
+          document.getElementById('options').innerHTML = steps[current].options.map((opt, i) => `<button onclick=\"choose(${i})\">${opt.text}</button>`).join('');
+          document.getElementById('result').textContent = '';
+          document.getElementById('summary').textContent = '';
+        } else {
+          document.getElementById('sim-step').textContent = '';
+          document.getElementById('options').innerHTML = '';
+          document.getElementById('result').textContent = '¡Simulación completada!';
+          let msg = 'Resumen de tu futuro:\n';
+          msg += `Educación: ${stats.educ}\n`;
+          msg += `Inversión: ${stats.inv}\n`;
+          msg += `Salud: ${stats.salud}`;
+          let consejo = '';
+          if (stats.educ >= 4) consejo += '¡Gran inversión en educación!\n';
+          if (stats.inv >= 4) consejo += '¡Tus inversiones crecerán!\n';
+          if (stats.salud >= 4) consejo += '¡Excelente cuidado de tu salud!\n';
+          if (!consejo) consejo = '¡Buen equilibrio!';
+          document.getElementById('summary').textContent = msg + '\n' + consejo;
+        }
+      }
+      function choose(idx) {
+        const impact = steps[current].options[idx].impact;
+        stats.educ += impact.educ;
+        stats.inv += impact.inv;
+        stats.salud += impact.salud;
+        current++;
+        renderStep();
+      }
+      window.choose = choose;
+      renderStep();
+    })();
+  </script>
+</body>
+</html> 

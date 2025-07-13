@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de Progreso Optimista</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #2e8b57; text-align: center; }
+    .map {
+      display: flex; justify-content: space-between; align-items: center; margin: 32px 0;
+    }
+    .step {
+      width: 40px; height: 40px; border-radius: 50%; background: #b0e0e6; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #2e8b57; border: 2px solid #2e8b57;
+      transition: background 0.3s, color 0.3s;
+    }
+    .step.active { background: #2e8b57; color: #fff; }
+    .decision { margin: 24px 0; }
+    button { background: #2e8b57; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; margin: 8px 0; transition: background 0.2s; }
+    button:hover { background: #246b45; }
+    .result { text-align: center; font-size: 1.2rem; color: #2e8b57; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mapa de Progreso Optimista</h1>
+    <div class="map" id="map">
+      <div class="step" id="step0">1</div>
+      <div class="step" id="step1">2</div>
+      <div class="step" id="step2">3</div>
+      <div class="step" id="step3">4</div>
+      <div class="step" id="step4">5</div>
+      <div class="step" id="step5">6</div>
+      <div class="step" id="step6">7</div>
+      <div class="step" id="step7">8</div>
+      <div class="step" id="step8">9</div>
+      <div class="step" id="step9">10</div>
+      <div class="step" id="step10">11</div>
+      <div class="step" id="step11">12</div>
+      <div class="step" id="step12">13</div>
+      <div class="step" id="step13">14</div>
+      <div class="step" id="step14">15</div>
+      <div class="step" id="step15">16</div>
+      <div class="step" id="step16">17</div>
+      <div class="step" id="step17">18</div>
+      <div class="step" id="step18">19</div>
+      <div class="step" id="step19">20</div>
+    </div>
+    <div class="decision" id="decision"></div>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    (function() {
+      const steps = [
+        { question: "Te enfrentas a un reto laboral. ¿Qué haces?", options: [ { text: "Busco oportunidades de aprendizaje", next: 1 }, { text: "Me rindo fácilmente", next: 0 } ] },
+        { question: "Recibes una crítica constructiva. ¿Cómo reaccionas?", options: [ { text: "La tomo como una oportunidad para mejorar", next: 2 }, { text: "Me desanimo y no cambio nada", next: 1 } ] },
+        { question: "Tienes la opción de invertir en tu educación. ¿Qué haces?", options: [ { text: "Invierto y aprendo algo nuevo", next: 3 }, { text: "No hago nada, es muy difícil", next: 2 } ] },
+        { question: "Un proyecto falla. ¿Cómo lo ves?", options: [ { text: "Analizo y busco cómo mejorar para la próxima", next: 4 }, { text: "Me frustro y abandono", next: 3 } ] },
+        { question: "Te ofrecen colaborar en una innovación. ¿Qué decides?", options: [ { text: "Acepto y aporto mis ideas", next: 5 }, { text: "Prefiero no arriesgarme", next: 4 } ] },
+        { question: "Te asignan un nuevo equipo. ¿Cómo actúas?", options: [ { text: "Promuevo la cooperación", next: 6 }, { text: "Trabajo solo", next: 5 } ] },
+        { question: "Debes aprender una nueva tecnología. ¿Qué haces?", options: [ { text: "Investigo y practico", next: 7 }, { text: "Evito el cambio", next: 6 } ] },
+        { question: "Recibes un reconocimiento. ¿Cómo lo tomas?", options: [ { text: "Agradezco y comparto el mérito", next: 8 }, { text: "Me vuelvo arrogante", next: 7 } ] },
+        { question: "Te enfrentas a una crítica pública. ¿Qué haces?", options: [ { text: "Aprendo y mejoro", next: 9 }, { text: "Me aíslo", next: 8 } ] },
+        { question: "Debes tomar una decisión financiera. ¿Qué priorizas?", options: [ { text: "El ahorro y la inversión", next: 10 }, { text: "El gasto inmediato", next: 9 } ] },
+        { question: "Un compañero necesita ayuda. ¿Qué haces?", options: [ { text: "Colaboro y apoyo", next: 11 }, { text: "Ignoro la situación", next: 10 } ] },
+        { question: "Te enfrentas a un cambio inesperado. ¿Cómo reaccionas?", options: [ { text: "Me adapto y busco oportunidades", next: 12 }, { text: "Resisto el cambio", next: 11 } ] },
+        { question: "Debes liderar un proyecto. ¿Qué estilo eliges?", options: [ { text: "Liderazgo colaborativo", next: 13 }, { text: "Imposición de ideas", next: 12 } ] },
+        { question: "Recibes una oferta de capacitación. ¿Qué haces?", options: [ { text: "La aprovecho", next: 14 }, { text: "La rechazo por comodidad", next: 13 } ] },
+        { question: "Te enfrentas a un error propio. ¿Cómo actúas?", options: [ { text: "Reconozco y corrijo", next: 15 }, { text: "Culpo a otros", next: 14 } ] },
+        { question: "Debes elegir entre dos caminos profesionales. ¿Qué priorizas?", options: [ { text: "El aprendizaje continuo", next: 16 }, { text: "La zona de confort", next: 15 } ] },
+        { question: "Un colega te propone un reto. ¿Qué haces?", options: [ { text: "Acepto y colaboro", next: 17 }, { text: "Evito el reto", next: 16 } ] },
+        { question: "Debes presentar un proyecto. ¿Cómo te preparas?", options: [ { text: "Investigo y practico", next: 18 }, { text: "Improviso sin preparación", next: 17 } ] },
+        { question: "Te enfrentas a una situación de incertidumbre. ¿Qué haces?", options: [ { text: "Analizo y actúo con cautela", next: 19 }, { text: "Actúo impulsivamente", next: 18 } ] },
+        { question: "Finalizas el ciclo de aprendizaje. ¿Qué haces?", options: [ { text: "Reflexiono y comparto lo aprendido", next: 20 }, { text: "Olvido el proceso", next: 19 } ] }
+      ];
+      let currentStep = 0;
+      function renderStep() {
+        document.querySelectorAll('.step').forEach((el, idx) => {
+          el.classList.toggle('active', idx === currentStep);
+        });
+        if (currentStep < steps.length) {
+          const s = steps[currentStep];
+          document.getElementById('decision').innerHTML = `
+            <strong>${s.question}</strong><br>
+            ${s.options.map((opt, i) => `<button onclick=\"choose(${i})\">${opt.text}</button>`).join('<br>')}
+          `;
+          document.getElementById('result').textContent = '';
+        } else {
+          document.getElementById('decision').innerHTML = '';
+          document.getElementById('result').textContent = '¡Felicidades! Has recorrido el camino del optimismo racional.';
+        }
+      }
+      function choose(optionIdx) {
+        const next = steps[currentStep].options[optionIdx].next;
+        if (next > currentStep) currentStep = next;
+        renderStep();
+      }
+      window.choose = choose;
+      renderStep();
+    })();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso: Optimismo Racional</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #fffbe7; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #e17055; text-align: center; }
+    .statement { font-size: 1.1rem; margin: 24px 0 12px 0; }
+    .options { display: flex; gap: 16px; justify-content: center; }
+    button { background: #e17055; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #b23c17; }
+    .result { text-align: center; font-size: 1.2rem; color: #e17055; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Verdadero o Falso: Optimismo Racional</h1>
+    <div class="statement" id="statement"></div>
+    <div class="options">
+      <button id="btn-verdadero">Verdadero</button>
+      <button id="btn-falso">Falso</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    (function() {
+      const facts = [
+        { s: "La pobreza extrema mundial ha disminuido en los últimos 30 años.", answer: true, exp: "¡Correcto! La pobreza extrema ha bajado de más del 30% a menos del 10%." },
+        { s: "El optimismo racional ignora los problemas del mundo.", answer: false, exp: "Incorrecto. Reconoce los problemas, pero confía en la capacidad de resolverlos." },
+        { s: "La esperanza de vida global ha aumentado en el último siglo.", answer: true, exp: "¡Correcto! La esperanza de vida ha crecido gracias a avances médicos y sociales." },
+        { s: "La innovación tecnológica solo trae problemas.", answer: false, exp: "Incorrecto. La innovación ha mejorado la calidad de vida en muchos aspectos." },
+        { s: "El libro defiende que el progreso es posible y medible.", answer: true, exp: "¡Correcto! El progreso humano puede demostrarse con datos." },
+        { s: "La cooperación es clave para el avance social.", answer: true, exp: "¡Correcto! La colaboración impulsa el progreso colectivo." },
+        { s: "El pesimismo ayuda a encontrar soluciones innovadoras.", answer: false, exp: "El optimismo racional fomenta la búsqueda de soluciones." },
+        { s: "La educación no influye en el desarrollo de una sociedad.", answer: false, exp: "La educación es fundamental para el progreso y la innovación." },
+        { s: "La resiliencia permite superar adversidades y avanzar.", answer: true, exp: "¡Correcto! La resiliencia es clave para el progreso sostenido." },
+        { s: "El intercambio de ideas frena la innovación.", answer: false, exp: "El intercambio de ideas acelera la innovación y el progreso." },
+        { s: "La tecnología ha mejorado la esperanza de vida.", answer: true, exp: "¡Correcto! Los avances médicos y tecnológicos han aumentado la longevidad." },
+        { s: "El capital social no tiene impacto en la prosperidad.", answer: false, exp: "El capital social facilita la cooperación y el desarrollo." },
+        { s: "La especialización aumenta la eficiencia en la sociedad.", answer: true, exp: "¡Correcto! La especialización permite mayor productividad y progreso." },
+        { s: "La globalización ha limitado el acceso al conocimiento.", answer: false, exp: "La globalización ha expandido el acceso a información y tecnología." },
+        { s: "La creatividad es irrelevante para el avance humano.", answer: false, exp: "La creatividad es esencial para encontrar nuevas soluciones." },
+        { s: "El optimismo racional se basa en datos y evidencia.", answer: true, exp: "¡Correcto! El optimismo racional se fundamenta en hechos comprobables." },
+        { s: "El progreso solo beneficia a unos pocos.", answer: false, exp: "El progreso ha mejorado la vida de millones de personas en el mundo." },
+        { s: "La actitud ante el cambio influye en el éxito personal.", answer: true, exp: "¡Correcto! Una actitud positiva facilita la adaptación y el crecimiento." },
+        { s: "La prosperidad es solo material.", answer: false, exp: "La prosperidad incluye bienestar social, salud y calidad de vida." },
+        { s: "El trabajo en equipo potencia la innovación.", answer: true, exp: "¡Correcto! El trabajo colaborativo impulsa el desarrollo de nuevas ideas." }
+      ];
+      let idx = 0, score = 0;
+      function render() {
+        if (idx < facts.length) {
+          document.getElementById('statement').textContent = facts[idx].s;
+          document.getElementById('result').textContent = '';
+        } else {
+          document.getElementById('statement').textContent = '';
+          document.getElementById('result').textContent = `¡Puntaje final: ${score} de ${facts.length}!`;
+        }
+      }
+      function check(val) {
+        if (idx < facts.length) {
+          if (val === facts[idx].answer) {
+            score++;
+            document.getElementById('result').textContent = facts[idx].exp;
+          } else {
+            document.getElementById('result').textContent = 'Incorrecto. ' + facts[idx].exp;
+          }
+          setTimeout(() => { idx++; render(); }, 1800);
+        }
+      }
+      document.getElementById('btn-verdadero').onclick = function() { check(true); };
+      document.getElementById('btn-falso').onclick = function() { check(false); };
+      render();
+    })();
+  </script>
+</body>
+</html> 

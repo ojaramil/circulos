@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Empieza con tu Porqué! - Curso Juvenil</title>
+    <link rel="stylesheet" href="nuevo-style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-container"><span class="logo">Y</span></div>
+            <div class="header-title">
+                <span class="module-name">005N - Liderazgo y Propósito Juvenil</span>
+                <span class="content-title">¡Empieza con tu Porqué!</span>
+            </div>
+        </header>
+        <main class="main-layout">
+            <nav class="sidebar left">
+                <h2>Lecciones</h2>
+                <ul>
+                    <li><a href="lecciones/01_introduccion.html"><span class="icon-placeholder">🔑</span> Introducción</a></li>
+                    <li><a href="lecciones/02_mundo_sin_porque.html"><span class="icon-placeholder">🌍</span> Un mundo sin porqué</a></li>
+                    <li><a href="lecciones/03_circulo_dorado.html"><span class="icon-placeholder">🟡</span> El círculo dorado</a></li>
+                    <li><a href="lecciones/04_liderazgo_confianza.html"><span class="icon-placeholder">🤝</span> Liderazgo y confianza</a></li>
+                    <li><a href="lecciones/05_aunar_creyentes.html"><span class="icon-placeholder">💬</span> Aunar creyentes</a></li>
+                    <li><a href="lecciones/06_reto_exito.html"><span class="icon-placeholder">🚀</span> El reto del éxito</a></li>
+                    <li><a href="lecciones/07_descubrir_porque.html"><span class="icon-placeholder">🔍</span> Descubrir tu porqué</a></li>
+                </ul>
+            </nav>
+            <section class="content-area">
+                <div id="welcome-content">
+                    <h1 style="color:#bfa14a;">¡Bienvenido/a al curso juvenil de Liderazgo y Propósito!</h1>
+                    <p>Descubre cómo encontrar tu propósito, inspirar a otros y convertirte en un líder positivo en tu entorno. Aprende con ejemplos, juegos y retos pensados para ti.</p>
+                    <div style="margin:2em 0;">
+                        <a href="#" class="btn" onclick="loadContent('lecciones/01_introduccion.html')">Comenzar Lecciones</a>
+                        <a href="#" class="btn" style="margin-left:1em;" onclick="loadContent('juegos/01_reflexion_porque.html')">Jugar y Practicar</a>
+                    </div>
+                    <div style="margin-top:2em;">
+                        <h3>Recursos útiles</h3>
+                        <ul>
+                            <li><a href="#" onclick="loadContent('lecciones/glosario.html')">Glosario</a></li>
+                            <li><a href="#" onclick="loadContent('lecciones/enlaces_interes.html')">Enlaces de interés</a></li>
+                            <li><a href="#" onclick="loadContent('recursos.html')">Recursos recomendados</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <iframe id="content-frame" style="width:100%;height:600px;border:none;display:none;border-radius:12px;box-shadow:0 2px 12px rgba(30,34,51,0.08);margin-top:1em;"></iframe>
+            </section>
+            <nav class="sidebar right">
+                <h2>Juegos</h2>
+                <ul>
+                    <li><a href="juegos/01_reflexion_porque.html"><span class="icon-placeholder">💭</span> Reflexión: ¿Por qué?</a></li>
+                    <li><a href="juegos/02_casos_liderazgo.html"><span class="icon-placeholder">🦸‍♂️</span> Casos de liderazgo</a></li>
+                    <li><a href="juegos/03_dinamica_equipo.html"><span class="icon-placeholder">🤗</span> Dinámica de equipo</a></li>
+                    <li><a href="juegos/04_test_lider_jefe.html"><span class="icon-placeholder">🧑‍⚖️</span> ¿Líder o jefe?</a></li>
+                    <li><a href="juegos/05_simulacion_decisiones.html"><span class="icon-placeholder">🎮</span> Simulación de decisiones</a></li>
+                </ul>
+            </nav>
+        </main>
+        <footer>
+            <p>© 2024 Curso 005N Juvenil</p>
+        </footer>
+    </div>
+    <script>
+    function loadContent(url) {
+        var iframe = document.getElementById('content-frame');
+        var welcome = document.getElementById('welcome-content');
+        iframe.src = url;
+        iframe.style.display = 'block';
+        welcome.style.display = 'none';
+    }
+    // Enlaces laterales
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.sidebar a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                var href = this.getAttribute('href');
+                if (href && !href.startsWith('http')) {
+                    loadContent(href);
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html> 

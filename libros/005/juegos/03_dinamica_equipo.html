@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 3 - Dinámica de grupo: El porqué de nuestro equipo</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-container"><span class="logo">L</span></div>
+            <div class="header-title">
+                <span class="module-name">Curso 005</span>
+                <span class="content-title">Actividad 3: Dinámica de grupo</span>
+            </div>
+        </header>
+        <main class="content-area">
+            <section>
+                <h2>El porqué de nuestro equipo <span class="icon-placeholder">🤝</span></h2>
+            </section>
+            <section>
+                <h3>Dinámica interactiva <span class="icon-placeholder">🕹️</span></h3>
+                <div class="highlight-section">
+                  <form id="teamForm" onsubmit="return false;">
+                    <label for="motivation">¿Qué motiva a cada miembro a formar parte del equipo?</label><br>
+                    <textarea id="motivation" rows="2" style="width:100%;margin-bottom:0.7em;" placeholder="Ej: Compartir conocimientos, lograr un objetivo común..."></textarea><br>
+                    <label for="values">Valores y creencias comunes:</label><br>
+                    <textarea id="values" rows="2" style="width:100%;margin-bottom:0.7em;" placeholder="Ej: Confianza, respeto, innovación..."></textarea><br>
+                    <label for="phrase">Frase resumen del "porqué" del equipo:</label><br>
+                    <input id="phrase" type="text" style="width:100%;margin-bottom:0.7em;" placeholder="Ej: Juntos creamos impacto positivo"/><br>
+                    <button class="btn" onclick="showSummary()">Ver Resumen</button>
+                    <button class="btn" style="margin-left:1em;" onclick="saveSummary()">Guardar en mi equipo</button>
+                  </form>
+                </div>
+            </section>
+            <section id="summarySection" style="display:none; margin-top:1.5em;">
+                <h3>Resumen del equipo <span class="icon-placeholder">📋</span></h3>
+                <div class="highlight-section" id="summaryContent"></div>
+            </section>
+        </main>
+        <footer>
+            <p>© 2024 Curso 005</p>
+        </footer>
+    </div>
+    <script>
+      function showSummary() {
+        const motivation = document.getElementById('motivation').value.trim();
+        const values = document.getElementById('values').value.trim();
+        const phrase = document.getElementById('phrase').value.trim();
+        let html = '';
+        if (motivation) html += `<b>Motivación del equipo:</b> <span style='color:#1a2233'>${motivation}</span><br>`;
+        if (values) html += `<b>Valores y creencias:</b> <span style='color:#1a2233'>${values}</span><br>`;
+        if (phrase) html += `<b>Frase resumen:</b> <span style='color:#bfa14a;font-weight:600;'>${phrase}</span>`;
+        if (!html) html = '<em>Por favor, completa los campos para ver el resumen.</em>';
+        document.getElementById('summaryContent').innerHTML = html;
+        document.getElementById('summarySection').style.display = 'block';
+      }
+      function saveSummary() {
+        const motivation = document.getElementById('motivation').value.trim();
+        const values = document.getElementById('values').value.trim();
+        const phrase = document.getElementById('phrase').value.trim();
+        if (!motivation && !values && !phrase) {
+          alert('Completa al menos un campo para guardar el resumen.');
+          return;
+        }
+        const resumen = {motivation, values, phrase};
+        localStorage.setItem('equipoResumen', JSON.stringify(resumen));
+        alert('¡Resumen guardado localmente! Puedes recuperarlo desde este navegador.');
+      }
+    </script>
+</body>
+</html> 

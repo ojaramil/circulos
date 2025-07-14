@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego 4 - ¿Eres líder o jefe?</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-container"><span class="logo">Y</span></div>
+            <div class="header-title">
+                <span class="module-name">005N - Juego 4</span>
+                <span class="content-title">¿Eres líder o jefe?</span>
+            </div>
+        </header>
+        <main class="content-area">
+            <h2>¿Cómo eres en tu grupo?</h2>
+            <p>Responde estas preguntas y descubre si eres más líder o jefe. ¡No hay respuestas malas, solo diferentes formas de ser!</p>
+            <form id="testForm" onsubmit="return false;">
+                <div class="highlight-section">
+                    <b>1. ¿Qué haces cuando hay un problema en el grupo?</b><br>
+                    <input type="radio" name="q1" value="lider"> Busco que todos participen en la solución.<br>
+                    <input type="radio" name="q1" value="jefe"> Doy órdenes para que se resuelva rápido.<br>
+                </div>
+                <div class="highlight-section">
+                    <b>2. ¿Cómo motivas a tus amigos?</b><br>
+                    <input type="radio" name="q2" value="lider"> Los animo y escucho sus ideas.<br>
+                    <input type="radio" name="q2" value="jefe"> Les digo lo que tienen que hacer.<br>
+                </div>
+                <div class="highlight-section">
+                    <b>3. ¿Qué es más importante para ti?</b><br>
+                    <input type="radio" name="q3" value="lider"> Que todos aprendan y se diviertan.<br>
+                    <input type="radio" name="q3" value="jefe"> Que se cumpla la tarea rápido.<br>
+                </div>
+                <button class="btn" onclick="mostrarResultado()">Ver resultado</button>
+            </form>
+            <div id="resultadoTest" style="display:none; margin-top:2em;" class="highlight-section"></div>
+        </main>
+        <footer>
+            <p>© 2024 Curso 005N Juvenil</p>
+        </footer>
+    </div>
+    <script>
+      function mostrarResultado() {
+        let lider = 0, jefe = 0;
+        for (let i = 1; i <= 3; i++) {
+          const val = document.querySelector('input[name="q'+i+'"]:checked');
+          if (val) {
+            if (val.value === 'lider') lider++;
+            else jefe++;
+          }
+        }
+        let resultado = '';
+        if (lider > jefe) resultado = '¡Tienes perfil de líder! Te gusta escuchar y motivar a los demás.';
+        else if (jefe > lider) resultado = 'Tienes perfil de jefe. Recuerda que liderar también es escuchar y animar.';
+        else resultado = '¡Eres un poco de ambos! Puedes aprender de cada estilo.';
+        document.getElementById('resultadoTest').innerHTML = resultado;
+        document.getElementById('resultadoTest').style.display = 'block';
+      }
+    </script>
+</body>
+</html> 

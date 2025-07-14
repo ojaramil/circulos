@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego 1 - Reflexiona sobre tu porqué</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-container"><span class="logo">Y</span></div>
+            <div class="header-title">
+                <span class="module-name">005N - Juego 1</span>
+                <span class="content-title">Reflexiona sobre tu porqué</span>
+            </div>
+        </header>
+        <main class="content-area">
+            <h2>¿Cuál es tu porqué?</h2>
+            <p>Completa las frases y descubre lo que te motiva de verdad. ¡Puedes compartir tu respuesta con tus amigos o guardarla para ti!</p>
+            <form id="whyForm" onsubmit="return false;" style="margin-top:1.5em;">
+                <label>Me gusta mucho...</label><br>
+                <input type="text" id="gusta" style="width:100%;margin-bottom:1em;" placeholder="Ej: Jugar fútbol, dibujar, ayudar a otros..."><br>
+                <label>Porque...</label><br>
+                <input type="text" id="porque" style="width:100%;margin-bottom:1em;" placeholder="Ej: Me hace sentir feliz, me gusta aprender, me gusta ayudar..."><br>
+                <button class="btn" onclick="mostrarPorQue()">Ver mi porqué</button>
+            </form>
+            <div id="resultadoPorQue" style="display:none; margin-top:2em;" class="highlight-section"></div>
+        </main>
+        <footer>
+            <p>© 2024 Curso 005N Juvenil</p>
+        </footer>
+    </div>
+    <script>
+      function mostrarPorQue() {
+        const gusta = document.getElementById('gusta').value.trim();
+        const porque = document.getElementById('porque').value.trim();
+        let resultado = '';
+        if (gusta && porque) {
+          resultado = `<b>¡Tu porqué es único!</b><br>Te gusta <span style='color:#1a2233'>${gusta}</span> porque <span style='color:#f7c948'>${porque}</span>.`;
+        } else {
+          resultado = '<em>Por favor, completa ambas frases para ver tu porqué.</em>';
+        }
+        document.getElementById('resultadoPorQue').innerHTML = resultado;
+        document.getElementById('resultadoPorQue').style.display = 'block';
+      }
+    </script>
+</body>
+</html> 

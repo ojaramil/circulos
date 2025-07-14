@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empieza con el Porqué - Interactivo</title>
+  <link rel="stylesheet" href="nuevo-style.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="logo">PQ</div>
+      <div class="header-title">
+        <span class="module-name">Círculo de Lectura • Liderazgo y Propósito</span>
+        <span class="content-title">Empieza con el Porqué - Simon Sinek</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="#" class="nav-link">Ver Otros Libros</a>
+      <a href="#" class="nav-link" data-src="lecciones/07_descubrir_porque.html">Descubre tu Porqué</a>
+      <a href="#" class="nav-link" data-src="recursos.html">Recursos</a>
+      <a href="https://simonsinek.com/" class="nav-link" target="_blank">Sitio Oficial</a>
+    </nav>
+  </header>
+  <div class="main-layout">
+    <nav class="sidebar left">
+      <h2>Lecciones</h2>
+      <ul>
+        <li><a href="#" data-src="lecciones/01_introduccion.html" class="active"><span class="icon-placeholder">📄</span>Introducción</a></li>
+        <li><a href="#" data-src="lecciones/02_mundo_sin_porque.html"><span class="icon-placeholder">📄</span>Un mundo sin porqué</a></li>
+        <li><a href="#" data-src="lecciones/03_circulo_dorado.html"><span class="icon-placeholder">✨</span>El círculo dorado</a></li>
+        <li><a href="#" data-src="lecciones/04_liderazgo_confianza.html"><span class="icon-placeholder">🤝</span>Liderazgo y confianza</a></li>
+        <li><a href="#" data-src="lecciones/05_aunar_creyentes.html"><span class="icon-placeholder">🧑‍🤝‍🧑</span>Aunar a los que creen</a></li>
+        <li><a href="#" data-src="lecciones/06_reto_exito.html"><span class="icon-placeholder">🏁</span>El reto del éxito</a></li>
+        <li><a href="#" data-src="lecciones/07_descubrir_porque.html"><span class="icon-placeholder">🔍</span>Descubrir el porqué</a></li>
+      </ul>
+      <h2>Recursos</h2>
+      <ul>
+        <li><a href="#" data-src="recursos.html"><span class="icon-placeholder">📚</span>Recursos</a></li>
+        <li><a href="#" data-src="lecturas_recomendadas.html"><span class="icon-placeholder">📖</span>Lecturas recomendadas</a></li>
+      </ul>
+    </nav>
+    <main class="content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+    <nav class="sidebar right">
+      <h2>Juegos</h2>
+      <ul>
+        <li><a href="#" data-src="juegos/01_reflexion_porque.html"><span class="icon-placeholder">📝</span>Reflexión: Tu porqué</a></li>
+        <li><a href="#" data-src="juegos/02_casos_liderazgo.html"><span class="icon-placeholder">💡</span>Casos de liderazgo</a></li>
+        <li><a href="#" data-src="juegos/03_dinamica_equipo.html"><span class="icon-placeholder">🤔</span>Dinámica de equipo</a></li>
+        <li><a href="#" data-src="juegos/04_test_lider_jefe.html"><span class="icon-placeholder">✔️</span>Test: ¿Líder o jefe?</a></li>
+        <li><a href="#" data-src="juegos/05_simulacion_decisiones.html"><span class="icon-placeholder">🎲</span>Simulación de decisiones</a></li>
+      </ul>
+    </nav>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    // Sidebar izquierda
+    document.querySelectorAll('.sidebar.left a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar.left a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Sidebar derecha
+    document.querySelectorAll('.sidebar.right a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Menú superior
+    document.querySelectorAll('.main-nav .nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

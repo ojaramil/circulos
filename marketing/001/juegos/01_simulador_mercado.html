@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Mercado</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    html, body { height: auto !important; min-height: 0 !important; overflow-y: auto !important; box-sizing: border-box; }
+    .simulador-container { max-width: 600px; margin: 2em auto; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px #ff980033; padding: 2em; }
+    .simulador-container h2 { color: #ff5722; }
+    .simulador-container button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.7em 1.5em; font-size: 1em; font-weight: 600; margin-top: 1em; cursor: pointer; transition: background 0.2s; }
+    .simulador-container button:hover { background: #ff5722; }
+    .simulador-feedback { margin-top: 1.5em; font-weight: 600; color: #b71c1c; }
+  </style>
+</head>
+<body>
+  <div class="simulador-container">
+    <h1>Simulador de Mercado</h1>
+    <h2>¿Cómo lanzarías tu nuevo producto?</h2>
+    <form id="simulador-form">
+      <p>Imagina que tienes un producto innovador. ¿Qué estrategia de marketing eliges para lanzarlo?</p>
+      <label><input type="radio" name="estrategia" value="precio"> Precio bajo para captar mercado rápidamente</label><br>
+      <label><input type="radio" name="estrategia" value="diferenciacion"> Diferenciación: destacar beneficios únicos</label><br>
+      <label><input type="radio" name="estrategia" value="publicidad"> Gran inversión en publicidad y redes sociales</label><br>
+      <label><input type="radio" name="estrategia" value="boca_a_boca"> Fomentar recomendaciones boca a boca</label><br>
+      <button type="submit">Ver resultado</button>
+    </form>
+    <div class="simulador-feedback" id="simulador-feedback"></div>
+  </div>
+  <script>
+    document.getElementById('simulador-form').onsubmit = function(e) {
+      e.preventDefault();
+      const val = document.querySelector('input[name="estrategia"]:checked');
+      const feedback = document.getElementById('simulador-feedback');
+      if (!val) {
+        feedback.textContent = 'Por favor, selecciona una estrategia.';
+        return;
+      }
+      switch(val.value) {
+        case 'precio':
+          feedback.textContent = 'Captar mercado con precio bajo puede atraer clientes rápido, pero puede afectar la percepción de valor y los márgenes. ¿Cómo sostendrías la rentabilidad?';
+          break;
+        case 'diferenciacion':
+          feedback.textContent = '¡Excelente! Destacar beneficios únicos ayuda a posicionar tu producto y justificar un precio competitivo.';
+          break;
+        case 'publicidad':
+          feedback.textContent = 'La publicidad puede generar visibilidad, pero sin una propuesta clara puede ser costosa y poco efectiva. ¿Cómo conectarás con tu público?';
+          break;
+        case 'boca_a_boca':
+          feedback.textContent = 'El boca a boca es poderoso, pero requiere clientes satisfechos y tiempo. ¿Cómo incentivarías las recomendaciones?';
+          break;
+      }
+    };
+  </script>
+</body>
+</html> 

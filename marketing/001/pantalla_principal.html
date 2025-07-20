@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Por qué el Marketing? - Interactivo</title>
+  <link rel="stylesheet" href="nuevo-style.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="logo">MK</div>
+      <div class="header-title">
+        <span class="module-name">Curso 1 • Marketing</span>
+        <span class="content-title">¿Por qué el Marketing?</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="#" class="nav-link">Ver Otros Cursos</a>
+      <a href="#" class="nav-link" data-src="lecciones/glosario.html">Glosario</a>
+      <a href="#" class="nav-link" data-src="lecciones/enlaces_interes.html">Enlaces de interés</a>
+    </nav>
+  </header>
+  <div class="main-layout">
+    <nav class="sidebar left">
+      <h2>Lecciones</h2>
+      <ul>
+        <li><a href="#" data-src="lecciones/01_introduccion.html" class="active"><span class="icon-placeholder">📄</span>Introducción</a></li>
+        <li><a href="#" data-src="lecciones/02_fundamentos.html"><span class="icon-placeholder">📄</span>Fundamentos del Marketing</a></li>
+        <li><a href="#" data-src="lecciones/03_evolucion.html"><span class="icon-placeholder">⏳</span>Evolución y Tendencias</a></li>
+        <li><a href="#" data-src="lecciones/04_casos_practicos.html"><span class="icon-placeholder">✨</span>Casos Prácticos</a></li>
+        <li><a href="#" data-src="lecciones/05_herramientas.html"><span class="icon-placeholder">🛠️</span>Herramientas y Estrategias</a></li>
+        <li><a href="#" data-src="lecciones/06_conclusion.html"><span class="icon-placeholder">🏁</span>Conclusiones</a></li>
+      </ul>
+      <h2>Recursos Adicionales</h2>
+      <ul>
+        <li><a href="#" data-src="lecciones/glosario.html"><span class="icon-placeholder">📖</span>Glosario</a></li>
+        <li><a href="#" data-src="lecciones/enlaces_interes.html"><span class="icon-placeholder">🔗</span>Enlaces de interés</a></li>
+      </ul>
+    </nav>
+    <main class="content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0" scrolling="yes" style="width:100%;height:100vh;max-height:100vh;min-height:400px;overflow:auto;"></iframe>
+    </main>
+    <nav class="sidebar right">
+      <h2>Juegos y Dinámicas</h2>
+      <ul>
+        <li><a href="#" data-src="juegos/01_simulador_mercado.html"><span class="icon-placeholder">🧮</span>Simulador de Mercado</a></li>
+        <li><a href="#" data-src="juegos/02_juego_decisiones.html"><span class="icon-placeholder">🎲</span>Juego de Decisiones</a></li>
+        <li><a href="#" data-src="juegos/03_verdadero_falso.html"><span class="icon-placeholder">✔️</span>Verdadero o Falso</a></li>
+        <li><a href="#" data-src="juegos/04_quiz_marketing.html"><span class="icon-placeholder">❓</span>Quiz de Marketing</a></li>
+        <li><a href="#" data-src="juegos/05_crea_campana.html"><span class="icon-placeholder">📝</span>Crea tu Campaña</a></li>
+      </ul>
+    </nav>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    // Sidebar izquierda
+    document.querySelectorAll('.sidebar.left a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar.left a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Sidebar derecha
+    document.querySelectorAll('.sidebar.right a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+      });
+    });
+    // Menú superior
+    document.querySelectorAll('.main-nav .nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Decisiones</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    html, body { height: auto !important; min-height: 0 !important; overflow-y: auto !important; box-sizing: border-box; }
+    .decisiones-container { max-width: 600px; margin: 2em auto; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px #ff980033; padding: 2em; }
+    .decisiones-container h1 { color: #ff5722; }
+    .decisiones-container button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.7em 1.5em; font-size: 1em; font-weight: 600; margin-top: 1em; cursor: pointer; transition: background 0.2s; }
+    .decisiones-container button:hover { background: #ff5722; }
+    .decisiones-feedback { margin-top: 1.5em; font-weight: 600; color: #b71c1c; }
+    .decisiones-nav { margin-top: 2em; text-align: right; }
+    .decisiones-nav button { background: #fff; color: #ff9800; border: 1.5px solid #ff9800; margin-left: 1em; font-weight: 600; }
+    .decisiones-nav button:hover { background: #ff9800; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="decisiones-container">
+    <h1>Juego de Decisiones</h1>
+    <div id="caso-texto"></div>
+    <div id="caso-botones"></div>
+    <div class="decisiones-feedback" id="decisiones-feedback"></div>
+    <div class="decisiones-nav">
+      <button onclick="anteriorCaso()">Anterior</button>
+      <button onclick="siguienteCaso()">Siguiente</button>
+    </div>
+  </div>
+  <script>
+    const casos = [
+      {
+        texto: 'Tu empresa recibe una crítica negativa viral en redes sociales. ¿Qué haces?',
+        opciones: [
+          {txt: 'Ignorar la crítica', feedback: 'Ignorar puede parecer que no te importa la opinión del cliente y dañar la reputación de la marca.'},
+          {txt: 'Responder públicamente y ofrecer solución', feedback: '¡Buena decisión! Responder y ofrecer solución muestra empatía y puede convertir una crisis en una oportunidad de fidelización.'}
+        ]
+      },
+      {
+        texto: 'Tienes un presupuesto limitado para lanzar un nuevo producto. ¿Qué priorizas?',
+        opciones: [
+          {txt: 'Invertir todo en publicidad digital', feedback: 'La publicidad digital puede ser efectiva, pero sin una estrategia clara podrías desperdiciar recursos.'},
+          {txt: 'Segmentar el público y crear una campaña enfocada', feedback: '¡Correcto! Segmentar y enfocar la campaña maximiza el impacto del presupuesto.'}
+        ]
+      },
+      {
+        texto: 'Un cliente importante pide un descuento especial que afectaría tu margen. ¿Qué haces?',
+        opciones: [
+          {txt: 'Aceptar para no perder al cliente', feedback: 'Aceptar puede resolver el corto plazo, pero puede sentar un precedente peligroso para tu rentabilidad.'},
+          {txt: 'Negociar valor agregado en vez de descuento', feedback: '¡Buena estrategia! Ofrecer valor agregado mantiene la relación y protege tus márgenes.'}
+        ]
+      },
+      {
+        texto: 'Tu competencia lanza una campaña viral inesperada. ¿Cómo reaccionas?',
+        opciones: [
+          {txt: 'Copiar la campaña rápidamente', feedback: 'Copiar puede parecer reactivo y poco auténtico. Mejor analiza y adapta a tu identidad.'},
+          {txt: 'Analizar la campaña y reforzar tu propuesta única', feedback: '¡Excelente! Reforzar tu propuesta única te diferencia y fortalece tu marca.'}
+        ]
+      }
+    ];
+    let idx = 0;
+    function renderCaso() {
+      document.getElementById('caso-texto').textContent = casos[idx].texto;
+      const botonesDiv = document.getElementById('caso-botones');
+      botonesDiv.innerHTML = '';
+      casos[idx].opciones.forEach((op, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = op.txt;
+        btn.onclick = () => mostrarFeedback(i);
+        botonesDiv.appendChild(btn);
+      });
+      document.getElementById('decisiones-feedback').textContent = '';
+    }
+    function mostrarFeedback(opcionIdx) {
+      document.getElementById('decisiones-feedback').textContent = casos[idx].opciones[opcionIdx].feedback;
+    }
+    function siguienteCaso() {
+      idx = (idx + 1) % casos.length;
+      renderCaso();
+    }
+    function anteriorCaso() {
+      idx = (idx - 1 + casos.length) % casos.length;
+      renderCaso();
+    }
+    renderCaso();
+  </script>
+</body>
+</html> 

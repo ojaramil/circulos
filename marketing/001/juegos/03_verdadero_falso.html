@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verdadero o Falso: Marketing</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    html, body { height: auto !important; min-height: 0 !important; overflow-y: auto !important; box-sizing: border-box; }
+    .vf-container { max-width: 600px; margin: 2em auto; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px #ff980033; padding: 2em; }
+    .vf-container h1 { color: #ff5722; }
+    .vf-pregunta { font-weight: 600; margin-bottom: 1em; }
+    .vf-container button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.7em 1.5em; font-size: 1em; font-weight: 600; margin: 0 0.5em 1em 0; cursor: pointer; transition: background 0.2s; }
+    .vf-container button:hover { background: #ff5722; }
+    .vf-feedback { margin-top: 1.2em; font-weight: 600; color: #b71c1c; }
+  </style>
+</head>
+<body>
+  <div class="vf-container">
+    <h1>Verdadero o Falso</h1>
+    <div class="vf-pregunta" id="vf-pregunta">El marketing solo es importante para grandes empresas.</div>
+    <button onclick="responder(true)">Verdadero</button>
+    <button onclick="responder(false)">Falso</button>
+    <div class="vf-feedback" id="vf-feedback"></div>
+  </div>
+  <script>
+    let preguntas = [
+      {q: 'El marketing solo es importante para grandes empresas.', a: false, f: 'Falso. El marketing es clave para empresas de cualquier tamaño, incluso para profesionales independientes.'},
+      {q: 'El marketing digital ha reemplazado por completo al marketing tradicional.', a: false, f: 'Falso. El marketing digital es una herramienta más, pero los principios estratégicos siguen vigentes.'},
+      {q: 'La coherencia y autenticidad son claves para construir una marca fuerte.', a: true, f: '¡Correcto! Las marcas fuertes son coherentes y auténticas en su mensaje y acciones.'},
+      {q: 'El precio bajo siempre es la mejor estrategia para entrar a un mercado.', a: false, f: 'Falso. El precio bajo puede atraer clientes, pero no siempre es sostenible ni genera valor.'}
+    ];
+    let idx = 0;
+    function responder(val) {
+      const feedback = document.getElementById('vf-feedback');
+      if (val === preguntas[idx].a) {
+        feedback.textContent = preguntas[idx].f;
+      } else {
+        feedback.textContent = 'Revisa tu respuesta: ' + preguntas[idx].f;
+      }
+      setTimeout(() => {
+        idx = (idx + 1) % preguntas.length;
+        document.getElementById('vf-pregunta').textContent = preguntas[idx].q;
+        feedback.textContent = '';
+      }, 2000);
+    }
+  </script>
+</body>
+</html> 

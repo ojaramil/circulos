@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crea tu Campaña</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    html, body { height: auto !important; min-height: 0 !important; overflow-y: auto !important; box-sizing: border-box; }
+    .campana-container { max-width: 600px; margin: 2em auto; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px #ff980033; padding: 2em; }
+    .campana-container h1 { color: #ff5722; }
+    .campana-container textarea { width: 100%; min-height: 80px; border-radius: 6px; border: 1.5px solid #ff9800; padding: 0.7em; font-size: 1em; margin-bottom: 1em; }
+    .campana-container button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.7em 1.5em; font-size: 1em; font-weight: 600; margin-top: 0.5em; cursor: pointer; transition: background 0.2s; }
+    .campana-container button:hover { background: #ff5722; }
+    .campana-feedback { margin-top: 1.5em; font-weight: 600; color: #b71c1c; }
+  </style>
+</head>
+<body>
+  <div class="campana-container">
+    <h1>Crea tu Campaña</h1>
+    <p>Imagina que tienes que lanzar un producto o servicio. Escribe una idea breve para una campaña de marketing:</p>
+    <textarea id="campana-idea" placeholder="Ejemplo: Una campaña que conecte con las emociones de los jóvenes..." maxlength="300"></textarea>
+    <button onclick="evaluarCampana()">Enviar idea</button>
+    <div class="campana-feedback" id="campana-feedback"></div>
+  </div>
+  <script>
+    function evaluarCampana() {
+      const idea = document.getElementById('campana-idea').value.trim();
+      const feedback = document.getElementById('campana-feedback');
+      if (!idea) {
+        feedback.textContent = 'Por favor, escribe una idea para tu campaña.';
+        return;
+      }
+      if (idea.length < 30) {
+        feedback.textContent = '¡Buen comienzo! Intenta desarrollar un poco más tu idea para que sea más impactante.';
+      } else if (idea.toLowerCase().includes('emocion') || idea.toLowerCase().includes('valor')) {
+        feedback.textContent = '¡Excelente! Las campañas que apelan a la emoción y el valor suelen ser muy efectivas.';
+      } else {
+        feedback.textContent = '¡Muy bien! Recuerda que una campaña exitosa conecta con el público y transmite un mensaje claro.';
+      }
+    }
+  </script>
+</body>
+</html> 

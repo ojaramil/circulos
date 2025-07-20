@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz de Marketing</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    html, body { height: auto !important; min-height: 0 !important; overflow-y: auto !important; box-sizing: border-box; }
+    .quiz-container { max-width: 600px; margin: 2em auto; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px #ff980033; padding: 2em; }
+    .quiz-container h1 { color: #ff5722; }
+    .quiz-pregunta { font-weight: 600; margin-bottom: 1em; }
+    .quiz-container button { background: #ff9800; color: #fff; border: none; border-radius: 6px; padding: 0.7em 1.5em; font-size: 1em; font-weight: 600; margin: 0.5em 0; cursor: pointer; transition: background 0.2s; display: block; width: 100%; text-align: left; }
+    .quiz-container button:hover { background: #ff5722; }
+    .quiz-feedback { margin-top: 1.2em; font-weight: 600; color: #b71c1c; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz de Marketing</h1>
+    <div class="quiz-pregunta" id="quiz-pregunta">¿Cuál es el objetivo principal del marketing?</div>
+    <div id="quiz-opciones"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+  </div>
+  <script>
+    const preguntas = [
+      {
+        q: '¿Cuál es el objetivo principal del marketing?',
+        opciones: ['Vender productos a cualquier costo', 'Crear valor y satisfacer necesidades', 'Invertir en publicidad', 'Reducir precios'],
+        correcta: 1,
+        f: 'Correcto. El marketing busca crear valor y satisfacer necesidades de los clientes.'
+      },
+      {
+        q: '¿Qué es el mix de marketing (4P)?',
+        opciones: ['Producto, Precio, Plaza, Promoción', 'Personas, Procesos, Publicidad, Precio', 'Planificación, Producto, Publicidad, Plaza', 'Producto, Precio, Personas, Publicidad'],
+        correcta: 0,
+        f: 'Correcto. El mix de marketing clásico son Producto, Precio, Plaza (distribución) y Promoción.'
+      },
+      {
+        q: '¿Qué caracteriza a una marca fuerte?',
+        opciones: ['Publicidad viral', 'Coherencia y autenticidad', 'Precios bajos', 'Presencia en redes sociales'],
+        correcta: 1,
+        f: 'Correcto. La coherencia y autenticidad son claves para una marca fuerte.'
+      }
+    ];
+    let idx = 0;
+    function mostrarPregunta() {
+      document.getElementById('quiz-pregunta').textContent = preguntas[idx].q;
+      const opcionesDiv = document.getElementById('quiz-opciones');
+      opcionesDiv.innerHTML = '';
+      preguntas[idx].opciones.forEach((op, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = op;
+        btn.onclick = () => responder(i);
+        opcionesDiv.appendChild(btn);
+      });
+      document.getElementById('quiz-feedback').textContent = '';
+    }
+    function responder(opcion) {
+      const feedback = document.getElementById('quiz-feedback');
+      if (opcion === preguntas[idx].correcta) {
+        feedback.textContent = preguntas[idx].f;
+      } else {
+        feedback.textContent = 'Revisa tu respuesta: ' + preguntas[idx].f;
+      }
+      setTimeout(() => {
+        idx = (idx + 1) % preguntas.length;
+        mostrarPregunta();
+      }, 2000);
+    }
+    mostrarPregunta();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desintoxicación Digital - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #F0FFF0;
+            color: #2c2c2c;
+            line-height: 1.7;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h3 {
+            color: #228B22;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #228B22;
+            padding-left: 10px;
+        }
+        .game-section {
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #32CD32;
+        }
+        .digital-habit {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .digital-habit:hover {
+            border-color: #228B22;
+            transform: translateY(-2px);
+        }
+        .digital-habit.selected {
+            border-color: #228B22;
+            background-color: #e8f5e8;
+        }
+        .habit-frequency {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .frequency-btn {
+            padding: 5px 10px;
+            border: 1px solid #228B22;
+            background: white;
+            color: #228B22;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .frequency-btn.selected {
+            background: #228B22;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
+        }
+        .result-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #228B22;
+        }
+        .hidden {
+            display: none;
+        }
+        .phone-emoji {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="phone-emoji">📱</div>
+        <h3>Desintoxicación Digital - Juego Interactivo</h3>
+        
+        <div class="game-section">
+            <p><strong>Instrucciones:</strong> Evalúa tus hábitos digitales y crea un plan de desintoxicación personalizado. La tecnología debe ser tu sirviente, no tu amo.</p>
+        </div>
+
+        <div id="step1" class="game-section">
+            <h3>Paso 1: Evalúa tus Hábitos Digitales 📊</h3>
+            <p>Selecciona los hábitos digitales que tienes y su frecuencia:</p>
+            
+            <div class="digital-habit" data-habit="revisar-phone">
+                <h4>📱 Revisar el teléfono al despertar</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <div class="digital-habit" data-habit="social-media">
+                <h4>📘 Revisar redes sociales durante el trabajo</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <div class="digital-habit" data-habit="notifications">
+                <h4>🔔 Revisar notificaciones constantemente</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <div class="digital-habit" data-habit="multitasking">
+                <h4>🔄 Multitarea digital (múltiples pantallas)</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <div class="digital-habit" data-habit="bedtime-phone">
+                <h4>🌙 Usar el teléfono antes de dormir</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <div class="digital-habit" data-habit="email-checking">
+                <h4>📧 Revisar emails compulsivamente</h4>
+                <div class="habit-frequency">
+                    <button class="frequency-btn" data-value="0">Nunca</button>
+                    <button class="frequency-btn" data-value="1">A veces</button>
+                    <button class="frequency-btn" data-value="2">Siempre</button>
+                </div>
+            </div>
+
+            <button onclick="calculateDigitalScore()">Calcular Puntuación Digital</button>
+        </div>
+
+        <div id="step2" class="game-section hidden">
+            <h3>Paso 2: Tu Puntuación Digital 📈</h3>
+            <div id="digitalScore"></div>
+            <button onclick="createDetoxPlan()">Crear Plan de Desintoxicación</button>
+        </div>
+
+        <div id="step3" class="game-section hidden">
+            <h3>Paso 3: Plan de Desintoxicación Digital 🚀</h3>
+            <div id="detoxPlan"></div>
+            <button onclick="showImplementation()">Ver Implementación</button>
+        </div>
+
+        <div id="step4" class="game-section hidden">
+            <h3>Paso 4: Implementación Práctica ⚙️</h3>
+            <div id="implementation"></div>
+            <button onclick="resetGame()">Empezar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let digitalHabits = {};
+        let totalScore = 0;
+
+        // Configurar eventos para los botones de frecuencia
+        document.addEventListener('DOMContentLoaded', function() {
+            const frequencyBtns = document.querySelectorAll('.frequency-btn');
+            frequencyBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover selección previa en el mismo grupo
+                    const habitDiv = this.closest('.digital-habit');
+                    const habitBtns = habitDiv.querySelectorAll('.frequency-btn');
+                    habitBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // Seleccionar el botón actual
+                    this.classList.add('selected');
+                    
+                    // Guardar el valor
+                    const habit = habitDiv.dataset.habit;
+                    const value = parseInt(this.dataset.value);
+                    digitalHabits[habit] = value;
+                });
+            });
+        });
+
+        function calculateDigitalScore() {
+            totalScore = 0;
+            let habitsCount = 0;
+            
+            Object.values(digitalHabits).forEach(score => {
+                totalScore += score;
+                if (score > 0) habitsCount++;
+            });
+
+            const maxScore = habitsCount * 2;
+            const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+
+            const container = document.getElementById('digitalScore');
+            let html = `
+                <div class="result-section">
+                    <h4>Tu Puntuación Digital: ${totalScore}/${maxScore}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <p><strong>Porcentaje de adicción digital: ${Math.round(percentage)}%</p>
+            `;
+
+            if (percentage >= 80) {
+                html += '<p style="color: #ff4444; font-weight: bold;">🚨 Necesitas una desintoxicación digital urgente</p>';
+            } else if (percentage >= 60) {
+                html += '<p style="color: #ffaa00; font-weight: bold;">⚠️ Tienes hábitos digitales que mejorar</p>';
+            } else if (percentage >= 40) {
+                html += '<p style="color: #44aa44; font-weight: bold;">✅ Tus hábitos digitales están bien</p>';
+            } else {
+                html += '<p style="color: #228B22; font-weight: bold;">🌟 Excelente control digital</p>';
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function createDetoxPlan() {
+            const container = document.getElementById('detoxPlan');
+            let html = '<div class="result-section">';
+            
+            html += '<h4>🐸 Tu Plan de Desintoxicación Digital</h4>';
+            
+            // Recomendaciones basadas en los hábitos identificados
+            if (digitalHabits['revisar-phone'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>📱 No revisar el teléfono al despertar</h5>
+                        <p><strong>Acción:</strong> Deja el teléfono en otra habitación y usa un despertador tradicional.</p>
+                        <p><strong>Beneficio:</strong> Mejorará tu estado de ánimo matutino y reducirá la ansiedad.</p>
+                    </div>
+                `;
+            }
+
+            if (digitalHabits['social-media'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>📘 Bloquear redes sociales durante el trabajo</h5>
+                        <p><strong>Acción:</strong> Usa apps como Forest o Freedom para bloquear distracciones.</p>
+                        <p><strong>Beneficio:</strong> Aumentará tu productividad y concentración.</p>
+                    </div>
+                `;
+            }
+
+            if (digitalHabits['notifications'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>🔔 Desactivar notificaciones no esenciales</h5>
+                        <p><strong>Acción:</strong> Configura tu teléfono en modo "No molestar" durante horas de trabajo.</p>
+                        <p><strong>Beneficio:</strong> Reducirá las interrupciones y mejorará tu enfoque.</p>
+                    </div>
+                `;
+            }
+
+            if (digitalHabits['multitasking'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>🔄 Practicar monotarea digital</h5>
+                        <p><strong>Acción:</strong> Cierra todas las pestañas excepto la que estás usando.</p>
+                        <p><strong>Beneficio:</strong> Mejorará la calidad de tu trabajo y reducirá el estrés.</p>
+                    </div>
+                `;
+            }
+
+            if (digitalHabits['bedtime-phone'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>🌙 No usar el teléfono 1 hora antes de dormir</h5>
+                        <p><strong>Acción:</strong> Lee un libro físico o medita en lugar de usar el teléfono.</p>
+                        <p><strong>Beneficio:</strong> Mejorará la calidad del sueño y la salud general.</p>
+                    </div>
+                `;
+            }
+
+            if (digitalHabits['email-checking'] >= 1) {
+                html += `
+                    <div class="digital-habit">
+                        <h5>📧 Revisar emails solo 3 veces al día</h5>
+                        <p><strong>Acción:</strong> Programa horarios específicos para revisar emails.</p>
+                        <p><strong>Beneficio:</strong> Reducirá la reactividad y mejorará la productividad.</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <h4>📅 Plan de 7 Días</h4>
+                <ul>
+                    <li><strong>Día 1-2:</strong> Implementa 2 cambios principales</li>
+                    <li><strong>Día 3-4:</strong> Agrega 2 cambios más</li>
+                    <li><strong>Día 5-7:</strong> Implementa todos los cambios y evalúa resultados</li>
+                </ul>
+            </div>`;
+
+            container.innerHTML = html;
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function showImplementation() {
+            const container = document.getElementById('implementation');
+            let html = `
+                <div class="result-section">
+                    <h4>⚙️ Implementación Práctica</h4>
+                    
+                    <h5>🔧 Configuraciones Técnicas</h5>
+                    <ul>
+                        <li><strong>Modo No Molestar:</strong> Activa de 9 AM a 6 PM</li>
+                        <li><strong>Pantalla en escala de grises:</strong> Reduce la atracción visual</li>
+                        <li><strong>Eliminar apps de redes sociales:</strong> Usa solo la versión web</li>
+                        <li><strong>Configurar respuestas automáticas:</strong> "Reviso emails 3 veces al día"</li>
+                    </ul>
+
+                    <h5>📱 Apps Recomendadas</h5>
+                    <ul>
+                        <li><strong>Forest:</strong> Para bloquear distracciones</li>
+                        <li><strong>Freedom:</strong> Para bloquear sitios web</li>
+                        <li><strong>Moment:</strong> Para monitorear uso del teléfono</li>
+                        <li><strong>Headspace:</strong> Para meditación y mindfulness</li>
+                    </ul>
+
+                    <h5>🎯 Métricas de Seguimiento</h5>
+                    <ul>
+                        <li>Tiempo diario en redes sociales</li>
+                        <li>Número de veces que revisas el teléfono</li>
+                        <li>Productividad en horas de trabajo</li>
+                        <li>Calidad del sueño</li>
+                    </ul>
+
+                    <h5>💪 Compromiso</h5>
+                    <p>Me comprometo a implementar este plan de desintoxicación digital durante los próximos 7 días y evaluar los resultados para crear hábitos digitales más saludables.</p>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identifica tu Sapo - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #F0FFF0;
+            color: #2c2c2c;
+            line-height: 1.7;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h3 {
+            color: #228B22;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #228B22;
+            padding-left: 10px;
+        }
+        .game-section {
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #32CD32;
+        }
+        .task-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .task-item:hover {
+            border-color: #228B22;
+            transform: translateX(5px);
+        }
+        .task-item.selected {
+            border-color: #228B22;
+            background-color: #e8f5e8;
+        }
+        .priority-high {
+            border-left: 5px solid #ff4444;
+        }
+        .priority-medium {
+            border-left: 5px solid #ffaa00;
+        }
+        .priority-low {
+            border-left: 5px solid #44aa44;
+        }
+        button {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            resize: vertical;
+            margin: 10px 0;
+        }
+        .result-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #228B22;
+        }
+        .frog-emoji {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="frog-emoji">🐸</div>
+        <h3>Identifica tu Sapo - Juego Interactivo</h3>
+        
+        <div class="game-section">
+            <p><strong>Instrucciones:</strong> En este juego aprenderás a identificar tu "sapo" - la tarea más importante que debes completar. Sigue los pasos para descubrir cuál es tu prioridad número uno.</p>
+        </div>
+
+        <div id="step1" class="game-section">
+            <h3>Paso 1: Lista tus tareas pendientes 📝</h3>
+            <p>Escribe todas las tareas que tienes pendientes en este momento:</p>
+            <textarea id="taskList" rows="6" placeholder="Escribe aquí todas tus tareas pendientes, una por línea..."></textarea>
+            <button onclick="processTasks()">Procesar Tareas</button>
+        </div>
+
+        <div id="step2" class="game-section hidden">
+            <h3>Paso 2: Evalúa cada tarea 🎯</h3>
+            <p>Para cada tarea, evalúa su importancia y urgencia:</p>
+            <div id="taskEvaluation"></div>
+            <button onclick="calculatePriorities()">Calcular Prioridades</button>
+        </div>
+
+        <div id="step3" class="game-section hidden">
+            <h3>Paso 3: Identifica tu Sapo 🐸</h3>
+            <div id="priorityResults"></div>
+            <button onclick="showActionPlan()">Crear Plan de Acción</button>
+        </div>
+
+        <div id="step4" class="game-section hidden">
+            <h3>Paso 4: Plan de Acción 🚀</h3>
+            <div id="actionPlan"></div>
+            <button onclick="resetGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+        let evaluatedTasks = [];
+
+        function processTasks() {
+            const taskText = document.getElementById('taskList').value;
+            if (!taskText.trim()) {
+                alert('Por favor, escribe al menos una tarea.');
+                return;
+            }
+
+            tasks = taskText.split('\n').filter(task => task.trim() !== '');
+            if (tasks.length === 0) {
+                alert('Por favor, escribe al menos una tarea válida.');
+                return;
+            }
+
+            displayTaskEvaluation();
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function displayTaskEvaluation() {
+            const container = document.getElementById('taskEvaluation');
+            container.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task-item';
+                taskDiv.innerHTML = `
+                    <h4>${task}</h4>
+                    <p><strong>Importancia:</strong> 
+                        <select id="importance-${index}">
+                            <option value="1">Baja (1)</option>
+                            <option value="2">Media (2)</option>
+                            <option value="3">Alta (3)</option>
+                        </select>
+                    </p>
+                    <p><strong>Urgencia:</strong> 
+                        <select id="urgency-${index}">
+                            <option value="1">Baja (1)</option>
+                            <option value="2">Media (2)</option>
+                            <option value="3">Alta (3)</option>
+                        </select>
+                    </p>
+                    <p><strong>Consecuencias de no hacerla:</strong> 
+                        <select id="consequences-${index}">
+                            <option value="1">Mínimas (1)</option>
+                            <option value="2">Moderadas (2)</option>
+                            <option value="3">Graves (3)</option>
+                        </select>
+                    </p>
+                `;
+                container.appendChild(taskDiv);
+            });
+        }
+
+        function calculatePriorities() {
+            evaluatedTasks = [];
+            
+            tasks.forEach((task, index) => {
+                const importance = parseInt(document.getElementById(`importance-${index}`).value);
+                const urgency = parseInt(document.getElementById(`urgency-${index}`).value);
+                const consequences = parseInt(document.getElementById(`consequences-${index}`).value);
+                
+                const priorityScore = importance + urgency + consequences;
+                
+                evaluatedTasks.push({
+                    task: task,
+                    importance: importance,
+                    urgency: urgency,
+                    consequences: consequences,
+                    priorityScore: priorityScore
+                });
+            });
+
+            // Ordenar por puntuación de prioridad (mayor a menor)
+            evaluatedTasks.sort((a, b) => b.priorityScore - a.priorityScore);
+
+            displayPriorityResults();
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function displayPriorityResults() {
+            const container = document.getElementById('priorityResults');
+            container.innerHTML = '';
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'result-section';
+            
+            let html = '<h4>🎯 Tu Sapo Principal:</h4>';
+            html += `<p><strong>${evaluatedTasks[0].task}</strong></p>`;
+            html += `<p>Puntuación de prioridad: <strong>${evaluatedTasks[0].priorityScore}/9</strong></p>`;
+            html += '<p>Esta es la tarea que debes hacer PRIMERO mañana.</p>';
+            
+            html += '<h4>📋 Ranking Completo de Tareas:</h4>';
+            evaluatedTasks.forEach((task, index) => {
+                const priorityClass = task.priorityScore >= 7 ? 'priority-high' : 
+                                    task.priorityScore >= 5 ? 'priority-medium' : 'priority-low';
+                
+                html += `
+                    <div class="task-item ${priorityClass}">
+                        <p><strong>${index + 1}. ${task.task}</strong></p>
+                        <p>Puntuación: ${task.priorityScore}/9 (Importancia: ${task.importance}, Urgencia: ${task.urgency}, Consecuencias: ${task.consequences})</p>
+                    </div>
+                `;
+            });
+
+            resultDiv.innerHTML = html;
+            container.appendChild(resultDiv);
+        }
+
+        function showActionPlan() {
+            const container = document.getElementById('actionPlan');
+            container.innerHTML = '';
+
+            const planDiv = document.createElement('div');
+            planDiv.className = 'result-section';
+            
+            const topTask = evaluatedTasks[0];
+            
+            let html = `
+                <h4>🚀 Plan de Acción para tu Sapo</h4>
+                <p><strong>Tarea principal:</strong> ${topTask.task}</p>
+                
+                <h4>📅 Cuándo hacerla:</h4>
+                <p>Mañana, como PRIMERA tarea del día, antes de revisar emails o hacer cualquier otra cosa.</p>
+                
+                <h4>⏰ Tiempo estimado:</h4>
+                <p><input type="number" id="estimatedTime" placeholder="Horas" min="0.5" step="0.5" style="width: 80px;"> horas</p>
+                
+                <h4>🎯 Objetivo específico:</h4>
+                <textarea id="specificGoal" rows="3" placeholder="¿Qué resultado específico quieres lograr con esta tarea?"></textarea>
+                
+                <h4>📝 Pasos específicos:</h4>
+                <textarea id="specificSteps" rows="4" placeholder="Escribe los pasos específicos que seguirás para completar esta tarea..."></textarea>
+                
+                <h4>💪 Compromiso:</h4>
+                <p>Me comprometo a completar esta tarea mañana como mi primera prioridad, sin excusas ni postergaciones.</p>
+            `;
+
+            planDiv.innerHTML = html;
+            container.appendChild(planDiv);
+
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            document.getElementById('taskList').value = '';
+            tasks = [];
+            evaluatedTasks = [];
+            
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.add('hidden');
+        }
+    </script>
+</body>
+</html> 

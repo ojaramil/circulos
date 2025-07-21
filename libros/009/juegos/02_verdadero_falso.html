@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso - El MBA Personal</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 700px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .instructions { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 12px; border-radius: 8px; margin-bottom: 18px; text-align: center; border-left: 4px solid #005BAA; }
+    .instructions span { background: yellow; color: #222; font-weight: bold; border-radius: 2px; padding: 0 2px; }
+    .subrayado { text-decoration: underline; }
+    .resaltado { background: yellow; color: #222; font-weight: bold; padding: 0 2px; border-radius: 2px; }
+    .statement { font-size: 1.15em; margin-bottom: 18px; color: #333; padding: 18px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; border-left: 5px solid #005BAA; text-align: center; }
+    .btn { padding: 12px 28px; border: none; border-radius: 8px; font-size: 1.05em; background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; font-weight: bold; margin: 0 10px; cursor: pointer; transition: all 0.3s; min-width: 120px; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.15); }
+    .btn.correct { background: #d4f7c5; color: #222; }
+    .btn.incorrect { background: #ffd6d6; color: #222; }
+    .progress-bar { width: 100%; height: 8px; background-color: #e9ecef; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.3s; }
+    .final-score { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 15px; text-align: center; margin-top: 20px; }
+    .final-score .resaltado { font-size: 1.2em; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>✔️ Verdadero o Falso</h1>
+  <div class="instructions"><span>Lee cada afirmación y selecciona si es verdadera o falsa.</span> <span class="subrayado">¡Demuestra tu comprensión!</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="vf-area"></div>
+</div>
+<script>
+const statements = [
+  { s: "La <span class='resaltado'>creación de valor</span> es la base de todo negocio exitoso.", a: true },
+  { s: "El <span class='subrayado'>feedback</span> de los clientes no es relevante para mejorar productos.", a: false },
+  { s: "La <span class='resaltado'>propuesta de valor</span> debe ser clara y diferenciadora.", a: true },
+  { s: "El <span class='subrayado'>MVP</span> es una versión final del producto.", a: false },
+  { s: "La <span class='resaltado'>Regla 80/20</span> indica que el 20% de las acciones produce el 80% de los resultados.", a: true },
+  { s: "La <span class='subrayado'>autoeducación</span> no es importante para el éxito empresarial.", a: false },
+  { s: "El <span class='resaltado'>control financiero</span> ayuda a tomar mejores decisiones.", a: true },
+  { s: "La <span class='subrayado'>iteración</span> implica hacer siempre lo mismo.", a: false },
+  { s: "El <span class='resaltado'>mapa de empatía</span> ayuda a comprender al cliente.", a: true },
+  { s: "La <span class='subrayado'>entrega de valor</span> no es relevante en un negocio.", a: false }
+];
+let current = 0, score = 0, answered = false;
+function renderVF() {
+  if (current < statements.length) {
+    document.getElementById('vf-area').innerHTML = `
+      <div class="statement">${statements[current].s}</div>
+      <button class="btn" onclick="selectVF(true)">VERDADERO</button>
+      <button class="btn" onclick="selectVF(false)">FALSO</button>
+    `;
+    document.getElementById('progress-fill').style.width = ((current+1)/statements.length*100)+"%";
+    answered = false;
+  } else {
+    document.getElementById('vf-area').innerHTML = `<div class='final-score'><span class='resaltado'>¡Puntaje final: ${score} / ${statements.length}!</span><br><span class='subrayado'>${score>=7?"¡Excelente comprensión!":"Sigue practicando para mejorar."}</span></div>`;
+    document.getElementById('progress-fill').style.width = "100%";
+  }
+}
+function selectVF(val) {
+  if(answered) return;
+  answered = true;
+  const correct = statements[current].a === val;
+  const btns = document.querySelectorAll('.btn');
+  btns[0].classList.remove('correct','incorrect');
+  btns[1].classList.remove('correct','incorrect');
+  if(val===true) btns[0].classList.add(correct?'correct':'incorrect');
+  else btns[1].classList.add(correct?'correct':'incorrect');
+  if(correct) score++;
+  setTimeout(()=>{current++;renderVF();},1200);
+}
+renderVF();
+</script>
+</body>
+</html> 

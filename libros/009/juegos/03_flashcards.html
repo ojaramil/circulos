@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards - El MBA Personal</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .flashcard { width: 100%; height: 180px; perspective: 1200px; margin: 18px 0; }
+    .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.8s; cursor: pointer; }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-front, .card-back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.10); }
+    .card-front { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; font-size: 1.1em; text-align: center; font-weight: bold; }
+    .card-back { background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #333; transform: rotateY(180deg); font-size: 0.97em; text-align: justify; line-height: 1.4; }
+    .subrayado { text-decoration: underline; }
+    .resaltado { background: yellow; color: #222; font-weight: bold; padding: 0 2px; border-radius: 2px; }
+    .controls { display: flex; justify-content: center; gap: 16px; margin: 15px 0; }
+    .btn { padding: 10px 18px; border: none; border-radius: 7px; cursor: pointer; font-size: 0.98em; background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; font-weight: bold; transition: all 0.3s; min-width: 80px; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.2); }
+    .progress { text-align: center; margin-bottom: 12px; color: #666; font-size: 0.97em; font-weight: bold; }
+    .card-counter { text-align: center; margin-top: 10px; color: #005BAA; font-weight: bold; font-size: 1em; }
+    .progress-bar { width: 100%; height: 5px; background-color: #e9ecef; border-radius: 2px; margin: 10px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.4s; }
+    .instructions { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center; border-left: 4px solid #005BAA; }
+    .instructions p { margin: 0; color: #005BAA; font-weight: bold; font-size: 0.93em; }
+    .card-front .icon { font-size: 1.2em; margin-bottom: 6px; display: block; }
+    .card-back .highlight { color: #005BAA; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🃏 Flashcards: Conceptos Clave</h1>
+  <div class="instructions"><p><span class="resaltado">Haz clic en la tarjeta para ver la definición</span> • Usa las flechas del teclado para navegar</p></div>
+  <div class="progress" id="progress">Tarjeta 1 de 10</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="flashcard">
+    <div class="card" id="card" onclick="flipCard()">
+      <div class="card-front" id="front">
+        <div><span class="icon">💡</span><div>Haz clic para ver la definición</div></div>
+      </div>
+      <div class="card-back" id="back"><div>Haz clic para ver el concepto</div></div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn" onclick="previousCard()">⬅️ Anterior</button>
+    <button class="btn" onclick="nextCard()">Siguiente ➡️</button>
+  </div>
+  <div class="card-counter" id="counter"></div>
+</div>
+<script>
+const flashcards = [
+  { concept: "Modelo Mental", definition: "<span class='resaltado'>Esquema de pensamiento</span> que <span class='subrayado'>ayuda a entender y resolver problemas</span> en negocios y la vida.", icon: "🧠" },
+  { concept: "Creación de Valor", definition: "<span class='subrayado'>Proceso de desarrollar productos o servicios</span> que <span class='resaltado'>satisfacen necesidades reales</span>.", icon: "💡" },
+  { concept: "Propuesta de Valor", definition: "<span class='resaltado'>Mensaje claro</span> que explica <span class='subrayado'>por qué un cliente debe elegir tu producto</span>.", icon: "📢" },
+  { concept: "MVP", definition: "<span class='subrayado'>Versión básica de un producto</span> para <span class='resaltado'>probar hipótesis y aprender del mercado</span>.", icon: "🚀" },
+  { concept: "Iteración", definition: "<span class='resaltado'>Ciclo de mejora continua</span> basado en <span class='subrayado'>pruebas y feedback</span>.", icon: "🔄" },
+  { concept: "Regla 80/20", definition: "<span class='subrayado'>El 20% de las acciones</span> genera <span class='resaltado'>el 80% de los resultados</span>.", icon: "📊" },
+  { concept: "Feedback", definition: "<span class='resaltado'>Información recibida</span> para <span class='subrayado'>ajustar y mejorar productos o procesos</span>.", icon: "💬" },
+  { concept: "Empatía", definition: "<span class='subrayado'>Capacidad de comprender profundamente</span> a los clientes y sus necesidades.", icon: "🤝" },
+  { concept: "Finanzas", definition: "<span class='resaltado'>Gestión de ingresos, gastos y recursos económicos</span> de un negocio.", icon: "💰" },
+  { concept: "Entrega de Valor", definition: "<span class='subrayado'>Proceso de hacer llegar el producto</span> al cliente de forma eficiente.", icon: "📦" }
+];
+let currentCard = 0;
+let isFlipped = false;
+function displayCard() {
+  const card = flashcards[currentCard];
+  document.getElementById('front').innerHTML = `<div><span class='icon'>${card.icon}</span><div><span class='subrayado'>${card.concept}</span></div></div>`;
+  document.getElementById('back').innerHTML = `<div>${card.definition}</div>`;
+  updateProgress();
+  isFlipped = false;
+  document.getElementById('card').classList.remove('flipped');
+}
+function updateProgress() {
+  const progress = ((currentCard + 1) / flashcards.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress').textContent = `Tarjeta ${currentCard + 1} de ${flashcards.length}`;
+  document.getElementById('counter').textContent = `${currentCard + 1} / ${flashcards.length}`;
+}
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card').classList.toggle('flipped');
+}
+function nextCard() {
+  if (currentCard < flashcards.length - 1) {
+    currentCard++;
+    displayCard();
+  }
+}
+function previousCard() {
+  if (currentCard > 0) {
+    currentCard--;
+    displayCard();
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') {
+    nextCard();
+  } else if (e.key === 'ArrowLeft') {
+    previousCard();
+  } else if (e.key === ' ') {
+    e.preventDefault();
+    flipCard();
+  }
+});
+displayCard();
+</script>
+</body>
+</html> 

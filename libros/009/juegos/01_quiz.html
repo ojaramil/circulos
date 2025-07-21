@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Conceptos Clave - El MBA Personal</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .instructions { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 12px; border-radius: 8px; margin-bottom: 18px; text-align: center; border-left: 4px solid #005BAA; }
+    .instructions span { background: yellow; color: #222; font-weight: bold; border-radius: 2px; padding: 0 2px; }
+    .subrayado { text-decoration: underline; }
+    .resaltado { background: yellow; color: #222; font-weight: bold; padding: 0 2px; border-radius: 2px; }
+    .question { font-size: 1.2em; margin-bottom: 20px; color: #333; padding: 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; border-left: 5px solid #005BAA; }
+    .option { display: block; width: 100%; background: #f0f8ff; color: #222; border: 2px solid #e6f3ff; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 1.05em; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s; text-align: left; }
+    .option:hover { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); border-color: #005BAA; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.15); }
+    .option.correct { background: #d4f7c5; border-color: #4caf50; color: #222; }
+    .option.incorrect { background: #ffd6d6; border-color: #e53935; color: #222; }
+    .progress-bar { width: 100%; height: 8px; background-color: #e9ecef; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.3s; }
+    button { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: all 0.3s; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,91,170,0.3); }
+    .final-score { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 15px; text-align: center; margin-top: 20px; }
+    .final-score .resaltado { font-size: 1.2em; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>❓ Quiz: Conceptos Clave</h1>
+  <div class="instructions"><span>Responde las preguntas seleccionando la opción correcta.</span> <span class="subrayado">¡Pon a prueba tu conocimiento!</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="quiz-area"></div>
+</div>
+<script>
+const questions = [
+  {
+    q: "¿Cuál es la <span class='resaltado'>primera parte fundamental</span> de todo negocio según el MBA Personal?",
+    options: ["Marketing", "Creación de valor", "Ventas", "Finanzas"],
+    answer: 1
+  },
+  {
+    q: "El <span class='subrayado'>Producto Mínimo Viable (MVP)</span> sirve para...",
+    options: ["Maximizar ganancias desde el inicio", "Probar hipótesis y aprender rápido", "Evitar el feedback de clientes", "Reducir la competencia"],
+    answer: 1
+  },
+  {
+    q: "¿Qué significa la <span class='resaltado'>Regla 80/20</span>?",
+    options: ["El 80% de los clientes generan el 20% de los ingresos", "El 20% de las acciones produce el 80% de los resultados", "El 80% de los productos son exitosos", "El 20% del tiempo se dedica a ventas"],
+    answer: 1
+  },
+  {
+    q: "¿Cuál es el objetivo principal de la <span class='subrayado'>propuesta de valor</span>?",
+    options: ["Describir la misión de la empresa", "Explicar por qué tu producto es la mejor opción", "Aumentar los precios", "Reducir costos"],
+    answer: 1
+  },
+  {
+    q: "El <span class='resaltado'>feedback</span> de los clientes permite...",
+    options: ["Ignorar sugerencias", "Ajustar y mejorar productos", "Reducir la calidad", "Evitar cambios"],
+    answer: 1
+  },
+  {
+    q: "¿Qué herramienta ayuda a <span class='subrayado'>comprender profundamente al cliente</span>?",
+    options: ["Mapa de empatía", "Análisis FODA", "Balance general", "Regla 80/20"],
+    answer: 0
+  },
+  {
+    q: "¿Por qué es importante <span class='resaltado'>llevar un control financiero</span>?",
+    options: ["Para tomar mejores decisiones", "Para gastar más", "Para evitar el feedback", "Para reducir la empatía"],
+    answer: 0
+  },
+  {
+    q: "La <span class='subrayado'>iteración</span> en negocios implica...",
+    options: ["Hacer siempre lo mismo", "Mejorar continuamente a partir de pruebas y feedback", "Evitar cambios", "Reducir la innovación"],
+    answer: 1
+  },
+  {
+    q: "¿Qué parte del negocio se encarga de <span class='resaltado'>entregar valor</span> al cliente?",
+    options: ["Finanzas", "Marketing", "Operaciones/Logística", "Ventas"],
+    answer: 2
+  },
+  {
+    q: "El <span class='subrayado'>aprendizaje continuo</span> es importante porque...",
+    options: ["El mundo cambia constantemente", "No es necesario", "Solo sirve para estudiantes", "Reduce la creatividad"],
+    answer: 0
+  }
+];
+let current = 0, score = 0;
+function renderQuiz() {
+  if (current < questions.length) {
+    const q = questions[current];
+    document.getElementById('quiz-area').innerHTML = `
+      <div class="question">${q.q}</div>
+      ${q.options.map((opt,i)=>`<button class="option" onclick="selectOption(${i})">${opt}</button>`).join('')}
+    `;
+    document.getElementById('progress-fill').style.width = ((current+1)/questions.length*100)+"%";
+  } else {
+    document.getElementById('quiz-area').innerHTML = `<div class='final-score'><span class='resaltado'>¡Puntaje final: ${score} / ${questions.length}!</span><br><span class='subrayado'>${score>=7?"¡Excelente dominio de los conceptos!":"Sigue practicando para mejorar."}</span></div>`;
+    document.getElementById('progress-fill').style.width = "100%";
+  }
+}
+function selectOption(i) {
+  const q = questions[current];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx===q.answer) btn.classList.add('correct');
+    else if(idx===i) btn.classList.add('incorrect');
+  });
+  if(i===q.answer) score++;
+  setTimeout(()=>{current++;renderQuiz();},1200);
+}
+renderQuiz();
+</script>
+</body>
+</html> 

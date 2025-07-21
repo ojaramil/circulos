@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El MBA Personal - Interactivo</title>
+  <link rel="stylesheet" href="nuevo-style.css">
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #005BAA;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #005BAA;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #005BAA;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-left: none;
+        border-right: none;
+        padding: 18px 10px 10px 10px;
+      }
+      .main-content-area { order: 1; padding: 10px; }
+      .sidebar-left { order: 2; }
+      .sidebar-right { order: 3; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">MBA</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Negocios y Emprendimiento</span>
+        <span class="content-title">El MBA Personal</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+    </nav>
+  </header>
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_resumen_teorico.html" frameborder="0"></iframe>
+    </main>
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_resumen_teorico.html" class="active-lesson"><span class="icon-placeholder">📄</span>Resumen Teórico</a></li>
+          <li><a href="#" data-src="lecciones/02_ejemplos_practicos.html"><span class="icon-placeholder">✨</span>Ejemplos Prácticos</a></li>
+          <li><a href="#" data-src="lecciones/03_herramientas_tecnicas.html"><span class="icon-placeholder">🛠️</span>Herramientas Técnicas</a></li>
+          <li><a href="#" data-src="lecciones/04_conclusiones.html"><span class="icon-placeholder">🏁</span>Conclusiones</a></li>
+        </ul>
+      </section>
+      <section class="sidebar-section">
+        <h3>Recursos Adicionales</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/glosario.html"><span class="icon-placeholder">📚</span>Glosario</a></li>
+          <li><a href="#" data-src="lecciones/enlaces_interes.html"><span class="icon-placeholder">🔗</span>Enlaces de interés</a></li>
+        </ul>
+      </section>
+    </aside>
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_quiz.html"><span class="icon-placeholder">❓</span>Quiz: Conceptos Clave</a></li>
+          <li><a href="#" data-src="juegos/02_verdadero_falso.html"><span class="icon-placeholder">✔️</span>Verdadero o Falso</a></li>
+          <li><a href="#" data-src="juegos/03_flashcards.html"><span class="icon-placeholder">🃏</span>Flashcards</a></li>
+          <li><a href="#" data-src="juegos/04_identifica_modelo.html"><span class="icon-placeholder">🧠</span>Identifica el Modelo</a></li>
+          <li><a href="#" data-src="juegos/05_reto_accion.html"><span class="icon-placeholder">💪</span>Reto de Acción</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+        if (this.closest('.sidebar-left')) {
+          this.classList.add('active-lesson');
+        } else if (this.closest('.sidebar-right')) {
+          this.classList.add('active-activity');
+        }
+        if (this.getAttribute('data-src')) {
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

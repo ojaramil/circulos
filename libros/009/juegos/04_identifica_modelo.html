@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Identifica el Modelo - El MBA Personal</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 800px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .instructions { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 12px; border-radius: 8px; margin-bottom: 18px; text-align: center; border-left: 4px solid #005BAA; }
+    .instructions span { background: yellow; color: #222; font-weight: bold; border-radius: 2px; padding: 0 2px; }
+    .subrayado { text-decoration: underline; }
+    .resaltado { background: yellow; color: #222; font-weight: bold; padding: 0 2px; border-radius: 2px; }
+    .scenario { font-size: 1.1em; margin-bottom: 18px; color: #333; padding: 18px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; border-left: 5px solid #005BAA; text-align: justify; }
+    .option { display: block; width: 100%; background: #f0f8ff; color: #222; border: 2px solid #e6f3ff; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 1.05em; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s; text-align: left; }
+    .option:hover { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); border-color: #005BAA; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.15); }
+    .option.correct { background: #d4f7c5; border-color: #4caf50; color: #222; }
+    .option.incorrect { background: #ffd6d6; border-color: #e53935; color: #222; }
+    .progress-bar { width: 100%; height: 8px; background-color: #e9ecef; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.3s; }
+    .final-score { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 15px; text-align: center; margin-top: 20px; }
+    .final-score .resaltado { font-size: 1.2em; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 Identifica el Modelo</h1>
+  <div class="instructions"><span>Lee el escenario y selecciona el modelo mental correcto.</span> <span class="subrayado">¡Desafía tu comprensión!</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="modelo-area"></div>
+</div>
+<script>
+const scenarios = [
+  { s: "Una empresa lanza una versión básica de su producto para aprender del mercado antes de invertir más. ¿Qué modelo mental aplica?", opts: ["Propuesta de valor", "MVP (Producto Mínimo Viable)", "Regla 80/20", "Empatía"], a: 1 },
+  { s: "El equipo analiza los comentarios de los clientes y ajusta el producto en cada ciclo. ¿Qué modelo mental es?", opts: ["Iteración", "Finanzas", "Entrega de valor", "Mapa de empatía"], a: 0 },
+  { s: "La empresa se enfoca en el 20% de las tareas que generan el 80% de los resultados. ¿Qué modelo mental aplica?", opts: ["Regla 80/20", "Feedback", "Finanzas", "Propuesta de valor"], a: 0 },
+  { s: "El negocio comunica claramente por qué su producto es la mejor opción. ¿Qué modelo mental es?", opts: ["Propuesta de valor", "Iteración", "Empatía", "MVP"], a: 0 },
+  { s: "El equipo utiliza hojas de cálculo para controlar ingresos y gastos. ¿Qué modelo mental aplica?", opts: ["Feedback", "Finanzas", "Entrega de valor", "Empatía"], a: 1 },
+  { s: "La empresa busca entender profundamente a sus clientes antes de diseñar el producto. ¿Qué modelo mental es?", opts: ["Mapa de empatía", "Iteración", "Finanzas", "Regla 80/20"], a: 0 },
+  { s: "El área de logística se encarga de que el producto llegue al cliente de forma eficiente. ¿Qué modelo mental aplica?", opts: ["Entrega de valor", "Propuesta de valor", "MVP", "Empatía"], a: 0 },
+  { s: "El equipo recopila información de los usuarios para mejorar el producto. ¿Qué modelo mental es?", opts: ["Feedback", "Finanzas", "Iteración", "Regla 80/20"], a: 0 }
+];
+let current = 0, score = 0;
+function renderModelo() {
+  if (current < scenarios.length) {
+    const sc = scenarios[current];
+    document.getElementById('modelo-area').innerHTML = `
+      <div class="scenario">${sc.s}</div>
+      ${sc.opts.map((opt,i)=>`<button class="option" onclick="selectModelo(${i})">${opt}</button>`).join('')}
+    `;
+    document.getElementById('progress-fill').style.width = ((current+1)/scenarios.length*100)+"%";
+  } else {
+    document.getElementById('modelo-area').innerHTML = `<div class='final-score'><span class='resaltado'>¡Puntaje final: ${score} / ${scenarios.length}!</span><br><span class='subrayado'>${score>=6?"¡Gran dominio de los modelos mentales!":"Sigue practicando para mejorar."}</span></div>`;
+    document.getElementById('progress-fill').style.width = "100%";
+  }
+}
+function selectModelo(i) {
+  const sc = scenarios[current];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx===sc.a) btn.classList.add('correct');
+    else if(idx===i) btn.classList.add('incorrect');
+  });
+  if(i===sc.a) score++;
+  setTimeout(()=>{current++;renderModelo();},1200);
+}
+renderModelo();
+</script>
+</body>
+</html> 

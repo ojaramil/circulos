@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso - La Vaca</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; margin-bottom: 30px; }
+    .statement { margin-bottom: 18px; font-weight: bold; }
+    .options { margin-bottom: 24px; }
+    .options button { display: inline-block; min-width: 120px; margin: 0 10px 10px 0; padding: 12px; border-radius: 6px; border: 1px solid #59A9D9; background: #e3f2fd; color: #005BAA; font-size: 1em; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .options button:hover { background: #59A9D9; color: #fff; }
+    .result { font-size: 1.2em; font-weight: bold; color: #388e3c; text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Verdadero o Falso</h1>
+  <div id="vf-game">
+    <div class="statement" id="statement"></div>
+    <div class="options">
+      <button onclick="checkAnswer(true)">Verdadero</button>
+      <button onclick="checkAnswer(false)">Falso</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+<script>
+const statements = [
+  { s: "La vaca representa excusas y creencias limitantes.", a: true },
+  { s: "El libro enseña que el fracaso es el mayor enemigo del éxito.", a: false },
+  { s: "La acción es fundamental para eliminar vacas.", a: true },
+  { s: "El conformismo ayuda a alcanzar el éxito.", a: false },
+  { s: "El libro invita a identificar y cuestionar nuestras vacas.", a: true }
+];
+let current = 0, score = 0;
+function showStatement() {
+  document.getElementById('result').textContent = '';
+  document.getElementById('statement').textContent = statements[current].s;
+}
+function checkAnswer(ans) {
+  if (ans === statements[current].a) {
+    score++;
+    document.getElementById('result').textContent = '¡Correcto!';
+  } else {
+    document.getElementById('result').textContent = 'Incorrecto.';
+  }
+  setTimeout(() => {
+    current++;
+    if (current < statements.length) {
+      showStatement();
+    } else {
+      document.getElementById('vf-game').innerHTML = `<div class='result'>Tu puntaje: ${score} de ${statements.length}</div>`;
+    }
+  }, 900);
+}
+showStatement();
+</script>
+</body>
+</html> 

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Mata tu vaca</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; margin-bottom: 30px; }
+    .question { margin-bottom: 18px; font-weight: bold; }
+    .options { margin-bottom: 24px; }
+    .options button { display: block; width: 100%; margin-bottom: 10px; padding: 12px; border-radius: 6px; border: 1px solid #59A9D9; background: #e3f2fd; color: #005BAA; font-size: 1em; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .options button:hover { background: #59A9D9; color: #fff; }
+    .result { font-size: 1.2em; font-weight: bold; color: #388e3c; text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Quiz: Mata tu vaca</h1>
+  <div id="quiz">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    q: "¿Qué representa la 'vaca' en el libro de Camilo Cruz?",
+    options: [
+      "Una fuente de riqueza",
+      "Una excusa o creencia limitante",
+      "Un animal sagrado",
+      "Un obstáculo físico"
+    ],
+    answer: 1
+  },
+  {
+    q: "¿Cuál es el verdadero enemigo del éxito según el libro?",
+    options: [
+      "El fracaso",
+      "La mediocridad y el conformismo",
+      "La pobreza",
+      "La falta de recursos"
+    ],
+    answer: 1
+  },
+  {
+    q: "¿Qué sucede con la familia cuando pierden su vaca?",
+    options: [
+      "Se mudan a otra ciudad",
+      "Se resignan a la pobreza",
+      "Prosperan al buscar nuevas oportunidades",
+      "Reciben ayuda del gobierno"
+    ],
+    answer: 2
+  },
+  {
+    q: "¿Cuál es el primer paso para eliminar una vaca?",
+    options: [
+      "Ignorarla",
+      "Reconocer que existe",
+      "Culpar a otros",
+      "Esperar el momento perfecto"
+    ],
+    answer: 1
+  },
+  {
+    q: "¿Qué recomienda el libro para cambiar creencias limitantes?",
+    options: [
+      "Buscar excusas nuevas",
+      "Esperar a que otros cambien",
+      "Cuestionarlas y tomar acción",
+      "No hacer nada"
+    ],
+    answer: 2
+  }
+];
+let current = 0, score = 0;
+function showQuestion() {
+  document.getElementById('result').textContent = '';
+  const q = questions[current];
+  document.getElementById('question').textContent = q.q;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+function checkAnswer(i) {
+  if (i === questions[current].answer) {
+    score++;
+    document.getElementById('result').textContent = '¡Correcto!';
+  } else {
+    document.getElementById('result').textContent = 'Incorrecto.';
+  }
+  setTimeout(() => {
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      document.getElementById('quiz').innerHTML = `<div class='result'>Tu puntaje: ${score} de ${questions.length}</div>`;
+    }
+  }, 900);
+}
+showQuestion();
+</script>
+</body>
+</html> 

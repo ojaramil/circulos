@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Identifica la Vaca - La Vaca</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; margin-bottom: 30px; }
+    .phrase { margin-bottom: 18px; font-weight: bold; }
+    .options { margin-bottom: 24px; }
+    .options button { display: inline-block; min-width: 120px; margin: 0 10px 10px 0; padding: 12px; border-radius: 6px; border: 1px solid #59A9D9; background: #e3f2fd; color: #005BAA; font-size: 1em; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .options button:hover { background: #59A9D9; color: #fff; }
+    .result { font-size: 1.2em; font-weight: bold; color: #388e3c; text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Identifica la Vaca</h1>
+  <div id="idvaca-game">
+    <div class="phrase" id="phrase"></div>
+    <div class="options">
+      <button onclick="checkVaca(true)">Es una vaca</button>
+      <button onclick="checkVaca(false)">No es una vaca</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+<script>
+const phrases = [
+  { p: "No tengo tiempo para cambiar.", v: true },
+  { p: "El éxito depende de mi esfuerzo.", v: false },
+  { p: "Así soy yo, no puedo cambiar.", v: true },
+  { p: "El conformismo es el mayor enemigo del éxito.", v: false },
+  { p: "No merezco más de lo que tengo.", v: true }
+];
+let current = 0, score = 0;
+function showPhrase() {
+  document.getElementById('result').textContent = '';
+  document.getElementById('phrase').textContent = phrases[current].p;
+}
+function checkVaca(ans) {
+  if (ans === phrases[current].v) {
+    score++;
+    document.getElementById('result').textContent = '¡Correcto!';
+  } else {
+    document.getElementById('result').textContent = 'Incorrecto.';
+  }
+  setTimeout(() => {
+    current++;
+    if (current < phrases.length) {
+      showPhrase();
+    } else {
+      document.getElementById('idvaca-game').innerHTML = `<div class='result'>Tu puntaje: ${score} de ${phrases.length}</div>`;
+    }
+  }, 900);
+}
+showPhrase();
+</script>
+</body>
+</html> 

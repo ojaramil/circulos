@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards - La Vaca</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; margin-bottom: 30px; }
+    .flashcard { background: #e3f2fd; border-radius: 8px; padding: 30px 20px; font-size: 1.2em; color: #005BAA; text-align: center; min-height: 90px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(30,34,51,0.08); cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .flashcard.flipped { background: #59A9D9; color: #fff; }
+    .controls { text-align: center; }
+    .controls button { margin: 0 8px; padding: 10px 18px; border-radius: 6px; border: 1px solid #59A9D9; background: #e3f2fd; color: #005BAA; font-size: 1em; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .controls button:hover { background: #59A9D9; color: #fff; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Flashcards: Conceptos Clave</h1>
+  <div class="flashcard" id="flashcard" onclick="flipCard()"></div>
+  <div class="controls">
+    <button onclick="prevCard()">Anterior</button>
+    <button onclick="nextCard()">Siguiente</button>
+  </div>
+</div>
+<script>
+const cards = [
+  { q: "¿Qué es una 'vaca'?", a: "Una excusa, creencia limitante o justificación que nos impide avanzar." },
+  { q: "¿Cuál es el mayor enemigo del éxito?", a: "La mediocridad y el conformismo." },
+  { q: "¿Qué recomienda el libro para eliminar vacas?", a: "Identificarlas, cuestionarlas y tomar acción." },
+  { q: "¿Qué sucede cuando la familia pierde su vaca?", a: "Prosperan al buscar nuevas oportunidades." },
+  { q: "¿Qué actitud debemos evitar según el libro?", a: "El conformismo y las excusas." }
+];
+let current = 0, flipped = false;
+function showCard() {
+  const card = cards[current];
+  const el = document.getElementById('flashcard');
+  el.textContent = flipped ? card.a : card.q;
+  el.className = 'flashcard' + (flipped ? ' flipped' : '');
+}
+function flipCard() {
+  flipped = !flipped;
+  showCard();
+}
+function prevCard() {
+  if (current > 0) { current--; flipped = false; showCard(); }
+}
+function nextCard() {
+  if (current < cards.length - 1) { current++; flipped = false; showCard(); }
+}
+showCard();
+</script>
+</body>
+</html> 

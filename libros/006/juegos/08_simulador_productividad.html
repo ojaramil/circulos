@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Productividad - Curso 006</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #4CAF50;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #388E3C;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .game-section {
+            background-color: #E8F5E8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .simulator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .control-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .results-panel {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #2196F3;
+        }
+        .strategy-selector {
+            margin: 15px 0;
+        }
+        .strategy-selector label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .strategy-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .time-input {
+            margin: 15px 0;
+        }
+        .time-input label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .time-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .simulate-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .simulate-btn:hover {
+            background-color: #45a049;
+        }
+        .results-display {
+            margin: 20px 0;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .result-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .productivity-chart {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .chart-label {
+            width: 150px;
+            font-weight: bold;
+            color: #333;
+        }
+        .chart-progress {
+            flex: 1;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            transition: width 0.5s ease;
+            border-radius: 15px;
+        }
+        .chart-value {
+            width: 80px;
+            text-align: right;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .comparison-table th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .tip-box {
+            background-color: #FFF3E0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #FF9800;
+        }
+        .frog-emoji {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+        .strategy-info {
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #8bc34a;
+        }
+        .progress-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .progress-high { background-color: #4CAF50; }
+        .progress-medium { background-color: #FF9800; }
+        .progress-low { background-color: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="frog-emoji">🐸</span>Simulador de Productividad</h1>
+        
+        <div class="game-section">
+            <h2>⚡ Simula tu productividad diaria</h2>
+            <p>Experimenta con diferentes estrategias de productividad y observa cómo afectan tu rendimiento diario. Aprende qué combinación de técnicas funciona mejor para ti.</p>
+        </div>
+
+        <div class="simulator-grid">
+            <div class="control-panel">
+                <h3>🎛️ Panel de Control</h3>
+                
+                <div class="strategy-selector">
+                    <label for="planningStrategy">Estrategia de Planificación:</label>
+                    <select id="planningStrategy">
+                        <option value="none">Sin planificación</option>
+                        <option value="basic">Planificación básica</option>
+                        <option value="abcde">Método ABCDE</option>
+                        <option value="advanced">Planificación avanzada</option>
+                    </select>
+                </div>
+
+                <div class="strategy-selector">
+                    <label for="priorityStrategy">Estrategia de Priorización:</label>
+                    <select id="priorityStrategy">
+                        <option value="none">Sin priorización</option>
+                        <option value="urgent">Por urgencia</option>
+                        <option value="important">Por importancia</option>
+                        <option value="smart">Priorización inteligente</option>
+                    </select>
+                </div>
+
+                <div class="strategy-selector">
+                    <label for="focusStrategy">Estrategia de Enfoque:</label>
+                    <select id="focusStrategy">
+                        <option value="multitask">Multitarea</option>
+                        <option value="single">Una tarea a la vez</option>
+                        <option value="pomodoro">Técnica Pomodoro</option>
+                        <option value="deep">Trabajo profundo</option>
+                    </select>
+                </div>
+
+                <div class="strategy-selector">
+                    <label for="timeStrategy">Gestión del Tiempo:</label>
+                    <select id="timeStrategy">
+                        <option value="reactive">Reactivo</option>
+                        <option value="scheduled">Programado</option>
+                        <option value="timeblocking">Bloqueo de tiempo</option>
+                        <option value="optimal">Optimización total</option>
+                    </select>
+                </div>
+
+                <div class="time-input">
+                    <label for="workHours">Horas de trabajo disponibles:</label>
+                    <input type="number" id="workHours" value="8" min="1" max="16" step="0.5">
+                </div>
+
+                <div class="time-input">
+                    <label for="taskCount">Número de tareas pendientes:</label>
+                    <input type="number" id="taskCount" value="10" min="1" max="50">
+                </div>
+
+                <button class="simulate-btn" onclick="simulateProductivity()">🚀 Simular Productividad</button>
+            </div>
+
+            <div class="results-panel">
+                <h3>📊 Resultados de la Simulación</h3>
+                
+                <div class="results-display" id="resultsDisplay">
+                    <div class="result-item">
+                        <span class="result-label">Tareas Completadas:</span>
+                        <span class="result-value" id="completedTasks">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Eficiencia:</span>
+                        <span class="result-value" id="efficiency">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Calidad del Trabajo:</span>
+                        <span class="result-value" id="quality">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estrés Nivel:</span>
+                        <span class="result-value" id="stress">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Puntuación Total:</span>
+                        <span class="result-value" id="totalScore">-</span>
+                    </div>
+                </div>
+
+                <div class="productivity-chart" id="productivityChart">
+                    <h4>📈 Métricas de Productividad</h4>
+                    <div class="chart-bar">
+                        <span class="chart-label">Eficiencia</span>
+                        <div class="chart-progress">
+                            <div class="chart-fill" id="efficiencyBar" style="width: 0%"></div>
+                        </div>
+                        <span class="chart-value" id="efficiencyValue">0%</span>
+                    </div>
+                    <div class="chart-bar">
+                        <span class="chart-label">Calidad</span>
+                        <div class="chart-progress">
+                            <div class="chart-fill" id="qualityBar" style="width: 0%"></div>
+                        </div>
+                        <span class="chart-value" id="qualityValue">0%</span>
+                    </div>
+                    <div class="chart-bar">
+                        <span class="chart-label">Satisfacción</span>
+                        <div class="chart-progress">
+                            <div class="chart-fill" id="satisfactionBar" style="width: 0%"></div>
+                        </div>
+                        <span class="chart-value" id="satisfactionValue">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="strategy-info" id="strategyInfo">
+            <h3>💡 Información de Estrategias</h3>
+            <p>Selecciona diferentes estrategias para ver cómo afectan tu productividad. Cada combinación produce resultados únicos.</p>
+        </div>
+
+        <div class="tip-box">
+            <h3>🎯 Consejos para maximizar tu productividad:</h3>
+            <ul>
+                <li><span class="progress-indicator progress-high"></span><strong>Planificación ABCDE:</strong> Prioriza tareas por importancia y urgencia</li>
+                <li><span class="progress-indicator progress-high"></span><strong>Trabajo profundo:</strong> Enfócate en una tarea a la vez sin interrupciones</li>
+                <li><span class="progress-indicator progress-medium"></span><strong>Bloqueo de tiempo:</strong> Reserva bloques específicos para tareas importantes</li>
+                <li><span class="progress-indicator progress-low"></span><strong>Multitarea:</strong> Evita cambiar constantemente entre tareas</li>
+            </ul>
+        </div>
+
+        <div class="game-section">
+            <h2>📋 Comparación de Estrategias</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Estrategia</th>
+                        <th>Eficiencia</th>
+                        <th>Calidad</th>
+                        <th>Estrés</th>
+                        <th>Recomendación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sin planificación</td>
+                        <td>30%</td>
+                        <td>40%</td>
+                        <td>Alto</td>
+                        <td>❌ Evitar</td>
+                    </tr>
+                    <tr>
+                        <td>Planificación básica</td>
+                        <td>60%</td>
+                        <td>65%</td>
+                        <td>Medio</td>
+                        <td>✅ Bueno</td>
+                    </tr>
+                    <tr>
+                        <td>Método ABCDE</td>
+                        <td>85%</td>
+                        <td>90%</td>
+                        <td>Bajo</td>
+                        <td>⭐ Excelente</td>
+                    </tr>
+                    <tr>
+                        <td>Planificación avanzada</td>
+                        <td>95%</td>
+                        <td>95%</td>
+                        <td>Muy bajo</td>
+                        <td>🏆 Óptimo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function simulateProductivity() {
+            const planning = document.getElementById('planningStrategy').value;
+            const priority = document.getElementById('priorityStrategy').value;
+            const focus = document.getElementById('focusStrategy').value;
+            const timeManagement = document.getElementById('timeStrategy').value;
+            const workHours = parseFloat(document.getElementById('workHours').value);
+            const taskCount = parseInt(document.getElementById('taskCount').value);
+
+            // Calcular métricas basadas en las estrategias seleccionadas
+            const metrics = calculateMetrics(planning, priority, focus, timeManagement, workHours, taskCount);
+            
+            // Actualizar resultados
+            updateResults(metrics);
+            
+            // Actualizar gráficos
+            updateCharts(metrics);
+            
+            // Mostrar información de estrategia
+            showStrategyInfo(planning, priority, focus, timeManagement);
+        }
+
+        function calculateMetrics(planning, priority, focus, timeManagement, workHours, taskCount) {
+            let efficiency = 0;
+            let quality = 0;
+            let stress = 0;
+            let completedTasks = 0;
+
+            // Factor de planificación
+            const planningFactors = {
+                'none': { efficiency: 0.3, quality: 0.4, stress: 0.8 },
+                'basic': { efficiency: 0.6, quality: 0.65, stress: 0.6 },
+                'abcde': { efficiency: 0.85, quality: 0.9, stress: 0.3 },
+                'advanced': { efficiency: 0.95, quality: 0.95, stress: 0.2 }
+            };
+
+            // Factor de priorización
+            const priorityFactors = {
+                'none': { efficiency: 0.4, quality: 0.5, stress: 0.7 },
+                'urgent': { efficiency: 0.6, quality: 0.6, stress: 0.6 },
+                'important': { efficiency: 0.75, quality: 0.8, stress: 0.4 },
+                'smart': { efficiency: 0.9, quality: 0.85, stress: 0.3 }
+            };
+
+            // Factor de enfoque
+            const focusFactors = {
+                'multitask': { efficiency: 0.4, quality: 0.5, stress: 0.8 },
+                'single': { efficiency: 0.7, quality: 0.75, stress: 0.5 },
+                'pomodoro': { efficiency: 0.8, quality: 0.8, stress: 0.4 },
+                'deep': { efficiency: 0.9, quality: 0.9, stress: 0.3 }
+            };
+
+            // Factor de gestión del tiempo
+            const timeFactors = {
+                'reactive': { efficiency: 0.3, quality: 0.4, stress: 0.8 },
+                'scheduled': { efficiency: 0.7, quality: 0.7, stress: 0.5 },
+                'timeblocking': { efficiency: 0.85, quality: 0.85, stress: 0.3 },
+                'optimal': { efficiency: 0.95, quality: 0.9, stress: 0.2 }
+            };
+
+            // Calcular métricas combinadas
+            const p = planningFactors[planning];
+            const pr = priorityFactors[priority];
+            const f = focusFactors[focus];
+            const t = timeFactors[timeManagement];
+
+            efficiency = (p.efficiency + pr.efficiency + f.efficiency + t.efficiency) / 4;
+            quality = (p.quality + pr.quality + f.quality + t.quality) / 4;
+            stress = (p.stress + pr.stress + f.stress + t.stress) / 4;
+
+            // Ajustar por horas de trabajo y número de tareas
+            const timeEfficiency = Math.min(workHours / 8, 1.2); // Máximo 120% de eficiencia
+            const taskEfficiency = Math.min(taskCount / 10, 1.5); // Máximo 150% de eficiencia
+
+            efficiency *= timeEfficiency * taskEfficiency;
+            efficiency = Math.min(efficiency, 1); // Máximo 100%
+
+            // Calcular tareas completadas
+            completedTasks = Math.round(taskCount * efficiency);
+
+            // Calcular puntuación total
+            const totalScore = Math.round((efficiency * 0.4 + quality * 0.4 + (1 - stress) * 0.2) * 100);
+
+            return {
+                efficiency: Math.round(efficiency * 100),
+                quality: Math.round(quality * 100),
+                stress: Math.round(stress * 100),
+                completedTasks: completedTasks,
+                totalScore: totalScore,
+                satisfaction: Math.round((1 - stress) * 100)
+            };
+        }
+
+        function updateResults(metrics) {
+            document.getElementById('completedTasks').textContent = metrics.completedTasks;
+            document.getElementById('efficiency').textContent = metrics.efficiency + '%';
+            document.getElementById('quality').textContent = metrics.quality + '%';
+            document.getElementById('stress').textContent = metrics.stress + '%';
+            document.getElementById('totalScore').textContent = metrics.totalScore + '/100';
+        }
+
+        function updateCharts(metrics) {
+            // Actualizar barras de progreso
+            document.getElementById('efficiencyBar').style.width = metrics.efficiency + '%';
+            document.getElementById('qualityBar').style.width = metrics.quality + '%';
+            document.getElementById('satisfactionBar').style.width = metrics.satisfaction + '%';
+
+            // Actualizar valores
+            document.getElementById('efficiencyValue').textContent = metrics.efficiency + '%';
+            document.getElementById('qualityValue').textContent = metrics.quality + '%';
+            document.getElementById('satisfactionValue').textContent = metrics.satisfaction + '%';
+        }
+
+        function showStrategyInfo(planning, priority, focus, timeManagement) {
+            const strategyInfo = document.getElementById('strategyInfo');
+            
+            const strategyDescriptions = {
+                'planning': {
+                    'none': 'Sin planificación: Trabajas de forma reactiva, lo que reduce significativamente tu eficiencia.',
+                    'basic': 'Planificación básica: Tienes una lista de tareas, pero sin priorización clara.',
+                    'abcde': 'Método ABCDE: Priorizas tareas por importancia y urgencia. ¡Excelente elección!',
+                    'advanced': 'Planificación avanzada: Usas múltiples técnicas de planificación. ¡Óptimo rendimiento!'
+                },
+                'priority': {
+                    'none': 'Sin priorización: Todas las tareas parecen igual de importantes.',
+                    'urgent': 'Por urgencia: Te enfocas en lo urgente, pero no siempre en lo importante.',
+                    'important': 'Por importancia: Priorizas lo que realmente importa. Buena estrategia.',
+                    'smart': 'Priorización inteligente: Combinas urgencia e importancia. ¡Excelente!'
+                },
+                'focus': {
+                    'multitask': 'Multitarea: Cambiar constantemente entre tareas reduce tu eficiencia.',
+                    'single': 'Una tarea a la vez: Mejor enfoque que la multitarea.',
+                    'pomodoro': 'Técnica Pomodoro: Trabajas en intervalos concentrados. Muy efectivo.',
+                    'deep': 'Trabajo profundo: Máximo enfoque sin interrupciones. ¡Ideal!'
+                },
+                'time': {
+                    'reactive': 'Reactivo: Respondes a las demandas según llegan. Poco eficiente.',
+                    'scheduled': 'Programado: Tienes un horario básico. Mejora la eficiencia.',
+                    'timeblocking': 'Bloqueo de tiempo: Reservas bloques específicos para tareas. Muy efectivo.',
+                    'optimal': 'Optimización total: Usas técnicas avanzadas de gestión del tiempo. ¡Perfecto!'
+                }
+            };
+
+            const info = `
+                <h3>💡 Análisis de tu Estrategia</h3>
+                <p><strong>Planificación:</strong> ${strategyDescriptions.planning[planning]}</p>
+                <p><strong>Priorización:</strong> ${strategyDescriptions.priority[priority]}</p>
+                <p><strong>Enfoque:</strong> ${strategyDescriptions.focus[focus]}</p>
+                <p><strong>Gestión del tiempo:</strong> ${strategyDescriptions.time[timeManagement]}</p>
+            `;
+
+            strategyInfo.innerHTML = info;
+        }
+
+        // Simulación inicial
+        window.onload = function() {
+            simulateProductivity();
+        };
+    </script>
+</body>
+</html> 

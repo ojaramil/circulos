@@ -14,6 +14,7 @@
         <span class="module-name">Círculo de Lectura • Ciencia y Optimismo</span>
         <span class="content-title">El Optimista Racional - Matt Ridley</span>
       </div>
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
     </div>
     <nav class="main-nav">
       <a href="#" class="nav-link">Ver Otros Libros</a>
@@ -22,6 +23,10 @@
       <a href="https://amzn.to/4l77JcC" class="nav-link">Adquirir libro</a>
     </nav>
   </header>
+  
+  <!-- Overlay para móviles -->
+  <div class="mobile-overlay" onclick="closeMobileMenus()"></div>
+  
   <div class="main-layout">
     <nav class="sidebar left">
       <h2>Lecciones</h2>
@@ -60,30 +65,74 @@
   </div>
   <script>
     const frame = document.getElementById('content-frame');
+    
+    // Funciones para menú móvil
+    function toggleMobileMenu() {
+      const leftSidebar = document.querySelector('.sidebar.left');
+      const overlay = document.querySelector('.mobile-overlay');
+      
+      if (leftSidebar.classList.contains('mobile-open')) {
+        closeMobileMenus();
+      } else {
+        leftSidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+      }
+    }
+    
+    function closeMobileMenus() {
+      document.querySelectorAll('.sidebar').forEach(sidebar => {
+        sidebar.classList.remove('mobile-open');
+      });
+      document.querySelector('.mobile-overlay').classList.remove('active');
+    }
+    
+    // Cerrar menús al hacer clic en un enlace (móviles)
+    function closeMenusOnClick() {
+      if (window.innerWidth <= 768) {
+        closeMobileMenus();
+      }
+    }
+    
     // Sidebar izquierda
     document.querySelectorAll('.sidebar.left a').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         document.querySelectorAll('.sidebar.left a').forEach(a => a.classList.remove('active'));
         this.classList.add('active');
-        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+        if (this.getAttribute('data-src')) {
+          frame.src = this.getAttribute('data-src');
+          closeMenusOnClick();
+        }
       });
     });
+    
     // Sidebar derecha
     document.querySelectorAll('.sidebar.right a').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
-        if (this.getAttribute('data-src')) frame.src = this.getAttribute('data-src');
+        if (this.getAttribute('data-src')) {
+          frame.src = this.getAttribute('data-src');
+          closeMenusOnClick();
+        }
       });
     });
+    
     // Menú superior
     document.querySelectorAll('.main-nav .nav-link').forEach(link => {
       link.addEventListener('click', function(e) {
         if (this.getAttribute('data-src')) {
           e.preventDefault();
           frame.src = this.getAttribute('data-src');
+          closeMenusOnClick();
         }
       });
+    });
+    
+    // Cerrar menús al redimensionar la ventana
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        closeMobileMenus();
+      }
     });
   </script>
 </body>

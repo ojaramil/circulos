@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos Productivos - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #F0FFF0;
+            color: #2c2c2c;
+            line-height: 1.7;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h3 {
+            color: #228B22;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #228B22;
+            padding-left: 10px;
+        }
+        .game-section {
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #32CD32;
+        }
+        .habit-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        .habit-card:hover {
+            border-color: #228B22;
+            transform: translateY(-2px);
+        }
+        .habit-streak {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .streak-day {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        .streak-day.completed {
+            background: #28a745;
+            color: white;
+        }
+        .streak-day.current {
+            background: #ffc107;
+            color: #333;
+            border: 2px solid #228B22;
+        }
+        .habit-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .habit-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .habit-option:hover {
+            border-color: #228B22;
+            background: #f0fff0;
+        }
+        .habit-option.selected {
+            border-color: #228B22;
+            background: #e8f5e8;
+        }
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(#228B22 0deg, #e0e0e0 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            position: relative;
+        }
+        .progress-circle::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+        .progress-text {
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+            color: #228B22;
+        }
+        button {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
+        }
+        .hidden {
+            display: none;
+        }
+        .result-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #228B22;
+        }
+        .frog-emoji {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .habit-score {
+            background: #228B22;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="frog-emoji">🐸</div>
+        <h3>Hábitos Productivos - Juego Interactivo</h3>
+        
+        <div class="game-section">
+            <p><strong>Instrucciones:</strong> Aprende a construir hábitos productivos que transformen tu vida. Los hábitos son la base del éxito a largo plazo.</p>
+        </div>
+
+        <div id="step1" class="game-section">
+            <h3>Paso 1: Entiende el Poder de los Hábitos 🧠</h3>
+            <div class="result-section">
+                <h4>¿Por qué los hábitos son importantes?</h4>
+                <p><strong>Regla de Tracy:</strong> "Los hábitos determinan el 95% de su comportamiento. Los hábitos exitosos crean personas exitosas."</p>
+                <p>Los hábitos son comportamientos automáticos que se forman a través de la repetición. Los buenos hábitos crean buenos resultados de manera consistente.</p>
+            </div>
+            <button onclick="startGame()">Comenzar Juego</button>
+        </div>
+
+        <div id="step2" class="game-section hidden">
+            <h3>Paso 2: Construye tus Hábitos Productivos 🎯</h3>
+            <div id="habitScore" class="habit-score">Puntuación de Hábitos: 0%</div>
+            
+            <div id="habit1" class="habit-card">
+                <h4>🌅 Hábito Matutino: Despertar temprano</h4>
+                <p>Elige tu hora de despertar ideal para maximizar la productividad:</p>
+                
+                <div class="habit-options">
+                    <div class="habit-option" onclick="selectHabit(1, 'early')">
+                        <strong>5:00 AM</strong><br>
+                        <small>Muy temprano</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(1, 'medium')">
+                        <strong>6:00 AM</strong><br>
+                        <small>Temprano</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(1, 'late')">
+                        <strong>7:00 AM</strong><br>
+                        <small>Normal</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(1, 'very_late')">
+                        <strong>8:00 AM</strong><br>
+                        <small>Tardío</small>
+                    </div>
+                </div>
+                
+                <div id="streak1" class="habit-streak hidden">
+                    <div class="streak-day">1</div>
+                    <div class="streak-day">2</div>
+                    <div class="streak-day">3</div>
+                    <div class="streak-day">4</div>
+                    <div class="streak-day">5</div>
+                    <div class="streak-day">6</div>
+                    <div class="streak-day">7</div>
+                </div>
+                
+                <button id="track1" onclick="trackHabit(1)" class="hidden">Marcar como Completado</button>
+            </div>
+
+            <div id="habit2" class="habit-card">
+                <h4>📚 Hábito de Aprendizaje: Leer diariamente</h4>
+                <p>Elige cuánto tiempo dedicarás a la lectura cada día:</p>
+                
+                <div class="habit-options">
+                    <div class="habit-option" onclick="selectHabit(2, 'intensive')">
+                        <strong>1 hora</strong><br>
+                        <small>Intensivo</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(2, 'moderate')">
+                        <strong>30 min</strong><br>
+                        <small>Moderado</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(2, 'light')">
+                        <strong>15 min</strong><br>
+                        <small>Ligero</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(2, 'minimal')">
+                        <strong>5 min</strong><br>
+                        <small>Mínimo</small>
+                    </div>
+                </div>
+                
+                <div id="streak2" class="habit-streak hidden">
+                    <div class="streak-day">1</div>
+                    <div class="streak-day">2</div>
+                    <div class="streak-day">3</div>
+                    <div class="streak-day">4</div>
+                    <div class="streak-day">5</div>
+                    <div class="streak-day">6</div>
+                    <div class="streak-day">7</div>
+                </div>
+                
+                <button id="track2" onclick="trackHabit(2)" class="hidden">Marcar como Completado</button>
+            </div>
+
+            <div id="habit3" class="habit-card">
+                <h4>🏃 Hábito de Salud: Ejercicio diario</h4>
+                <p>Elige tu rutina de ejercicio ideal:</p>
+                
+                <div class="habit-options">
+                    <div class="habit-option" onclick="selectHabit(3, 'intense')">
+                        <strong>1 hora</strong><br>
+                        <small>Intenso</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(3, 'moderate')">
+                        <strong>30 min</strong><br>
+                        <small>Moderado</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(3, 'light')">
+                        <strong>15 min</strong><br>
+                        <small>Ligero</small>
+                    </div>
+                    <div class="habit-option" onclick="selectHabit(3, 'walk')">
+                        <strong>Caminar</strong><br>
+                        <small>10,000 pasos</small>
+                    </div>
+                </div>
+                
+                <div id="streak3" class="habit-streak hidden">
+                    <div class="streak-day">1</div>
+                    <div class="streak-day">2</div>
+                    <div class="streak-day">3</div>
+                    <div class="streak-day">4</div>
+                    <div class="streak-day">5</div>
+                    <div class="streak-day">6</div>
+                    <div class="streak-day">7</div>
+                </div>
+                
+                <button id="track3" onclick="trackHabit(3)" class="hidden">Marcar como Completado</button>
+            </div>
+
+            <button onclick="showResults()">Ver Resultados Finales</button>
+        </div>
+
+        <div id="step3" class="game-section hidden">
+            <h3>Paso 3: Resultados y Análisis 📊</h3>
+            <div id="finalResults"></div>
+            <button onclick="showHabitScience()">Ver Ciencia de los Hábitos</button>
+        </div>
+
+        <div id="step4" class="game-section hidden">
+            <h3>Paso 4: Ciencia de los Hábitos y Aplicación 🧬</h3>
+            <div id="habitScience"></div>
+            <button onclick="resetGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let habits = {};
+        let habitScore = 0;
+        let currentDay = 1;
+
+        function startGame() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function selectHabit(habitId, intensity) {
+            // Reset all options for this habit
+            const habitCard = document.getElementById(`habit${habitId}`);
+            const habitOptions = habitCard.querySelectorAll('.habit-option');
+            habitOptions.forEach(option => option.classList.remove('selected'));
+            
+            // Select clicked option
+            event.target.closest('.habit-option').classList.add('selected');
+            
+            // Store habit info
+            habits[habitId] = {
+                intensity: intensity,
+                streak: 0,
+                completed: false,
+                score: 0
+            };
+            
+            // Show streak tracker and track button
+            document.getElementById(`streak${habitId}`).classList.remove('hidden');
+            document.getElementById(`track${habitId}`).classList.remove('hidden');
+        }
+
+        function trackHabit(habitId) {
+            const habit = habits[habitId];
+            habit.streak++;
+            habit.completed = true;
+            
+            // Calculate score based on intensity and streak
+            let intensityScore = 0;
+            switch(habit.intensity) {
+                case 'early':
+                case 'intensive':
+                case 'intense':
+                    intensityScore = 20;
+                    break;
+                case 'medium':
+                case 'moderate':
+                    intensityScore = 15;
+                    break;
+                case 'late':
+                case 'light':
+                    intensityScore = 10;
+                    break;
+                case 'very_late':
+                case 'minimal':
+                case 'walk':
+                    intensityScore = 5;
+                    break;
+            }
+            
+            habit.score = intensityScore * habit.streak;
+            
+            // Update streak display
+            const streakDays = document.querySelectorAll(`#streak${habitId} .streak-day`);
+            for (let i = 0; i < habit.streak; i++) {
+                streakDays[i].classList.add('completed');
+            }
+            
+            // Update overall score
+            updateHabitScore();
+            
+            // Hide track button for this day
+            document.getElementById(`track${habitId}`).style.display = 'none';
+        }
+
+        function updateHabitScore() {
+            let totalScore = 0;
+            Object.values(habits).forEach(habit => {
+                totalScore += habit.score;
+            });
+            
+            habitScore = Math.min(100, totalScore);
+            document.getElementById('habitScore').textContent = `Puntuación de Hábitos: ${Math.round(habitScore)}%`;
+        }
+
+        function showResults() {
+            const container = document.getElementById('finalResults');
+            let html = '<div class="result-section">';
+            
+            html += `<h4>🎯 Su Puntuación de Hábitos: ${Math.round(habitScore)}%</h4>`;
+            
+            if (habitScore >= 80) {
+                html += '<p style="color: #28a745; font-weight: bold;">🌟 ¡Excelente! Usted tiene hábitos de persona exitosa.</p>';
+            } else if (habitScore >= 60) {
+                html += '<p style="color: #ffc107; font-weight: bold;">✅ Bueno, pero puede mejorar sus hábitos.</p>';
+            } else {
+                html += '<p style="color: #dc3545; font-weight: bold;">⚠️ Necesita trabajar en construir mejores hábitos.</p>';
+            }
+            
+            html += '<h4>📋 Análisis de Hábitos:</h4>';
+            Object.keys(habits).forEach(habitId => {
+                const habit = habits[habitId];
+                const color = habit.score > 20 ? '#28a745' : '#dc3545';
+                html += `<p style="color: ${color};">Hábito ${habitId}: ${habit.streak} días consecutivos (${habit.score} puntos)</p>`;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function showHabitScience() {
+            const container = document.getElementById('habitScience');
+            let html = '<div class="result-section">';
+            
+            html += '<h4>🧬 Ciencia de los Hábitos:</h4>';
+            
+            html += `
+                <div class="habit-card">
+                    <h5>🔄 El Bucle del Hábito (Cue → Craving → Response → Reward)</h5>
+                    <p><strong>Señal:</strong> El disparador que inicia el hábito</p>
+                    <p><strong>Antojo:</strong> El deseo que motiva la acción</p>
+                    <p><strong>Respuesta:</strong> La acción que realiza</p>
+                    <p><strong>Recompensa:</strong> El beneficio que refuerza el hábito</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="habit-card">
+                    <h5>⏰ La Regla de los 21 Días</h5>
+                    <p>Se necesitan aproximadamente 21 días para formar un nuevo hábito. Los primeros 7 días son los más difíciles.</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="habit-card">
+                    <h5>🎯 Estrategias para Construir Hábitos:</h5>
+                    <ul>
+                        <li><strong>Hacerlo fácil:</strong> Reduzca la fricción para comenzar</li>
+                        <li><strong>Hacerlo obvio:</strong> Coloque señales visuales</li>
+                        <li><strong>Hacerlo atractivo:</strong> Vincule con algo que disfrute</li>
+                        <li><strong>Hacerlo satisfactorio:</strong> Celebre los pequeños éxitos</li>
+                    </ul>
+                </div>
+            `;
+            
+            html += `
+                <div class="habit-card">
+                    <h5>🚫 Estrategias para Romper Malos Hábitos:</h5>
+                    <ul>
+                        <li><strong>Hacerlo invisible:</strong> Elimine las señales</li>
+                        <li><strong>Hacerlo poco atractivo:</strong> Encuentre alternativas mejores</li>
+                        <li><strong>Hacerlo difícil:</strong> Aumente la fricción</li>
+                        <li><strong>Hacerlo insatisfactorio:</strong> Considere las consecuencias</li>
+                    </ul>
+                </div>
+            `;
+            
+            html += `
+                <h4>💡 Aplicación Práctica:</h4>
+                <p>Esta semana, elija UN hábito que quiera construir. Comience pequeño, sea consistente, y observe cómo se transforma su vida.</p>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

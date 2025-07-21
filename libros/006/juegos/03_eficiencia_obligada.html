@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eficiencia Obligada - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #F0FFF0;
+            color: #2c2c2c;
+            line-height: 1.7;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h3 {
+            color: #228B22;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #228B22;
+            padding-left: 10px;
+        }
+        .game-section {
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #32CD32;
+        }
+        .task-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        .task-card:hover {
+            border-color: #228B22;
+            transform: translateY(-2px);
+        }
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            color: #228B22;
+            margin: 20px 0;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            border: 2px solid #228B22;
+        }
+        .timer.urgent {
+            color: #dc3545;
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            transition: width 0.5s ease;
+        }
+        .deadline-options {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .deadline-btn {
+            padding: 8px 16px;
+            border: 2px solid #228B22;
+            background: white;
+            color: #228B22;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .deadline-btn.selected {
+            background: #228B22;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
+        }
+        .hidden {
+            display: none;
+        }
+        .result-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #228B22;
+        }
+        .frog-emoji {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .efficiency-score {
+            background: #228B22;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="frog-emoji">🐸</div>
+        <h3>Eficiencia Obligada - Juego Interactivo</h3>
+        
+        <div class="game-section">
+            <p><strong>Instrucciones:</strong> Aprende a crear urgencia artificial para aumentar tu productividad. La eficiencia obligada es el principio de que cuando tienes menos tiempo, te vuelves más eficiente.</p>
+        </div>
+
+        <div id="step1" class="game-section">
+            <h3>Paso 1: Entiende la Eficiencia Obligada ⚡</h3>
+            <div class="result-section">
+                <h4>¿Qué es la eficiencia obligada?</h4>
+                <p><strong>Regla de Tracy:</strong> "Nunca hay tiempo suficiente para hacer todo, pero siempre hay tiempo suficiente para hacer la cosa más importante."</p>
+                <p>Cuando se establecen plazos estrictos, automáticamente se vuelve más eficiente y enfocado. La urgencia artificial puede ser una herramienta poderosa para la productividad.</p>
+            </div>
+            <button onclick="startGame()">Comenzar Juego</button>
+        </div>
+
+        <div id="step2" class="game-section hidden">
+            <h3>Paso 2: Crea Urgencia Artificial 🎯</h3>
+            <div id="efficiencyScore" class="efficiency-score">Eficiencia: 0%</div>
+            
+            <div id="task1" class="task-card">
+                <h4>📝 Tarea: Escribir un informe de 5 páginas</h4>
+                <p>Usted tiene que escribir un informe importante. Normalmente le tomaría 4 horas.</p>
+                
+                <div class="deadline-options">
+                    <div class="deadline-btn" onclick="setDeadline(1, 240)">
+                        <strong>4 horas</strong><br>
+                        (Normal)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(1, 180)">
+                        <strong>3 horas</strong><br>
+                        (Moderado)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(1, 120)">
+                        <strong>2 horas</strong><br>
+                        (Urgente)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(1, 90)">
+                        <strong>1.5 horas</strong><br>
+                        (Muy urgente)
+                    </div>
+                </div>
+                
+                <div id="timer1" class="timer hidden">
+                    <div id="time1">00:00</div>
+                    <div class="progress-bar">
+                        <div id="progress1" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <button id="start1" onclick="startTask(1)" class="hidden">Comenzar Tarea</button>
+                <button id="complete1" onclick="completeTask(1)" class="hidden">Completar Tarea</button>
+            </div>
+
+            <div id="task2" class="task-card">
+                <h4>📊 Tarea: Preparar presentación de ventas</h4>
+                <p>Necesita preparar una presentación para un cliente importante. Normalmente le tomaría 3 horas.</p>
+                
+                <div class="deadline-options">
+                    <div class="deadline-btn" onclick="setDeadline(2, 180)">
+                        <strong>3 horas</strong><br>
+                        (Normal)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(2, 120)">
+                        <strong>2 horas</strong><br>
+                        (Moderado)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(2, 90)">
+                        <strong>1.5 horas</strong><br>
+                        (Urgente)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(2, 60)">
+                        <strong>1 hora</strong><br>
+                        (Muy urgente)
+                    </div>
+                </div>
+                
+                <div id="timer2" class="timer hidden">
+                    <div id="time2">00:00</div>
+                    <div class="progress-bar">
+                        <div id="progress2" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <button id="start2" onclick="startTask(2)" class="hidden">Comenzar Tarea</button>
+                <button id="complete2" onclick="completeTask(2)" class="hidden">Completar Tarea</button>
+            </div>
+
+            <div id="task3" class="task-card">
+                <h4>📚 Tarea: Leer y resumir un libro</h4>
+                <p>Debe leer un libro de 200 páginas y hacer un resumen. Normalmente le tomaría 6 horas.</p>
+                
+                <div class="deadline-options">
+                    <div class="deadline-btn" onclick="setDeadline(3, 360)">
+                        <strong>6 horas</strong><br>
+                        (Normal)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(3, 240)">
+                        <strong>4 horas</strong><br>
+                        (Moderado)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(3, 180)">
+                        <strong>3 horas</strong><br>
+                        (Urgente)
+                    </div>
+                    <div class="deadline-btn" onclick="setDeadline(3, 120)">
+                        <strong>2 horas</strong><br>
+                        (Muy urgente)
+                    </div>
+                </div>
+                
+                <div id="timer3" class="timer hidden">
+                    <div id="time3">00:00</div>
+                    <div class="progress-bar">
+                        <div id="progress3" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <button id="start3" onclick="startTask(3)" class="hidden">Comenzar Tarea</button>
+                <button id="complete3" onclick="completeTask(3)" class="hidden">Completar Tarea</button>
+            </div>
+
+            <button onclick="showResults()">Ver Resultados Finales</button>
+        </div>
+
+        <div id="step3" class="game-section hidden">
+            <h3>Paso 3: Resultados y Análisis 📈</h3>
+            <div id="finalResults"></div>
+            <button onclick="showTechniques()">Ver Técnicas de Eficiencia</button>
+        </div>
+
+        <div id="step4" class="game-section hidden">
+            <h3>Paso 4: Técnicas de Eficiencia Obligada 🚀</h3>
+            <div id="techniques"></div>
+            <button onclick="resetGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = {};
+        let efficiencyScore = 0;
+        let timers = {};
+
+        function startGame() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function setDeadline(taskId, minutes) {
+            // Reset all deadline buttons for this task
+            const taskCard = document.getElementById(`task${taskId}`);
+            const deadlineBtns = taskCard.querySelectorAll('.deadline-btn');
+            deadlineBtns.forEach(btn => btn.classList.remove('selected'));
+            
+            // Select clicked button
+            event.target.classList.add('selected');
+            
+            // Store task info
+            tasks[taskId] = {
+                deadline: minutes,
+                startTime: null,
+                completed: false,
+                efficiency: 0
+            };
+            
+            // Show timer and start button
+            document.getElementById(`timer${taskId}`).classList.remove('hidden');
+            document.getElementById(`start${taskId}`).classList.remove('hidden');
+        }
+
+        function startTask(taskId) {
+            const task = tasks[taskId];
+            task.startTime = Date.now();
+            
+            // Hide start button, show complete button
+            document.getElementById(`start${taskId}`).classList.add('hidden');
+            document.getElementById(`complete${taskId}`).classList.remove('hidden');
+            
+            // Start timer
+            timers[taskId] = setInterval(() => {
+                updateTimer(taskId);
+            }, 1000);
+        }
+
+        function updateTimer(taskId) {
+            const task = tasks[taskId];
+            const elapsed = Math.floor((Date.now() - task.startTime) / 1000);
+            const remaining = (task.deadline * 60) - elapsed;
+            
+            if (remaining <= 0) {
+                // Time's up!
+                clearInterval(timers[taskId]);
+                document.getElementById(`timer${taskId}`).classList.add('urgent');
+                document.getElementById(`time${taskId}`).textContent = '¡TIEMPO AGOTADO!';
+            } else {
+                const minutes = Math.floor(remaining / 60);
+                const seconds = remaining % 60;
+                document.getElementById(`time${taskId}`).textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update progress bar
+                const progress = ((task.deadline * 60) - remaining) / (task.deadline * 60) * 100;
+                document.getElementById(`progress${taskId}`).style.width = `${progress}%`;
+            }
+        }
+
+        function completeTask(taskId) {
+            const task = tasks[taskId];
+            const elapsed = Math.floor((Date.now() - task.startTime) / 1000);
+            const efficiency = Math.max(0, ((task.deadline * 60) - elapsed) / (task.deadline * 60) * 100);
+            
+            task.completed = true;
+            task.efficiency = efficiency;
+            
+            clearInterval(timers[taskId]);
+            
+            // Hide the task card
+            document.getElementById(`task${taskId}`).style.display = 'none';
+            
+            // Update efficiency score
+            efficiencyScore += efficiency;
+            document.getElementById('efficiencyScore').textContent = `Eficiencia: ${Math.round(efficiencyScore)}%`;
+        }
+
+        function showResults() {
+            const container = document.getElementById('finalResults');
+            let html = '<div class="result-section">';
+            
+            html += `<h4>⚡ Su Puntuación de Eficiencia: ${Math.round(efficiencyScore)}%</h4>`;
+            
+            if (efficiencyScore >= 200) {
+                html += '<p style="color: #28a745; font-weight: bold;">🌟 ¡Excelente! Usted domina la eficiencia obligada.</p>';
+            } else if (efficiencyScore >= 150) {
+                html += '<p style="color: #ffc107; font-weight: bold;">✅ Bueno, pero puede mejorar su eficiencia.</p>';
+            } else {
+                html += '<p style="color: #dc3545; font-weight: bold;">⚠️ Necesita trabajar en crear más urgencia.</p>';
+            }
+            
+            html += '<h4>📋 Análisis de Tareas:</h4>';
+            Object.keys(tasks).forEach(taskId => {
+                const task = tasks[taskId];
+                if (task.completed) {
+                    const color = task.efficiency > 50 ? '#28a745' : '#dc3545';
+                    html += `<p style="color: ${color};">Tarea ${taskId}: ${Math.round(task.efficiency)}% de eficiencia (${task.deadline} min plazo)</p>`;
+                }
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function showTechniques() {
+            const container = document.getElementById('techniques');
+            let html = '<div class="result-section">';
+            
+            html += '<h4>🚀 Técnicas de Eficiencia Obligada:</h4>';
+            
+            html += `
+                <div class="task-card">
+                    <h5>⏰ 1. Establezca plazos artificiales</h5>
+                    <p>Dé a cada tarea un plazo más corto del que normalmente necesitaría. Esto crea urgencia y aumenta el enfoque.</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="task-card">
+                    <h5>🎯 2. Use la regla del 50%</h5>
+                    <p>Estime cuánto tiempo necesita para una tarea, luego reduzca ese tiempo a la mitad. Se sorprenderá de lo que puede lograr.</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="task-card">
+                    <h5>📱 3. Elimine distracciones</h5>
+                    <p>Cuando tiene poco tiempo, automáticamente elimina distracciones. Haga esto intencionalmente: apague el teléfono, cierre el email.</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="task-card">
+                    <h5>🔍 4. Enfoque en lo esencial</h5>
+                    <p>Con poco tiempo, se enfoca solo en lo más importante. Identifique el 20% de la tarea que produce el 80% del resultado.</p>
+                </div>
+            `;
+            
+            html += `
+                <div class="task-card">
+                    <h5>⚡ 5. Use la técnica Pomodoro</h5>
+                    <p>Trabaje en bloques de 25 minutos con descansos de 5 minutos. La urgencia del tiempo limitado aumenta la productividad.</p>
+                </div>
+            `;
+            
+            html += `
+                <h4>💡 Aplicación Práctica:</h4>
+                <p>Esta semana, establezca plazos más cortos para sus tareas más importantes. Observe cómo la urgencia artificial aumenta su productividad y enfoque.</p>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

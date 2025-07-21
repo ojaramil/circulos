@@ -11,10 +11,11 @@
         <header class="main-header">
             <div class="logo-container">
                 <span class="logo">🐸</span>
-            </div>
-            <div class="header-title">
-                <span class="module-name">Curso 006</span>
-                <span class="content-title">¡Tráguese ese Sapo!</span>
+                <div class="header-title">
+                    <span class="module-name">Curso 006</span>
+                    <span class="content-title">¡Tráguese ese Sapo!</span>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
             </div>
         </header>
         
@@ -23,6 +24,9 @@
             <a href="#" class="nav-link" onclick="loadContent('juegos/index.html')">Juegos</a>
             <a href="#" class="nav-link" onclick="loadContent('recursos.html')">Recursos</a>
         </nav>
+
+        <!-- Overlay para móviles -->
+        <div class="mobile-overlay" onclick="closeMobileMenus()"></div>
 
         <div class="main-layout">
             <aside class="sidebar left">
@@ -101,17 +105,17 @@
             </aside>
 
             <main class="content-area">
-                <iframe id="content-frame" src="lecciones/01_introduccion.html"></iframe>
+                <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
             </main>
 
             <aside class="sidebar right">
-                <h2>🎮 Juegos Interactivos</h2>
+                <h2>🎮 Juegos</h2>
                 <ul>
                     <li><a href="#" onclick="loadContent('juegos/01_identifica_sapo.html')" class="game-link">
-                        <span class="icon-placeholder">🐸</span>Identifica tu Sapo
+                        <span class="icon-placeholder">🐸</span>Identifica el Sapo
                     </a></li>
-                    <li><a href="#" onclick="loadContent('juegos/02_planificador_diario.html')" class="game-link">
-                        <span class="icon-placeholder">📅</span>Planificador Diario
+                    <li><a href="#" onclick="loadContent('juegos/02_consecuencias.html')" class="game-link">
+                        <span class="icon-placeholder">🔍</span>Análisis de Consecuencias
                     </a></li>
                     <li><a href="#" onclick="loadContent('juegos/03_analisis_80_20.html')" class="game-link">
                         <span class="icon-placeholder">📊</span>Análisis 80/20
@@ -119,56 +123,68 @@
                     <li><a href="#" onclick="loadContent('juegos/04_metodo_abcde.html')" class="game-link">
                         <span class="icon-placeholder">🔤</span>Método ABCDE
                     </a></li>
-                    <li><a href="#" onclick="loadContent('juegos/05_ley_tres.html')" class="game-link">
-                        <span class="icon-placeholder">3️⃣</span>Ley de Tres
+                    <li><a href="#" onclick="loadContent('juegos/05_habitos_productivos.html')" class="game-link">
+                        <span class="icon-placeholder">💪</span>Hábitos Productivos
                     </a></li>
                     <li><a href="#" onclick="loadContent('juegos/06_obstaculos_clave.html')" class="game-link">
-                        <span class="icon-placeholder">🚧</span>Identifica Obstáculos
+                        <span class="icon-placeholder">🚧</span>Obstáculos Clave
                     </a></li>
                     <li><a href="#" onclick="loadContent('juegos/07_desintoxicacion_digital.html')" class="game-link">
                         <span class="icon-placeholder">📱</span>Desintoxicación Digital
                     </a></li>
                     <li><a href="#" onclick="loadContent('juegos/08_simulador_productividad.html')" class="game-link">
-                        <span class="icon-placeholder">⚡</span>Simulador Productividad
-                    </a></li>
-                </ul>
-
-                <h2>📖 Recursos</h2>
-                <ul>
-                    <li><a href="#" onclick="loadContent('recursos.html')" class="resource-link">
-                        <span class="icon-placeholder">📚</span>Bibliografía
-                    </a></li>
-                    <li><a href="#" onclick="loadContent('glosario.html')" class="resource-link">
-                        <span class="icon-placeholder">📖</span>Glosario
-                    </a></li>
-                    <li><a href="#" onclick="loadContent('enlaces_interes.html')" class="resource-link">
-                        <span class="icon-placeholder">🔗</span>Enlaces de Interés
+                        <span class="icon-placeholder">⚡</span>Simulador de Productividad
                     </a></li>
                 </ul>
             </aside>
         </div>
 
         <footer>
-            <p>© 2024 Curso 006 - ¡Tráguese ese Sapo! | Brian Tracy</p>
+            <p>© 2024 Círculo de Lectura - ¡Tráguese ese Sapo! | Brian Tracy</p>
         </footer>
     </div>
 
     <script>
-        function loadContent(url) {
-            const iframe = document.getElementById('content-frame');
-            iframe.src = url;
+        const frame = document.getElementById('content-frame');
+        
+        // Funciones para menú móvil
+        function toggleMobileMenu() {
+            const leftSidebar = document.querySelector('.sidebar.left');
+            const overlay = document.querySelector('.mobile-overlay');
             
-            // Actualizar enlaces activos
-            document.querySelectorAll('.lesson-link, .game-link, .resource-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            if (leftSidebar.classList.contains('mobile-open')) {
+                closeMobileMenus();
+            } else {
+                leftSidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
         }
-
-        // Cargar contenido inicial
-        window.onload = function() {
-            loadContent('lecciones/01_introduccion.html');
-        };
+        
+        function closeMobileMenus() {
+            document.querySelectorAll('.sidebar').forEach(sidebar => {
+                sidebar.classList.remove('mobile-open');
+            });
+            document.querySelector('.mobile-overlay').classList.remove('active');
+        }
+        
+        // Cerrar menús al hacer clic en un enlace (móviles)
+        function closeMenusOnClick() {
+            if (window.innerWidth <= 768) {
+                closeMobileMenus();
+            }
+        }
+        
+        function loadContent(url) {
+            frame.src = url;
+            closeMenusOnClick();
+        }
+        
+        // Cerrar menús al redimensionar la ventana
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeMobileMenus();
+            }
+        });
     </script>
 </body>
 </html> 

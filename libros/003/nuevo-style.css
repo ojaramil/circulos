@@ -81,6 +81,22 @@ body {
   color: #fff;
 }
 
+/* Botón hamburguesa para móviles */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+.mobile-menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Layout principal */
 .main-layout {
   display: flex;
@@ -206,19 +222,88 @@ iframe#content-frame {
   color: #fff;
 }
 
-/* Responsividad */
-@media (max-width: 992px) {
+/* Overlay para móviles */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Responsividad mejorada */
+@media (max-width: 1200px) {
   .sidebar.left, .sidebar.right {
-    width: 30%;
-    min-width: 200px;
+    width: 28%;
+    min-width: 250px;
   }
 }
-@media (max-width: 850px) {
+
+@media (max-width: 992px) {
+  .sidebar.left, .sidebar.right {
+    width: 32%;
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow: auto;
+    height: auto;
+  }
+  
+  .main-header {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    align-items: flex-start;
+    position: relative;
+  }
+  
+  .logo-container { 
+    margin-bottom: 10px; 
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .header-title { 
+    text-align: left; 
+    margin-bottom: 10px; 
+  }
+  
+  .main-nav { 
+    width: 100%; 
+    display: flex; 
+    justify-content: space-around; 
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .main-nav .nav-link { 
+    margin-left: 2px; 
+    margin-right: 2px; 
+    flex-grow: 1; 
+    text-align: center; 
+    font-size: 0.85em;
+    padding: 6px 8px;
+  }
+  
   .main-layout {
     flex-direction: column;
     height: auto;
+    overflow: visible;
   }
-  .sidebar.left, .sidebar.right, .content-area {
+  
+  .sidebar.left, 
+  .sidebar.right, 
+  .content-area {
     width: 100%;
     min-width: unset;
     height: auto;
@@ -226,19 +311,96 @@ iframe#content-frame {
     overflow-y: visible;
     border-left: none;
     border-right: none;
-  }
-  .sidebar.left { order: 2; }
-  .content-area { order: 1; padding: 10px; }
-  .sidebar.right { order: 3; }
-  .main-header {
-    flex-direction: column;
-    height: auto;
     padding: 15px;
-    align-items: flex-start;
   }
-  .logo-container { margin-bottom: 10px; }
-  .header-title { text-align: left; margin-bottom: 10px; }
-  .main-nav { width: 100%; display: flex; justify-content: space-around; }
-  .main-nav .nav-link { margin-left: 5px; margin-right: 5px; flex-grow: 1; text-align: center; }
+  
+  .sidebar.left { 
+    order: 2; 
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.left.mobile-open {
+    display: block;
+    transform: translateX(0);
+  }
+  
+  .sidebar.right { 
+    order: 3; 
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.right.mobile-open {
+    display: block;
+    transform: translateX(0);
+  }
+  
+  .content-area { 
+    order: 1; 
+    padding: 10px; 
+    min-height: 60vh;
+  }
+  
+  iframe#content-frame {
+    min-height: 400px;
+  }
+  
+  .mobile-overlay.active {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-header {
+    padding: 10px;
+  }
+  
+  .logo {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1em;
+    margin-right: 10px;
+  }
+  
+  .header-title .module-name {
+    font-size: 0.8em;
+  }
+  
+  .header-title .content-title {
+    font-size: 1em;
+  }
+  
+  .main-nav .nav-link {
+    font-size: 0.8em;
+    padding: 5px 6px;
+  }
+  
+  .sidebar.left,
+  .sidebar.right {
+    width: 100%;
+  }
+  
+  .content-area {
+    padding: 8px;
+  }
+  
+  iframe#content-frame {
+    min-height: 350px;
+  }
 } 
 

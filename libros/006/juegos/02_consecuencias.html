@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Considere las Consecuencias - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #F0FFF0;
+            color: #2c2c2c;
+            line-height: 1.7;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h3 {
+            color: #228B22;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #228B22;
+            padding-left: 10px;
+        }
+        .game-section {
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #32CD32;
+        }
+        .decision-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        .decision-card:hover {
+            border-color: #228B22;
+            transform: translateY(-2px);
+        }
+        .consequence-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .timeline-item {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            margin: 5px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .timeline-item.active {
+            background: #e8f5e8;
+            border-color: #228B22;
+        }
+        .consequence-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #228B22;
+        }
+        .consequence-positive {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .consequence-negative {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .consequence-neutral {
+            border-left-color: #6c757d;
+            background: #e2e3e5;
+        }
+        button {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
+        }
+        .hidden {
+            display: none;
+        }
+        .result-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #228B22;
+        }
+        .frog-emoji {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-display {
+            background: #228B22;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="frog-emoji">🐸</div>
+        <h3>Considere las Consecuencias - Juego Interactivo</h3>
+        
+        <div class="game-section">
+            <p><strong>Instrucciones:</strong> Aprende a tomar mejores decisiones considerando las consecuencias a corto, mediano y largo plazo. Cada decisión tiene un impacto que se extiende en el tiempo.</p>
+        </div>
+
+        <div id="step1" class="game-section">
+            <h3>Paso 1: Entiende el Poder de las Consecuencias 📊</h3>
+            <div class="result-section">
+                <h4>¿Por qué considerar las consecuencias?</h4>
+                <p><strong>Regla de Tracy:</strong> "Las personas exitosas piensan a largo plazo. Consideran las consecuencias de sus acciones antes de actuar."</p>
+                <p>Las decisiones que tomamos hoy determinan nuestro futuro. Aprender a evaluar consecuencias es la clave para tomar mejores decisiones.</p>
+            </div>
+            <button onclick="startGame()">Comenzar Juego</button>
+        </div>
+
+        <div id="step2" class="game-section hidden">
+            <h3>Paso 2: Analiza Decisiones y Consecuencias 🎯</h3>
+            <div id="scoreDisplay" class="score-display">Puntuación: 0</div>
+            
+            <div id="decision1" class="decision-card">
+                <h4>📚 Decisión: Estudiar para un examen importante</h4>
+                <p>Usted tiene un examen importante mañana. Sus amigos lo invitan a salir esta noche.</p>
+                
+                <div class="consequence-timeline">
+                    <div class="timeline-item" onclick="showConsequences('short', 1)">
+                        <strong>Corto Plazo</strong><br>
+                        (Hoy)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('medium', 1)">
+                        <strong>Mediano Plazo</strong><br>
+                        (Esta semana)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('long', 1)">
+                        <strong>Largo Plazo</strong><br>
+                        (Este año)
+                    </div>
+                </div>
+                
+                <div id="consequences1" class="hidden">
+                    <div class="consequence-item consequence-negative">
+                        <strong>Corto Plazo:</strong> Se pierde una noche divertida con amigos
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Mediano Plazo:</strong> Mejor rendimiento en el examen, menos estrés
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Largo Plazo:</strong> Mejores calificaciones, más oportunidades académicas
+                    </div>
+                </div>
+                
+                <button onclick="makeDecision('study', 1)">Decidir Estudiar</button>
+                <button onclick="makeDecision('party', 1)">Decidir Salir</button>
+            </div>
+
+            <div id="decision2" class="decision-card">
+                <h4>💼 Decisión: Invertir en desarrollo profesional</h4>
+                <p>Puede gastar $500 en un curso de habilidades profesionales o en entretenimiento.</p>
+                
+                <div class="consequence-timeline">
+                    <div class="timeline-item" onclick="showConsequences('short', 2)">
+                        <strong>Corto Plazo</strong><br>
+                        (Este mes)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('medium', 2)">
+                        <strong>Mediano Plazo</strong><br>
+                        (6 meses)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('long', 2)">
+                        <strong>Largo Plazo</strong><br>
+                        (5 años)
+                    </div>
+                </div>
+                
+                <div id="consequences2" class="hidden">
+                    <div class="consequence-item consequence-negative">
+                        <strong>Corto Plazo:</strong> Menos dinero para entretenimiento inmediato
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Mediano Plazo:</strong> Nuevas habilidades, mejor currículum
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Largo Plazo:</strong> Mejores oportunidades laborales, mayor ingreso
+                    </div>
+                </div>
+                
+                <button onclick="makeDecision('invest', 2)">Decidir Invertir</button>
+                <button onclick="makeDecision('entertainment', 2)">Decidir Entretenimiento</button>
+            </div>
+
+            <div id="decision3" class="decision-card">
+                <h4>🏃 Decisión: Ejercicio diario vs sedentarismo</h4>
+                <p>Puede dedicar 30 minutos diarios al ejercicio o usar ese tiempo para ver televisión.</p>
+                
+                <div class="consequence-timeline">
+                    <div class="timeline-item" onclick="showConsequences('short', 3)">
+                        <strong>Corto Plazo</strong><br>
+                        (1 mes)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('medium', 3)">
+                        <strong>Mediano Plazo</strong><br>
+                        (1 año)
+                    </div>
+                    <div class="timeline-item" onclick="showConsequences('long', 3)">
+                        <strong>Largo Plazo</strong><br>
+                        (10 años)
+                    </div>
+                </div>
+                
+                <div id="consequences3" class="hidden">
+                    <div class="consequence-item consequence-negative">
+                        <strong>Corto Plazo:</strong> Menos tiempo de ocio, posible fatiga inicial
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Mediano Plazo:</strong> Mejor salud, más energía, mejor estado de ánimo
+                    </div>
+                    <div class="consequence-item consequence-positive">
+                        <strong>Largo Plazo:</strong> Mayor longevidad, mejor calidad de vida, menos problemas de salud
+                    </div>
+                </div>
+                
+                <button onclick="makeDecision('exercise', 3)">Decidir Ejercitarse</button>
+                <button onclick="makeDecision('tv', 3)">Decidir Ver TV</button>
+            </div>
+
+            <button onclick="showResults()">Ver Resultados Finales</button>
+        </div>
+
+        <div id="step3" class="game-section hidden">
+            <h3>Paso 3: Resultados y Aprendizaje 📈</h3>
+            <div id="finalResults"></div>
+            <button onclick="showLessons()">Ver Lecciones Aprendidas</button>
+        </div>
+
+        <div id="step4" class="game-section hidden">
+            <h3>Paso 4: Lecciones y Aplicación Práctica 🎓</h3>
+            <div id="lessons"></div>
+            <button onclick="resetGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let decisions = [];
+
+        function startGame() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function showConsequences(timeframe, decisionId) {
+            const consequencesDiv = document.getElementById(`consequences${decisionId}`);
+            const timelineItems = document.querySelectorAll(`#decision${decisionId} .timeline-item`);
+            
+            // Reset all timeline items
+            timelineItems.forEach(item => item.classList.remove('active'));
+            
+            // Activate clicked item
+            event.target.classList.add('active');
+            
+            // Show consequences
+            consequencesDiv.classList.remove('hidden');
+        }
+
+        function makeDecision(choice, decisionId) {
+            let points = 0;
+            let decisionText = '';
+            
+            switch(decisionId) {
+                case 1:
+                    if (choice === 'study') {
+                        points = 10;
+                        decisionText = 'Estudiar para el examen';
+                    } else {
+                        points = -5;
+                        decisionText = 'Salir con amigos';
+                    }
+                    break;
+                case 2:
+                    if (choice === 'invest') {
+                        points = 15;
+                        decisionText = 'Invertir en desarrollo profesional';
+                    } else {
+                        points = -10;
+                        decisionText = 'Gastar en entretenimiento';
+                    }
+                    break;
+                case 3:
+                    if (choice === 'exercise') {
+                        points = 12;
+                        decisionText = 'Hacer ejercicio diario';
+                    } else {
+                        points = -8;
+                        decisionText = 'Ver televisión';
+                    }
+                    break;
+            }
+            
+            score += points;
+            decisions.push({choice, decisionText, points, decisionId});
+            
+            document.getElementById('scoreDisplay').textContent = `Puntuación: ${score}`;
+            
+            // Hide the decision card
+            document.getElementById(`decision${decisionId}`).style.display = 'none';
+        }
+
+        function showResults() {
+            const container = document.getElementById('finalResults');
+            let html = '<div class="result-section">';
+            
+            html += `<h4>🎯 Su Puntuación Final: ${score}</h4>`;
+            
+            if (score >= 25) {
+                html += '<p style="color: #28a745; font-weight: bold;">🌟 ¡Excelente! Usted piensa como una persona exitosa.</p>';
+            } else if (score >= 15) {
+                html += '<p style="color: #ffc107; font-weight: bold;">✅ Bueno, pero hay espacio para mejorar.</p>';
+            } else {
+                html += '<p style="color: #dc3545; font-weight: bold;">⚠️ Necesita trabajar en su pensamiento a largo plazo.</p>';
+            }
+            
+            html += '<h4>📋 Sus Decisiones:</h4>';
+            decisions.forEach((decision, index) => {
+                const color = decision.points > 0 ? '#28a745' : '#dc3545';
+                html += `<p style="color: ${color};">${index + 1}. ${decision.decisionText} (${decision.points > 0 ? '+' : ''}${decision.points} puntos)</p>`;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function showLessons() {
+            const container = document.getElementById('lessons');
+            let html = '<div class="result-section">';
+            
+            html += '<h4>🎓 Lecciones Clave sobre Consecuencias:</h4>';
+            
+            html += `
+                <div class="consequence-item consequence-positive">
+                    <h5>✅ Decisiones que consideran el largo plazo:</h5>
+                    <ul>
+                        <li>Invertir en educación y habilidades</li>
+                        <li>Mantener hábitos saludables</li>
+                        <li>Construir relaciones importantes</li>
+                        <li>Ahorrar e invertir dinero</li>
+                    </ul>
+                </div>
+            `;
+            
+            html += `
+                <div class="consequence-item consequence-negative">
+                    <h5>❌ Decisiones que solo consideran el corto plazo:</h5>
+                    <ul>
+                        <li>Gastar todo el dinero en entretenimiento</li>
+                        <li>Procrastinar tareas importantes</li>
+                        <li>Ignorar la salud por conveniencia</li>
+                        <li>Quemar puentes en relaciones</li>
+                    </ul>
+                </div>
+            `;
+            
+            html += `
+                <div class="consequence-item consequence-neutral">
+                    <h5>🔍 Preguntas para evaluar consecuencias:</h5>
+                    <ol>
+                        <li>¿Cómo me afectará esta decisión en 1 mes?</li>
+                        <li>¿Cómo me afectará esta decisión en 1 año?</li>
+                        <li>¿Cómo me afectará esta decisión en 5 años?</li>
+                        <li>¿Qué perderé si tomo esta decisión?</li>
+                        <li>¿Qué ganaré si tomo esta decisión?</li>
+                    </ol>
+                </div>
+            `;
+            
+            html += `
+                <h4>💡 Aplicación Práctica:</h4>
+                <p>Antes de tomar cualquier decisión importante, tómese 5 minutos para considerar las consecuencias a corto, mediano y largo plazo. Esta simple práctica puede cambiar completamente su vida.</p>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html> 

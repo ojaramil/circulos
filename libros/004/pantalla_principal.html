@@ -14,7 +14,10 @@
         <span class="module-name">Círculo de Lectura • Finanzas personales</span>
         <span class="content-title">Inquebrantable - Tony Robbins</span>
       </div>
-      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+      <div class="mobile-buttons">
+        <button class="mobile-menu-toggle" onclick="toggleLeftSidebar()">☰</button>
+        <button class="mobile-menu-toggle" onclick="toggleRightSidebar()">🎮</button>
+      </div>
     </div>
     <nav class="main-nav">
       <a href="#" class="nav-link">Ver Otros Libros</a>
@@ -68,14 +71,28 @@
     const frame = document.getElementById('content-frame');
     
     // Funciones para menú móvil
-    function toggleMobileMenu() {
+    function toggleLeftSidebar() {
       const leftSidebar = document.querySelector('.sidebar.left');
       const overlay = document.querySelector('.mobile-overlay');
       
       if (leftSidebar.classList.contains('mobile-open')) {
         closeMobileMenus();
       } else {
+        closeMobileMenus(); // Cerrar otros menús primero
         leftSidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+      }
+    }
+    
+    function toggleRightSidebar() {
+      const rightSidebar = document.querySelector('.sidebar.right');
+      const overlay = document.querySelector('.mobile-overlay');
+      
+      if (rightSidebar.classList.contains('mobile-open')) {
+        closeMobileMenus();
+      } else {
+        closeMobileMenus(); // Cerrar otros menús primero
+        rightSidebar.classList.add('mobile-open');
         overlay.classList.add('active');
       }
     }

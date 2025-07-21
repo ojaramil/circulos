@@ -5,147 +5,267 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comienza con el Por Qué - Interactivo</title>
   <link rel="stylesheet" href="nuevo-style.css">
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #005BAA;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #005BAA;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a:hover .icon-placeholder {
+      color: #9cc2ff;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #005BAA;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-left: none;
+        border-right: none;
+        padding: 18px 10px 10px 10px;
+      }
+      .main-content-area { order: 1; padding: 10px; }
+      .sidebar-left { order: 2; }
+      .sidebar-right { order: 3; }
+    }
+  </style>
 </head>
 <body>
-  <header class="main-header">
+  <header class="header">
     <div class="logo-container">
       <div class="logo">¿?</div>
-      <div class="header-title">
+      <div class="course-info">
         <span class="module-name">Círculo de Lectura • Liderazgo y Propósito</span>
         <span class="content-title">Comienza con el Por Qué - Simon Sinek</span>
       </div>
-      <div class="mobile-buttons">
-        <button class="mobile-menu-toggle" onclick="toggleLeftSidebar()">☰</button>
-        <button class="mobile-menu-toggle" onclick="toggleRightSidebar()">🎮</button>
-      </div>
     </div>
-    <nav class="main-nav">
-      <a href="#" class="nav-link">Ver Otros Libros</a>
-      <a href="#" class="nav-link" data-src="lecciones/07_descubrir_porque.html">Descubre tu Porqué</a>
-      <a href="#" class="nav-link" data-src="recursos.html">Recursos</a>
-      <a href="https://simonsinek.com/" class="nav-link" target="_blank">Sitio Oficial</a>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
     </nav>
   </header>
-  
-  <!-- Overlay para móviles -->
-  <div class="mobile-overlay" onclick="closeMobileMenus()"></div>
-  
-  <div class="main-layout">
-    <nav class="sidebar left">
-      <h2>Lecciones</h2>
-      <ul>
-        <li><a href="#" data-src="lecciones/01_introduccion.html" class="active"><span class="icon-placeholder">📄</span>Introducción</a></li>
-        <li><a href="#" data-src="lecciones/02_mundo_sin_porque.html"><span class="icon-placeholder">📄</span>Un mundo sin porqué</a></li>
-        <li><a href="#" data-src="lecciones/03_circulo_dorado.html"><span class="icon-placeholder">✨</span>El círculo dorado</a></li>
-        <li><a href="#" data-src="lecciones/04_liderazgo_confianza.html"><span class="icon-placeholder">🤝</span>Liderazgo y confianza</a></li>
-        <li><a href="#" data-src="lecciones/05_aunar_creyentes.html"><span class="icon-placeholder">🧑‍🤝‍🧑</span>Aunar a los que creen</a></li>
-        <li><a href="#" data-src="lecciones/06_reto_exito.html"><span class="icon-placeholder">🏁</span>El reto del éxito</a></li>
-        <li><a href="#" data-src="lecciones/07_descubrir_porque.html"><span class="icon-placeholder">🔍</span>Descubrir el porqué</a></li>
-      </ul>
-      <h2>Recursos</h2>
-      <ul>
-        <li><a href="#" data-src="recursos.html"><span class="icon-placeholder">📚</span>Recursos</a></li>
-        <li><a href="#" data-src="lecturas_recomendadas.html"><span class="icon-placeholder">📖</span>Lecturas recomendadas</a></li>
-      </ul>
-    </nav>
-    <main class="content-area">
+  <div class="main-container">
+    <main class="main-content-area">
       <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
     </main>
-    <nav class="sidebar right">
-      <h2>Juegos</h2>
-      <ul>
-        <li><a href="#" data-src="juegos/01_reflexion_porque.html"><span class="icon-placeholder">📝</span>Reflexión: Tu porqué</a></li>
-        <li><a href="#" data-src="juegos/02_casos_liderazgo.html"><span class="icon-placeholder">💡</span>Casos de liderazgo</a></li>
-        <li><a href="#" data-src="juegos/03_dinamica_equipo.html"><span class="icon-placeholder">🤔</span>Dinámica de equipo</a></li>
-        <li><a href="#" data-src="juegos/04_test_lider_jefe.html"><span class="icon-placeholder">✔️</span>Test: ¿Líder o jefe?</a></li>
-        <li><a href="#" data-src="juegos/05_simulacion_decisiones.html"><span class="icon-placeholder">🎲</span>Simulación de decisiones</a></li>
-      </ul>
-    </nav>
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_introduccion.html" class="active-lesson"><span class="icon-placeholder">📄</span>Introducción</a></li>
+          <li><a href="#" data-src="lecciones/02_mundo_sin_porque.html"><span class="icon-placeholder">📄</span>Un mundo sin porqué</a></li>
+          <li><a href="#" data-src="lecciones/03_circulo_dorado.html"><span class="icon-placeholder">✨</span>El círculo dorado</a></li>
+          <li><a href="#" data-src="lecciones/04_liderazgo_confianza.html"><span class="icon-placeholder">🤝</span>Liderazgo y confianza</a></li>
+          <li><a href="#" data-src="lecciones/05_aunar_creyentes.html"><span class="icon-placeholder">🧑‍🤝‍🧑</span>Aunar a los que creen</a></li>
+          <li><a href="#" data-src="lecciones/06_reto_exito.html"><span class="icon-placeholder">🏁</span>El reto del éxito</a></li>
+          <li><a href="#" data-src="lecciones/07_descubrir_porque.html"><span class="icon-placeholder">🔍</span>Descubrir el porqué</a></li>
+        </ul>
+      </section>
+      <section class="sidebar-section">
+        <h3>Recursos</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="recursos.html"><span class="icon-placeholder">📚</span>Recursos</a></li>
+          <li><a href="#" data-src="lecturas_recomendadas.html"><span class="icon-placeholder">📖</span>Lecturas recomendadas</a></li>
+        </ul>
+      </section>
+    </aside>
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_reflexion_porque.html"><span class="icon-placeholder">📝</span>Reflexión: Tu porqué</a></li>
+          <li><a href="#" data-src="juegos/02_casos_liderazgo.html"><span class="icon-placeholder">💡</span>Casos de liderazgo</a></li>
+          <li><a href="#" data-src="juegos/03_dinamica_equipo.html"><span class="icon-placeholder">🤔</span>Dinámica de equipo</a></li>
+          <li><a href="#" data-src="juegos/04_test_lider_jefe.html"><span class="icon-placeholder">✔️</span>Test: ¿Líder o jefe?</a></li>
+          <li><a href="#" data-src="juegos/05_simulacion_decisiones.html"><span class="icon-placeholder">🎲</span>Simulación de decisiones</a></li>
+        </ul>
+      </section>
+    </aside>
   </div>
   <script>
     const frame = document.getElementById('content-frame');
-    
-    // Funciones para menú móvil
-    function toggleLeftSidebar() {
-      const leftSidebar = document.querySelector('.sidebar.left');
-      const overlay = document.querySelector('.mobile-overlay');
-      
-      if (leftSidebar.classList.contains('mobile-open')) {
-        closeMobileMenus();
-      } else {
-        closeMobileMenus(); // Cerrar otros menús primero
-        leftSidebar.classList.add('mobile-open');
-        overlay.classList.add('active');
-      }
-    }
-    
-    function toggleRightSidebar() {
-      const rightSidebar = document.querySelector('.sidebar.right');
-      const overlay = document.querySelector('.mobile-overlay');
-      
-      if (rightSidebar.classList.contains('mobile-open')) {
-        closeMobileMenus();
-      } else {
-        closeMobileMenus(); // Cerrar otros menús primero
-        rightSidebar.classList.add('mobile-open');
-        overlay.classList.add('active');
-      }
-    }
-    
-    function closeMobileMenus() {
-      document.querySelectorAll('.sidebar').forEach(sidebar => {
-        sidebar.classList.remove('mobile-open');
-      });
-      document.querySelector('.mobile-overlay').classList.remove('active');
-    }
-    
-    // Cerrar menús al hacer clic en un enlace (móviles)
-    function closeMenusOnClick() {
-      if (window.innerWidth <= 768) {
-        closeMobileMenus();
-      }
-    }
-    
-    // Sidebar izquierda
-    document.querySelectorAll('.sidebar.left a').forEach(link => {
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
-        document.querySelectorAll('.sidebar.left a').forEach(a => a.classList.remove('active'));
-        this.classList.add('active');
+        document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+        if (this.closest('.sidebar-left')) {
+          this.classList.add('active-lesson');
+        } else if (this.closest('.sidebar-right')) {
+          this.classList.add('active-activity');
+        }
         if (this.getAttribute('data-src')) {
           frame.src = this.getAttribute('data-src');
-          closeMenusOnClick();
         }
       });
-    });
-    
-    // Sidebar derecha
-    document.querySelectorAll('.sidebar.right a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (this.getAttribute('data-src')) {
-          frame.src = this.getAttribute('data-src');
-          closeMenusOnClick();
-        }
-      });
-    });
-    
-    // Menú superior
-    document.querySelectorAll('.main-nav .nav-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (this.getAttribute('data-src')) {
-          e.preventDefault();
-          frame.src = this.getAttribute('data-src');
-          closeMenusOnClick();
-        }
-      });
-    });
-    
-    // Cerrar menús al redimensionar la ventana
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 768) {
-        closeMobileMenus();
-      }
     });
   </script>
 </body>

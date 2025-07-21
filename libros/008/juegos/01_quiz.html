@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Sabiduría del Monje - El monje que vendió su Ferrari</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .quiz-container { margin-bottom: 20px; }
+    .question { font-size: 1.2em; margin-bottom: 20px; color: #333; padding: 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; border-left: 5px solid #005BAA; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option { padding: 15px 20px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; transition: all 0.3s; background: #fff; font-size: 1.05em; }
+    .option:hover { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); border-color: #005BAA; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.15); }
+    .option.correct { background: linear-gradient(135deg, #d4edda, #c3e6cb); border-color: #28a745; color: #155724; }
+    .option.incorrect { background: linear-gradient(135deg, #f8d7da, #f5c6cb); border-color: #dc3545; color: #721c24; }
+    .result { margin-top: 15px; padding: 15px; border-radius: 10px; font-weight: bold; text-align: center; }
+    .correct-result { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
+    .incorrect-result { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
+    .score { text-align: center; font-size: 1.3em; margin-top: 20px; color: #005BAA; font-weight: bold; }
+    .progress-bar { width: 100%; height: 8px; background-color: #e9ecef; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.3s; }
+    .progress-text { text-align: center; margin-bottom: 15px; color: #666; font-weight: bold; }
+    button { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: all 0.3s; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,91,170,0.3); }
+    .final-score { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 15px; text-align: center; margin-top: 20px; }
+    .final-score h2 { color: #005BAA; margin-bottom: 15px; }
+    .final-score .percentage { font-size: 2em; font-weight: bold; color: #005BAA; margin: 15px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🧘 Quiz: Sabiduría del Monje</h1>
+  <div class="progress-text" id="progress-text">Pregunta 1 de 10</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <div id="quiz-container"></div>
+  <div id="score" class="score"></div>
+  <button onclick="restartQuiz()" style="display: none;" id="restart-btn">🔄 Reiniciar Quiz</button>
+</div>
+
+<script>
+const questions = [
+  {
+    question: "¿Qué le sucede a Julian Mantle que lo lleva a cuestionar su vida?",
+    options: [
+      "Pierde su trabajo",
+      "Sufre un infarto",
+      "Se divorcia",
+      "Se declara en bancarrota"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Qué vende Julian para comenzar su viaje de transformación?",
+    options: [
+      "Su casa",
+      "Su Ferrari",
+      "Su empresa",
+      "Sus acciones"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Dónde viaja Julian para encontrar sabiduría?",
+    options: [
+      "A Japón",
+      "Al Himalaya",
+      "A la India",
+      "A Tíbet"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Qué representa el jardín en las enseñanzas del monje?",
+    options: [
+      "La naturaleza",
+      "La mente",
+      "El cuerpo",
+      "El espíritu"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Cuál es el porcentaje que recomienda invertir en crecimiento personal?",
+    options: [
+      "5%",
+      "10%",
+      "15%",
+      "20%"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Qué simboliza el faro en las enseñanzas del monje?",
+    options: [
+      "La iluminación espiritual",
+      "El propósito de vida",
+      "La sabiduría ancestral",
+      "La paz interior"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Cuánto tiempo recomienda dedicar al ritual de la soledad?",
+    options: [
+      "5 minutos",
+      "15 minutos",
+      "30 minutos",
+      "1 hora"
+    ],
+    correct: 1
+  },
+  {
+    question: "¿Qué práctica ayuda a cultivar pensamientos positivos?",
+    options: [
+      "El diario de gratitud",
+      "La regla del 10%",
+      "El mantra del corazón",
+      "Todas las anteriores"
+    ],
+    correct: 3
+  },
+  {
+    question: "¿Qué significa 'Sivana' en el contexto del libro?",
+    options: [
+      "Un lugar sagrado",
+      "Un estado de paz",
+      "Un monasterio",
+      "Todas las anteriores"
+    ],
+    correct: 3
+  },
+  {
+    question: "¿Cuál es la frase clave del monje sobre el éxito?",
+    options: [
+      "El dinero es lo más importante",
+      "El éxito exterior nunca es mayor que el desarrollo interior",
+      "La fama trae felicidad",
+      "El poder es la clave del éxito"
+    ],
+    correct: 1
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function displayQuestion() {
+  const quizContainer = document.getElementById('quiz-container');
+  const question = questions[currentQuestion];
+  
+  quizContainer.innerHTML = `
+    <div class="quiz-container">
+      <div class="question">${question.question}</div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" onclick="selectOption(${index})">${String.fromCharCode(65 + index)}. ${option}</div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  updateProgress();
+}
+
+function updateProgress() {
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress-text').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+}
+
+function selectOption(selectedIndex) {
+  if (answered) return;
+  
+  answered = true;
+  const options = document.querySelectorAll('.option');
+  const correctIndex = questions[currentQuestion].correct;
+  
+  options.forEach((option, index) => {
+    if (index === correctIndex) {
+      option.classList.add('correct');
+    } else if (index === selectedIndex && index !== correctIndex) {
+      option.classList.add('incorrect');
+    }
+  });
+  
+  if (selectedIndex === correctIndex) {
+    score++;
+    showResult('✅ ¡Correcto!', true);
+  } else {
+    showResult(`❌ Incorrecto. La respuesta correcta es: ${String.fromCharCode(65 + correctIndex)}. ${questions[currentQuestion].options[correctIndex]}`, false);
+  }
+  
+  setTimeout(() => {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      answered = false;
+      displayQuestion();
+    } else {
+      showFinalScore();
+    }
+  }, 2500);
+}
+
+function showResult(message, isCorrect) {
+  const resultDiv = document.createElement('div');
+  resultDiv.className = `result ${isCorrect ? 'correct-result' : 'incorrect-result'}`;
+  resultDiv.textContent = message;
+  document.querySelector('.quiz-container').appendChild(resultDiv);
+}
+
+function showFinalScore() {
+  const quizContainer = document.getElementById('quiz-container');
+  const percentage = (score / questions.length) * 100;
+  
+  quizContainer.innerHTML = `
+    <div class="final-score">
+      <h2>🎉 ¡Quiz Completado!</h2>
+      <div class="percentage">${percentage}%</div>
+      <p>Tu puntuación: ${score} de ${questions.length} respuestas correctas</p>
+      <p>${percentage >= 90 ? '🏆 ¡Excelente! Has dominado las enseñanzas del monje.' : 
+         percentage >= 80 ? '🌟 ¡Muy bien! Has comprendido profundamente las lecciones.' : 
+         percentage >= 70 ? '👍 ¡Buen trabajo! Tienes una buena comprensión del libro.' : 
+         percentage >= 60 ? '📚 Bien. Continúa estudiando para profundizar en la sabiduría.' : 
+         '📖 Sigue leyendo y reflexionando sobre las lecciones del monje.'}</p>
+    </div>
+  `;
+  
+  document.getElementById('restart-btn').style.display = 'block';
+}
+
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('restart-btn').style.display = 'none';
+  displayQuestion();
+}
+
+displayQuestion();
+</script>
+</body>
+</html> 

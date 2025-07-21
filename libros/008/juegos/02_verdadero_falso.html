@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso - El monje que vendió su Ferrari</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .question { font-size: 1.2em; margin-bottom: 25px; color: #333; padding: 25px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 15px; border-left: 6px solid #005BAA; line-height: 1.6; }
+    .buttons { display: flex; gap: 20px; justify-content: center; margin: 30px 0; }
+    .btn { padding: 18px 40px; border: none; border-radius: 12px; cursor: pointer; font-size: 1.2em; font-weight: bold; transition: all 0.3s; min-width: 150px; }
+    .btn-verdadero { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+    .btn-falso { background: linear-gradient(135deg, #dc3545, #fd7e14); color: white; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+    .btn.correct { background: linear-gradient(135deg, #28a745, #20c997); animation: pulse 0.6s; }
+    .btn.incorrect { background: linear-gradient(135deg, #dc3545, #fd7e14); animation: shake 0.6s; }
+    .result { margin-top: 20px; padding: 20px; border-radius: 12px; font-weight: bold; text-align: center; font-size: 1.1em; }
+    .correct-result { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
+    .incorrect-result { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
+    .score { text-align: center; font-size: 1.4em; margin-top: 25px; color: #005BAA; font-weight: bold; }
+    .progress { margin-bottom: 25px; text-align: center; color: #666; font-size: 1.1em; font-weight: bold; }
+    .progress-bar { width: 100%; height: 10px; background-color: #e9ecef; border-radius: 6px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.4s; }
+    button { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: all 0.3s; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,91,170,0.3); }
+    .final-score { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 35px; border-radius: 18px; text-align: center; margin-top: 25px; }
+    .final-score h2 { color: #005BAA; margin-bottom: 20px; }
+    .final-score .percentage { font-size: 2.5em; font-weight: bold; color: #005BAA; margin: 20px 0; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>✔️ Verdadero o Falso: Sabiduría del Monje</h1>
+  <div class="progress" id="progress">Pregunta 1 de 12</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <div id="game-container"></div>
+  <div id="score" class="score"></div>
+  <button onclick="restartGame()" style="display: none;" id="restart-btn" class="btn">🔄 Reiniciar Juego</button>
+</div>
+
+<script>
+const questions = [
+  {
+    statement: "Julian Mantle era un abogado exitoso antes de su transformación.",
+    answer: true
+  },
+  {
+    statement: "El monje vendió su Ferrari para comprar una casa más grande.",
+    answer: false
+  },
+  {
+    statement: "Los sabios de Sivana viven en el Himalaya.",
+    answer: true
+  },
+  {
+    statement: "El jardín representa el cuerpo físico en las enseñanzas.",
+    answer: false
+  },
+  {
+    statement: "Se recomienda invertir el 10% de los ingresos en crecimiento personal.",
+    answer: true
+  },
+  {
+    statement: "La meditación diaria no es importante para la paz interior.",
+    answer: false
+  },
+  {
+    statement: "El propósito de vida actúa como un faro que guía las acciones.",
+    answer: true
+  },
+  {
+    statement: "El éxito exterior siempre es mayor que el desarrollo interior.",
+    answer: false
+  },
+  {
+    statement: "El ritual de la soledad debe practicarse por 15 minutos diarios.",
+    answer: true
+  },
+  {
+    statement: "Los pensamientos negativos no afectan la calidad de vida.",
+    answer: false
+  },
+  {
+    statement: "La gratitud es una práctica fundamental en las enseñanzas del monje.",
+    answer: true
+  },
+  {
+    statement: "Sivana es solo un lugar físico, no un estado mental.",
+    answer: false
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function displayQuestion() {
+  const gameContainer = document.getElementById('game-container');
+  const question = questions[currentQuestion];
+  
+  gameContainer.innerHTML = `
+    <div class="question">${question.statement}</div>
+    <div class="buttons">
+      <button class="btn btn-verdadero" onclick="selectAnswer(true)">✅ VERDADERO</button>
+      <button class="btn btn-falso" onclick="selectAnswer(false)">❌ FALSO</button>
+    </div>
+  `;
+  
+  updateProgress();
+}
+
+function updateProgress() {
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+}
+
+function selectAnswer(selectedAnswer) {
+  if (answered) return;
+  
+  answered = true;
+  const buttons = document.querySelectorAll('.btn');
+  const correctAnswer = questions[currentQuestion].answer;
+  
+  buttons.forEach((btn, index) => {
+    if (index === 0 && selectedAnswer === true) { // Botón VERDADERO
+      btn.classList.add(correctAnswer === true ? 'correct' : 'incorrect');
+    } else if (index === 1 && selectedAnswer === false) { // Botón FALSO
+      btn.classList.add(correctAnswer === false ? 'correct' : 'incorrect');
+    }
+  });
+  
+  if (selectedAnswer === correctAnswer) {
+    score++;
+    showResult('🎉 ¡Correcto!', true);
+  } else {
+    showResult(`❌ Incorrecto. La respuesta correcta es: ${correctAnswer ? 'VERDADERO' : 'FALSO'}`, false);
+  }
+  
+  setTimeout(() => {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      answered = false;
+      displayQuestion();
+    } else {
+      showFinalScore();
+    }
+  }, 3000);
+}
+
+function showResult(message, isCorrect) {
+  const resultDiv = document.createElement('div');
+  resultDiv.className = `result ${isCorrect ? 'correct-result' : 'incorrect-result'}`;
+  resultDiv.textContent = message;
+  document.getElementById('game-container').appendChild(resultDiv);
+}
+
+function showFinalScore() {
+  const gameContainer = document.getElementById('game-container');
+  const percentage = (score / questions.length) * 100;
+  
+  gameContainer.innerHTML = `
+    <div class="final-score">
+      <h2>🏆 ¡Juego Completado!</h2>
+      <div class="percentage">${percentage}%</div>
+      <p>Tu puntuación: ${score} de ${questions.length} respuestas correctas</p>
+      <p>${percentage >= 90 ? '🌟 ¡Perfecto! Has dominado completamente las enseñanzas del monje.' : 
+         percentage >= 80 ? '⭐ ¡Excelente! Has comprendido profundamente las lecciones.' : 
+         percentage >= 70 ? '👍 ¡Muy bien! Tienes una sólida comprensión del libro.' : 
+         percentage >= 60 ? '📚 ¡Buen trabajo! Continúa estudiando para profundizar.' : 
+         '📖 Sigue leyendo y reflexionando sobre las enseñanzas del monje.'}</p>
+    </div>
+  `;
+  
+  document.getElementById('restart-btn').style.display = 'block';
+}
+
+function restartGame() {
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('restart-btn').style.display = 'none';
+  displayQuestion();
+}
+
+displayQuestion();
+</script>
+</body>
+</html> 

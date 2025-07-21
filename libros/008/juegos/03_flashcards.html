@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards - El monje que vendió su Ferrari</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    .flashcard { width: 100%; height: 180px; perspective: 1200px; margin: 18px 0; }
+    .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.8s; cursor: pointer; }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-front, .card-back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.10); }
+    .card-front { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; font-size: 1.1em; text-align: center; font-weight: bold; }
+    .card-back { background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #333; transform: rotateY(180deg); font-size: 0.97em; text-align: justify; line-height: 1.4; }
+    .controls { display: flex; justify-content: center; gap: 16px; margin: 15px 0; }
+    .btn { padding: 10px 18px; border: none; border-radius: 7px; cursor: pointer; font-size: 0.98em; background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; font-weight: bold; transition: all 0.3s; min-width: 80px; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,91,170,0.2); }
+    .progress { text-align: center; margin-bottom: 12px; color: #666; font-size: 0.97em; font-weight: bold; }
+    .card-counter { text-align: center; margin-top: 10px; color: #005BAA; font-weight: bold; font-size: 1em; }
+    .progress-bar { width: 100%; height: 5px; background-color: #e9ecef; border-radius: 2px; margin: 10px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.4s; }
+    .instructions { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center; border-left: 4px solid #005BAA; }
+    .instructions p { margin: 0; color: #005BAA; font-weight: bold; font-size: 0.93em; }
+    .card-front .icon { font-size: 1.2em; margin-bottom: 6px; display: block; }
+    .card-back .highlight { color: #005BAA; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🃏 Flashcards: Conceptos Clave del Monje</h1>
+  
+  <div class="instructions">
+    <p>💡 Haz clic en la tarjeta para ver la definición • Usa las flechas del teclado para navegar</p>
+  </div>
+  
+  <div class="progress" id="progress">Tarjeta 1 de 10</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  
+  <div class="flashcard">
+    <div class="card" id="card" onclick="flipCard()">
+      <div class="card-front" id="front">
+        <div>
+          <span class="icon">🧘</span>
+          <div>Haz clic para ver la definición</div>
+        </div>
+      </div>
+      <div class="card-back" id="back">
+        <div>Haz clic para ver el concepto</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <button class="btn" onclick="previousCard()">⬅️ Anterior</button>
+    <button class="btn" onclick="nextCard()">Siguiente ➡️</button>
+  </div>
+  
+  <div class="card-counter" id="counter"></div>
+</div>
+
+<script>
+const flashcards = [
+  {
+    concept: "Julian Mantle",
+    definition: "El protagonista de la historia, un abogado exitoso que sufre una crisis existencial tras un infarto y decide transformar completamente su vida vendiendo sus posesiones y viajando al Himalaya en busca de sabiduría espiritual.",
+    icon: "👨‍💼"
+  },
+  {
+    concept: "Los Sabios de Sivana",
+    definition: "Maestros espirituales que viven en el Himalaya y enseñan a Julian las lecciones fundamentales sobre el propósito de vida, la paz interior y el verdadero significado del éxito.",
+    icon: "🧙‍♂️"
+  },
+  {
+    concept: "El Jardín de la Mente",
+    definition: "Una metáfora poderosa que representa la mente como un jardín que requiere cuidado constante. Se deben arrancar las malas hierbas <span class='highlight'>(pensamientos negativos)</span> y cultivar flores hermosas <span class='highlight'>(pensamientos positivos)</span>.",
+    icon: "🌱"
+  },
+  {
+    concept: "El Faro del Propósito",
+    definition: "Símbolo que representa el propósito de vida como una luz guía que ilumina el camino y proporciona dirección a todas las acciones y decisiones. Actúa como un punto de referencia constante.",
+    icon: "🗼"
+  },
+  {
+    concept: "La Regla del 10%",
+    definition: "Principio que recomienda invertir el 10% de los ingresos en el propio crecimiento personal, incluyendo libros, cursos, experiencias y cualquier recurso que ayude a evolucionar como persona.",
+    icon: "💰"
+  },
+  {
+    concept: "El Ritual de la Soledad",
+    definition: "Práctica diaria de dedicar al menos 15 minutos a la introspección, meditación o contemplación silenciosa. Esta práctica fortalece la paz interior y proporciona claridad mental.",
+    icon: "🧘‍♀️"
+  },
+  {
+    concept: "El Mantra del Corazón",
+    definition: "Afirmaciones positivas y mantras que refuerzan el propósito personal y la confianza. Son frases que se repiten regularmente para programar la mente de manera positiva.",
+    icon: "💝"
+  },
+  {
+    concept: "El Diario de Gratitud",
+    definition: "Hábito de escribir cada noche tres cosas por las que se siente agradecido. Esta práctica transforma la perspectiva y cultiva la felicidad y el contentamiento.",
+    icon: "📖"
+  },
+  {
+    concept: "Sivana",
+    definition: "El lugar sagrado en el Himalaya donde viven los sabios y donde Julian aprende las lecciones más importantes de su vida. Representa un estado de paz y sabiduría interior.",
+    icon: "🏔️"
+  },
+  {
+    concept: "El Arte de la Visualización",
+    definition: "Técnica de imaginar con detalle los resultados deseados y sentirlos como si ya fueran reales. Esta práctica ayuda a enfocar la mente y atraer oportunidades hacia tu vida.",
+    icon: "🎯"
+  }
+];
+
+let currentCard = 0;
+let isFlipped = false;
+
+function displayCard() {
+  const card = flashcards[currentCard];
+  document.getElementById('front').innerHTML = `
+    <div>
+      <span class="icon">${card.icon}</span>
+      <div><strong>${card.concept}</strong></div>
+    </div>
+  `;
+  document.getElementById('back').innerHTML = `<div>${card.definition}</div>`;
+  
+  updateProgress();
+  
+  // Reset card to front
+  isFlipped = false;
+  document.getElementById('card').classList.remove('flipped');
+}
+
+function updateProgress() {
+  const progress = ((currentCard + 1) / flashcards.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress').textContent = `Tarjeta ${currentCard + 1} de ${flashcards.length}`;
+  document.getElementById('counter').textContent = `${currentCard + 1} / ${flashcards.length}`;
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card').classList.toggle('flipped');
+}
+
+function nextCard() {
+  if (currentCard < flashcards.length - 1) {
+    currentCard++;
+    displayCard();
+  }
+}
+
+function previousCard() {
+  if (currentCard > 0) {
+    currentCard--;
+    displayCard();
+  }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') {
+    nextCard();
+  } else if (e.key === 'ArrowLeft') {
+    previousCard();
+  } else if (e.key === ' ') {
+    e.preventDefault();
+    flipCard();
+  }
+});
+
+displayCard();
+</script>
+</body>
+</html> 

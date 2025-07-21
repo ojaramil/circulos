@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reto de Acción - El monje que vendió su Ferrari</title>
+  <link rel="stylesheet" href="../nuevo-style.css">
+  <style>
+    body { font-family: Georgia, serif; background: #f4f8fb; color: #222; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 18px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { color: #005BAA; text-align: center; border-bottom: 2px solid #005BAA; padding-bottom: 10px; margin-bottom: 30px; }
+    h2 { color: #59A9D9; margin-top: 25px; margin-bottom: 15px; }
+    .challenge { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 25px; border-radius: 15px; border-left: 6px solid #005BAA; margin-bottom: 25px; }
+    .commitment-form { margin: 25px 0; }
+    textarea { width: 100%; height: 150px; padding: 20px; border: 2px solid #ddd; border-radius: 12px; font-family: Georgia, serif; font-size: 1.05em; resize: vertical; line-height: 1.6; }
+    textarea:focus { outline: none; border-color: #005BAA; box-shadow: 0 0 0 3px rgba(0,91,170,0.1); }
+    .btn { background: linear-gradient(135deg, #005BAA, #59A9D9); color: white; padding: 18px 35px; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1em; font-weight: bold; margin-top: 20px; transition: all 0.3s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,91,170,0.3); }
+    .success-message { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; padding: 25px; border-radius: 12px; margin-top: 20px; display: none; }
+    .tips { background: linear-gradient(135deg, #fff3cd, #ffeaa7); color: #856404; padding: 25px; border-radius: 12px; margin-top: 25px; border-left: 4px solid #ffc107; }
+    ul { padding-left: 25px; }
+    li { margin-bottom: 12px; line-height: 1.6; }
+    .quote { background: linear-gradient(135deg, #f0f8ff, #e6f3ff); padding: 25px; border-radius: 12px; margin-top: 30px; text-align: center; border-left: 4px solid #005BAA; }
+    .quote p { margin: 0; color: #005BAA; font-style: italic; font-size: 1.1em; }
+    .quote .author { margin-top: 10px; font-weight: bold; color: #59A9D9; }
+    .progress-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 20px; border-radius: 12px; margin: 25px 0; }
+    .progress-bar { width: 100%; height: 12px; background-color: #e9ecef; border-radius: 6px; margin: 15px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #005BAA, #59A9D9); transition: width 0.5s; width: 0%; }
+    .progress-text { text-align: center; color: #666; font-weight: bold; margin-bottom: 10px; }
+    .checklist { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 20px; border-radius: 12px; margin: 25px 0; }
+    .checklist-item { display: flex; align-items: center; margin-bottom: 15px; padding: 10px; background: white; border-radius: 8px; }
+    .checklist-item input[type="checkbox"] { margin-right: 15px; transform: scale(1.2); }
+    .checklist-item label { flex: 1; cursor: pointer; }
+    .checklist-item.completed { background: linear-gradient(135deg, #d4edda, #c3e6cb); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>💪 Reto de Acción: Aplica las Enseñanzas del Monje</h1>
+  
+  <div class="challenge">
+    <h2>🎯 Tu Compromiso Personal de 30 Días</h2>
+    <p>Como Julian Mantle, es momento de tomar acción y aplicar las enseñanzas del monje en tu vida diaria. Escribe tu compromiso personal para los próximos 30 días y sigue tu progreso.</p>
+  </div>
+
+  <div class="commitment-form">
+    <h3>📝 Mi Compromiso de 30 Días:</h3>
+    <textarea id="commitment" placeholder="Escribe aquí tu compromiso personal. Por ejemplo:
+
+• Practicaré el ritual de la soledad durante 15 minutos cada mañana
+• Aplicaré la regla del 10% invirtiendo en mi crecimiento personal
+• Cultivaré mi jardín mental eliminando pensamientos negativos
+• Definiré mi faro del propósito y lo revisaré semanalmente
+• Escribiré tres cosas por las que estoy agradecido cada noche
+• Practicaré el arte de la visualización antes de dormir
+• Revisaré mi progreso cada domingo
+
+¿Qué cambios específicos harás en tu vida? ¿Qué hábitos quieres desarrollar?"></textarea>
+    <button class="btn" onclick="saveCommitment()">💾 Guardar Mi Compromiso</button>
+  </div>
+
+  <div id="success-message" class="success-message">
+    <h3>✅ ¡Compromiso Guardado!</h3>
+    <p>Tu compromiso ha sido guardado exitosamente. Recuerda revisarlo diariamente y mantener tu palabra. Como dice el monje: "La calidad de tu vida depende de la calidad de tus pensamientos y hábitos diarios."</p>
+  </div>
+
+  <div class="progress-section" id="progress-section" style="display: none;">
+    <h3>📊 Tu Progreso</h3>
+    <div class="progress-text" id="progress-text">Día 0 de 30</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <p style="text-align: center; margin-top: 15px; color: #666;">¡Cada día cuenta! Mantén tu compromiso y verás la transformación.</p>
+  </div>
+
+  <div class="checklist" id="checklist" style="display: none;">
+    <h3>✅ Checklist Diario</h3>
+    <p>Marca las actividades que completaste hoy:</p>
+    <div class="checklist-item">
+      <input type="checkbox" id="check1" onchange="updateProgress()">
+      <label for="check1">Practiqué el ritual de la soledad</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check2" onchange="updateProgress()">
+      <label for="check2">Escribí mi diario de gratitud</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check3" onchange="updateProgress()">
+      <label for="check3">Revisé mi faro del propósito</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check4" onchange="updateProgress()">
+      <label for="check4">Practiqué el arte de la visualización</label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="check5" onchange="updateProgress()">
+      <label for="check5">Cultivé pensamientos positivos</label>
+    </div>
+  </div>
+
+  <div class="tips">
+    <h3>💡 Consejos para el Éxito:</h3>
+    <ul>
+      <li><strong>Empieza pequeño:</strong> No intentes cambiar todo de una vez. Elige una práctica y domínala antes de agregar otra.</li>
+      <li><strong>Sé consistente:</strong> Es mejor hacer algo pequeño cada día que algo grande ocasionalmente. La constancia es la clave.</li>
+      <li><strong>Revisa tu progreso:</strong> Toma 5 minutos cada domingo para evaluar tu avance y ajustar tu plan si es necesario.</li>
+      <li><strong>Celebra los logros:</strong> Reconoce cada pequeño paso hacia tu transformación. Cada día cuenta.</li>
+      <li><strong>Busca apoyo:</strong> Comparte tu compromiso con alguien de confianza que te ayude a mantenerlo y te motive.</li>
+      <li><strong>Mantén un recordatorio visual:</strong> Coloca tu compromiso en un lugar visible para recordarte constantemente tu propósito.</li>
+    </ul>
+  </div>
+
+  <div class="quote">
+    <p>"El éxito exterior nunca es mayor que el desarrollo interior."</p>
+    <div class="author">— Robin S. Sharma</div>
+  </div>
+</div>
+
+<script>
+function saveCommitment() {
+  const commitment = document.getElementById('commitment').value.trim();
+  
+  if (commitment === '') {
+    alert('Por favor, escribe tu compromiso antes de guardarlo.');
+    return;
+  }
+  
+  // Guardar en localStorage
+  localStorage.setItem('monjeCommitment', commitment);
+  localStorage.setItem('monjeCommitmentDate', new Date().toISOString());
+  
+  // Mostrar mensaje de éxito
+  document.getElementById('success-message').style.display = 'block';
+  document.getElementById('progress-section').style.display = 'block';
+  document.getElementById('checklist').style.display = 'block';
+  
+  // Scroll hacia el mensaje
+  document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
+  
+  // Actualizar progreso
+  updateProgress();
+}
+
+function updateProgress() {
+  const savedDate = localStorage.getItem('monjeCommitmentDate');
+  if (!savedDate) return;
+  
+  const commitmentDate = new Date(savedDate);
+  const today = new Date();
+  const daysSince = Math.floor((today - commitmentDate) / (1000 * 60 * 60 * 24));
+  const maxDays = 30;
+  
+  // Calcular progreso basado en días y checklist
+  const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+  let completedToday = 0;
+  checkboxes.forEach(checkbox => {
+    if (checkbox.checked) completedToday++;
+  });
+  
+  const dailyProgress = (completedToday / checkboxes.length) * 100;
+  const overallProgress = Math.min((daysSince / maxDays) * 100, 100);
+  
+  // Actualizar barra de progreso
+  document.getElementById('progress-fill').style.width = overallProgress + '%';
+  document.getElementById('progress-text').textContent = `Día ${Math.min(daysSince, maxDays)} de ${maxDays} • ${Math.round(dailyProgress)}% completado hoy`;
+  
+  // Actualizar estilo de checklist items
+  checkboxes.forEach((checkbox, index) => {
+    const item = checkbox.closest('.checklist-item');
+    if (checkbox.checked) {
+      item.classList.add('completed');
+    } else {
+      item.classList.remove('completed');
+    }
+  });
+}
+
+// Cargar compromiso guardado si existe
+window.onload = function() {
+  const savedCommitment = localStorage.getItem('monjeCommitment');
+  const savedDate = localStorage.getItem('monjeCommitmentDate');
+  
+  if (savedCommitment) {
+    document.getElementById('commitment').value = savedCommitment;
+    
+    if (savedDate) {
+      document.getElementById('progress-section').style.display = 'block';
+      document.getElementById('checklist').style.display = 'block';
+      
+      const commitmentDate = new Date(savedDate);
+      const daysSince = Math.floor((new Date() - commitmentDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysSince > 0) {
+        const successMessage = document.getElementById('success-message');
+        successMessage.innerHTML = `
+          <h3>✅ ¡Compromiso Guardado!</h3>
+          <p>Tu compromiso ha sido guardado. Han pasado ${daysSince} día(s) desde que lo estableciste. ¡Sigue adelante!</p>
+          <p><strong>Tu compromiso:</strong> ${savedCommitment.substring(0, 100)}${savedCommitment.length > 100 ? '...' : ''}</p>
+        `;
+        successMessage.style.display = 'block';
+      }
+      
+      updateProgress();
+    }
+  }
+};
+</script>
+</body>
+</html> 

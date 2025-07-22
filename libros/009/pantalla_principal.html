@@ -261,16 +261,18 @@
     const frame = document.getElementById('content-frame');
     document.querySelectorAll('.sidebar-list a').forEach(link => {
       link.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
-        if (this.closest('.sidebar-left')) {
-          this.classList.add('active-lesson');
-        } else if (this.closest('.sidebar-right')) {
-          this.classList.add('active-activity');
-        }
+        // Solo interceptar enlaces internos (con data-src)
         if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
           frame.src = this.getAttribute('data-src');
         }
+        // Los enlaces externos (sin data-src) funcionarán normalmente
       });
     });
   </script>

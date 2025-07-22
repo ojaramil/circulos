@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Psicología Adleriana</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #005BAA; text-align: center; }
+    .question { font-size: 1.1rem; margin: 24px 0 12px 0; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    button.option { background: #005BAA; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; text-align: left; }
+    button.option:hover { background: #003d73; }
+    .result { text-align: center; font-size: 1.2rem; color: #005BAA; margin-top: 24px; min-height: 32px; }
+    .score { text-align: center; font-size: 1.1rem; color: #17432b; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz: Psicología Adleriana</h1>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+    <div class="score" id="score"></div>
+  </div>
+  <script>
+    (function() {
+      const quiz = [
+        {
+          q: "¿Cuál es la idea central de la psicología adleriana?",
+          options: [
+            "El pasado determina el presente",
+            "El trauma es la causa de todo",
+            "Podemos cambiar y ser felices aquí y ahora"
+          ],
+          answer: 2,
+          exp: "¡Correcto! Adler sostiene que el cambio y la felicidad son posibles en el presente."
+        },
+        {
+          q: "¿Qué es la teleología según Adler?",
+          options: [
+            "Buscar causas en el pasado",
+            "Enfocarse en el propósito actual",
+            "Competir con los demás"
+          ],
+          answer: 1,
+          exp: "¡Correcto! La teleología es actuar según un propósito, no por causas pasadas."
+        },
+        {
+          q: "¿Cuál es el papel de las relaciones interpersonales?",
+          options: [
+            "Son la fuente de todos los problemas",
+            "No influyen en la felicidad",
+            "Solo importan en la infancia"
+          ],
+          answer: 0,
+          exp: "¡Correcto! Adler afirma que todos los problemas humanos son problemas de relaciones interpersonales."
+        },
+        {
+          q: "¿Qué actitud propone Adler ante el sentimiento de inferioridad?",
+          options: [
+            "Usarlo como motor de superación",
+            "Ignorarlo por completo",
+            "Dejar que nos paralice"
+          ],
+          answer: 0,
+          exp: "¡Correcto! El sentimiento de inferioridad puede impulsarnos a mejorar."
+        },
+        {
+          q: "¿Qué significa separar las tareas según Adler?",
+          options: [
+            "Hacerse cargo de los problemas de los demás",
+            "Distinguir lo que depende de uno y lo que no",
+            "Evitar toda responsabilidad"
+          ],
+          answer: 1,
+          exp: "¡Correcto! Separar tareas reduce la ansiedad y mejora las relaciones."
+        },
+        {
+          q: "¿Qué es el aliento en la psicología adleriana?",
+          options: [
+            "Criticar los errores para mejorar",
+            "Reconocer logros y capacidades para motivar el cambio",
+            "Evitar hablar de los problemas"
+          ],
+          answer: 1,
+          exp: "¡Correcto! El aliento motiva resaltando logros y capacidades."
+        },
+        {
+          q: "¿Qué propone Adler sobre el pasado?",
+          options: [
+            "El pasado determina nuestro destino",
+            "Podemos reinterpretar el pasado y decidir cómo nos afecta",
+            "Debemos olvidar el pasado por completo"
+          ],
+          answer: 1,
+          exp: "¡Correcto! Podemos reinterpretar el pasado y elegir su significado."
+        },
+        {
+          q: "¿Cuál es el objetivo del sentimiento de comunidad?",
+          options: [
+            "Competir con los demás",
+            "Contribuir al bien común y cooperar",
+            "Aislarse para evitar problemas"
+          ],
+          answer: 1,
+          exp: "¡Correcto! El sentimiento de comunidad fomenta la cooperación y el bienestar común."
+        },
+        {
+          q: "¿Qué recomienda Adler ante el miedo?",
+          options: [
+            "Evitar actuar hasta no sentir miedo",
+            "Actuar con valentía a pesar del miedo",
+            "Ignorar el miedo por completo"
+          ],
+          answer: 1,
+          exp: "¡Correcto! El valor es avanzar a pesar del miedo."
+        },
+        {
+          q: "¿Qué es la autoaceptación según Adler?",
+          options: [
+            "Conformarse y no cambiar",
+            "Reconocer el propio valor y potencial de crecimiento",
+            "Buscar la aprobación de los demás"
+          ],
+          answer: 1,
+          exp: "¡Correcto! La autoaceptación es la base del cambio y el crecimiento."
+        },
+        {
+          q: "¿Qué papel juega la reinterpretación de experiencias?",
+          options: [
+            "Permite elegir significados que nos empoderen",
+            "Nos obliga a olvidar el pasado",
+            "No tiene impacto en la vida actual"
+          ],
+          answer: 0,
+          exp: "¡Correcto! Reinterpretar experiencias nos da poder sobre nuestra historia."
+        },
+        {
+          q: "¿Qué recomienda Adler para las relaciones sanas?",
+          options: [
+            "Cooperar, escuchar y respetar límites",
+            "Competir y buscar ser mejor que los demás",
+            "Evitar el contacto social"
+          ],
+          answer: 0,
+          exp: "¡Correcto! La cooperación y el respeto son claves para relaciones sanas."
+        }
+      ];
+      let idx = 0, score = 0;
+      function render() {
+        if (idx < quiz.length) {
+          document.getElementById('question').textContent = quiz[idx].q;
+          const opts = document.getElementById('options');
+          opts.innerHTML = '';
+          quiz[idx].options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option';
+            btn.textContent = opt;
+            btn.onclick = function() { check(i); };
+            opts.appendChild(btn);
+          });
+          document.getElementById('result').textContent = '';
+          document.getElementById('score').textContent = `Pregunta ${idx+1} de ${quiz.length}`;
+        } else {
+          document.getElementById('question').textContent = '';
+          document.getElementById('options').innerHTML = '';
+          document.getElementById('result').textContent = `¡Puntaje final: ${score} de ${quiz.length}!`;
+          document.getElementById('score').textContent = '';
+        }
+      }
+      function check(val) {
+        if (idx < quiz.length) {
+          if (val === quiz[idx].answer) {
+            score++;
+            document.getElementById('result').textContent = quiz[idx].exp;
+          } else {
+            document.getElementById('result').textContent = 'Incorrecto. ' + quiz[idx].exp;
+          }
+          setTimeout(() => { idx++; render(); }, 1800);
+        }
+      }
+      render();
+    })();
+  </script>
+</body>
+</html> 

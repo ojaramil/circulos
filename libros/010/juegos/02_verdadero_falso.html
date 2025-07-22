@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso: Psicología Adleriana</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #fffbe7; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #e17055; text-align: center; }
+    .statement { font-size: 1.1rem; margin: 24px 0 12px 0; }
+    .options { display: flex; gap: 16px; justify-content: center; }
+    button { background: #e17055; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #b23c17; }
+    .result { text-align: center; font-size: 1.2rem; color: #e17055; margin-top: 24px; min-height: 32px; }
+    .score { text-align: center; font-size: 1.1rem; color: #17432b; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Verdadero o Falso: Psicología Adleriana</h1>
+    <div class="statement" id="statement"></div>
+    <div class="options">
+      <button id="btn-verdadero">Verdadero</button>
+      <button id="btn-falso">Falso</button>
+    </div>
+    <div class="result" id="result"></div>
+    <div class="score" id="score"></div>
+  </div>
+  <script>
+    (function() {
+      const facts = [
+        { s: "El pasado determina completamente nuestro presente.", answer: false, exp: "Incorrecto. Adler sostiene que el pasado no nos determina." },
+        { s: "El sentimiento de inferioridad puede ser un motor de superación.", answer: true, exp: "¡Correcto! Puede impulsarnos a mejorar." },
+        { s: "La psicología adleriana niega la existencia del trauma como causa determinante.", answer: true, exp: "¡Correcto! El trauma no es excusa para no cambiar." },
+        { s: "La vida es una competencia constante con los demás.", answer: false, exp: "Incorrecto. Adler propone cooperación y desarrollo personal." },
+        { s: "El valor para cambiar es clave para la felicidad.", answer: true, exp: "¡Correcto! El cambio requiere valentía." },
+        { s: "Todos los problemas humanos son problemas de relaciones interpersonales.", answer: true, exp: "¡Correcto! Así lo afirma Adler." },
+        { s: "Separar las tareas ayuda a reducir la ansiedad.", answer: true, exp: "¡Correcto! Permite enfocarse en lo propio." },
+        { s: "La autoaceptación es conformismo.", answer: false, exp: "Incorrecto. La autoaceptación es la base del cambio." },
+        { s: "El aliento consiste en resaltar logros y capacidades.", answer: true, exp: "¡Correcto! El aliento motiva el cambio positivo." },
+        { s: "La cooperación y el sentido de comunidad son pilares de la psicología adleriana.", answer: true, exp: "¡Correcto! Adler promueve la cooperación y el bien común." },
+        { s: "El miedo debe evitarse antes de actuar.", answer: false, exp: "Incorrecto. Adler recomienda actuar a pesar del miedo." },
+        { s: "La reinterpretación de experiencias permite empoderarnos.", answer: true, exp: "¡Correcto! Podemos elegir el significado de nuestras vivencias." },
+        { s: "La felicidad depende de la aprobación de los demás.", answer: false, exp: "Incorrecto. La felicidad surge de la autoaceptación y el propósito." },
+        { s: "El propósito es más importante que la causa pasada.", answer: true, exp: "¡Correcto! La teleología se enfoca en el propósito actual." },
+        { s: "La responsabilidad personal es clave en la psicología adleriana.", answer: true, exp: "¡Correcto! Somos responsables de nuestras decisiones." }
+      ];
+      let idx = 0, score = 0;
+      function render() {
+        if (idx < facts.length) {
+          document.getElementById('statement').textContent = facts[idx].s;
+          document.getElementById('result').textContent = '';
+          document.getElementById('score').textContent = `Pregunta ${idx+1} de ${facts.length}`;
+        } else {
+          document.getElementById('statement').textContent = '';
+          document.getElementById('result').textContent = `¡Puntaje final: ${score} de ${facts.length}!`;
+          document.getElementById('score').textContent = '';
+        }
+      }
+      function check(val) {
+        if (idx < facts.length) {
+          if (val === facts[idx].answer) {
+            score++;
+            document.getElementById('result').textContent = facts[idx].exp;
+          } else {
+            document.getElementById('result').textContent = 'Incorrecto. ' + facts[idx].exp;
+          }
+          setTimeout(() => { idx++; render(); }, 1800);
+        }
+      }
+      document.getElementById('btn-verdadero').onclick = function() { check(true); };
+      document.getElementById('btn-falso').onclick = function() { check(false); };
+      render();
+    })();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reto Práctico: Cambia tu Perspectiva</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #005BAA; text-align: center; }
+    label { display: block; margin-bottom: 10px; font-weight: bold; }
+    textarea { width: 100%; min-height: 120px; border-radius: 8px; border: 1px solid #b0c4de; padding: 12px; font-size: 1rem; margin-bottom: 18px; }
+    button { background: #005BAA; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #003d73; }
+    .result { text-align: center; font-size: 1.1rem; color: #005BAA; margin-top: 24px; min-height: 32px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reto Práctico: Cambia tu Perspectiva</h1>
+    <form id="reto-form">
+      <label id="pregunta-label" for="reflexion"></label>
+      <textarea id="reflexion" required placeholder="Escribe aquí tu reflexión..."></textarea>
+      <button type="submit">Enviar reflexión</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    const preguntas = [
+      "Piensa en una situación reciente en la que sentiste que el pasado te limitaba. ¿Cómo podrías reinterpretarla desde la psicología adleriana?",
+      "¿Qué tarea o responsabilidad has asumido que en realidad no te corresponde? ¿Cómo podrías soltarla?",
+      "Recuerda un momento en que sentiste inferioridad. ¿Cómo podrías transformar ese sentimiento en motivación para mejorar?",
+      "Describe una ocasión en la que actuaste con valentía a pesar del miedo. ¿Qué aprendiste de esa experiencia?",
+      "¿Cómo podrías practicar el aliento contigo mismo o con alguien cercano esta semana?",
+      "Piensa en una relación importante para ti. ¿Qué podrías hacer para mejorar la cooperación y el respeto mutuo?",
+      "¿Qué significa para ti contribuir al bien común? ¿Cómo podrías hacerlo en tu entorno?"
+    ];
+    let idx = 0;
+    function setPregunta() {
+      document.getElementById('pregunta-label').textContent = preguntas[idx];
+      document.getElementById('reflexion').value = '';
+      document.getElementById('result').textContent = '';
+    }
+    document.getElementById('reto-form').onsubmit = function(e) {
+      e.preventDefault();
+      const val = document.getElementById('reflexion').value.trim();
+      if(val.length < 10) {
+        document.getElementById('result').textContent = 'Por favor, escribe una reflexión más completa.';
+        return;
+      }
+      document.getElementById('result').textContent = '¡Excelente! Reflexionar es el primer paso para el cambio. Recuerda: el pasado no te define, tú eliges el significado de tus experiencias.';
+      idx = (idx + 1) % preguntas.length;
+      setTimeout(setPregunta, 2000);
+    };
+    setPregunta();
+  </script>
+</body>
+</html> 

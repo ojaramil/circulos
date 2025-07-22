@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Cambio</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 520px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #005BAA; text-align: center; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; }
+    input, textarea { width: 100%; border-radius: 8px; border: 1px solid #b0c4de; padding: 10px; font-size: 1rem; margin-bottom: 16px; }
+    textarea { min-height: 60px; }
+    button { background: #005BAA; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #003d73; }
+    .result { text-align: center; font-size: 1.1rem; color: #005BAA; margin-top: 24px; min-height: 32px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador de Cambio</h1>
+    <form id="simulador-form">
+      <div id="consigna"></div>
+      <label for="cambio">¿Qué aspecto de tu vida te gustaría cambiar?</label>
+      <input id="cambio" required placeholder="Ejemplo: Mejorar mi confianza al hablar en público">
+      <label for="proposito">¿Cuál es el propósito detrás de ese cambio?</label>
+      <input id="proposito" required placeholder="Ejemplo: Sentirme más libre y seguro">
+      <label for="acciones">¿Qué acciones pequeñas y realistas puedes dar para empezar?</label>
+      <textarea id="acciones" required placeholder="Ejemplo: Practicar una presentación breve cada semana"></textarea>
+      <button type="submit">Simular cambio</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    const consignas = [
+      "Piensa en un cambio personal que te gustaría lograr este mes.",
+      "Elige un hábito que quieras mejorar y describe cómo empezarías.",
+      "Identifica una relación que quieras fortalecer y cómo podrías hacerlo.",
+      "Selecciona un miedo que te gustaría superar y planifica un primer paso.",
+      "Escoge una meta profesional o académica y define acciones concretas para avanzar."
+    ];
+    let idx = 0;
+    function setConsigna() {
+      document.getElementById('consigna').textContent = consignas[idx];
+      document.getElementById('cambio').value = '';
+      document.getElementById('proposito').value = '';
+      document.getElementById('acciones').value = '';
+      document.getElementById('result').textContent = '';
+    }
+    document.getElementById('simulador-form').onsubmit = function(e) {
+      e.preventDefault();
+      const cambio = document.getElementById('cambio').value.trim();
+      const proposito = document.getElementById('proposito').value.trim();
+      const acciones = document.getElementById('acciones').value.trim();
+      if(cambio.length < 5 || proposito.length < 5 || acciones.length < 10) {
+        document.getElementById('result').textContent = 'Por favor, completa todos los campos con suficiente detalle.';
+        return;
+      }
+      document.getElementById('result').textContent = '¡Muy bien! Has dado el primer paso para el cambio. Recuerda: cada acción, por pequeña que sea, te acerca a tu meta.';
+      idx = (idx + 1) % consignas.length;
+      setTimeout(setConsigna, 2000);
+    };
+    setConsigna();
+  </script>
+</body>
+</html> 

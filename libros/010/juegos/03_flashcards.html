@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards: Psicología Adleriana</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #b0c4de; padding: 32px; }
+    h1 { color: #2e8b57; text-align: center; }
+    .flashcard { background: #b0e0e6; border-radius: 10px; padding: 32px 24px; margin: 32px 0; text-align: center; font-size: 1.2rem; color: #2e8b57; min-height: 80px; cursor: pointer; transition: background 0.3s, color 0.3s; box-shadow: 0 1px 4px #b0c4de; }
+    .flashcard.flipped { background: #2e8b57; color: #fff; }
+    .controls { display: flex; justify-content: space-between; }
+    button { background: #2e8b57; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; cursor: pointer; margin: 8px 0; transition: background 0.2s; }
+    button:hover { background: #246b45; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Flashcards: Psicología Adleriana</h1>
+    <div class="flashcard" id="flashcard">Haz clic para ver la respuesta</div>
+    <div class="controls">
+      <button id="prev">Anterior</button>
+      <button id="next">Siguiente</button>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const cards = [
+        { q: "¿Qué es la teleología?", a: "Enfocarse en el propósito actual, no en las causas pasadas." },
+        { q: "¿Qué significa separar las tareas?", a: "Distinguir lo que depende de uno y lo que no, para reducir la ansiedad." },
+        { q: "¿Cuál es el papel del sentimiento de inferioridad?", a: "Puede ser un motor para la superación personal." },
+        { q: "¿Qué es el aliento en psicología adleriana?", a: "Técnica para ayudar a otros a aceptarse y avanzar, resaltando logros y capacidades." },
+        { q: "¿Por qué la vida no es una competencia?", a: "La felicidad surge al avanzar a nuestro propio ritmo, sin comparaciones destructivas." },
+        { q: "¿Qué es el sentimiento de comunidad?", a: "Contribuir al bien común y cooperar para superar el aislamiento." },
+        { q: "¿Cómo se puede reinterpretar el pasado?", a: "Eligiendo significados que nos empoderen en vez de limitarnos." },
+        { q: "¿Qué actitud propone Adler ante el miedo?", a: "Actuar con valentía, avanzando a pesar del temor." },
+        { q: "¿Qué es la autoaceptación?", a: "Reconocer nuestro valor y potencial de crecimiento, base del cambio." },
+        { q: "¿Por qué todos los problemas humanos son relacionales?", a: "Porque la forma en que nos relacionamos determina nuestra felicidad o sufrimiento." },
+        { q: "¿Qué es la reinterpretación de experiencias?", a: "Cambiar el significado que damos a los hechos pasados para empoderarnos." },
+        { q: "¿Qué es la acción valiente?", a: "Actuar a pesar del miedo, no esperar a que desaparezca." },
+        { q: "¿Qué es la responsabilidad personal?", a: "Asumir el control de nuestras decisiones y acciones." },
+        { q: "¿Qué es la cooperación según Adler?", a: "Trabajar juntos y contribuir al bienestar común." },
+        { q: "¿Qué es el propósito en la psicología adleriana?", a: "La meta o sentido que guía nuestras acciones en el presente." },
+        { q: "¿Qué es la felicidad según Adler?", a: "El resultado de vivir con propósito, autoaceptación y relaciones sanas." },
+        { q: "¿Qué es el complejo de inferioridad?", a: "Cuando el sentimiento de inferioridad nos paraliza en vez de motivar." },
+        { q: "¿Qué es el complejo de superioridad?", a: "Compensar la inseguridad fingiendo ser mejor que los demás." },
+        { q: "¿Qué es el aliento a uno mismo?", a: "Reconocer los propios avances y logros para motivarse." },
+        { q: "¿Qué es la contribución al bien común?", a: "Participar y ayudar en la comunidad para encontrar sentido." }
+      ];
+      let idx = 0, flipped = false;
+      const flashcard = document.getElementById('flashcard');
+      function render() {
+        flashcard.textContent = flipped ? cards[idx].a : cards[idx].q;
+        flashcard.classList.toggle('flipped', flipped);
+      }
+      flashcard.onclick = function() {
+        flipped = !flipped;
+        render();
+      };
+      document.getElementById('prev').onclick = function() {
+        idx = (idx - 1 + cards.length) % cards.length;
+        flipped = false;
+        render();
+      };
+      document.getElementById('next').onclick = function() {
+        idx = (idx + 1) % cards.length;
+        flipped = false;
+        render();
+      };
+      render();
+    })();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos Clínicos Interactivos - Juego</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #9C27B0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: #673AB7;
+            border-bottom: 2px solid #E1BEE7;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #9C27B0;
+            margin-top: 25px;
+        }
+        .case-card {
+            background: linear-gradient(135deg, #E1BEE7, #F3E5F5);
+            border: 2px solid #9C27B0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .case-card.selected {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+        }
+        .case-details {
+            background: #F8F9FA;
+            border: 1px solid #E9ECEF;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            display: none;
+        }
+        .case-details.active {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .quiz-section {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .quiz-section.active {
+            display: block;
+        }
+        .question {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .option {
+            background: #F0F0F0;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background: #E0E0E0;
+        }
+        .option.correct {
+            background: #4CAF50;
+            color: white;
+        }
+        .option.incorrect {
+            background: #F44336;
+            color: white;
+        }
+        .score-display {
+            font-size: 1.5em;
+            text-align: center;
+            color: #9C27B0;
+            margin: 20px 0;
+        }
+        .instructions {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #E1BEE7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9C27B0, #673AB7);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .results {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🏥 Casos Clínicos Interactivos</h1>
+        
+        <div class="instructions">
+            <h3>🎯 Instrucciones</h3>
+            <p>Explora casos clínicos reales de neuroplasticidad y aprende sobre cómo el cerebro puede recuperarse y adaptarse. Después de revisar los casos, responde las preguntas para evaluar tu comprensión.</p>
+        </div>
+
+        <div id="main-menu">
+            <h2>Casos Clínicos Disponibles</h2>
+            
+            <div class="case-grid">
+                <div class="case-card" data-case="stroke">
+                    <h4>🩸 Caso 1: Recuperación de Accidente Cerebrovascular</h4>
+                    <p>Paciente de 45 años que sufrió un derrame cerebral que afectó el lado izquierdo del cuerpo.</p>
+                    <p><strong>Duración:</strong> 2 años de recuperación</p>
+                </div>
+
+                <div class="case-card" data-case="blindness">
+                    <h4>👁️ Caso 2: Adaptación a la Ceguera</h4>
+                    <p>Paciente que perdió la vista a los 30 años y desarrolló habilidades compensatorias extraordinarias.</p>
+                    <p><strong>Duración:</strong> 5 años de adaptación</p>
+                </div>
+
+                <div class="case-card" data-case="amputation">
+                    <h4>🦿 Caso 3: Dolor del Miembro Fantasma</h4>
+                    <p>Paciente con amputación que experimentó dolor en el miembro perdido y su tratamiento.</p>
+                    <p><strong>Duración:</strong> 1 año de terapia</p>
+                </div>
+
+                <div class="case-card" data-case="autism">
+                    <h4>🧩 Caso 4: Desarrollo de Habilidades en Autismo</h4>
+                    <p>Niño con autismo que desarrolló habilidades extraordinarias en matemáticas y música.</p>
+                    <p><strong>Duración:</strong> 8 años de desarrollo</p>
+                </div>
+
+                <div class="case-card" data-case="trauma">
+                    <h4>💥 Caso 5: Recuperación de Traumatismo Craneal</h4>
+                    <p>Paciente que sufrió un traumatismo craneal severo y recuperó funciones cognitivas.</p>
+                    <p><strong>Duración:</strong> 3 años de rehabilitación</p>
+                </div>
+
+                <div class="case-card" data-case="aging">
+                    <h4>👴 Caso 6: Neuroplasticidad en el Envejecimiento</h4>
+                    <p>Adulto mayor que mantuvo y mejoró sus capacidades cognitivas a través de ejercicios.</p>
+                    <p><strong>Duración:</strong> 10 años de seguimiento</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="startQuiz()">🧠 Iniciar Evaluación</button>
+            </div>
+        </div>
+
+        <div id="case-details">
+            <h2>Detalles del Caso Clínico</h2>
+            <div id="case-content"></div>
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="showAllCases()">📋 Ver Todos los Casos</button>
+                <button class="btn" onclick="startQuiz()">🧠 Iniciar Evaluación</button>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="quiz-section">
+            <h2>Evaluación de Casos Clínicos</h2>
+            
+            <div class="score-display">
+                Puntuación: <span id="score">0</span> / <span id="total-questions">0</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div id="current-question">
+                <div class="question">
+                    <h3 id="question-text">Cargando pregunta...</h3>
+                    <div id="question-options"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="nextQuestion()" id="next-btn" style="display: none;">⏭️ Siguiente Pregunta</button>
+                <button class="btn" onclick="finishQuiz()" id="finish-btn" style="display: none;">🏁 Terminar Evaluación</button>
+            </div>
+        </div>
+
+        <div id="results" class="results">
+            <h2>🎉 Evaluación Completada</h2>
+            <div id="final-score"></div>
+            <div id="performance-analysis"></div>
+            <div id="recommendations"></div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="resetGame()">🔄 Nueva Evaluación</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedCases = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [
+            {
+                question: "¿Qué mecanismo principal permite la recuperación después de un accidente cerebrovascular?",
+                options: [
+                    "Neurogénesis",
+                    "Reorganización cortical",
+                    "Apoptosis",
+                    "Degeneración axonal"
+                ],
+                correct: 1,
+                explanation: "La reorganización cortical permite que áreas cerebrales no dañadas asuman funciones de las áreas lesionadas."
+            },
+            {
+                question: "¿Qué fenómeno explica la mejora en otros sentidos cuando se pierde la vista?",
+                options: [
+                    "Compensación sensorial",
+                    "Plasticidad sináptica",
+                    "Reorganización cortical",
+                    "Todas las anteriores"
+                ],
+                correct: 3,
+                explanation: "Todos estos mecanismos trabajan juntos para compensar la pérdida visual."
+            },
+            {
+                question: "¿Cuál es el tratamiento más efectivo para el dolor del miembro fantasma?",
+                options: [
+                    "Medicamentos opioides",
+                    "Terapia de espejo",
+                    "Cirugía",
+                    "Reposo absoluto"
+                ],
+                correct: 1,
+                explanation: "La terapia de espejo permite al cerebro 'ver' el miembro perdido y reducir el dolor."
+            },
+            {
+                question: "¿Qué característica del autismo puede ser una ventaja en ciertas áreas?",
+                options: [
+                    "Hiperfocalización",
+                    "Dificultad social",
+                    "Sensibilidad sensorial",
+                    "Rutinas repetitivas"
+                ],
+                correct: 0,
+                explanation: "La hiperfocalización permite un desarrollo extraordinario en áreas específicas de interés."
+            },
+            {
+                question: "¿Por qué es importante la intervención temprana en traumatismos craneales?",
+                options: [
+                    "Reduce los costos médicos",
+                    "Maximiza la plasticidad cerebral",
+                    "Evita complicaciones",
+                    "Todas las anteriores"
+                ],
+                correct: 3,
+                explanation: "La intervención temprana aprovecha al máximo la plasticidad cerebral y previene complicaciones."
+            },
+            {
+                question: "¿Qué actividad es más efectiva para mantener la neuroplasticidad en adultos mayores?",
+                options: [
+                    "Ejercicio físico regular",
+                    "Aprendizaje de nuevas habilidades",
+                    "Socialización activa",
+                    "Todas las anteriores"
+                ],
+                correct: 3,
+                explanation: "La combinación de ejercicio físico, aprendizaje y socialización es la más efectiva."
+            }
+        ];
+
+        // Event listeners for case selection
+        document.querySelectorAll('.case-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const caseType = this.getAttribute('data-case');
+                showCaseDetails(caseType);
+            });
+        });
+
+        function showCaseDetails(caseType) {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('case-details').style.display = 'block';
+            
+            const caseData = getCaseData(caseType);
+            document.getElementById('case-content').innerHTML = caseData;
+        }
+
+        function getCaseData(caseType) {
+            const cases = {
+                stroke: `
+                    <div class="case-details active">
+                        <h3>🩸 Caso: Recuperación de Accidente Cerebrovascular</h3>
+                        <p><strong>Paciente:</strong> María, 45 años</p>
+                        <p><strong>Diagnóstico:</strong> Accidente cerebrovascular isquémico en hemisferio derecho</p>
+                        <p><strong>Síntomas iniciales:</strong></p>
+                        <ul>
+                            <li>Parálisis del lado izquierdo del cuerpo</li>
+                            <li>Pérdida de sensibilidad en extremidades izquierdas</li>
+                            <li>Dificultad para hablar</li>
+                            <li>Problemas de memoria</li>
+                        </ul>
+                        <p><strong>Tratamiento:</strong></p>
+                        <ul>
+                            <li>Terapia física intensiva (2 horas diarias)</li>
+                            <li>Terapia ocupacional</li>
+                            <li>Logopedia</li>
+                            <li>Estimulación cognitiva</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Mes 3: Recuperó movimiento en brazo izquierdo</li>
+                            <li>Mes 6: Pudo caminar con asistencia</li>
+                            <li>Mes 12: Recuperó el habla completamente</li>
+                            <li>Mes 24: Independencia funcional completa</li>
+                        </ul>
+                        <p><strong>Mecanismo de recuperación:</strong> Reorganización cortical - áreas no dañadas asumieron funciones de las lesionadas.</p>
+                    </div>
+                `,
+                blindness: `
+                    <div class="case-details active">
+                        <h3>👁️ Caso: Adaptación a la Ceguera</h3>
+                        <p><strong>Paciente:</strong> Carlos, 30 años</p>
+                        <p><strong>Diagnóstico:</strong> Ceguera adquirida por retinopatía diabética</p>
+                        <p><strong>Síntomas iniciales:</strong></p>
+                        <ul>
+                            <li>Pérdida completa de visión</li>
+                            <li>Depresión y ansiedad</li>
+                            <li>Dependencia total de otros</li>
+                            <li>Pérdida de orientación espacial</li>
+                        </ul>
+                        <p><strong>Tratamiento:</strong></p>
+                        <ul>
+                            <li>Orientación y movilidad</li>
+                            <li>Desarrollo de ecolocalización</li>
+                            <li>Entrenamiento auditivo intensivo</li>
+                            <li>Terapia psicológica</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Mes 6: Navegación independiente en casa</li>
+                            <li>Año 1: Uso de transporte público</li>
+                            <li>Año 2: Desarrollo de habilidades musicales</li>
+                            <li>Año 5: Conferencista sobre adaptación a la discapacidad</li>
+                        </ul>
+                        <p><strong>Mecanismo de adaptación:</strong> Reorganización cortical - áreas visuales procesan información auditiva y táctil.</p>
+                    </div>
+                `,
+                amputation: `
+                    <div class="case-details active">
+                        <h3>🦿 Caso: Dolor del Miembro Fantasma</h3>
+                        <p><strong>Paciente:</strong> Roberto, 52 años</p>
+                        <p><strong>Diagnóstico:</strong> Amputación de pierna derecha por diabetes</p>
+                        <p><strong>Síntomas iniciales:</strong></p>
+                        <ul>
+                            <li>Dolor intenso en la pierna amputada</li>
+                            <li>Sensación de que la pierna sigue ahí</li>
+                            <li>Dificultad para dormir</li>
+                            <li>Depresión por dolor crónico</li>
+                        </ul>
+                        <p><strong>Tratamiento:</strong></p>
+                        <ul>
+                            <li>Terapia de espejo</li>
+                            <li>Estimulación eléctrica transcutánea</li>
+                            <li>Terapia cognitivo-conductual</li>
+                            <li>Ejercicios de visualización</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Semana 2: Reducción del 30% del dolor</li>
+                            <li>Mes 1: Reducción del 60% del dolor</li>
+                            <li>Mes 3: Reducción del 80% del dolor</li>
+                            <li>Mes 6: Dolor controlado con mínima medicación</li>
+                        </ul>
+                        <p><strong>Mecanismo de tratamiento:</strong> Reorganización del mapa corporal en el cerebro.</p>
+                    </div>
+                `,
+                autism: `
+                    <div class="case-details active">
+                        <h3>🧩 Caso: Desarrollo de Habilidades en Autismo</h3>
+                        <p><strong>Paciente:</strong> Lucas, 8 años</p>
+                        <p><strong>Diagnóstico:</strong> Trastorno del espectro autista</p>
+                        <p><strong>Características iniciales:</strong></p>
+                        <ul>
+                            <li>Dificultad en interacción social</li>
+                            <li>Intereses restringidos y repetitivos</li>
+                            <li>Hipersensibilidad sensorial</li>
+                            <li>Dificultad en comunicación</li>
+                        </ul>
+                        <p><strong>Intervención:</strong></p>
+                        <ul>
+                            <li>Terapia conductual intensiva</li>
+                            <li>Desarrollo de habilidades musicales</li>
+                            <li>Entrenamiento en matemáticas avanzadas</li>
+                            <li>Terapia ocupacional sensorial</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Año 1: Mejora en comunicación</li>
+                            <li>Año 3: Desarrollo de talento musical</li>
+                            <li>Año 5: Habilidades matemáticas extraordinarias</li>
+                            <li>Año 8: Integración social exitosa</li>
+                        </ul>
+                        <p><strong>Mecanismo de desarrollo:</strong> Plasticidad sináptica en áreas específicas de interés.</p>
+                    </div>
+                `,
+                trauma: `
+                    <div class="case-details active">
+                        <h3>💥 Caso: Recuperación de Traumatismo Craneal</h3>
+                        <p><strong>Paciente:</strong> Ana, 28 años</p>
+                        <p><strong>Diagnóstico:</strong> Traumatismo craneal severo por accidente automovilístico</p>
+                        <p><strong>Síntomas iniciales:</strong></p>
+                        <ul>
+                            <li>Pérdida de conciencia prolongada</li>
+                            <li>Amnesia anterógrada y retrógrada</li>
+                            <li>Dificultad en funciones ejecutivas</li>
+                            <li>Problemas de memoria de trabajo</li>
+                        </ul>
+                        <p><strong>Tratamiento:</strong></p>
+                        <ul>
+                            <li>Rehabilitación cognitiva intensiva</li>
+                            <li>Terapia de memoria</li>
+                            <li>Entrenamiento en funciones ejecutivas</li>
+                            <li>Terapia ocupacional</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Mes 3: Recuperación de memoria básica</li>
+                            <li>Mes 6: Mejora en funciones ejecutivas</li>
+                            <li>Año 1: Retorno al trabajo a tiempo parcial</li>
+                            <li>Año 3: Funcionamiento cognitivo normal</li>
+                        </ul>
+                        <p><strong>Mecanismo de recuperación:</strong> Neurogénesis y reorganización de redes neuronales.</p>
+                    </div>
+                `,
+                aging: `
+                    <div class="case-details active">
+                        <h3>👴 Caso: Neuroplasticidad en el Envejecimiento</h3>
+                        <p><strong>Paciente:</strong> Elena, 75 años</p>
+                        <p><strong>Diagnóstico:</strong> Deterioro cognitivo leve relacionado con la edad</p>
+                        <p><strong>Síntomas iniciales:</strong></p>
+                        <ul>
+                            <li>Olvidos frecuentes</li>
+                            <li>Dificultad para aprender cosas nuevas</li>
+                            <li>Reducción en velocidad de procesamiento</li>
+                            <li>Pérdida de interés en actividades</li>
+                        </ul>
+                        <p><strong>Intervención:</strong></p>
+                        <ul>
+                            <li>Programa de ejercicios cognitivos</li>
+                            <li>Aprendizaje de nuevas habilidades (pintura, idiomas)</li>
+                            <li>Ejercicio físico regular</li>
+                            <li>Socialización activa</li>
+                        </ul>
+                        <p><strong>Progreso:</strong></p>
+                        <ul>
+                            <li>Año 1: Mejora en memoria</li>
+                            <li>Año 3: Nuevas habilidades artísticas</li>
+                            <li>Año 5: Fluidez en nuevo idioma</li>
+                            <li>Año 10: Funcionamiento cognitivo superior al esperado para su edad</li>
+                        </ul>
+                        <p><strong>Mecanismo de mejora:</strong> Mantenimiento de plasticidad sináptica a través de estimulación continua.</p>
+                    </div>
+                `
+            };
+            return cases[caseType] || '<p>Casos no encontrado.</p>';
+        }
+
+        function showAllCases() {
+            document.getElementById('case-details').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+        }
+
+        function startQuiz() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('case-details').style.display = 'none';
+            document.getElementById('quiz-section').classList.add('active');
+            
+            document.getElementById('total-questions').textContent = questions.length;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                finishQuiz();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('question-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('finish-btn').style.display = 'none';
+            
+            updateProgress();
+        }
+
+        function selectOption(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (selectedIndex === question.correct) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('finish-btn').style.display = 'inline-block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-section').classList.remove('active');
+            document.getElementById('results').style.display = 'block';
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').innerHTML = `
+                <h3>Puntuación Final: ${score} / ${questions.length} (${percentage}%)</h3>
+            `;
+            
+            let performance = '';
+            if (percentage >= 90) {
+                performance = 'Excelente comprensión de los casos clínicos de neuroplasticidad.';
+            } else if (percentage >= 70) {
+                performance = 'Buena comprensión de los mecanismos de neuroplasticidad.';
+            } else if (percentage >= 50) {
+                performance = 'Comprensión básica de los casos clínicos.';
+            } else {
+                performance = 'Necesitas revisar más los casos clínicos para comprender mejor la neuroplasticidad.';
+            }
+            
+            document.getElementById('performance-analysis').innerHTML = `
+                <h4>Análisis de Rendimiento:</h4>
+                <p>${performance}</p>
+            `;
+            
+            document.getElementById('recommendations').innerHTML = `
+                <h4>Recomendaciones:</h4>
+                <p>Continúa estudiando casos clínicos para comprender mejor cómo funciona la neuroplasticidad en situaciones reales. 
+                La práctica y el estudio constante te ayudarán a entender mejor estos fascinantes procesos cerebrales.</p>
+            `;
+        }
+
+        function resetGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-fill').style.width = '0%';
+        }
+    </script>
+</body>
+</html> 

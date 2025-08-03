@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Bucle - El Poder de los Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .simulator {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .loop-display {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid #dee2e6;
+        }
+        .loop-step {
+            display: inline-block;
+            background-color: #005BAA;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            margin: 10px;
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #005BAA;
+            margin: 0 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .scenario-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .example-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .example-box h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .strength-meter {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .strength-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .strength-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc3545, #ffc107, #28a745);
+            transition: width 0.5s ease;
+        }
+        .strength-label {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Simulador del Bucle</h1>
+        <p>Experimenta con señales, rutinas y recompensas para entender cómo se forman los hábitos</p>
+    </div>
+
+    <div class="content">
+        <h2>🎯 ¿Qué es este simulador?</h2>
+        <p>Este simulador te permite experimentar con diferentes combinaciones de señales, rutinas y recompensas para entender cómo se forman y fortalecen los hábitos. Podrás ver cómo diferentes elementos afectan la probabilidad de que un hábito se establezca.</p>
+
+        <div class="loop-display">
+            <h3>El Bucle del Hábito</h3>
+            <div class="loop-step" id="signalStep">Señal</div>
+            <span class="arrow">→</span>
+            <div class="loop-step" id="routineStep">Rutina</div>
+            <span class="arrow">→</span>
+            <div class="loop-step" id="rewardStep">Recompensa</div>
+            <span class="arrow">↻</span>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Cómo usar el simulador</h4>
+            <ul>
+                <li><strong>Selecciona una señal:</strong> El detonante que activa el hábito</li>
+                <li><strong>Elige una rutina:</strong> La acción que se ejecuta</li>
+                <li><strong>Define la recompensa:</strong> La satisfacción que obtienes</li>
+                <li><strong>Observa el resultado:</strong> Ve cómo se fortalece el hábito</li>
+            </ul>
+        </div>
+
+        <div class="simulator">
+            <h3>🔧 Configura Tu Bucle</h3>
+            <form id="loopForm">
+                <div class="form-group">
+                    <label for="signal">Señal (¿Qué desencadena el hábito?)</label>
+                    <select id="signal" name="signal" required>
+                        <option value="">Selecciona una señal</option>
+                        <option value="hora">Hora específica del día</option>
+                        <option value="lugar">Lugar específico</option>
+                        <option value="emotion">Estado emocional</option>
+                        <option value="other-person">Presencia de otra persona</option>
+                        <option value="action">Acción previa</option>
+                        <option value="thought">Pensamiento específico</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="routine">Rutina (¿Qué acción realizas?)</label>
+                    <select id="routine" name="routine" required>
+                        <option value="">Selecciona una rutina</option>
+                        <option value="exercise">Hacer ejercicio</option>
+                        <option value="eat">Comer algo</option>
+                        <option value="smoke">Fumar</option>
+                        <option value="phone">Usar el teléfono</option>
+                        <option value="read">Leer</option>
+                        <option value="meditate">Meditar</option>
+                        <option value="work">Trabajar</option>
+                        <option value="socialize">Socializar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reward">Recompensa (¿Qué satisfacción obtienes?)</label>
+                    <select id="reward" name="reward" required>
+                        <option value="">Selecciona una recompensa</option>
+                        <option value="pleasure">Placer físico</option>
+                        <option value="relief">Alivio del estrés</option>
+                        <option value="energy">Energía</option>
+                        <option value="connection">Conexión social</option>
+                        <option value="achievement">Sensación de logro</option>
+                        <option value="escape">Escape de la realidad</option>
+                        <option value="knowledge">Conocimiento</option>
+                        <option value="relaxation">Relajación</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="frequency">Frecuencia (¿Con qué frecuencia ocurre?)</label>
+                    <select id="frequency" name="frequency" required>
+                        <option value="">Selecciona la frecuencia</option>
+                        <option value="multiple-daily">Varias veces al día</option>
+                        <option value="daily">Diario</option>
+                        <option value="weekly">Semanal</option>
+                        <option value="occasional">Ocasional</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Simular Bucle</button>
+                <button type="button" class="btn btn-secondary" onclick="resetSimulator()">Reiniciar</button>
+            </form>
+        </div>
+
+        <div class="results" id="results">
+            <h3>📊 Resultados de la Simulación</h3>
+            <div id="simulationContent"></div>
+        </div>
+
+        <div class="example-box">
+            <h4>📝 Ejemplos de Bucles Efectivos</h4>
+            
+            <div class="scenario-box">
+                <h5>🏃‍♂️ Hábito de Ejercicio</h5>
+                <p><strong>Señal:</strong> Ver las zapatillas deportivas</p>
+                <p><strong>Rutina:</strong> Salir a correr</p>
+                <p><strong>Recompensa:</strong> Endorfinas y sensación de logro</p>
+                <p><strong>Fuerza del hábito:</strong> Muy fuerte</p>
+            </div>
+
+            <div class="scenario-box">
+                <h5>📚 Hábito de Lectura</h5>
+                <p><strong>Señal:</strong> Hora de dormir</p>
+                <p><strong>Rutina:</strong> Leer 10 páginas</p>
+                <p><strong>Recompensa:</strong> Relajación y conocimiento</p>
+                <p><strong>Fuerza del hábito:</strong> Moderada</p>
+            </div>
+
+            <div class="scenario-box">
+                <h5>🚬 Hábito de Fumar</h5>
+                <p><strong>Señal:</strong> Estrés en el trabajo</p>
+                <p><strong>Rutina:</strong> Fumar un cigarrillo</p>
+                <p><strong>Recompensa:</strong> Alivio temporal del estrés</p>
+                <p><strong>Fuerza del hábito:</strong> Muy fuerte (adicción)</p>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>🔬 Factores que Afectan la Fuerza del Hábito</h4>
+            <ul>
+                <li><strong>Claridad de la señal:</strong> Cuanto más específica, más fuerte el hábito</li>
+                <li><strong>Inmediatez de la recompensa:</strong> Las recompensas inmediatas crean hábitos más fuertes</li>
+                <li><strong>Frecuencia:</strong> Más repetición = hábito más fuerte</li>
+                <li><strong>Consistencia:</strong> Rutinas regulares se establecen más fácilmente</li>
+                <li><strong>Intensidad de la recompensa:</strong> Recompensas más satisfactorias fortalecen el hábito</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Datos de configuración para el simulador
+        const signalData = {
+            'hora': { name: 'Hora específica del día', strength: 8 },
+            'lugar': { name: 'Lugar específico', strength: 9 },
+            'emotion': { name: 'Estado emocional', strength: 7 },
+            'other-person': { name: 'Presencia de otra persona', strength: 6 },
+            'action': { name: 'Acción previa', strength: 8 },
+            'thought': { name: 'Pensamiento específico', strength: 5 }
+        };
+
+        const routineData = {
+            'exercise': { name: 'Hacer ejercicio', strength: 7 },
+            'eat': { name: 'Comer algo', strength: 9 },
+            'smoke': { name: 'Fumar', strength: 10 },
+            'phone': { name: 'Usar el teléfono', strength: 8 },
+            'read': { name: 'Leer', strength: 6 },
+            'meditate': { name: 'Meditar', strength: 5 },
+            'work': { name: 'Trabajar', strength: 7 },
+            'socialize': { name: 'Socializar', strength: 8 }
+        };
+
+        const rewardData = {
+            'pleasure': { name: 'Placer físico', strength: 9 },
+            'relief': { name: 'Alivio del estrés', strength: 8 },
+            'energy': { name: 'Energía', strength: 7 },
+            'connection': { name: 'Conexión social', strength: 8 },
+            'achievement': { name: 'Sensación de logro', strength: 7 },
+            'escape': { name: 'Escape de la realidad', strength: 6 },
+            'knowledge': { name: 'Conocimiento', strength: 6 },
+            'relaxation': { name: 'Relajación', strength: 7 }
+        };
+
+        const frequencyData = {
+            'multiple-daily': { name: 'Varias veces al día', multiplier: 1.5 },
+            'daily': { name: 'Diario', multiplier: 1.0 },
+            'weekly': { name: 'Semanal', multiplier: 0.5 },
+            'occasional': { name: 'Ocasional', multiplier: 0.3 }
+        };
+
+        document.getElementById('loopForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const signal = document.getElementById('signal').value;
+            const routine = document.getElementById('routine').value;
+            const reward = document.getElementById('reward').value;
+            const frequency = document.getElementById('frequency').value;
+
+            if (!signal || !routine || !reward || !frequency) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            // Calcular la fuerza del hábito
+            const signalStrength = signalData[signal].strength;
+            const routineStrength = routineData[routine].strength;
+            const rewardStrength = rewardData[reward].strength;
+            const frequencyMultiplier = frequencyData[frequency].multiplier;
+
+            const totalStrength = Math.round((signalStrength + routineStrength + rewardStrength) * frequencyMultiplier / 3);
+            const maxStrength = 10;
+
+            // Generar análisis
+            const analysis = generateAnalysis(signal, routine, reward, frequency, totalStrength, maxStrength);
+            
+            // Mostrar resultados
+            document.getElementById('simulationContent').innerHTML = analysis;
+            document.getElementById('results').style.display = 'block';
+            
+            // Actualizar visualización del bucle
+            updateLoopDisplay(signal, routine, reward);
+            
+            // Hacer scroll a los resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function generateAnalysis(signal, routine, reward, frequency, strength, maxStrength) {
+            const signalInfo = signalData[signal];
+            const routineInfo = routineData[routine];
+            const rewardInfo = rewardData[reward];
+            const frequencyInfo = frequencyData[frequency];
+
+            let strengthCategory = '';
+            let strengthColor = '';
+            let advice = '';
+
+            if (strength >= 8) {
+                strengthCategory = 'Muy Fuerte';
+                strengthColor = '#28a745';
+                advice = 'Este hábito se establecerá rápidamente y será difícil de romper. Considera si es el hábito que realmente quieres.';
+            } else if (strength >= 6) {
+                strengthCategory = 'Fuerte';
+                strengthColor = '#ffc107';
+                advice = 'Este hábito se establecerá bien con consistencia. Es un buen punto de partida.';
+            } else if (strength >= 4) {
+                strengthCategory = 'Moderado';
+                strengthColor = '#fd7e14';
+                advice = 'Este hábito requerirá más esfuerzo para establecerse. Considera fortalecer la señal o la recompensa.';
+            } else {
+                strengthCategory = 'Débil';
+                strengthColor = '#dc3545';
+                advice = 'Este hábito será difícil de establecer. Considera cambiar la señal, rutina o recompensa.';
+            }
+
+            return `
+                <div class="example-box">
+                    <h4>🔄 Tu Bucle de Hábito</h4>
+                    <p><strong>Señal:</strong> ${signalInfo.name} (Fuerza: ${signalInfo.strength}/10)</p>
+                    <p><strong>Rutina:</strong> ${routineInfo.name} (Fuerza: ${routineInfo.strength}/10)</p>
+                    <p><strong>Recompensa:</strong> ${rewardInfo.name} (Fuerza: ${rewardInfo.strength}/10)</p>
+                    <p><strong>Frecuencia:</strong> ${frequencyInfo.name}</p>
+                </div>
+
+                <div class="strength-meter">
+                    <h4>💪 Fuerza del Hábito</h4>
+                    <div class="strength-bar">
+                        <div class="strength-fill" style="width: ${(strength/maxStrength)*100}%; background-color: ${strengthColor};"></div>
+                    </div>
+                    <div class="strength-label">${strengthCategory} (${strength}/10)</div>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Análisis y Recomendaciones</h4>
+                    <p><strong>${advice}</strong></p>
+                    <ul>
+                        <li><strong>Señal:</strong> ${getSignalAdvice(signal)}</li>
+                        <li><strong>Rutina:</strong> ${getRoutineAdvice(routine)}</li>
+                        <li><strong>Recompensa:</strong> ${getRewardAdvice(reward)}</li>
+                        <li><strong>Frecuencia:</strong> ${getFrequencyAdvice(frequency)}</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function getSignalAdvice(signal) {
+            const advice = {
+                'hora': 'Las señales temporales son muy efectivas. Considera usar alarmas o recordatorios.',
+                'lugar': 'Las señales ambientales son poderosas. Organiza tu espacio para facilitar el hábito.',
+                'emotion': 'Las señales emocionales pueden ser inestables. Considera combinarlas con señales más específicas.',
+                'other-person': 'Las señales sociales son efectivas pero dependen de otros. Ten un plan B.',
+                'action': 'Las señales de acción son excelentes. Crea una cadena de hábitos.',
+                'thought': 'Las señales mentales son difíciles de controlar. Busca señales más tangibles.'
+            };
+            return advice[signal] || '';
+        }
+
+        function getRoutineAdvice(routine) {
+            const advice = {
+                'exercise': 'El ejercicio libera endorfinas naturales. Es una excelente rutina para hábitos positivos.',
+                'eat': 'La alimentación es una necesidad básica. Asegúrate de que sea saludable.',
+                'smoke': 'Fumar es altamente adictivo. Considera alternativas más saludables.',
+                'phone': 'El uso del teléfono puede ser adictivo. Establece límites de tiempo.',
+                'read': 'La lectura es un hábito excelente. Comienza con pocas páginas.',
+                'meditate': 'La meditación requiere práctica. Comienza con sesiones cortas.',
+                'work': 'El trabajo puede ser estresante. Asegúrate de tener recompensas adecuadas.',
+                'socialize': 'La socialización es importante. Busca interacciones significativas.'
+            };
+            return advice[routine] || '';
+        }
+
+        function getRewardAdvice(reward) {
+            const advice = {
+                'pleasure': 'Las recompensas físicas son muy efectivas. Asegúrate de que sean saludables.',
+                'relief': 'El alivio del estrés es poderoso. Considera alternativas saludables.',
+                'energy': 'La energía es una recompensa natural. El ejercicio es excelente para esto.',
+                'connection': 'La conexión social es fundamental. Busca interacciones auténticas.',
+                'achievement': 'La sensación de logro es motivadora. Establece metas pequeñas.',
+                'escape': 'El escape puede ser problemático. Busca formas constructivas de relajarte.',
+                'knowledge': 'El conocimiento es una recompensa duradera. Es excelente para el crecimiento.',
+                'relaxation': 'La relajación es importante. Encuentra métodos saludables.'
+            };
+            return advice[reward] || '';
+        }
+
+        function getFrequencyAdvice(frequency) {
+            const advice = {
+                'multiple-daily': 'La alta frecuencia acelera la formación del hábito. Asegúrate de que sea positivo.',
+                'daily': 'La frecuencia diaria es ideal para establecer hábitos sólidos.',
+                'weekly': 'La frecuencia semanal requiere más tiempo para establecerse. Sé paciente.',
+                'occasional': 'La frecuencia ocasional hace difícil establecer el hábito. Considera aumentar la frecuencia.'
+            };
+            return advice[frequency] || '';
+        }
+
+        function updateLoopDisplay(signal, routine, reward) {
+            document.getElementById('signalStep').textContent = signalData[signal].name;
+            document.getElementById('routineStep').textContent = routineData[routine].name;
+            document.getElementById('rewardStep').textContent = rewardData[reward].name;
+        }
+
+        function resetSimulator() {
+            document.getElementById('loopForm').reset();
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('signalStep').textContent = 'Señal';
+            document.getElementById('routineStep').textContent = 'Rutina';
+            document.getElementById('rewardStep').textContent = 'Recompensa';
+        }
+    </script>
+</body>
+</html> 

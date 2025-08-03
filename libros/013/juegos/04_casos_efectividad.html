@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos de Efectividad - Los 7 Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        .case-study {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .case-study h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .solution-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .solution-option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .solution-option:hover {
+            border-color: #005BAA;
+            background-color: #f8f9fa;
+        }
+        .solution-option.selected {
+            border-color: #005BAA;
+            background-color: #e7f3ff;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+        }
+        .analysis {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💼 Casos de Efectividad</h1>
+        <p>Analiza situaciones reales aplicando los 7 Hábitos</p>
+    </div>
+
+    <div class="content">
+        <p>En este ejercicio, analizarás casos reales de efectividad y aplicarás los principios de los 7 Hábitos para encontrar las mejores soluciones.</p>
+
+        <div id="case-container">
+            <!-- Los casos se cargarán dinámicamente -->
+        </div>
+
+        <button class="btn" onclick="nextCase()" id="next-btn" style="display: none;">Siguiente Caso</button>
+        <button class="btn" onclick="restartCases()" id="restart-btn" style="display: none;">Reiniciar Casos</button>
+    </div>
+
+    <script>
+        let currentCase = 0;
+        let selectedSolution = null;
+
+        const cases = [
+            {
+                title: "Caso 1: Líder de Equipo Inefectivo",
+                description: "María es una líder de equipo que constantemente se queja de que su equipo no cumple con los objetivos. Ella culpa a los empleados por ser perezosos y a la empresa por no darle suficientes recursos.",
+                question: "¿Cómo puede María aplicar los 7 Hábitos para mejorar su efectividad como líder?",
+                solutions: [
+                    {
+                        text: "Seguir quejándose hasta que la empresa le dé más recursos",
+                        habits: ["Ninguno"],
+                        analysis: "Esta es una respuesta reactiva que no aplica ningún hábito efectivo."
+                    },
+                    {
+                        text: "Ser proactiva y tomar responsabilidad de la situación del equipo",
+                        habits: ["Hábito 1"],
+                        analysis: "Aplica el Hábito 1 al tomar responsabilidad en lugar de culpar."
+                    },
+                    {
+                        text: "Desarrollar una visión clara para el equipo y comunicarla efectivamente",
+                        habits: ["Hábito 1", "Hábito 2", "Hábito 5"],
+                        analysis: "Aplica múltiples hábitos: proactividad, visión clara y comunicación efectiva."
+                    },
+                    {
+                        text: "Implementar todos los 7 Hábitos de manera sistemática",
+                        habits: ["Todos los 7 Hábitos"],
+                        analysis: "La solución más completa que integra todos los principios de efectividad."
+                    }
+                ],
+                bestSolution: 3
+            },
+            {
+                title: "Caso 2: Conflicto Familiar",
+                description: "Los padres de Ana están constantemente en desacuerdo sobre cómo educar a su hijo adolescente. Esto está causando tensión en la familia y afectando el comportamiento del hijo.",
+                question: "¿Cómo puede Ana aplicar los 7 Hábitos para resolver este conflicto familiar?",
+                solutions: [
+                    {
+                        text: "Tomar partido por uno de sus padres",
+                        habits: ["Ninguno"],
+                        analysis: "Esta respuesta crea más división y no resuelve el problema."
+                    },
+                    {
+                        text: "Buscar primero entender las perspectivas de ambos padres",
+                        habits: ["Hábito 5"],
+                        analysis: "Aplica la escucha empática para entender el problema."
+                    },
+                    {
+                        text: "Facilitar una conversación donde todos busquen soluciones Ganar-Ganar",
+                        habits: ["Hábito 4", "Hábito 5", "Hábito 6"],
+                        analysis: "Aplica múltiples hábitos para crear sinergia familiar."
+                    },
+                    {
+                        text: "Crear un plan familiar basado en principios compartidos",
+                        habits: ["Todos los 7 Hábitos"],
+                        analysis: "La solución más efectiva que integra todos los hábitos."
+                    }
+                ],
+                bestSolution: 3
+            },
+            {
+                title: "Caso 3: Crisis de Tiempo",
+                description: "Carlos está constantemente estresado porque no tiene tiempo para nada. Trabaja largas horas, descuida su salud y sus relaciones, y siempre está corriendo de una crisis a otra.",
+                question: "¿Cómo puede Carlos aplicar los 7 Hábitos para mejorar su gestión del tiempo?",
+                solutions: [
+                    {
+                        text: "Trabajar más horas para hacer todo",
+                        habits: ["Ninguno"],
+                        analysis: "Esta respuesta empeora el problema y no aplica ningún hábito efectivo."
+                    },
+                    {
+                        text: "Usar una agenda más detallada",
+                        habits: ["Hábito 3"],
+                        analysis: "Aplica el Hábito 3 pero de manera limitada."
+                    },
+                    {
+                        text: "Priorizar usando la matriz de gestión del tiempo y renovarse regularmente",
+                        habits: ["Hábito 3", "Hábito 7"],
+                        analysis: "Aplica la priorización y la renovación personal."
+                    },
+                    {
+                        text: "Implementar todos los 7 Hábitos para una transformación completa",
+                        habits: ["Todos los 7 Hábitos"],
+                        analysis: "La solución más efectiva que aborda todas las dimensiones del problema."
+                    }
+                ],
+                bestSolution: 3
+            }
+        ];
+
+        function loadCase() {
+            if (currentCase >= cases.length) {
+                showFinalResults();
+                return;
+            }
+
+            const caseStudy = cases[currentCase];
+            const container = document.getElementById('case-container');
+            
+            container.innerHTML = `
+                <div class="case-study">
+                    <h3>${caseStudy.title}</h3>
+                    <p><strong>Situación:</strong> ${caseStudy.description}</p>
+                    <p><strong>Pregunta:</strong> ${caseStudy.question}</p>
+                    <h4>Selecciona la mejor solución:</h4>
+                    <div class="solution-options">
+                        ${caseStudy.solutions.map((solution, index) => `
+                            <div class="solution-option" onclick="selectSolution(${index})">
+                                <strong>Opción ${index + 1}:</strong> ${solution.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <button class="btn" onclick="analyzeSolution()">Analizar Solución</button>
+            `;
+        }
+
+        function selectSolution(index) {
+            document.querySelectorAll('.solution-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            selectedSolution = index;
+        }
+
+        function analyzeSolution() {
+            if (selectedSolution === null) {
+                alert('Por favor selecciona una solución.');
+                return;
+            }
+
+            const caseStudy = cases[currentCase];
+            const solution = caseStudy.solutions[selectedSolution];
+            const isBest = selectedSolution === caseStudy.bestSolution;
+            
+            const container = document.getElementById('case-container');
+            const analysis = document.createElement('div');
+            analysis.className = 'analysis';
+            analysis.style.display = 'block';
+            
+            analysis.innerHTML = `
+                <h4>${isBest ? '✅ Excelente elección' : '⚠️ Análisis de tu elección'}</h4>
+                <p><strong>Hábitos aplicados:</strong> ${solution.habits.join(', ')}</p>
+                <p><strong>Análisis:</strong> ${solution.analysis}</p>
+                ${!isBest ? `<p><strong>Mejor solución:</strong> ${caseStudy.solutions[caseStudy.bestSolution].text}</p>` : ''}
+            `;
+            
+            container.appendChild(analysis);
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextCase() {
+            currentCase++;
+            document.getElementById('next-btn').style.display = 'none';
+            selectedSolution = null;
+            loadCase();
+        }
+
+        function showFinalResults() {
+            const container = document.getElementById('case-container');
+            container.innerHTML = `
+                <div class="case-study">
+                    <h3>🎉 ¡Análisis Completado!</h3>
+                    <p>Has analizado ${cases.length} casos de efectividad aplicando los principios de los 7 Hábitos.</p>
+                    <h4>Reflexiones:</h4>
+                    <ul>
+                        <li>¿Qué hábitos te resultaron más difíciles de aplicar?</li>
+                        <li>¿Cómo puedes usar estos principios en tu vida diaria?</li>
+                        <li>¿Qué situaciones similares enfrentas en tu vida?</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('restart-btn').style.display = 'inline-block';
+        }
+
+        function restartCases() {
+            currentCase = 0;
+            selectedSolution = null;
+            document.getElementById('restart-btn').style.display = 'none';
+            loadCase();
+        }
+
+        // Inicializar los casos
+        loadCase();
+    </script>
+</body>
+</html> 

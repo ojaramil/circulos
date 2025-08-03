@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Hábitos - El Poder de los Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .planner {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .plan-display {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .tracker {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .example-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .example-box h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .golden-rule {
+            background-color: #fff3cd;
+            border: 3px solid #ffc107;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .golden-rule h3 {
+            color: #b8860b;
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        .calendar-day {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .calendar-day.completed {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .calendar-day.missed {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .calendar-day.today {
+            background-color: #cce5ff;
+            border-color: #b3d7ff;
+            font-weight: bold;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Planificador de Hábitos</h1>
+        <p>Crea y sigue tu plan de transformación de hábitos usando la regla de oro</p>
+    </div>
+
+    <div class="content">
+        <div class="golden-rule">
+            <h3>🥇 La Regla de Oro del Cambio de Hábitos</h3>
+            <p><strong>Para cambiar un hábito, debes mantener la misma señal y la misma recompensa, pero cambiar la rutina.</strong></p>
+        </div>
+
+        <h2>🎯 ¿Qué es este planificador?</h2>
+        <p>Este planificador te ayudará a crear un plan detallado para cambiar cualquier hábito usando los principios del bucle del hábito y la regla de oro. Incluye herramientas de seguimiento y análisis para mantener tu progreso.</p>
+
+        <div class="tips">
+            <h4>💡 Cómo usar el planificador</h4>
+            <ul>
+                <li><strong>Analiza tu hábito actual:</strong> Identifica señal, rutina y recompensa</li>
+                <li><strong>Diseña tu nuevo hábito:</strong> Mantén señal y recompensa, cambia la rutina</li>
+                <li><strong>Planifica la implementación:</strong> Establece fechas y recordatorios</li>
+                <li><strong>Haz seguimiento:</strong> Monitorea tu progreso diariamente</li>
+                <li><strong>Ajusta según sea necesario:</strong> Modifica tu plan basado en los resultados</li>
+            </ul>
+        </div>
+
+        <div class="planner">
+            <h3>🔧 Crea Tu Plan de Hábito</h3>
+            <form id="habitPlanForm">
+                <div class="form-group">
+                    <label for="habitName">¿Qué hábito quieres cambiar?</label>
+                    <input type="text" id="habitName" name="habitName" placeholder="Ej: Comer chocolate cuando estoy estresado" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentSignal">Señal actual (¿Qué desencadena el hábito?)</label>
+                    <textarea id="currentSignal" name="currentSignal" placeholder="Describe la señal que activa tu hábito actual" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentRoutine">Rutina actual (¿Qué haces exactamente?)</label>
+                    <textarea id="currentRoutine" name="currentRoutine" placeholder="Describe paso a paso tu rutina actual" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentReward">Recompensa actual (¿Qué satisfacción obtienes?)</label>
+                    <textarea id="currentReward" name="currentReward" placeholder="Describe la recompensa que obtienes del hábito actual" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="newRoutine">Nueva rutina (¿Qué harás en su lugar?)</label>
+                    <textarea id="newRoutine" name="newRoutine" placeholder="Describe la nueva rutina que satisfará la misma recompensa" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Fecha de inicio</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Duración del plan (días)</label>
+                    <select id="duration" name="duration" required>
+                        <option value="7">7 días (1 semana)</option>
+                        <option value="21">21 días (3 semanas)</option>
+                        <option value="30">30 días (1 mes)</option>
+                        <option value="66">66 días (2 meses)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reminder">Recordatorio diario</label>
+                    <input type="time" id="reminder" name="reminder" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="motivation">¿Por qué es importante este cambio?</label>
+                    <textarea id="motivation" name="motivation" placeholder="Escribe tu motivación principal para hacer este cambio" required></textarea>
+                </div>
+
+                <button type="submit" class="btn">Crear Plan</button>
+                <button type="button" class="btn btn-secondary" onclick="resetPlan()">Limpiar Formulario</button>
+            </form>
+        </div>
+
+        <div class="plan-display" id="planDisplay">
+            <h3>📋 Tu Plan de Hábito</h3>
+            <div id="planContent"></div>
+        </div>
+
+        <div class="tracker" id="tracker">
+            <h3>📊 Seguimiento Diario</h3>
+            <div id="trackerContent"></div>
+        </div>
+
+        <div class="example-box">
+            <h4>📝 Ejemplo de Plan Completo</h4>
+            
+            <div class="example-box">
+                <h5>🚬 Plan para Dejar de Fumar</h5>
+                <p><strong>Hábito objetivo:</strong> Dejar de fumar</p>
+                <p><strong>Señal actual:</strong> Estrés en el trabajo</p>
+                <p><strong>Rutina actual:</strong> Fumar un cigarrillo</p>
+                <p><strong>Recompensa actual:</strong> Sensación de calma</p>
+                <p><strong>Nueva rutina:</strong> Respirar profundamente 10 veces</p>
+                <p><strong>Motivación:</strong> Mejorar mi salud y ahorrar dinero</p>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>🎯 Estrategias para el Éxito</h4>
+            <ul>
+                <li><strong>Comienza pequeño:</strong> No intentes cambiar todo de una vez</li>
+                <li><strong>Sé específico:</strong> Define exactamente qué harás</li>
+                <li><strong>Planifica los obstáculos:</strong> Anticipa qué puede salir mal</li>
+                <li><strong>Celebra los éxitos:</strong> Reconoce cada pequeño progreso</li>
+                <li><strong>Sé paciente:</strong> Los hábitos tardan tiempo en cambiar</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentPlan = null;
+        let trackingData = {};
+
+        document.getElementById('habitPlanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener los valores del formulario
+            const habitName = document.getElementById('habitName').value;
+            const currentSignal = document.getElementById('currentSignal').value;
+            const currentRoutine = document.getElementById('currentRoutine').value;
+            const currentReward = document.getElementById('currentReward').value;
+            const newRoutine = document.getElementById('newRoutine').value;
+            const startDate = document.getElementById('startDate').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            const reminder = document.getElementById('reminder').value;
+            const motivation = document.getElementById('motivation').value;
+
+            // Crear el plan
+            currentPlan = {
+                habitName,
+                currentSignal,
+                currentRoutine,
+                currentReward,
+                newRoutine,
+                startDate,
+                duration,
+                reminder,
+                motivation,
+                createdDate: new Date().toISOString()
+            };
+
+            // Mostrar el plan
+            displayPlan(currentPlan);
+            
+            // Mostrar el tracker
+            displayTracker(currentPlan);
+            
+            // Hacer scroll al plan
+            document.getElementById('planDisplay').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function displayPlan(plan) {
+            const endDate = new Date(plan.startDate);
+            endDate.setDate(endDate.getDate() + plan.duration);
+
+            const planHTML = `
+                <div class="example-box">
+                    <h4>🎯 Resumen del Plan</h4>
+                    <p><strong>Hábito:</strong> ${plan.habitName}</p>
+                    <p><strong>Fecha de inicio:</strong> ${formatDate(plan.startDate)}</p>
+                    <p><strong>Duración:</strong> ${plan.duration} días</p>
+                    <p><strong>Fecha de finalización:</strong> ${formatDate(endDate.toISOString().split('T')[0])}</p>
+                    <p><strong>Recordatorio:</strong> ${plan.reminder}</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>🔄 Análisis del Bucle</h4>
+                    <p><strong>Señal (mantener):</strong> ${plan.currentSignal}</p>
+                    <p><strong>Rutina actual:</strong> ${plan.currentRoutine}</p>
+                    <p><strong>Nueva rutina:</strong> ${plan.newRoutine}</p>
+                    <p><strong>Recompensa (mantener):</strong> ${plan.currentReward}</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>💪 Motivación</h4>
+                    <p>${plan.motivation}</p>
+                </div>
+
+                <div class="tips">
+                    <h4>📋 Próximos Pasos</h4>
+                    <ol>
+                        <li><strong>Configura recordatorios:</strong> Usa tu teléfono o calendario</li>
+                        <li><strong>Prepara tu entorno:</strong> Elimina señales del hábito anterior</li>
+                        <li><strong>Informa a otros:</strong> Busca apoyo de familiares y amigos</li>
+                        <li><strong>Comienza mañana:</strong> No esperes, actúa ahora</li>
+                    </ol>
+                </div>
+            `;
+
+            document.getElementById('planContent').innerHTML = planHTML;
+            document.getElementById('planDisplay').style.display = 'block';
+        }
+
+        function displayTracker(plan) {
+            const startDate = new Date(plan.startDate);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + plan.duration);
+
+            // Generar días del calendario
+            let calendarHTML = '<div class="calendar">';
+            const today = new Date();
+            
+            for (let i = 0; i < plan.duration; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(currentDate.getDate() + i);
+                const dateString = currentDate.toISOString().split('T')[0];
+                
+                let dayClass = 'calendar-day';
+                if (currentDate.toDateString() === today.toDateString()) {
+                    dayClass += ' today';
+                }
+                
+                const dayNumber = currentDate.getDate();
+                calendarHTML += `<div class="${dayClass}" onclick="toggleDay('${dateString}')">${dayNumber}</div>`;
+            }
+            calendarHTML += '</div>';
+
+            // Generar estadísticas
+            const statsHTML = `
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="completedDays">0</div>
+                        <div class="stat-label">Días Completados</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="successRate">0%</div>
+                        <div class="stat-label">Tasa de Éxito</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="streak">0</div>
+                        <div class="stat-label">Racha Actual</div>
+                    </div>
+                </div>
+            `;
+
+            const trackerHTML = `
+                <h4>📅 Calendario de Seguimiento</h4>
+                <p>Haz clic en cada día para marcar si completaste tu nuevo hábito:</p>
+                ${calendarHTML}
+                ${statsHTML}
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <p><strong>Progreso general:</strong> <span id="progressText">0%</span></p>
+            `;
+
+            document.getElementById('trackerContent').innerHTML = trackerHTML;
+            document.getElementById('tracker').style.display = 'block';
+        }
+
+        function toggleDay(dateString) {
+            if (!trackingData[dateString]) {
+                trackingData[dateString] = true;
+            } else {
+                delete trackingData[dateString];
+            }
+            
+            updateTracking();
+            updateCalendar();
+        }
+
+        function updateTracking() {
+            const totalDays = currentPlan.duration;
+            const completedDays = Object.keys(trackingData).length;
+            const successRate = Math.round((completedDays / totalDays) * 100);
+            
+            // Calcular racha actual
+            let currentStreak = 0;
+            const today = new Date();
+            const startDate = new Date(currentPlan.startDate);
+            
+            for (let i = 0; i < totalDays; i++) {
+                const checkDate = new Date(startDate);
+                checkDate.setDate(checkDate.getDate() + i);
+                const dateString = checkDate.toISOString().split('T')[0];
+                
+                if (checkDate <= today && trackingData[dateString]) {
+                    currentStreak++;
+                } else if (checkDate <= today && !trackingData[dateString]) {
+                    currentStreak = 0;
+                }
+            }
+
+            document.getElementById('completedDays').textContent = completedDays;
+            document.getElementById('successRate').textContent = successRate + '%';
+            document.getElementById('streak').textContent = currentStreak;
+            document.getElementById('progressBar').style.width = successRate + '%';
+            document.getElementById('progressText').textContent = successRate + '%';
+        }
+
+        function updateCalendar() {
+            const days = document.querySelectorAll('.calendar-day');
+            days.forEach(day => {
+                day.classList.remove('completed', 'missed');
+                const dateString = day.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (trackingData[dateString]) {
+                    day.classList.add('completed');
+                }
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function resetPlan() {
+            document.getElementById('habitPlanForm').reset();
+            document.getElementById('planDisplay').style.display = 'none';
+            document.getElementById('tracker').style.display = 'none';
+            currentPlan = null;
+            trackingData = {};
+        }
+
+        // Establecer fecha de inicio por defecto como mañana
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('startDate').value = tomorrow.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html> 

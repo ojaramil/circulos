@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Cambios Cerebrales - El Cerebro que se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+            border-bottom: 3px solid #9C27B0;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #7B1FA2;
+            margin-top: 30px;
+            border-left: 4px solid #9C27B0;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #6A1B9A;
+            margin-top: 25px;
+        }
+        .simulator-section {
+            background-color: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9C27B0;
+        }
+        .brain-visualization {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+            min-height: 300px;
+        }
+        .brain-area {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 50%;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .brain-area:hover {
+            transform: scale(1.1);
+        }
+        .brain-area.active {
+            background-color: #9C27B0;
+            box-shadow: 0 0 20px rgba(156, 39, 176, 0.5);
+        }
+        .brain-area.enhanced {
+            background-color: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+        .brain-area.damaged {
+            background-color: #f44336;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
+        }
+        .controls-panel {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2E7D32;
+        }
+        .control-group select, .control-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .btn {
+            background-color: #9C27B0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #7B1FA2;
+        }
+        .btn-secondary {
+            background-color: #757575;
+        }
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+        .results-panel {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+            display: none;
+        }
+        .results-panel.show {
+            display: block;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .metric-card h4 {
+            color: #1976D2;
+            margin-top: 0;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #9C27B0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.5s ease;
+        }
+        .scenario-section {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .scenario-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #ffe0b2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .scenario-card:hover {
+            background-color: #fff8e1;
+            transform: translateX(5px);
+        }
+        .scenario-card.selected {
+            background-color: #ff9800;
+            color: white;
+        }
+        .highlight {
+            background-color: #f3e5f5;
+            border-left: 4px solid #9C27B0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .quote {
+            font-style: italic;
+            background-color: #f8f9fa;
+            border-left: 4px solid #9C27B0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-section {
+            background-color: #ffebee;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Simulador de Cambios Cerebrales</h1>
+        <p>Explora cómo diferentes actividades y experiencias transforman tu cerebro</p>
+    </div>
+
+    <div class="content">
+        <div class="info-section">
+            <h3>📋 Sobre este Simulador</h3>
+            <p>Este simulador te permite explorar cómo diferentes actividades, experiencias y condiciones afectan la estructura y función de tu cerebro. Basado en investigaciones reales sobre neuroplasticidad, puedes ver cómo tu cerebro se adapta y cambia.</p>
+        </div>
+
+        <div class="simulator-section">
+            <h2>🧠 Visualización del Cerebro</h2>
+            <p>Haz clic en las diferentes áreas del cerebro para ver cómo se ven afectadas por las actividades que selecciones:</p>
+            
+            <div class="brain-visualization">
+                <div class="brain-area" data-area="frontal" onclick="selectBrainArea(this, 'frontal')">
+                    <strong>Lóbulo Frontal</strong><br>
+                    <small>Pensamiento, Planificación</small>
+                </div>
+                <div class="brain-area" data-area="temporal" onclick="selectBrainArea(this, 'temporal')">
+                    <strong>Lóbulo Temporal</strong><br>
+                    <small>Memoria, Audición</small>
+                </div>
+                <div class="brain-area" data-area="parietal" onclick="selectBrainArea(this, 'parietal')">
+                    <strong>Lóbulo Parietal</strong><br>
+                    <small>Sensación, Espacio</small>
+                </div>
+                <div class="brain-area" data-area="occipital" onclick="selectBrainArea(this, 'occipital')">
+                    <strong>Lóbulo Occipital</strong><br>
+                    <small>Visión</small>
+                </div>
+                <div class="brain-area" data-area="cerebellum" onclick="selectBrainArea(this, 'cerebellum')">
+                    <strong>Cerebelo</strong><br>
+                    <small>Coordinación</small>
+                </div>
+                <div class="brain-area" data-area="hippocampus" onclick="selectBrainArea(this, 'hippocampus')">
+                    <strong>Hipocampo</strong><br>
+                    <small>Memoria</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <h2>🎛️ Panel de Control</h2>
+            
+            <div class="control-group">
+                <label for="activityType">Tipo de Actividad:</label>
+                <select id="activityType" onchange="updateSimulation()">
+                    <option value="learning">Aprendizaje</option>
+                    <option value="exercise">Ejercicio Físico</option>
+                    <option value="meditation">Meditación</option>
+                    <option value="music">Música</option>
+                    <option value="social">Interacción Social</option>
+                    <option value="stress">Estrés Crónico</option>
+                    <option value="sleep">Privación de Sueño</option>
+                    <option value="injury">Lesión Cerebral</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="intensity">Intensidad (1-10):</label>
+                <input type="range" id="intensity" min="1" max="10" value="5" onchange="updateSimulation()">
+                <span id="intensityValue">5</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="duration">Duración (semanas):</label>
+                <input type="range" id="duration" min="1" max="52" value="12" onchange="updateSimulation()">
+                <span id="durationValue">12 semanas</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="frequency">Frecuencia:</label>
+                <select id="frequency" onchange="updateSimulation()">
+                    <option value="daily">Diaria</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="occasional">Ocasional</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="runSimulation()">🚀 Ejecutar Simulación</button>
+            <button class="btn btn-secondary" onclick="resetSimulation()">🔄 Reiniciar</button>
+        </div>
+
+        <div class="scenario-section">
+            <h2>🎯 Escenarios Predefinidos</h2>
+            <p>Selecciona un escenario para ver cómo afecta al cerebro:</p>
+            
+            <div class="scenario-card" onclick="loadScenario('musician')">
+                <h4>🎵 Músico Profesional</h4>
+                <p>20 años tocando un instrumento musical</p>
+            </div>
+            
+            <div class="scenario-card" onclick="loadScenario('athlete')">
+                <h4>🏃 Atleta de Elite</h4>
+                <p>Entrenamiento intensivo durante 10 años</p>
+            </div>
+            
+            <div class="scenario-card" onclick="loadScenario('meditator')">
+                <h4>🧘 Meditador Experto</h4>
+                <p>20 años de práctica de meditación diaria</p>
+            </div>
+            
+            <div class="scenario-card" onclick="loadScenario('student')">
+                <h4>📚 Estudiante Universitario</h4>
+                <p>4 años de estudio intensivo</p>
+            </div>
+            
+            <div class="scenario-card" onclick="loadScenario('stroke')">
+                <h4>🏥 Paciente Post-ACV</h4>
+                <p>Recuperación después de un accidente cerebrovascular</p>
+            </div>
+        </div>
+
+        <div class="results-panel" id="resultsPanel">
+            <h2>📊 Resultados de la Simulación</h2>
+            
+            <div class="metrics-grid" id="metricsGrid">
+                <!-- Las métricas se generarán dinámicamente -->
+            </div>
+            
+            <div class="highlight">
+                <h4>🧠 Cambios Observados</h4>
+                <div id="changesList">
+                    <!-- Los cambios se generarán dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="quote">
+                <p><strong>"El cerebro que se cambia a sí mismo es el cerebro que puede curarse a sí mismo."</strong> - Norman Doidge</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedAreas = [];
+        let currentScenario = null;
+        let brainState = {
+            frontal: { activity: 50, connections: 100, plasticity: 50 },
+            temporal: { activity: 50, connections: 100, plasticity: 50 },
+            parietal: { activity: 50, connections: 100, plasticity: 50 },
+            occipital: { activity: 50, connections: 100, plasticity: 50 },
+            cerebellum: { activity: 50, connections: 100, plasticity: 50 },
+            hippocampus: { activity: 50, connections: 100, plasticity: 50 }
+        };
+
+        const activityEffects = {
+            learning: {
+                frontal: { activity: 30, connections: 25, plasticity: 20 },
+                temporal: { activity: 20, connections: 15, plasticity: 15 },
+                parietal: { activity: 15, connections: 10, plasticity: 10 },
+                hippocampus: { activity: 25, connections: 20, plasticity: 15 }
+            },
+            exercise: {
+                frontal: { activity: 20, connections: 15, plasticity: 25 },
+                parietal: { activity: 25, connections: 20, plasticity: 20 },
+                cerebellum: { activity: 30, connections: 25, plasticity: 25 },
+                hippocampus: { activity: 20, connections: 15, plasticity: 20 }
+            },
+            meditation: {
+                frontal: { activity: 25, connections: 20, plasticity: 30 },
+                parietal: { activity: 20, connections: 15, plasticity: 25 },
+                temporal: { activity: 15, connections: 10, plasticity: 20 }
+            },
+            music: {
+                temporal: { activity: 30, connections: 25, plasticity: 20 },
+                frontal: { activity: 20, connections: 15, plasticity: 15 },
+                parietal: { activity: 15, connections: 10, plasticity: 10 }
+            },
+            social: {
+                frontal: { activity: 25, connections: 20, plasticity: 20 },
+                temporal: { activity: 20, connections: 15, plasticity: 15 },
+                parietal: { activity: 15, connections: 10, plasticity: 10 }
+            },
+            stress: {
+                frontal: { activity: -20, connections: -15, plasticity: -25 },
+                temporal: { activity: -15, connections: -10, plasticity: -20 },
+                hippocampus: { activity: -25, connections: -20, plasticity: -30 }
+            },
+            sleep: {
+                frontal: { activity: -30, connections: -25, plasticity: -35 },
+                temporal: { activity: -20, connections: -15, plasticity: -25 },
+                parietal: { activity: -15, connections: -10, plasticity: -20 }
+            },
+            injury: {
+                frontal: { activity: -40, connections: -35, plasticity: -45 },
+                temporal: { activity: -35, connections: -30, plasticity: -40 },
+                parietal: { activity: -30, connections: -25, plasticity: -35 }
+            }
+        };
+
+        const scenarios = {
+            musician: {
+                activity: 'music',
+                intensity: 9,
+                duration: 20,
+                frequency: 'daily',
+                description: 'Músico profesional con 20 años de experiencia'
+            },
+            athlete: {
+                activity: 'exercise',
+                intensity: 10,
+                duration: 10,
+                frequency: 'daily',
+                description: 'Atleta de elite con entrenamiento intensivo'
+            },
+            meditator: {
+                activity: 'meditation',
+                intensity: 8,
+                duration: 20,
+                frequency: 'daily',
+                description: 'Meditador experto con práctica diaria'
+            },
+            student: {
+                activity: 'learning',
+                intensity: 8,
+                duration: 4,
+                frequency: 'daily',
+                description: 'Estudiante universitario con estudio intensivo'
+            },
+            stroke: {
+                activity: 'injury',
+                intensity: 7,
+                duration: 2,
+                frequency: 'occasional',
+                description: 'Paciente recuperándose de un ACV'
+            }
+        };
+
+        function selectBrainArea(element, area) {
+            if (selectedAreas.includes(area)) {
+                selectedAreas = selectedAreas.filter(a => a !== area);
+                element.classList.remove('active');
+            } else {
+                selectedAreas.push(area);
+                element.classList.add('active');
+            }
+        }
+
+        function updateSimulation() {
+            const intensity = parseInt(document.getElementById('intensity').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            
+            document.getElementById('intensityValue').textContent = intensity;
+            document.getElementById('durationValue').textContent = duration + ' semanas';
+        }
+
+        function runSimulation() {
+            const activityType = document.getElementById('activityType').value;
+            const intensity = parseInt(document.getElementById('intensity').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            const frequency = document.getElementById('frequency').value;
+
+            // Calcular efectos
+            const effects = activityEffects[activityType];
+            const frequencyMultiplier = getFrequencyMultiplier(frequency);
+            const durationMultiplier = Math.min(duration / 12, 2); // Máximo 2x después de 24 semanas
+            const intensityMultiplier = intensity / 5; // Normalizar a escala de 5
+
+            // Aplicar cambios al cerebro
+            Object.keys(effects).forEach(area => {
+                if (brainState[area]) {
+                    brainState[area].activity = Math.max(0, Math.min(100, 
+                        brainState[area].activity + (effects[area].activity * intensityMultiplier * durationMultiplier * frequencyMultiplier)));
+                    brainState[area].connections = Math.max(0, Math.min(200, 
+                        brainState[area].connections + (effects[area].connections * intensityMultiplier * durationMultiplier * frequencyMultiplier)));
+                    brainState[area].plasticity = Math.max(0, Math.min(100, 
+                        brainState[area].plasticity + (effects[area].plasticity * intensityMultiplier * durationMultiplier * frequencyMultiplier)));
+                }
+            });
+
+            // Actualizar visualización
+            updateBrainVisualization();
+            
+            // Mostrar resultados
+            displayResults(activityType, intensity, duration, frequency);
+        }
+
+        function getFrequencyMultiplier(frequency) {
+            switch(frequency) {
+                case 'daily': return 1.0;
+                case 'weekly': return 0.3;
+                case 'monthly': return 0.1;
+                case 'occasional': return 0.05;
+                default: return 0.5;
+            }
+        }
+
+        function updateBrainVisualization() {
+            Object.keys(brainState).forEach(area => {
+                const element = document.querySelector(`[data-area="${area}"]`);
+                if (element) {
+                    element.classList.remove('enhanced', 'damaged');
+                    
+                    if (brainState[area].activity > 70) {
+                        element.classList.add('enhanced');
+                    } else if (brainState[area].activity < 30) {
+                        element.classList.add('damaged');
+                    }
+                }
+            });
+        }
+
+        function displayResults(activityType, intensity, duration, frequency) {
+            const resultsPanel = document.getElementById('resultsPanel');
+            const metricsGrid = document.getElementById('metricsGrid');
+            const changesList = document.getElementById('changesList');
+
+            // Calcular métricas generales
+            const avgActivity = Object.values(brainState).reduce((sum, area) => sum + area.activity, 0) / Object.keys(brainState).length;
+            const avgConnections = Object.values(brainState).reduce((sum, area) => sum + area.connections, 0) / Object.keys(brainState).length;
+            const avgPlasticity = Object.values(brainState).reduce((sum, area) => sum + area.plasticity, 0) / Object.keys(brainState).length;
+
+            // Mostrar métricas
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <h4>Actividad Cerebral</h4>
+                    <div class="metric-value">${Math.round(avgActivity)}%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgActivity}%"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <h4>Conexiones Neuronales</h4>
+                    <div class="metric-value">${Math.round(avgConnections)}</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(avgConnections/200)*100}%"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <h4>Plasticidad</h4>
+                    <div class="metric-value">${Math.round(avgPlasticity)}%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgPlasticity}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Mostrar cambios específicos
+            changesList.innerHTML = '';
+            Object.keys(brainState).forEach(area => {
+                const state = brainState[area];
+                const change = document.createElement('div');
+                change.style.marginBottom = '10px';
+                change.innerHTML = `
+                    <strong>${getAreaName(area)}:</strong> 
+                    Actividad: ${Math.round(state.activity)}%, 
+                    Conexiones: ${Math.round(state.connections)}, 
+                    Plasticidad: ${Math.round(state.plasticity)}%
+                `;
+                changesList.appendChild(change);
+            });
+
+            resultsPanel.classList.add('show');
+        }
+
+        function getAreaName(area) {
+            const names = {
+                frontal: 'Lóbulo Frontal',
+                temporal: 'Lóbulo Temporal',
+                parietal: 'Lóbulo Parietal',
+                occipital: 'Lóbulo Occipital',
+                cerebellum: 'Cerebelo',
+                hippocampus: 'Hipocampo'
+            };
+            return names[area] || area;
+        }
+
+        function loadScenario(scenarioName) {
+            const scenario = scenarios[scenarioName];
+            if (scenario) {
+                document.getElementById('activityType').value = scenario.activity;
+                document.getElementById('intensity').value = scenario.intensity;
+                document.getElementById('duration').value = scenario.duration;
+                document.getElementById('frequency').value = scenario.frequency;
+                
+                updateSimulation();
+                
+                // Actualizar selección de escenario
+                document.querySelectorAll('.scenario-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                event.target.closest('.scenario-card').classList.add('selected');
+                
+                currentScenario = scenarioName;
+            }
+        }
+
+        function resetSimulation() {
+            // Resetear estado del cerebro
+            Object.keys(brainState).forEach(area => {
+                brainState[area] = { activity: 50, connections: 100, plasticity: 50 };
+            });
+            
+            // Resetear controles
+            document.getElementById('activityType').value = 'learning';
+            document.getElementById('intensity').value = 5;
+            document.getElementById('duration').value = 12;
+            document.getElementById('frequency').value = 'daily';
+            
+            // Resetear visualización
+            document.querySelectorAll('.brain-area').forEach(area => {
+                area.classList.remove('active', 'enhanced', 'damaged');
+            });
+            selectedAreas = [];
+            
+            // Ocultar resultados
+            document.getElementById('resultsPanel').classList.remove('show');
+            
+            // Resetear escenarios
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            updateSimulation();
+        }
+
+        // Inicializar
+        window.onload = function() {
+            updateSimulation();
+        };
+    </script>
+</body>
+</html> 

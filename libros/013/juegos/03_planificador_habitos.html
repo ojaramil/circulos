@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Hábitos - Los 7 Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        .planner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .habit-card {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+        }
+        .habit-card h3 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+        .action-item {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #005BAA;
+        }
+        .action-item input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .weekly-plan {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .day-column {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .day-column h4 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Planificador de Hábitos</h1>
+        <p>Crea tu plan semanal para desarrollar los 7 Hábitos</p>
+    </div>
+
+    <div class="content">
+        <p>Este planificador te ayudará a crear un plan semanal estructurado para desarrollar cada uno de los 7 Hábitos. Planifica acciones específicas para cada hábito.</p>
+
+        <div class="planner-grid">
+            <div class="habit-card">
+                <h3>🎯 Hábito 1: Ser Proactivo</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Observar mi lenguaje reactivo" id="h1-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Enfocarme en mi círculo de influencia" id="h1-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>👁️ Hábito 2: Comenzar con el Fin en Mente</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Revisar mis metas" id="h2-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Trabajar en mi declaración de misión" id="h2-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>⚡ Hábito 3: Poner Primero lo Primero</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Usar la matriz de tiempo" id="h3-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Planificar la semana" id="h3-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>🤝 Hábito 4: Pensar Ganar-Ganar</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Buscar soluciones mutuas" id="h4-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Practicar en una negociación" id="h4-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>👂 Hábito 5: Buscar Primero Entender</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Escuchar sin interrumpir" id="h5-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Practicar escucha empática" id="h5-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>🔄 Hábito 6: Sinergizar</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Buscar colaboración" id="h6-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Crear sinergia en equipo" id="h6-weekly">
+                </div>
+            </div>
+
+            <div class="habit-card">
+                <h3>🔄 Hábito 7: Afilar la Sierra</h3>
+                <div class="action-item">
+                    <strong>Acción diaria:</strong>
+                    <input type="text" placeholder="Ej: Ejercicio físico" id="h7-daily">
+                </div>
+                <div class="action-item">
+                    <strong>Acción semanal:</strong>
+                    <input type="text" placeholder="Ej: Renovación en las 4 dimensiones" id="h7-weekly">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="generateWeeklyPlan()">Generar Plan Semanal</button>
+        <button class="btn" onclick="savePlan()">Guardar Plan</button>
+        <button class="btn" onclick="loadPlan()">Cargar Plan</button>
+
+        <div class="weekly-plan" id="weekly-plan" style="display: none;">
+            <h3>📋 Tu Plan Semanal</h3>
+            <div class="planner-grid">
+                <div class="day-column">
+                    <h4>Lunes</h4>
+                    <div id="monday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Martes</h4>
+                    <div id="tuesday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Miércoles</h4>
+                    <div id="wednesday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Jueves</h4>
+                    <div id="thursday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Viernes</h4>
+                    <div id="friday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Sábado</h4>
+                    <div id="saturday-tasks"></div>
+                </div>
+                <div class="day-column">
+                    <h4>Domingo</h4>
+                    <div id="sunday-tasks"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateWeeklyPlan() {
+            const habits = [
+                { name: "Ser Proactivo", daily: document.getElementById('h1-daily').value, weekly: document.getElementById('h1-weekly').value },
+                { name: "Comenzar con el Fin en Mente", daily: document.getElementById('h2-daily').value, weekly: document.getElementById('h2-weekly').value },
+                { name: "Poner Primero lo Primero", daily: document.getElementById('h3-daily').value, weekly: document.getElementById('h3-weekly').value },
+                { name: "Pensar Ganar-Ganar", daily: document.getElementById('h4-daily').value, weekly: document.getElementById('h4-weekly').value },
+                { name: "Buscar Primero Entender", daily: document.getElementById('h5-daily').value, weekly: document.getElementById('h5-weekly').value },
+                { name: "Sinergizar", daily: document.getElementById('h6-daily').value, weekly: document.getElementById('h6-weekly').value },
+                { name: "Afilar la Sierra", daily: document.getElementById('h7-daily').value, weekly: document.getElementById('h7-weekly').value }
+            ];
+
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            
+            days.forEach((day, index) => {
+                const container = document.getElementById(`${day}-tasks`);
+                let html = '';
+                
+                habits.forEach((habit, habitIndex) => {
+                    if (habit.daily) {
+                        html += `<p><strong>${habit.name}:</strong> ${habit.daily}</p>`;
+                    }
+                    if (habit.weekly && index === 6) { // Domingo para tareas semanales
+                        html += `<p><strong>${habit.name} (Semanal):</strong> ${habit.weekly}</p>`;
+                    }
+                });
+                
+                container.innerHTML = html;
+            });
+
+            document.getElementById('weekly-plan').style.display = 'block';
+        }
+
+        function savePlan() {
+            const plan = {
+                h1: { daily: document.getElementById('h1-daily').value, weekly: document.getElementById('h1-weekly').value },
+                h2: { daily: document.getElementById('h2-daily').value, weekly: document.getElementById('h2-weekly').value },
+                h3: { daily: document.getElementById('h3-daily').value, weekly: document.getElementById('h3-weekly').value },
+                h4: { daily: document.getElementById('h4-daily').value, weekly: document.getElementById('h4-weekly').value },
+                h5: { daily: document.getElementById('h5-daily').value, weekly: document.getElementById('h5-weekly').value },
+                h6: { daily: document.getElementById('h6-daily').value, weekly: document.getElementById('h6-weekly').value },
+                h7: { daily: document.getElementById('h7-daily').value, weekly: document.getElementById('h7-weekly').value }
+            };
+            
+            localStorage.setItem('habitsPlan', JSON.stringify(plan));
+            alert('Plan guardado exitosamente');
+        }
+
+        function loadPlan() {
+            const savedPlan = localStorage.getItem('habitsPlan');
+            if (savedPlan) {
+                const plan = JSON.parse(savedPlan);
+                
+                document.getElementById('h1-daily').value = plan.h1.daily || '';
+                document.getElementById('h1-weekly').value = plan.h1.weekly || '';
+                document.getElementById('h2-daily').value = plan.h2.daily || '';
+                document.getElementById('h2-weekly').value = plan.h2.weekly || '';
+                document.getElementById('h3-daily').value = plan.h3.daily || '';
+                document.getElementById('h3-weekly').value = plan.h3.weekly || '';
+                document.getElementById('h4-daily').value = plan.h4.daily || '';
+                document.getElementById('h4-weekly').value = plan.h4.weekly || '';
+                document.getElementById('h5-daily').value = plan.h5.daily || '';
+                document.getElementById('h5-weekly').value = plan.h5.weekly || '';
+                document.getElementById('h6-daily').value = plan.h6.daily || '';
+                document.getElementById('h6-weekly').value = plan.h6.weekly || '';
+                document.getElementById('h7-daily').value = plan.h7.daily || '';
+                document.getElementById('h7-weekly').value = plan.h7.weekly || '';
+                
+                alert('Plan cargado exitosamente');
+            } else {
+                alert('No hay un plan guardado');
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tus Elecciones Diarias</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: #E55A2B;
+            border-bottom: 2px solid #FFE0D6;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #FF6B35;
+            margin-top: 25px;
+        }
+        .question-container {
+            background: #F8F9FA;
+            border: 1px solid #E9ECEF;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #E9ECEF;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .option:hover {
+            border-color: #FF6B35;
+            background-color: #FFF3F0;
+        }
+        .option.selected {
+            border-color: #FF6B35;
+            background-color: #FFE0D6;
+        }
+        .btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background: #E55A2B;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            background: linear-gradient(135deg, #FFE0D6, #FFF3F0);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #FF6B35;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #FF6B35;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #E9ECEF;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B35, #E55A2B);
+            transition: width 0.5s ease;
+        }
+        .feedback {
+            background: #E8F5E8;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .warning {
+            background: #FFF3E0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #FFB74D;
+        }
+        .hidden {
+            display: none;
+        }
+        .category-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #E9ECEF;
+        }
+        .category-name {
+            font-weight: bold;
+        }
+        .category-value {
+            color: #FF6B35;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧠 Test: Tus Elecciones Diarias</h1>
+        
+        <div class="results hidden" id="intro">
+            <h3>🎯 Objetivo del Test</h3>
+            <p>Este test te ayudará a evaluar cómo tus elecciones diarias están moldeando tu futuro. Descubrirás en qué áreas estás tomando decisiones que te acercan a tus objetivos y en cuáles necesitas mejorar.</p>
+            
+            <h3>📊 Cómo Funciona</h3>
+            <ul>
+                <li>Responde 20 preguntas sobre tus elecciones diarias</li>
+                <li>Cada respuesta te dará puntos según su impacto</li>
+                <li>Al final recibirás un análisis detallado</li>
+                <li>Obtendrás recomendaciones personalizadas</li>
+            </ul>
+            
+            <button class="btn" onclick="startTest()">Comenzar Test</button>
+        </div>
+
+        <div class="hidden" id="test-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="question-container" id="question-container">
+                <!-- Las preguntas se cargarán dinámicamente -->
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" id="prev-btn" onclick="previousQuestion()" disabled>Anterior</button>
+                <button class="btn" id="next-btn" onclick="nextQuestion()">Siguiente</button>
+            </div>
+        </div>
+
+        <div class="results hidden" id="results">
+            <h2>📊 Resultados de tu Test</h2>
+            
+            <div class="score-display" id="final-score">
+                <!-- Puntuación final -->
+            </div>
+            
+            <div id="score-analysis">
+                <!-- Análisis detallado -->
+            </div>
+            
+            <div id="category-scores">
+                <!-- Puntuaciones por categoría -->
+            </div>
+            
+            <div id="recommendations">
+                <!-- Recomendaciones -->
+            </div>
+            
+            <button class="btn" onclick="restartTest()">Hacer Test Nuevamente</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = {
+            salud: 0,
+            finanzas: 0,
+            relaciones: 0,
+            crecimiento: 0,
+            productividad: 0
+        };
+
+        const questions = [
+            {
+                question: "¿Qué haces típicamente en la primera hora después de despertarte?",
+                options: [
+                    { text: "Revisar redes sociales", value: 1, category: "productividad" },
+                    { text: "Ejercitarme o hacer actividad física", value: 5, category: "salud" },
+                    { text: "Leer o aprender algo nuevo", value: 4, category: "crecimiento" },
+                    { text: "Planificar mi día", value: 4, category: "productividad" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas tu dinero cada mes?",
+                options: [
+                    { text: "Gasto todo lo que gano", value: 1, category: "finanzas" },
+                    { text: "Ahorro una pequeña parte", value: 3, category: "finanzas" },
+                    { text: "Ahorro e invierto regularmente", value: 5, category: "finanzas" },
+                    { text: "Tengo un plan financiero detallado", value: 5, category: "finanzas" }
+                ]
+            },
+            {
+                question: "¿Cuánto tiempo dedicas a aprender algo nuevo cada día?",
+                options: [
+                    { text: "No dedico tiempo al aprendizaje", value: 1, category: "crecimiento" },
+                    { text: "Menos de 15 minutos", value: 2, category: "crecimiento" },
+                    { text: "15-30 minutos", value: 4, category: "crecimiento" },
+                    { text: "Más de 30 minutos", value: 5, category: "crecimiento" }
+                ]
+            },
+            {
+                question: "¿Cómo te relacionas con las personas que te rodean?",
+                options: [
+                    { text: "Evito el contacto social", value: 1, category: "relaciones" },
+                    { text: "Mantengo relaciones superficiales", value: 2, category: "relaciones" },
+                    { text: "Cultivo relaciones significativas", value: 4, category: "relaciones" },
+                    { text: "Ayudo activamente a otros a crecer", value: 5, category: "relaciones" }
+                ]
+            },
+            {
+                question: "¿Qué comes típicamente durante el día?",
+                options: [
+                    { text: "Comida rápida y procesada", value: 1, category: "salud" },
+                    { text: "Comida casera ocasional", value: 3, category: "salud" },
+                    { text: "Comida balanceada y nutritiva", value: 4, category: "salud" },
+                    { text: "Planifico y preparo comidas saludables", value: 5, category: "salud" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas las tareas importantes?",
+                options: [
+                    { text: "Las pospongo hasta el último momento", value: 1, category: "productividad" },
+                    { text: "Las hago cuando tengo tiempo", value: 2, category: "productividad" },
+                    { text: "Las priorizo y programo", value: 4, category: "productividad" },
+                    { text: "Las automatizo y delego cuando es posible", value: 5, category: "productividad" }
+                ]
+            },
+            {
+                question: "¿Cuánto tiempo pasas con tu familia y amigos cercanos?",
+                options: [
+                    { text: "Casi no tengo tiempo para ellos", value: 1, category: "relaciones" },
+                    { text: "Algunas veces al mes", value: 2, category: "relaciones" },
+                    { text: "Regularmente cada semana", value: 4, category: "relaciones" },
+                    { text: "Dedico tiempo de calidad diariamente", value: 5, category: "relaciones" }
+                ]
+            },
+            {
+                question: "¿Qué haces cuando te enfrentas a un desafío?",
+                options: [
+                    { text: "Me rindo fácilmente", value: 1, category: "crecimiento" },
+                    { text: "Busco ayuda de otros", value: 3, category: "crecimiento" },
+                    { text: "Analizo y busco soluciones", value: 4, category: "crecimiento" },
+                    { text: "Lo veo como una oportunidad de crecimiento", value: 5, category: "crecimiento" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas el estrés?",
+                options: [
+                    { text: "Me estreso y me quejo", value: 1, category: "salud" },
+                    { text: "Intento ignorarlo", value: 2, category: "salud" },
+                    { text: "Practico técnicas de relajación", value: 4, category: "salud" },
+                    { text: "Tengo una rutina de bienestar establecida", value: 5, category: "salud" }
+                ]
+            },
+            {
+                question: "¿Qué haces con tu tiempo libre?",
+                options: [
+                    { text: "Veo televisión o uso redes sociales", value: 1, category: "productividad" },
+                    { text: "Hago actividades pasivas", value: 2, category: "productividad" },
+                    { text: "Leo o aprendo algo nuevo", value: 4, category: "productividad" },
+                    { text: "Trabajo en proyectos personales o desarrollo de habilidades", value: 5, category: "productividad" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas las críticas y el feedback?",
+                options: [
+                    { text: "Me ofendo y me defiendo", value: 1, category: "crecimiento" },
+                    { text: "Las ignoro", value: 2, category: "crecimiento" },
+                    { text: "Las considero cuidadosamente", value: 4, category: "crecimiento" },
+                    { text: "Las busco activamente para mejorar", value: 5, category: "crecimiento" }
+                ]
+            },
+            {
+                question: "¿Qué tipo de contenido consumes más?",
+                options: [
+                    { text: "Entretenimiento y noticias negativas", value: 1, category: "crecimiento" },
+                    { text: "Contenido mixto", value: 2, category: "crecimiento" },
+                    { text: "Contenido educativo y motivacional", value: 4, category: "crecimiento" },
+                    { text: "Contenido específico para mi desarrollo", value: 5, category: "crecimiento" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas tus finanzas personales?",
+                options: [
+                    { text: "No tengo control sobre mis gastos", value: 1, category: "finanzas" },
+                    { text: "Gasto menos de lo que gano", value: 3, category: "finanzas" },
+                    { text: "Tengo un presupuesto y lo sigo", value: 4, category: "finanzas" },
+                    { text: "Invierto y construyo múltiples fuentes de ingresos", value: 5, category: "finanzas" }
+                ]
+            },
+            {
+                question: "¿Qué haces antes de dormir?",
+                options: [
+                    { text: "Uso el teléfono hasta quedarme dormido", value: 1, category: "salud" },
+                    { text: "Veo televisión", value: 2, category: "salud" },
+                    { text: "Leo un libro", value: 4, category: "salud" },
+                    { text: "Reflexiono sobre el día y planifico el siguiente", value: 5, category: "salud" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas las relaciones laborales?",
+                options: [
+                    { text: "Evito la interacción", value: 1, category: "relaciones" },
+                    { text: "Mantengo relaciones profesionales básicas", value: 3, category: "relaciones" },
+                    { text: "Construyo relaciones positivas", value: 4, category: "relaciones" },
+                    { text: "Mentoreo y ayudo a otros a crecer", value: 5, category: "relaciones" }
+                ]
+            },
+            {
+                question: "¿Qué haces cuando cometes un error?",
+                options: [
+                    { text: "Me culpo y me desanimo", value: 1, category: "crecimiento" },
+                    { text: "Intento olvidarlo", value: 2, category: "crecimiento" },
+                    { text: "Analizo qué salió mal", value: 4, category: "crecimiento" },
+                    { text: "Lo veo como una oportunidad de aprendizaje", value: 5, category: "crecimiento" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas tu tiempo de trabajo?",
+                options: [
+                    { text: "Procrastino y trabajo bajo presión", value: 1, category: "productividad" },
+                    { text: "Hago lo que puedo", value: 2, category: "productividad" },
+                    { text: "Me enfoco en tareas importantes", value: 4, category: "productividad" },
+                    { text: "Optimizo y automatizo procesos", value: 5, category: "productividad" }
+                ]
+            },
+            {
+                question: "¿Qué haces para mantener tu salud física?",
+                options: [
+                    { text: "No hago ejercicio", value: 1, category: "salud" },
+                    { text: "Ejercicio ocasional", value: 2, category: "salud" },
+                    { text: "Ejercicio regular 2-3 veces por semana", value: 4, category: "salud" },
+                    { text: "Rutina de ejercicio diaria y nutrición planificada", value: 5, category: "salud" }
+                ]
+            },
+            {
+                question: "¿Cómo manejas las deudas?",
+                options: [
+                    { text: "Tengo deudas que no puedo pagar", value: 1, category: "finanzas" },
+                    { text: "Pago solo los mínimos", value: 2, category: "finanzas" },
+                    { text: "Pago más del mínimo cuando puedo", value: 3, category: "finanzas" },
+                    { text: "No tengo deudas o las pago agresivamente", value: 5, category: "finanzas" }
+                ]
+            },
+            {
+                question: "¿Qué haces para desarrollar nuevas habilidades?",
+                options: [
+                    { text: "No desarrollo nuevas habilidades", value: 1, category: "crecimiento" },
+                    { text: "Aprendo cuando es necesario", value: 2, category: "crecimiento" },
+                    { text: "Tomo cursos ocasionalmente", value: 3, category: "crecimiento" },
+                    { text: "Tengo un plan de desarrollo continuo", value: 5, category: "crecimiento" }
+                ]
+            }
+        ];
+
+        function startTest() {
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('test-container').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="question">Pregunta ${currentQuestion + 1} de ${questions.length}: ${question.question}</div>
+                <div class="options">
+                    ${question.options.map((option, index) => `
+                        <div class="option ${answers[currentQuestion] === index ? 'selected' : ''}" 
+                             onclick="selectOption(${index})">
+                            ${option.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            updateProgress();
+            updateButtons();
+        }
+
+        function selectOption(optionIndex) {
+            answers[currentQuestion] = optionIndex;
+            
+            // Actualizar selección visual
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.toggle('selected', index === optionIndex);
+            });
+        }
+
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === questions.length - 1 ? 'Ver Resultados' : 'Siguiente';
+        }
+
+        function calculateResults() {
+            // Resetear puntuaciones
+            scores = {
+                salud: 0,
+                finanzas: 0,
+                relaciones: 0,
+                crecimiento: 0,
+                productividad: 0
+            };
+            
+            // Calcular puntuaciones por categoría
+            answers.forEach((answer, index) => {
+                const question = questions[index];
+                const selectedOption = question.options[answer];
+                scores[selectedOption.category] += selectedOption.value;
+            });
+            
+            // Normalizar puntuaciones (máximo 25 puntos por categoría)
+            Object.keys(scores).forEach(category => {
+                scores[category] = Math.round((scores[category] / 25) * 100);
+            });
+            
+            // Calcular puntuación total
+            const totalScore = Math.round(
+                Object.values(scores).reduce((sum, score) => sum + score, 0) / 5
+            );
+            
+            return { scores, totalScore };
+        }
+
+        function showResults() {
+            const { scores, totalScore } = calculateResults();
+            
+            document.getElementById('test-container').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+            
+            // Mostrar puntuación final
+            document.getElementById('final-score').innerHTML = `
+                <div>Tu Puntuación Total</div>
+                <div style="font-size: 3em; color: ${getScoreColor(totalScore)};">${totalScore}/100</div>
+            `;
+            
+            // Análisis de puntuación
+            const analysis = getScoreAnalysis(totalScore);
+            document.getElementById('score-analysis').innerHTML = `
+                <h3>📊 Análisis de tu Puntuación</h3>
+                <div class="${analysis.class}">
+                    <h4>${analysis.title}</h4>
+                    <p>${analysis.description}</p>
+                </div>
+            `;
+            
+            // Puntuaciones por categoría
+            const categoryNames = {
+                salud: '💪 Salud y Bienestar',
+                finanzas: '💰 Finanzas',
+                relaciones: '👥 Relaciones',
+                crecimiento: '🧠 Crecimiento Personal',
+                productividad: '⚡ Productividad'
+            };
+            
+            document.getElementById('category-scores').innerHTML = `
+                <h3>📈 Puntuaciones por Categoría</h3>
+                ${Object.entries(scores).map(([category, score]) => `
+                    <div class="category-score">
+                        <span class="category-name">${categoryNames[category]}</span>
+                        <span class="category-value" style="color: ${getScoreColor(score)};">${score}/100</span>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Recomendaciones
+            document.getElementById('recommendations').innerHTML = `
+                <h3>🎯 Recomendaciones Personalizadas</h3>
+                ${getRecommendations(scores)}
+            `;
+        }
+
+        function getScoreColor(score) {
+            if (score >= 80) return '#4CAF50';
+            if (score >= 60) return '#FFB74D';
+            if (score >= 40) return '#FF9800';
+            return '#F44336';
+        }
+
+        function getScoreAnalysis(score) {
+            if (score >= 80) {
+                return {
+                    title: '¡Excelente! 🎉',
+                    description: 'Tus elecciones diarias están muy bien alineadas con el éxito. Continúa en esta dirección y verás resultados extraordinarios.',
+                    class: 'feedback'
+                };
+            } else if (score >= 60) {
+                return {
+                    title: 'Bueno 👍',
+                    description: 'Estás en el camino correcto, pero hay espacio para mejorar. Enfócate en las áreas con puntuación más baja.',
+                    class: 'feedback'
+                };
+            } else if (score >= 40) {
+                return {
+                    title: 'Necesita Mejora ⚠️',
+                    description: 'Hay varias áreas donde tus elecciones podrían estar mejor alineadas con tus objetivos. Es momento de hacer cambios.',
+                    class: 'warning'
+                };
+            } else {
+                return {
+                    title: 'Requiere Atención Inmediata 🚨',
+                    description: 'Tus elecciones actuales están alejándote de tus objetivos. Necesitas hacer cambios significativos para ver resultados.',
+                    class: 'warning'
+                };
+            }
+        }
+
+        function getRecommendations(scores) {
+            const recommendations = [];
+            
+            if (scores.salud < 60) {
+                recommendations.push(`
+                    <div class="feedback">
+                        <h4>💪 Mejora tu Salud</h4>
+                        <ul>
+                            <li>Establece una rutina de ejercicio diaria</li>
+                            <li>Planifica y prepara comidas saludables</li>
+                            <li>Prioriza el sueño de calidad</li>
+                            <li>Practica técnicas de manejo del estrés</li>
+                        </ul>
+                    </div>
+                `);
+            }
+            
+            if (scores.finanzas < 60) {
+                recommendations.push(`
+                    <div class="feedback">
+                        <h4>💰 Fortalece tus Finanzas</h4>
+                        <ul>
+                            <li>Crea un presupuesto mensual</li>
+                            <li>Automatiza el ahorro</li>
+                            <li>Educa sobre inversiones</li>
+                            <li>Elimina deudas de alto interés</li>
+                        </ul>
+                    </div>
+                `);
+            }
+            
+            if (scores.relaciones < 60) {
+                recommendations.push(`
+                    <div class="feedback">
+                        <h4>👥 Cultiva Relaciones</h4>
+                        <ul>
+                            <li>Dedica tiempo de calidad a familia y amigos</li>
+                            <li>Practica la escucha activa</li>
+                            <li>Ofrece ayuda y apoyo a otros</li>
+                            <li>Construye una red de personas positivas</li>
+                        </ul>
+                    </div>
+                `);
+            }
+            
+            if (scores.crecimiento < 60) {
+                recommendations.push(`
+                    <div class="feedback">
+                        <h4>🧠 Acelera tu Crecimiento</h4>
+                        <ul>
+                            <li>Lee al menos 30 minutos al día</li>
+                            <li>Toma cursos o aprende nuevas habilidades</li>
+                            <li>Busca feedback constructivo</li>
+                            <li>Reflexiona sobre tus experiencias</li>
+                        </ul>
+                    </div>
+                `);
+            }
+            
+            if (scores.productividad < 60) {
+                recommendations.push(`
+                    <div class="feedback">
+                        <h4>⚡ Optimiza tu Productividad</h4>
+                        <ul>
+                            <li>Planifica tu día la noche anterior</li>
+                            <li>Elimina distracciones</li>
+                            <li>Enfócate en tareas de alto impacto</li>
+                            <li>Automatiza procesos repetitivos</li>
+                        </ul>
+                    </div>
+                `);
+            }
+            
+            return recommendations.join('');
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            answers = [];
+            scores = {
+                salud: 0,
+                finanzas: 0,
+                relaciones: 0,
+                crecimiento: 0,
+                productividad: 0
+            };
+            
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('intro').classList.remove('hidden');
+        }
+
+        // Inicializar
+        document.getElementById('intro').classList.remove('hidden');
+    </script>
+</body>
+</html> 

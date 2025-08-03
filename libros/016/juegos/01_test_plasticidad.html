@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Neuroplasticidad - El Cerebro que se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+            border-bottom: 3px solid #9C27B0;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #7B1FA2;
+            margin-top: 30px;
+            border-left: 4px solid #9C27B0;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #6A1B9A;
+            margin-top: 25px;
+        }
+        .test-section {
+            background-color: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9C27B0;
+        }
+        .question-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e1bee7;
+            transition: transform 0.2s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .question-card h4 {
+            color: #7B1FA2;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #e1bee7;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+        .option:hover {
+            background-color: #f3e5f5;
+            border-color: #9C27B0;
+        }
+        .option.selected {
+            background-color: #9C27B0;
+            color: white;
+            border-color: #7B1FA2;
+        }
+        .btn {
+            background-color: #9C27B0;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #7B1FA2;
+        }
+        .btn-secondary {
+            background-color: #757575;
+        }
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+        .results-section {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.5s ease;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .category-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4CAF50;
+        }
+        .category-card h5 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+        .recommendations {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .recommendations h4 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .highlight {
+            background-color: #f3e5f5;
+            border-left: 4px solid #9C27B0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .quote {
+            font-style: italic;
+            background-color: #f8f9fa;
+            border-left: 4px solid #9C27B0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-section {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 Test de Neuroplasticidad</h1>
+        <p>Descubre tu potencial de cambio cerebral y cómo puedes mejorarlo</p>
+    </div>
+
+    <div class="content">
+        <div class="info-section">
+            <h3>📋 Sobre este Test</h3>
+            <p>Este test evalúa diferentes aspectos de tu neuroplasticidad actual y te proporciona recomendaciones personalizadas para mejorar tu capacidad de cambio cerebral. Las preguntas están basadas en investigaciones científicas sobre neuroplasticidad.</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🧠 Evaluación de Neuroplasticidad</h2>
+            <p>Responde cada pregunta honestamente. No hay respuestas correctas o incorrectas - solo queremos entender tu situación actual.</p>
+            
+            <div id="questionsContainer">
+                <!-- Las preguntas se generarán dinámicamente -->
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="calculateResults()">🎯 Ver Resultados</button>
+                <button class="btn btn-secondary" onclick="resetTest()">🔄 Reiniciar Test</button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h2>🎯 Tus Resultados de Neuroplasticidad</h2>
+            
+            <div class="score-display" id="scoreDisplay">
+                Puntuación: <span id="plasticityScore">0</span>/100
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            
+            <div class="category-grid" id="categoryGrid">
+                <!-- Las categorías se generarán dinámicamente -->
+            </div>
+            
+            <div class="recommendations">
+                <h4>💡 Recomendaciones Personalizadas</h4>
+                <div id="recommendationsList">
+                    <!-- Las recomendaciones se generarán dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <h4>🧠 ¿Qué Significan estos Resultados?</h4>
+                <p>Tu puntuación refleja tu potencial actual de neuroplasticidad. Recuerda que la neuroplasticidad no es fija - puede mejorarse con la práctica y el entrenamiento adecuados.</p>
+            </div>
+        </div>
+
+        <div class="quote">
+            <p><strong>"El cerebro que se cambia a sí mismo es el cerebro que puede curarse a sí mismo."</strong> - Norman Doidge</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "¿Con qué frecuencia aprendes algo completamente nuevo?",
+                options: [
+                    { text: "Raramente o nunca", score: 1 },
+                    { text: "Una vez al año", score: 2 },
+                    { text: "Cada pocos meses", score: 3 },
+                    { text: "Mensualmente", score: 4 },
+                    { text: "Semanalmente o más", score: 5 }
+                ],
+                category: "Aprendizaje"
+            },
+            {
+                id: 2,
+                question: "¿Cómo describirías tu rutina diaria?",
+                options: [
+                    { text: "Muy predecible y estructurada", score: 1 },
+                    { text: "Algo predecible", score: 2 },
+                    { text: "Mixta - algunas rutinas, algunas novedades", score: 3 },
+                    { text: "Variable con algunos elementos fijos", score: 4 },
+                    { text: "Muy flexible y cambiante", score: 5 }
+                ],
+                category: "Flexibilidad"
+            },
+            {
+                id: 3,
+                question: "¿Cuánto tiempo dedicas a actividades que requieren concentración mental?",
+                options: [
+                    { text: "Menos de 30 minutos al día", score: 1 },
+                    { text: "30-60 minutos al día", score: 2 },
+                    { text: "1-2 horas al día", score: 3 },
+                    { text: "2-4 horas al día", score: 4 },
+                    { text: "Más de 4 horas al día", score: 5 }
+                ],
+                category: "Ejercicio Mental"
+            },
+            {
+                id: 4,
+                question: "¿Con qué frecuencia practicas ejercicios físicos que requieren coordinación?",
+                options: [
+                    { text: "Nunca", score: 1 },
+                    { text: "Raramente", score: 2 },
+                    { text: "Ocasionalmente", score: 3 },
+                    { text: "Regularmente", score: 4 },
+                    { text: "Diariamente", score: 5 }
+                ],
+                category: "Coordinación"
+            },
+            {
+                id: 5,
+                question: "¿Cómo te sientes cuando enfrentas un nuevo desafío?",
+                options: [
+                    { text: "Ansioso y evito la situación", score: 1 },
+                    { text: "Nervioso pero lo intento", score: 2 },
+                    { text: "Neutral - depende del desafío", score: 3 },
+                    { text: "Interesado y motivado", score: 4 },
+                    { text: "Emocionado y energizado", score: 5 }
+                ],
+                category: "Mentalidad"
+            },
+            {
+                id: 6,
+                question: "¿Con qué frecuencia meditas o practicas mindfulness?",
+                options: [
+                    { text: "Nunca", score: 1 },
+                    { text: "Raramente", score: 2 },
+                    { text: "Ocasionalmente", score: 3 },
+                    { text: "Regularmente", score: 4 },
+                    { text: "Diariamente", score: 5 }
+                ],
+                category: "Atención"
+            },
+            {
+                id: 7,
+                question: "¿Cuántas horas duermes en promedio?",
+                options: [
+                    { text: "Menos de 5 horas", score: 1 },
+                    { text: "5-6 horas", score: 2 },
+                    { text: "6-7 horas", score: 3 },
+                    { text: "7-8 horas", score: 4 },
+                    { text: "8+ horas", score: 5 }
+                ],
+                category: "Sueño"
+            },
+            {
+                id: 8,
+                question: "¿Con qué frecuencia socializas con personas diferentes a tu círculo habitual?",
+                options: [
+                    { text: "Nunca", score: 1 },
+                    { text: "Raramente", score: 2 },
+                    { text: "Ocasionalmente", score: 3 },
+                    { text: "Regularmente", score: 4 },
+                    { text: "Frecuentemente", score: 5 }
+                ],
+                category: "Socialización"
+            },
+            {
+                id: 9,
+                question: "¿Cuánto tiempo pasas al aire libre en contacto con la naturaleza?",
+                options: [
+                    { text: "Menos de 30 minutos por semana", score: 1 },
+                    { text: "30 minutos - 1 hora por semana", score: 2 },
+                    { text: "1-3 horas por semana", score: 3 },
+                    { text: "3-7 horas por semana", score: 4 },
+                    { text: "Más de 7 horas por semana", score: 5 }
+                ],
+                category: "Naturaleza"
+            },
+            {
+                id: 10,
+                question: "¿Con qué frecuencia lees libros o artículos sobre temas que no conoces?",
+                options: [
+                    { text: "Nunca", score: 1 },
+                    { text: "Raramente", score: 2 },
+                    { text: "Ocasionalmente", score: 3 },
+                    { text: "Regularmente", score: 4 },
+                    { text: "Frecuentemente", score: 5 }
+                ],
+                category: "Curiosidad"
+            }
+        ];
+
+        let userAnswers = {};
+        let currentQuestion = 0;
+
+        function initializeTest() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <h4>Pregunta ${index + 1}: ${q.question}</h4>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" onclick="selectOption(${q.id}, ${optIndex})" data-question="${q.id}" data-option="${optIndex}">
+                                ${option.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionCard);
+            });
+        }
+
+        function selectOption(questionId, optionIndex) {
+            // Remover selección previa para esta pregunta
+            document.querySelectorAll(`[data-question="${questionId}"]`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.classList.add('selected');
+            userAnswers[questionId] = optionIndex;
+        }
+
+        function calculateResults() {
+            if (Object.keys(userAnswers).length < questions.length) {
+                alert('Por favor responde todas las preguntas antes de ver los resultados.');
+                return;
+            }
+
+            let totalScore = 0;
+            const categoryScores = {};
+
+            questions.forEach(q => {
+                const selectedOption = q.options[userAnswers[q.id]];
+                totalScore += selectedOption.score;
+
+                if (!categoryScores[q.category]) {
+                    categoryScores[q.category] = { total: 0, count: 0 };
+                }
+                categoryScores[q.category].total += selectedOption.score;
+                categoryScores[q.category].count += 1;
+            });
+
+            const averageScore = Math.round((totalScore / questions.length) * 20); // Convertir a escala 0-100
+
+            displayResults(averageScore, categoryScores);
+        }
+
+        function displayResults(score, categoryScores) {
+            document.getElementById('plasticityScore').textContent = score;
+            document.getElementById('progressFill').style.width = score + '%';
+
+            const categoryGrid = document.getElementById('categoryGrid');
+            categoryGrid.innerHTML = '';
+
+            Object.keys(categoryScores).forEach(category => {
+                const avgScore = Math.round((categoryScores[category].total / categoryScores[category].count) * 20);
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.innerHTML = `
+                    <h5>${category}</h5>
+                    <p>Puntuación: ${avgScore}/100</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgScore}%"></div>
+                    </div>
+                `;
+                categoryGrid.appendChild(categoryCard);
+            });
+
+            generateRecommendations(score, categoryScores);
+            document.getElementById('resultsSection').classList.add('show');
+        }
+
+        function generateRecommendations(score, categoryScores) {
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+
+            const recommendations = [];
+
+            if (score < 40) {
+                recommendations.push({
+                    title: '🚀 Comienza con lo Básico',
+                    content: 'Tu neuroplasticidad actual es baja, pero esto puede cambiar. Empieza con ejercicios simples y construye gradualmente.'
+                });
+            } else if (score < 70) {
+                recommendations.push({
+                    title: '📈 Potencial de Mejora',
+                    content: 'Tienes una buena base. Enfócate en áreas específicas para maximizar tu neuroplasticidad.'
+                });
+            } else {
+                recommendations.push({
+                    title: '🌟 Excelente Base',
+                    content: 'Tu neuroplasticidad está bien desarrollada. Continúa explorando nuevas actividades para mantenerla activa.'
+                });
+            }
+
+            // Recomendaciones específicas por categoría
+            Object.keys(categoryScores).forEach(category => {
+                const avgScore = (categoryScores[category].total / categoryScores[category].count) * 20;
+                
+                if (avgScore < 40) {
+                    switch(category) {
+                        case 'Aprendizaje':
+                            recommendations.push({
+                                title: '📚 Aprendizaje',
+                                content: 'Dedica 30 minutos diarios a aprender algo nuevo: un idioma, instrumento musical, o habilidad técnica.'
+                            });
+                            break;
+                        case 'Flexibilidad':
+                            recommendations.push({
+                                title: '🔄 Flexibilidad',
+                                content: 'Varía tu rutina diaria. Toma diferentes caminos, prueba nuevas comidas, cambia el orden de tus actividades.'
+                            });
+                            break;
+                        case 'Ejercicio Mental':
+                            recommendations.push({
+                                title: '🧩 Ejercicio Mental',
+                                content: 'Practica puzzles, crucigramas, juegos de memoria o resuelve problemas matemáticos regularmente.'
+                            });
+                            break;
+                        case 'Coordinación':
+                            recommendations.push({
+                                title: '🎯 Coordinación',
+                                content: 'Practica deportes que requieren coordinación: tenis, baile, yoga, o artes marciales.'
+                            });
+                            break;
+                        case 'Mentalidad':
+                            recommendations.push({
+                                title: '💪 Mentalidad',
+                                content: 'Desafía tu zona de confort gradualmente. Establece metas pequeñas pero desafiantes.'
+                            });
+                            break;
+                        case 'Atención':
+                            recommendations.push({
+                                title: '🧘 Atención',
+                                content: 'Comienza con 5 minutos de meditación diaria. Usa apps como Headspace o Calm para guiarte.'
+                            });
+                            break;
+                        case 'Sueño':
+                            recommendations.push({
+                                title: '😴 Sueño',
+                                content: 'Establece una rutina de sueño consistente. Evita pantallas 1 hora antes de dormir.'
+                            });
+                            break;
+                        case 'Socialización':
+                            recommendations.push({
+                                title: '👥 Socialización',
+                                content: 'Únete a grupos o clubs con intereses diferentes a los tuyos. Participa en eventos comunitarios.'
+                            });
+                            break;
+                        case 'Naturaleza':
+                            recommendations.push({
+                                title: '🌳 Naturaleza',
+                                content: 'Pasa al menos 30 minutos al día al aire libre. Camina en parques o áreas naturales.'
+                            });
+                            break;
+                        case 'Curiosidad':
+                            recommendations.push({
+                                title: '🔍 Curiosidad',
+                                content: 'Lee sobre temas que no conoces. Explora podcasts, documentales o cursos online.'
+                            });
+                            break;
+                    }
+                }
+            });
+
+            recommendations.forEach(rec => {
+                const recItem = document.createElement('div');
+                recItem.style.marginBottom = '15px';
+                recItem.innerHTML = `
+                    <strong>${rec.title}:</strong> ${rec.content}
+                `;
+                recommendationsList.appendChild(recItem);
+            });
+        }
+
+        function resetTest() {
+            userAnswers = {};
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('resultsSection').classList.remove('show');
+        }
+
+        // Inicializar el test cuando se carga la página
+        window.onload = function() {
+            initializeTest();
+        };
+    </script>
+</body>
+</html> 

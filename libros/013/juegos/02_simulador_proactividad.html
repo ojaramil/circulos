@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Proactividad - Los 7 Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        .scenario {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .scenario h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .response-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .response-option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .response-option:hover {
+            border-color: #005BAA;
+            background-color: #f8f9fa;
+        }
+        .response-option.selected {
+            border-color: #005BAA;
+            background-color: #e7f3ff;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+        }
+        .feedback {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .score-display {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Simulador de Proactividad</h1>
+        <p>Practica el Hábito 1 en situaciones reales</p>
+    </div>
+
+    <div class="content">
+        <p>En este simulador, enfrentarás situaciones cotidianas donde deberás elegir entre respuestas reactivas y proactivas. Practica el Hábito 1: Ser Proactivo.</p>
+
+        <div class="score-display">
+            <h3>Puntuación: <span id="score">0</span>/100</h3>
+            <p>Escenarios completados: <span id="completed">0</span>/5</p>
+        </div>
+
+        <div id="scenario-container">
+            <!-- Los escenarios se cargarán dinámicamente -->
+        </div>
+
+        <button class="btn" onclick="nextScenario()" id="next-btn" style="display: none;">Siguiente Escenario</button>
+        <button class="btn" onclick="restartSimulator()" id="restart-btn" style="display: none;">Reiniciar Simulador</button>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = 0;
+        let selectedResponse = null;
+
+        const scenarios = [
+            {
+                title: "Problema en el Trabajo",
+                description: "Tu jefe te asigna una tarea urgente que requiere trabajar el fin de semana. Tienes planes familiares importantes.",
+                options: [
+                    {
+                        text: "Quejarte con tus compañeros sobre lo injusto que es",
+                        type: "reactive",
+                        points: 0
+                    },
+                    {
+                        text: "Aceptar sin decir nada y cancelar tus planes",
+                        type: "reactive",
+                        points: 10
+                    },
+                    {
+                        text: "Explicar tu situación y proponer alternativas",
+                        type: "proactive",
+                        points: 25
+                    },
+                    {
+                        text: "Buscar una solución que satisfaga a todos",
+                        type: "proactive",
+                        points: 20
+                    }
+                ]
+            },
+            {
+                title: "Conflicto con un Colega",
+                description: "Un compañero de trabajo constantemente critica tus ideas en las reuniones.",
+                options: [
+                    {
+                        text: "Evitar hablar en las reuniones",
+                        type: "reactive",
+                        points: 0
+                    },
+                    {
+                        text: "Responder con críticas hacia él",
+                        type: "reactive",
+                        points: 5
+                    },
+                    {
+                        text: "Hablar con él en privado para entender el problema",
+                        type: "proactive",
+                        points: 20
+                    },
+                    {
+                        text: "Mejorar la calidad de tus propuestas",
+                        type: "proactive",
+                        points: 15
+                    }
+                ]
+            },
+            {
+                title: "Problema de Salud",
+                description: "Tu médico te dice que necesitas hacer cambios en tu estilo de vida.",
+                options: [
+                    {
+                        text: "Ignorar las recomendaciones",
+                        type: "reactive",
+                        points: 0
+                    },
+                    {
+                        text: "Quejarte de lo difícil que será",
+                        type: "reactive",
+                        points: 5
+                    },
+                    {
+                        text: "Crear un plan específico de acción",
+                        type: "proactive",
+                        points: 20
+                    },
+                    {
+                        text: "Buscar apoyo y recursos",
+                        type: "proactive",
+                        points: 15
+                    }
+                ]
+            },
+            {
+                title: "Problema Financiero",
+                description: "Tienes deudas que te están causando estrés.",
+                options: [
+                    {
+                        text: "Evitar revisar tus cuentas",
+                        type: "reactive",
+                        points: 0
+                    },
+                    {
+                        text: "Pedir más préstamos",
+                        type: "reactive",
+                        points: 5
+                    },
+                    {
+                        text: "Crear un presupuesto detallado",
+                        type: "proactive",
+                        points: 20
+                    },
+                    {
+                        text: "Buscar asesoría financiera",
+                        type: "proactive",
+                        points: 15
+                    }
+                ]
+            },
+            {
+                title: "Problema Familiar",
+                description: "Tu hijo adolescente está teniendo problemas en la escuela.",
+                options: [
+                    {
+                        text: "Culpar a los maestros",
+                        type: "reactive",
+                        points: 0
+                    },
+                    {
+                        text: "Castigar sin escuchar",
+                        type: "reactive",
+                        points: 5
+                    },
+                    {
+                        text: "Escuchar y buscar la causa raíz",
+                        type: "proactive",
+                        points: 20
+                    },
+                    {
+                        text: "Trabajar en equipo con la escuela",
+                        type: "proactive",
+                        points: 15
+                    }
+                ]
+            }
+        ];
+
+        function loadScenario() {
+            if (currentScenario >= scenarios.length) {
+                showFinalResults();
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <h3>${scenario.title}</h3>
+                    <p><strong>Situación:</strong> ${scenario.description}</p>
+                    <h4>¿Cómo responderías?</h4>
+                    <div class="response-options">
+                        ${scenario.options.map((option, index) => `
+                            <div class="response-option" onclick="selectResponse(${index})">
+                                <strong>Opción ${index + 1}:</strong> ${option.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <button class="btn" onclick="submitResponse()">Enviar Respuesta</button>
+            `;
+        }
+
+        function selectResponse(index) {
+            document.querySelectorAll('.response-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            selectedResponse = index;
+        }
+
+        function submitResponse() {
+            if (selectedResponse === null) {
+                alert('Por favor selecciona una respuesta.');
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const response = scenario.options[selectedResponse];
+            
+            score += response.points;
+            document.getElementById('score').textContent = score;
+            document.getElementById('completed').textContent = currentScenario + 1;
+
+            showFeedback(response);
+            selectedResponse = null;
+        }
+
+        function showFeedback(response) {
+            const container = document.getElementById('scenario-container');
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            feedback.style.display = 'block';
+            
+            if (response.type === 'proactive') {
+                feedback.innerHTML = `
+                    <h4>✅ ¡Excelente elección proactiva!</h4>
+                    <p>Has demostrado el Hábito 1 al tomar responsabilidad y buscar soluciones constructivas.</p>
+                    <p><strong>Puntos ganados:</strong> ${response.points}</p>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <h4>⚠️ Respuesta reactiva</h4>
+                    <p>Esta respuesta refleja un enfoque reactivo. Recuerda: ser proactivo significa tomar responsabilidad y buscar soluciones.</p>
+                    <p><strong>Puntos ganados:</strong> ${response.points}</p>
+                `;
+            }
+            
+            container.appendChild(feedback);
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            document.getElementById('next-btn').style.display = 'none';
+            loadScenario();
+        }
+
+        function showFinalResults() {
+            const container = document.getElementById('scenario-container');
+            const percentage = (score / 100) * 100;
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <h3>🎉 ¡Simulador Completado!</h3>
+                    <p><strong>Puntuación final:</strong> ${score}/100 (${percentage}%)</p>
+                    <p><strong>Nivel de proactividad:</strong> ${getProactivityLevel(percentage)}</p>
+                    <h4>Reflexiones:</h4>
+                    <ul>
+                        <li>¿En qué situaciones te resultó más difícil ser proactivo?</li>
+                        <li>¿Qué patrones reactivos identificaste en tus respuestas?</li>
+                        <li>¿Cómo puedes aplicar la proactividad en tu vida diaria?</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('restart-btn').style.display = 'inline-block';
+        }
+
+        function getProactivityLevel(percentage) {
+            if (percentage >= 80) return 'Excelente - Eres muy proactivo';
+            if (percentage >= 60) return 'Bueno - Tienes una buena base';
+            if (percentage >= 40) return 'Regular - Hay espacio para mejorar';
+            return 'Necesita trabajo - Enfócate en el Hábito 1';
+        }
+
+        function restartSimulator() {
+            currentScenario = 0;
+            score = 0;
+            selectedResponse = null;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('completed').textContent = '0';
+            document.getElementById('restart-btn').style.display = 'none';
+            loadScenario();
+        }
+
+        // Inicializar el simulador
+        loadScenario();
+    </script>
+</body>
+</html> 

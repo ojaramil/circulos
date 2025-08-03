@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios de Plasticidad - Juego Interactivo</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #9C27B0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: #673AB7;
+            border-bottom: 2px solid #E1BEE7;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #9C27B0;
+            margin-top: 25px;
+        }
+        .exercise-card {
+            background: linear-gradient(135deg, #E1BEE7, #F3E5F5);
+            border: 2px solid #9C27B0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .exercise-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .exercise-card.selected {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+        }
+        .exercise-card h4 {
+            margin-top: 0;
+            color: inherit;
+        }
+        .timer {
+            font-size: 2em;
+            text-align: center;
+            color: #9C27B0;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #E1BEE7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9C27B0, #673AB7);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .btn {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .results {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .category {
+            background: #F8F9FA;
+            border: 1px solid #E9ECEF;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .category h4 {
+            color: #9C27B0;
+            margin-top: 0;
+        }
+        .score-display {
+            font-size: 1.5em;
+            text-align: center;
+            color: #9C27B0;
+            margin: 20px 0;
+        }
+        .instructions {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧠 Ejercicios de Plasticidad Cerebral</h1>
+        
+        <div class="instructions">
+            <h3>🎯 Instrucciones</h3>
+            <p>Este juego te ayudará a practicar ejercicios que estimulan la neuroplasticidad. Selecciona los ejercicios que quieres realizar y completa las sesiones para fortalecer tu cerebro.</p>
+        </div>
+
+        <div id="main-menu">
+            <h2>Selecciona tus Ejercicios</h2>
+            
+            <div class="exercise-grid">
+                <div class="exercise-card" data-exercise="memory">
+                    <h4>🧠 Memoria y Atención</h4>
+                    <p>Ejercicios para mejorar la memoria de trabajo y la capacidad de atención sostenida.</p>
+                    <ul>
+                        <li>Secuencias de números</li>
+                        <li>Memoria visual</li>
+                        <li>Concentración</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-card" data-exercise="motor">
+                    <h4>💪 Coordinación Motora</h4>
+                    <p>Actividades que mejoran la coordinación entre cerebro y músculos.</p>
+                    <ul>
+                        <li>Movimientos complejos</li>
+                        <li>Equilibrio</li>
+                        <li>Precisión manual</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-card" data-exercise="language">
+                    <h4>🗣️ Lenguaje y Comunicación</h4>
+                    <p>Ejercicios para fortalecer las áreas del lenguaje y la comunicación.</p>
+                    <ul>
+                        <li>Vocabulario nuevo</li>
+                        <li>Fluidez verbal</li>
+                        <li>Comprensión</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-card" data-exercise="spatial">
+                    <h4>🎯 Habilidades Espaciales</h4>
+                    <p>Actividades que desarrollan la percepción espacial y la orientación.</p>
+                    <ul>
+                        <li>Rotación mental</li>
+                        <li>Navegación</li>
+                        <li>Visualización</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-card" data-exercise="emotional">
+                    <h4>😊 Inteligencia Emocional</h4>
+                    <p>Ejercicios para mejorar la regulación emocional y la empatía.</p>
+                    <ul>
+                        <li>Reconocimiento facial</li>
+                        <li>Regulación emocional</li>
+                        <li>Empatía</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-card" data-exercise="creative">
+                    <h4>🎨 Creatividad e Innovación</h4>
+                    <p>Actividades que estimulan el pensamiento creativo y la innovación.</p>
+                    <ul>
+                        <li>Pensamiento divergente</li>
+                        <li>Resolución creativa</li>
+                        <li>Imaginación</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="startSession()">🚀 Iniciar Sesión de Ejercicios</button>
+            </div>
+        </div>
+
+        <div id="exercise-session" style="display: none;">
+            <h2>Sesión de Ejercicios</h2>
+            
+            <div class="score-display">
+                Puntuación: <span id="score">0</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="timer" id="timer">05:00</div>
+
+            <div id="current-exercise">
+                <h3 id="exercise-title">Ejercicio Actual</h3>
+                <div id="exercise-content">
+                    <p>Preparando ejercicio...</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="nextExercise()">⏭️ Siguiente Ejercicio</button>
+                <button class="btn" onclick="endSession()">🏁 Terminar Sesión</button>
+            </div>
+        </div>
+
+        <div id="results" class="results">
+            <h2>🎉 ¡Sesión Completada!</h2>
+            <div id="final-score"></div>
+            <div id="exercise-summary"></div>
+            <div id="recommendations"></div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="resetGame()">🔄 Nueva Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedExercises = [];
+        let currentExerciseIndex = 0;
+        let score = 0;
+        let timeLeft = 300; // 5 minutes
+        let timerInterval;
+        let exercises = {
+            memory: [
+                {
+                    title: "Secuencia de Números",
+                    content: "Memoriza esta secuencia: 7-2-9-4-1-8-3-6. Luego escríbela al revés.",
+                    type: "input",
+                    answer: "6-3-8-1-4-9-2-7"
+                },
+                {
+                    title: "Memoria Visual",
+                    content: "Observa estos símbolos por 10 segundos: ★◆●■▲. Luego dibújalos en orden.",
+                    type: "visual",
+                    answer: "★◆●■▲"
+                }
+            ],
+            motor: [
+                {
+                    title: "Coordinación Manual",
+                    content: "Toca tu nariz con tu mano derecha, luego tu oreja izquierda con tu mano izquierda. Repite 5 veces.",
+                    type: "physical",
+                    answer: "completed"
+                },
+                {
+                    title: "Equilibrio",
+                    content: "Párate en un pie durante 30 segundos. Cambia al otro pie y repite.",
+                    type: "physical",
+                    answer: "completed"
+                }
+            ],
+            language: [
+                {
+                    title: "Fluidez Verbal",
+                    content: "Di tantas palabras como puedas que empiecen con la letra 'A' en 30 segundos.",
+                    type: "verbal",
+                    answer: "10+ words"
+                },
+                {
+                    title: "Vocabulario",
+                    content: "Define estas palabras: 'Neuroplasticidad', 'Sinapsis', 'Corteza cerebral'.",
+                    type: "definition",
+                    answer: "definitions provided"
+                }
+            ],
+            spatial: [
+                {
+                    title: "Rotación Mental",
+                    content: "Imagina un cubo rotando. ¿Qué figura ves cuando gira 90 grados hacia la derecha?",
+                    type: "visualization",
+                    answer: "cube rotated"
+                },
+                {
+                    title: "Navegación",
+                    content: "Cierra los ojos y describe cómo llegar de tu habitación a la cocina.",
+                    type: "navigation",
+                    answer: "path described"
+                }
+            ],
+            emotional: [
+                {
+                    title: "Reconocimiento Emocional",
+                    content: "Piensa en 5 situaciones que te hagan sentir feliz y describe por qué.",
+                    type: "reflection",
+                    answer: "situations listed"
+                },
+                {
+                    title: "Empatía",
+                    content: "Imagina cómo se siente alguien que acaba de perder su trabajo. Escribe 3 formas de ayudarle.",
+                    type: "empathy",
+                    answer: "support methods"
+                }
+            ],
+            creative: [
+                {
+                    title: "Pensamiento Divergente",
+                    content: "Lista 10 usos diferentes para un clip de papel.",
+                    type: "creativity",
+                    answer: "10+ uses"
+                },
+                {
+                    title: "Resolución Creativa",
+                    content: "¿Cómo resolverías el problema de la contaminación usando solo materiales reciclados?",
+                    type: "problem-solving",
+                    answer: "creative solution"
+                }
+            ]
+        };
+
+        // Event listeners for exercise selection
+        document.querySelectorAll('.exercise-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const exerciseType = this.getAttribute('data-exercise');
+                
+                if (this.classList.contains('selected')) {
+                    if (!selectedExercises.includes(exerciseType)) {
+                        selectedExercises.push(exerciseType);
+                    }
+                } else {
+                    selectedExercises = selectedExercises.filter(type => type !== exerciseType);
+                }
+            });
+        });
+
+        function startSession() {
+            if (selectedExercises.length === 0) {
+                alert('Por favor selecciona al menos un tipo de ejercicio.');
+                return;
+            }
+
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('exercise-session').style.display = 'block';
+            
+            startTimer();
+            showExercise();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                updateProgress();
+                
+                if (timeLeft <= 0) {
+                    endSession();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateProgress() {
+            const progress = ((300 - timeLeft) / 300) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function showExercise() {
+            if (currentExerciseIndex >= getTotalExercises()) {
+                endSession();
+                return;
+            }
+
+            const exercise = getCurrentExercise();
+            document.getElementById('exercise-title').textContent = exercise.title;
+            document.getElementById('exercise-content').innerHTML = `
+                <div class="category">
+                    <p><strong>${exercise.content}</strong></p>
+                    <p><em>Tipo: ${getExerciseTypeName(exercise.type)}</em></p>
+                </div>
+            `;
+        }
+
+        function getTotalExercises() {
+            return selectedExercises.reduce((total, type) => total + exercises[type].length, 0);
+        }
+
+        function getCurrentExercise() {
+            let count = 0;
+            for (let type of selectedExercises) {
+                if (count + exercises[type].length > currentExerciseIndex) {
+                    return exercises[type][currentExerciseIndex - count];
+                }
+                count += exercises[type].length;
+            }
+            return exercises[selectedExercises[0]][0];
+        }
+
+        function getExerciseTypeName(type) {
+            const types = {
+                'input': 'Entrada de Datos',
+                'visual': 'Visual',
+                'physical': 'Físico',
+                'verbal': 'Verbal',
+                'definition': 'Definición',
+                'visualization': 'Visualización',
+                'navigation': 'Navegación',
+                'reflection': 'Reflexión',
+                'empathy': 'Empatía',
+                'creativity': 'Creatividad',
+                'problem-solving': 'Resolución de Problemas'
+            };
+            return types[type] || type;
+        }
+
+        function nextExercise() {
+            score += 10;
+            document.getElementById('score').textContent = score;
+            currentExerciseIndex++;
+            showExercise();
+        }
+
+        function endSession() {
+            clearInterval(timerInterval);
+            document.getElementById('exercise-session').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const finalScore = score + Math.floor(timeLeft / 10);
+            document.getElementById('final-score').innerHTML = `
+                <h3>Puntuación Final: ${finalScore}</h3>
+                <p>Ejercicios completados: ${currentExerciseIndex}</p>
+                <p>Tiempo restante: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}</p>
+            `;
+            
+            document.getElementById('exercise-summary').innerHTML = `
+                <h4>Ejercicios Realizados:</h4>
+                <ul>
+                    ${selectedExercises.map(type => `<li>${getExerciseTypeName(type)}</li>`).join('')}
+                </ul>
+            `;
+            
+            document.getElementById('recommendations').innerHTML = `
+                <h4>Recomendaciones:</h4>
+                <p>Continúa practicando estos ejercicios regularmente para mantener tu cerebro activo y flexible. 
+                La neuroplasticidad se fortalece con la práctica consistente.</p>
+            `;
+        }
+
+        function resetGame() {
+            selectedExercises = [];
+            currentExerciseIndex = 0;
+            score = 0;
+            timeLeft = 300;
+            
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('timer').textContent = '05:00';
+        }
+    </script>
+</body>
+</html> 

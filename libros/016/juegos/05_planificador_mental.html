@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Ejercicios Mentales - Juego</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #9C27B0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: #673AB7;
+            border-bottom: 2px solid #E1BEE7;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #9C27B0;
+            margin-top: 25px;
+        }
+        .exercise-item {
+            background: linear-gradient(135deg, #E1BEE7, #F3E5F5);
+            border: 2px solid #9C27B0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .exercise-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .exercise-item.selected {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+        }
+        .btn {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        .calendar-header {
+            background: #9C27B0;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .calendar-day {
+            background: #F8F9FA;
+            border: 1px solid #E9ECEF;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .calendar-day:hover {
+            background: #E1BEE7;
+        }
+        .calendar-day.completed {
+            background: #4CAF50;
+            color: white;
+        }
+        .calendar-day.today {
+            background: #FF9800;
+            color: white;
+            font-weight: bold;
+        }
+        .progress-section {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #E1BEE7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9C27B0, #673AB7);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .instructions {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .routine-display {
+            background: #F8F9FA;
+            border: 1px solid #E9ECEF;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #E1BEE7, #F3E5F5);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #9C27B0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #673AB7;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #E1BEE7;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .weekly-goal {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>📋 Planificador de Ejercicios Mentales</h1>
+        
+        <div class="instructions">
+            <h3>🎯 Instrucciones</h3>
+            <p>Crea tu rutina personalizada de ejercicios mentales para estimular la neuroplasticidad. Selecciona ejercicios, establece metas y lleva un seguimiento de tu progreso semanal.</p>
+        </div>
+
+        <div id="setup-section">
+            <h2>Configuración Inicial</h2>
+            
+            <div class="form-group">
+                <label for="user-name">Tu Nombre:</label>
+                <input type="text" id="user-name" placeholder="Ingresa tu nombre">
+            </div>
+            
+            <div class="form-group">
+                <label for="weekly-goal">Meta Semanal (días):</label>
+                <select id="weekly-goal">
+                    <option value="3">3 días</option>
+                    <option value="4">4 días</option>
+                    <option value="5" selected>5 días</option>
+                    <option value="6">6 días</option>
+                    <option value="7">7 días</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="session-duration">Duración de Sesión (minutos):</label>
+                <select id="session-duration">
+                    <option value="15">15 minutos</option>
+                    <option value="20" selected>20 minutos</option>
+                    <option value="30">30 minutos</option>
+                    <option value="45">45 minutos</option>
+                </select>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="startPlanning()">🚀 Comenzar Planificación</button>
+            </div>
+        </div>
+
+        <div id="planning-section" style="display: none;">
+            <h2>Selecciona tus Ejercicios</h2>
+            
+            <div class="exercise-grid">
+                <div class="exercise-item" data-exercise="memory">
+                    <h4>🧠 Memoria</h4>
+                    <p>Ejercicios para mejorar la memoria de trabajo y la retención de información.</p>
+                    <ul>
+                        <li>Secuencias de números</li>
+                        <li>Memoria visual</li>
+                        <li>Asociaciones</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="attention">
+                    <h4>👁️ Atención</h4>
+                    <p>Actividades para mejorar la concentración y la atención sostenida.</p>
+                    <ul>
+                        <li>Búsqueda visual</li>
+                        <li>Filtrado de distracciones</li>
+                        <li>Cambio de tareas</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="language">
+                    <h4>🗣️ Lenguaje</h4>
+                    <p>Ejercicios para fortalecer las habilidades lingüísticas y comunicativas.</p>
+                    <ul>
+                        <li>Vocabulario nuevo</li>
+                        <li>Fluidez verbal</li>
+                        <li>Comprensión lectora</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="spatial">
+                    <h4>🎯 Espacial</h4>
+                    <p>Actividades para desarrollar la percepción espacial y la orientación.</p>
+                    <ul>
+                        <li>Rotación mental</li>
+                        <li>Navegación</li>
+                        <li>Visualización</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="logic">
+                    <h4>🧩 Lógica</h4>
+                    <p>Ejercicios para mejorar el razonamiento lógico y la resolución de problemas.</p>
+                    <ul>
+                        <li>Puzzles</li>
+                        <li>Secuencias lógicas</li>
+                        <li>Deducción</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="creativity">
+                    <h4>🎨 Creatividad</h4>
+                    <p>Actividades para estimular el pensamiento creativo y la innovación.</p>
+                    <ul>
+                        <li>Pensamiento divergente</li>
+                        <li>Resolución creativa</li>
+                        <li>Imaginación</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="speed">
+                    <h4>⚡ Velocidad</h4>
+                    <p>Ejercicios para mejorar la velocidad de procesamiento mental.</p>
+                    <ul>
+                        <li>Reconocimiento rápido</li>
+                        <li>Decisión rápida</li>
+                        <li>Respuesta automática</li>
+                    </ul>
+                </div>
+
+                <div class="exercise-item" data-exercise="coordination">
+                    <h4>🤝 Coordinación</h4>
+                    <p>Actividades para mejorar la coordinación entre cerebro y cuerpo.</p>
+                    <ul>
+                        <li>Movimientos complejos</li>
+                        <li>Equilibrio</li>
+                        <li>Precisión</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="createRoutine()">📅 Crear Rutina</button>
+            </div>
+        </div>
+
+        <div id="routine-section" style="display: none;">
+            <h2>Tu Rutina Personalizada</h2>
+            
+            <div class="weekly-goal">
+                <h3>🎯 Meta Semanal</h3>
+                <p><strong>Objetivo:</strong> <span id="goal-display"></span> días por semana</p>
+                <p><strong>Duración:</strong> <span id="duration-display"></span> minutos por sesión</p>
+            </div>
+
+            <div id="routine-display" class="routine-display">
+                <h3>📋 Ejercicios Seleccionados</h3>
+                <div id="selected-exercises"></div>
+            </div>
+
+            <div class="progress-section">
+                <h3>📊 Progreso de la Semana</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="weekly-progress"></div>
+                </div>
+                <p>Completado: <span id="completed-days">0</span> de <span id="total-goal">5</span> días</p>
+            </div>
+
+            <div class="calendar">
+                <div class="calendar-header">Dom</div>
+                <div class="calendar-header">Lun</div>
+                <div class="calendar-header">Mar</div>
+                <div class="calendar-header">Mié</div>
+                <div class="calendar-header">Jue</div>
+                <div class="calendar-header">Vie</div>
+                <div class="calendar-header">Sáb</div>
+                
+                <div class="calendar-day" data-day="0">1</div>
+                <div class="calendar-day" data-day="1">2</div>
+                <div class="calendar-day" data-day="2">3</div>
+                <div class="calendar-day" data-day="3">4</div>
+                <div class="calendar-day" data-day="4">5</div>
+                <div class="calendar-day" data-day="5">6</div>
+                <div class="calendar-day" data-day="6">7</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-sessions">0</div>
+                    <p>Sesiones Completadas</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-time">0</div>
+                    <p>Minutos Totales</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="streak">0</div>
+                    <p>Días Consecutivos</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completion-rate">0%</div>
+                    <p>Tasa de Cumplimiento</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" onclick="markCompleted()">✅ Marcar como Completado</button>
+                <button class="btn" onclick="resetWeek()">🔄 Reiniciar Semana</button>
+                <button class="btn" onclick="newRoutine()">🆕 Nueva Rutina</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedExercises = [];
+        let weeklyGoal = 5;
+        let sessionDuration = 20;
+        let completedDays = 0;
+        let totalSessions = 0;
+        let currentStreak = 0;
+        let weeklyData = [false, false, false, false, false, false, false];
+
+        // Event listeners for exercise selection
+        document.querySelectorAll('.exercise-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const exerciseType = this.getAttribute('data-exercise');
+                
+                if (this.classList.contains('selected')) {
+                    if (!selectedExercises.includes(exerciseType)) {
+                        selectedExercises.push(exerciseType);
+                    }
+                } else {
+                    selectedExercises = selectedExercises.filter(type => type !== exerciseType);
+                }
+            });
+        });
+
+        function startPlanning() {
+            const userName = document.getElementById('user-name').value;
+            if (!userName.trim()) {
+                alert('Por favor ingresa tu nombre.');
+                return;
+            }
+
+            weeklyGoal = parseInt(document.getElementById('weekly-goal').value);
+            sessionDuration = parseInt(document.getElementById('session-duration').value);
+
+            document.getElementById('setup-section').style.display = 'none';
+            document.getElementById('planning-section').style.display = 'block';
+        }
+
+        function createRoutine() {
+            if (selectedExercises.length === 0) {
+                alert('Por favor selecciona al menos un tipo de ejercicio.');
+                return;
+            }
+
+            document.getElementById('planning-section').style.display = 'none';
+            document.getElementById('routine-section').style.display = 'block';
+
+            displayRoutine();
+            updateStats();
+        }
+
+        function displayRoutine() {
+            document.getElementById('goal-display').textContent = weeklyGoal;
+            document.getElementById('duration-display').textContent = sessionDuration;
+            document.getElementById('total-goal').textContent = weeklyGoal;
+
+            const exercisesContainer = document.getElementById('selected-exercises');
+            exercisesContainer.innerHTML = '';
+
+            const exerciseNames = {
+                memory: '🧠 Memoria',
+                attention: '👁️ Atención',
+                language: '🗣️ Lenguaje',
+                spatial: '🎯 Espacial',
+                logic: '🧩 Lógica',
+                creativity: '🎨 Creatividad',
+                speed: '⚡ Velocidad',
+                coordination: '🤝 Coordinación'
+            };
+
+            selectedExercises.forEach(exercise => {
+                const exerciseDiv = document.createElement('div');
+                exerciseDiv.style.padding = '10px';
+                exerciseDiv.style.margin = '5px 0';
+                exerciseDiv.style.backgroundColor = '#E1BEE7';
+                exerciseDiv.style.borderRadius = '5px';
+                exerciseDiv.textContent = exerciseNames[exercise];
+                exercisesContainer.appendChild(exerciseDiv);
+            });
+        }
+
+        function markCompleted() {
+            const today = new Date().getDay();
+            if (!weeklyData[today]) {
+                weeklyData[today] = true;
+                completedDays++;
+                totalSessions++;
+                currentStreak++;
+                
+                updateCalendar();
+                updateStats();
+                
+                alert('¡Excelente! Has completado tu sesión de ejercicios mentales. 🎉');
+            } else {
+                alert('Ya has completado la sesión de hoy. ¡Buen trabajo! 👍');
+            }
+        }
+
+        function updateCalendar() {
+            const progress = (completedDays / weeklyGoal) * 100;
+            document.getElementById('weekly-progress').style.width = progress + '%';
+            document.getElementById('completed-days').textContent = completedDays;
+
+            // Update calendar days
+            weeklyData.forEach((completed, index) => {
+                const dayElement = document.querySelector(`[data-day="${index}"]`);
+                dayElement.classList.remove('completed');
+                if (completed) {
+                    dayElement.classList.add('completed');
+                }
+            });
+
+            // Mark today
+            const today = new Date().getDay();
+            const todayElement = document.querySelector(`[data-day="${today}"]`);
+            todayElement.classList.add('today');
+        }
+
+        function updateStats() {
+            document.getElementById('total-sessions').textContent = totalSessions;
+            document.getElementById('total-time').textContent = totalSessions * sessionDuration;
+            document.getElementById('streak').textContent = currentStreak;
+            
+            const completionRate = Math.round((completedDays / weeklyGoal) * 100);
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+        }
+
+        function resetWeek() {
+            if (confirm('¿Estás seguro de que quieres reiniciar la semana? Esto borrará todo el progreso actual.')) {
+                weeklyData = [false, false, false, false, false, false, false];
+                completedDays = 0;
+                currentStreak = 0;
+                
+                updateCalendar();
+                updateStats();
+                
+                // Remove today class from all days
+                document.querySelectorAll('.calendar-day').forEach(day => {
+                    day.classList.remove('today');
+                });
+                
+                // Mark today again
+                const today = new Date().getDay();
+                const todayElement = document.querySelector(`[data-day="${today}"]`);
+                todayElement.classList.add('today');
+            }
+        }
+
+        function newRoutine() {
+            if (confirm('¿Quieres crear una nueva rutina? Esto reiniciará todo el progreso.')) {
+                selectedExercises = [];
+                weeklyData = [false, false, false, false, false, false, false];
+                completedDays = 0;
+                totalSessions = 0;
+                currentStreak = 0;
+                
+                document.getElementById('routine-section').style.display = 'none';
+                document.getElementById('planning-section').style.display = 'block';
+                
+                // Clear selections
+                document.querySelectorAll('.exercise-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+            }
+        }
+
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().getDay();
+            const todayElement = document.querySelector(`[data-day="${today}"]`);
+            todayElement.classList.add('today');
+        });
+    </script>
+</body>
+</html> 

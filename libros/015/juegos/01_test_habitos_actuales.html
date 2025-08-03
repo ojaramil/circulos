@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tus Hábitos Actuales - Hábitos Atómicos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .test-section {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .test-section h3 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+        .question {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .question h4 {
+            color: #333;
+            margin-top: 0;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #f8f9fa;
+        }
+        .option input[type="radio"] {
+            margin: 0;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .score-display {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+            color: #005BAA;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #005BAA;
+            transition: width 0.3s ease;
+        }
+        .law-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+        .law-section h4 {
+            color: #28a745;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Test: Tus Hábitos Actuales</h1>
+        <p>Evalúa cómo están tus hábitos según las 4 leyes del cambio de comportamiento</p>
+    </div>
+
+    <div class="content">
+        <div class="test-section">
+            <h3>📊 Instrucciones</h3>
+            <p>Este test te ayudará a evaluar tus hábitos actuales según los principios de "Hábitos Atómicos". Responde cada pregunta honestamente para obtener una evaluación precisa de tus patrones de comportamiento.</p>
+            <p><strong>Escala de respuesta:</strong></p>
+            <ul>
+                <li><strong>1 - Nunca:</strong> Casi nunca hago esto</li>
+                <li><strong>2 - Raramente:</strong> Ocasionalmente lo hago</li>
+                <li><strong>3 - A veces:</strong> Lo hago con cierta regularidad</li>
+                <li><strong>4 - Frecuentemente:</strong> Lo hago regularmente</li>
+                <li><strong>5 - Siempre:</strong> Lo hago consistentemente</li>
+            </ul>
+        </div>
+
+        <form id="habits-test">
+            <div class="test-section">
+                <h3>👁️ Ley 1: Hacerlo Obvio</h3>
+                <p>Evalúa qué tan visibles y claros son tus buenos hábitos:</p>
+
+                <div class="question">
+                    <h4>1. ¿Tienes recordatorios visuales para tus buenos hábitos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q1" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q1" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q1" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q1" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q1" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>2. ¿Tu entorno está diseñado para facilitar tus buenos hábitos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q2" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q2" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q2" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q2" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q2" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>3. ¿Tienes implementaciones de intenciones específicas para tus hábitos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q3" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q3" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q3" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q3" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q3" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>💡 Ley 2: Hacerlo Atractivo</h3>
+                <p>Evalúa qué tan atractivos y deseables son tus buenos hábitos:</p>
+
+                <div class="question">
+                    <h4>4. ¿Usas stacking de tentación para hacer tus hábitos más atractivos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q4" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q4" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q4" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q4" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q4" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>5. ¿Tus buenos hábitos están asociados con recompensas inmediatas?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q5" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q5" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q5" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q5" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q5" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>6. ¿Te rodeas de personas que tienen los hábitos que quieres desarrollar?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q6" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q6" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q6" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q6" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q6" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>⚡ Ley 3: Hacerlo Fácil</h3>
+                <p>Evalúa qué tan fáciles son de ejecutar tus buenos hábitos:</p>
+
+                <div class="question">
+                    <h4>7. ¿Comienzas tus nuevos hábitos con versiones muy pequeñas (regla de los 2 minutos)?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q7" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q7" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q7" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q7" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q7" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>8. ¿Preparas tu entorno de antemano para facilitar tus hábitos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q8" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q8" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q8" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q8" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q8" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>9. ¿Has eliminado la fricción para tus buenos hábitos?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q9" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q9" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q9" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q9" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q9" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>🎯 Ley 4: Hacerlo Satisfactorio</h3>
+                <p>Evalúa qué tan satisfactorios son tus buenos hábitos:</p>
+
+                <div class="question">
+                    <h4>10. ¿Haces seguimiento visual de tus hábitos (calendario, app, etc.)?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q10" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q10" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q10" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q10" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q10" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>11. ¿Celebras tus logros, por pequeños que sean?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q11" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q11" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q11" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q11" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q11" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>12. ¿Tus hábitos están alineados con la identidad que quieres desarrollar?</h4>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q12" value="1"> 1 - Nunca</label>
+                        <label class="option"><input type="radio" name="q12" value="2"> 2 - Raramente</label>
+                        <label class="option"><input type="radio" name="q12" value="3"> 3 - A veces</label>
+                        <label class="option"><input type="radio" name="q12" value="4"> 4 - Frecuentemente</label>
+                        <label class="option"><input type="radio" name="q12" value="5"> 5 - Siempre</label>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button type="submit" class="btn">📊 Ver Resultados</button>
+                <button type="button" class="btn" onclick="resetTest()">🔄 Reiniciar Test</button>
+            </div>
+        </form>
+
+        <div id="results" class="results">
+            <h2>📊 Tus Resultados</h2>
+            <div class="score-display" id="total-score"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p id="score-description"></p>
+
+            <div id="law-breakdown">
+                <h3>📈 Desglose por Leyes</h3>
+                <div id="law1-score" class="law-section">
+                    <h4>👁️ Ley 1: Hacerlo Obvio</h4>
+                    <p id="law1-description"></p>
+                </div>
+                <div id="law2-score" class="law-section">
+                    <h4>💡 Ley 2: Hacerlo Atractivo</h4>
+                    <p id="law2-description"></p>
+                </div>
+                <div id="law3-score" class="law-section">
+                    <h4>⚡ Ley 3: Hacerlo Fácil</h4>
+                    <p id="law3-description"></p>
+                </div>
+                <div id="law4-score" class="law-section">
+                    <h4>🎯 Ley 4: Hacerlo Satisfactorio</h4>
+                    <p id="law4-description"></p>
+                </div>
+            </div>
+
+            <div id="recommendations">
+                <h3>💡 Recomendaciones</h3>
+                <div id="recommendations-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('habits-test').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateResults();
+        });
+
+        function calculateResults() {
+            const form = document.getElementById('habits-test');
+            const formData = new FormData(form);
+            let totalScore = 0;
+            let law1Score = 0, law2Score = 0, law3Score = 0, law4Score = 0;
+
+            // Calculate scores
+            for (let i = 1; i <= 12; i++) {
+                const value = parseInt(formData.get(`q${i}`)) || 0;
+                totalScore += value;
+                
+                if (i <= 3) law1Score += value;
+                else if (i <= 6) law2Score += value;
+                else if (i <= 9) law3Score += value;
+                else law4Score += value;
+            }
+
+            const maxScore = 60;
+            const percentage = (totalScore / maxScore) * 100;
+
+            // Display results
+            document.getElementById('total-score').textContent = `${totalScore}/60`;
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            
+            let description = '';
+            if (percentage >= 80) description = '¡Excelente! Tienes un sistema de hábitos muy sólido.';
+            else if (percentage >= 60) description = 'Bueno. Tienes una base sólida pero hay espacio para mejorar.';
+            else if (percentage >= 40) description = 'Regular. Necesitas trabajar en varias áreas de tus hábitos.';
+            else description = 'Necesitas mejorar significativamente tu sistema de hábitos.';
+            
+            document.getElementById('score-description').textContent = description;
+
+            // Law breakdown
+            document.getElementById('law1-description').textContent = getLawDescription(law1Score, 15, 'obvios');
+            document.getElementById('law2-description').textContent = getLawDescription(law2Score, 15, 'atractivos');
+            document.getElementById('law3-description').textContent = getLawDescription(law3Score, 15, 'fáciles');
+            document.getElementById('law4-description').textContent = getLawDescription(law4Score, 15, 'satisfactorios');
+
+            // Recommendations
+            generateRecommendations(law1Score, law2Score, law3Score, law4Score);
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function getLawDescription(score, maxScore, lawName) {
+            const percentage = (score / maxScore) * 100;
+            if (percentage >= 80) return `Excelente (${score}/${maxScore}). Tus hábitos son muy ${lawName}.`;
+            else if (percentage >= 60) return `Bueno (${score}/${maxScore}). Tus hábitos son bastante ${lawName}.`;
+            else if (percentage >= 40) return `Regular (${score}/${maxScore}). Necesitas trabajar en hacer tus hábitos más ${lawName}.`;
+            else return `Necesita mejora (${score}/${maxScore}). Tus hábitos no son suficientemente ${lawName}.`;
+        }
+
+        function generateRecommendations(law1, law2, law3, law4) {
+            const recommendations = [];
+            
+            if (law1 < 12) {
+                recommendations.push('• <strong>Ley 1:</strong> Crea recordatorios visuales, diseña tu entorno y usa implementaciones de intenciones específicas.');
+            }
+            if (law2 < 12) {
+                recommendations.push('• <strong>Ley 2:</strong> Usa stacking de tentación, crea recompensas inmediatas y rodéate de personas con buenos hábitos.');
+            }
+            if (law3 < 12) {
+                recommendations.push('• <strong>Ley 3:</strong> Usa la regla de los 2 minutos, prepara tu entorno y elimina la fricción.');
+            }
+            if (law4 < 12) {
+                recommendations.push('• <strong>Ley 4:</strong> Haz seguimiento visual, celebra tus logros y alinea tus hábitos con tu identidad.');
+            }
+
+            if (recommendations.length === 0) {
+                recommendations.push('• ¡Excelente trabajo! Mantén la consistencia y considera aumentar gradualmente la dificultad de tus hábitos.');
+            }
+
+            document.getElementById('recommendations-content').innerHTML = recommendations.join('<br>');
+        }
+
+        function resetTest() {
+            document.getElementById('habits-test').reset();
+            document.getElementById('results').style.display = 'none';
+        }
+    </script>
+</body>
+</html> 

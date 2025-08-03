@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos Sociales - El Poder de los Hábitos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .movement-case {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .movement-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .movement-icon {
+            font-size: 3em;
+            margin-right: 20px;
+        }
+        .movement-title {
+            flex: 1;
+        }
+        .movement-title h3 {
+            color: #005BAA;
+            margin: 0 0 5px 0;
+        }
+        .movement-title p {
+            color: #666;
+            margin: 0;
+        }
+        .timeline {
+            background-color: #f8f9fa;
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .timeline-item {
+            margin: 15px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: "•";
+            color: #005BAA;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .analysis {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .example-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .example-box h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .weak-ties {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .weak-ties h4 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .beliefs {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .beliefs h4 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+        .simulator {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .network-diagram {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .network-node {
+            display: inline-block;
+            background-color: #005BAA;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            margin: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .network-connection {
+            display: inline-block;
+            width: 2px;
+            height: 20px;
+            background-color: #005BAA;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>👥 Hábitos Sociales</h1>
+        <p>Explora cómo los hábitos transforman comunidades y crean movimientos sociales</p>
+    </div>
+
+    <div class="content">
+        <h2>🌍 ¿Qué son los Hábitos Sociales?</h2>
+        <p>Los hábitos sociales son patrones de comportamiento que se propagan a través de comunidades y sociedades. Son más poderosos que los hábitos individuales porque pueden transformar no solo a una persona, sino a miles o millones de personas simultáneamente.</p>
+
+        <div class="tips">
+            <h4>💡 Elementos clave de los hábitos sociales</h4>
+            <ul>
+                <li><strong>Lazos débiles:</strong> Conexiones que cruzan diferentes grupos sociales</li>
+                <li><strong>Creencias:</strong> Mentalidades que hacen que el cambio parezca posible</li>
+                <li><strong>Crisis:</strong> Momentos que crean urgencia para el cambio</li>
+                <li><strong>Rutinas específicas:</strong> Comportamientos claros que las personas pueden adoptar</li>
+                <li><strong>Punto de inflexión:</strong> El momento en que el cambio se vuelve autosostenible</li>
+            </ul>
+        </div>
+
+        <!-- Caso 1: Movimiento por los Derechos Civiles -->
+        <div class="movement-case">
+            <div class="movement-header">
+                <div class="movement-icon">✊</div>
+                <div class="movement-title">
+                    <h3>Movimiento por los Derechos Civiles</h3>
+                    <p>Rosa Parks y el Boicot de Montgomery (1955-1956)</p>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h4>📅 Cronología del Movimiento</h4>
+                <div class="timeline-item">
+                    <strong>1 de diciembre de 1955:</strong> Rosa Parks se niega a ceder su asiento en un autobús
+                </div>
+                <div class="timeline-item">
+                    <strong>5 de diciembre de 1955:</strong> Comienza el boicot de autobuses de Montgomery
+                </div>
+                <div class="timeline-item">
+                    <strong>1956:</strong> La Corte Suprema declara inconstitucional la segregación en autobuses
+                </div>
+                <div class="timeline-item">
+                    <strong>1964:</strong> Se aprueba la Ley de Derechos Civiles
+                </div>
+            </div>
+
+            <div class="weak-ties">
+                <h4>🤝 El Poder de los Lazos Débiles</h4>
+                <p>El movimiento se propagó a través de:</p>
+                <ul>
+                    <li><strong>Iglesias:</strong> Conectaron diferentes comunidades afroamericanas</li>
+                    <li><strong>Organizaciones civiles:</strong> NAACP y otras organizaciones</li>
+                    <li><strong>Medios de comunicación:</strong> Difundieron la información</li>
+                    <li><strong>Líderes locales:</strong> Martin Luther King Jr. y otros activistas</li>
+                </ul>
+            </div>
+
+            <div class="beliefs">
+                <h4>💭 Creencias Transformadoras</h4>
+                <p>Las creencias que impulsaron el movimiento:</p>
+                <ul>
+                    <li><strong>"El cambio es posible":</strong> La creencia de que la injusticia podía ser superada</li>
+                    <li><strong>"No estoy solo":</strong> La sensación de que otros compartían la lucha</li>
+                    <li><strong>"Mi voz importa":</strong> La creencia de que cada persona podía hacer una diferencia</li>
+                    <li><strong>"La no violencia es poderosa":</strong> La creencia en métodos pacíficos</li>
+                </ul>
+            </div>
+
+            <div class="analysis">
+                <h4>🔍 Análisis del Caso</h4>
+                <p><strong>¿Por qué funcionó?</strong></p>
+                <ul>
+                    <li><strong>Señal clara:</strong> La injusticia de la segregación</li>
+                    <li><strong>Rutina específica:</strong> Boicot de autobuses y protestas no violentas</li>
+                    <li><strong>Recompensa:</strong> Sensación de dignidad y progreso hacia la igualdad</li>
+                    <li><strong>Lazos débiles activados:</strong> Conexiones entre diferentes grupos</li>
+                    <li><strong>Creencias cultivadas:</strong> "El cambio es posible y necesario"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Caso 2: Movimiento #MeToo -->
+        <div class="movement-case">
+            <div class="movement-header">
+                <div class="movement-icon">📢</div>
+                <div class="movement-title">
+                    <h3>Movimiento #MeToo</h3>
+                    <p>Revolución contra el acoso sexual (2017-presente)</p>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h4>📅 Cronología del Movimiento</h4>
+                <div class="timeline-item">
+                    <strong>2006:</strong> Tarana Burke acuña el término "Me Too"
+                </div>
+                <div class="timeline-item">
+                    <strong>2017:</strong> Alyssa Milano populariza el hashtag #MeToo
+                </div>
+                <div class="timeline-item">
+                    <strong>2017-2018:</strong> Revelaciones sobre Harvey Weinstein y otros</li>
+                </div>
+                <div class="timeline-item">
+                    <strong>2018-presente:</strong> Cambios en leyes, políticas corporativas y normas sociales
+                </div>
+            </div>
+
+            <div class="weak-ties">
+                <h4>🤝 El Poder de las Redes Sociales</h4>
+                <p>El movimiento se propagó a través de:</p>
+                <ul>
+                    <li><strong>Redes sociales:</strong> Twitter, Facebook, Instagram</li>
+                    <li><strong>Medios tradicionales:</strong> Cobertura periodística</li>
+                    <li><strong>Organizaciones de mujeres:</strong> Grupos de apoyo y activismo</li>
+                    <li><strong>Celebridades:</strong> Voces influyentes que amplificaron el mensaje</li>
+                </ul>
+            </div>
+
+            <div class="beliefs">
+                <h4>💭 Creencias Transformadoras</h4>
+                <p>Las creencias que impulsaron el movimiento:</p>
+                <ul>
+                    <li><strong>"Mi voz importa":</strong> La creencia de que cada historia cuenta</li>
+                    <li><strong>"No estoy sola":</strong> La sensación de que otras habían experimentado lo mismo</li>
+                    <li><strong>"El cambio es posible":</strong> La creencia de que la sociedad puede cambiar</li>
+                    <li><strong>"Es hora de actuar":</strong> La urgencia de hacer algo al respecto</li>
+                </ul>
+            </div>
+
+            <div class="analysis">
+                <h4>🔍 Análisis del Caso</h4>
+                <p><strong>¿Por qué funcionó?</strong></p>
+                <ul>
+                    <li><strong>Señal clara:</strong> Los escándalos de Hollywood y casos de acoso</li>
+                    <li><strong>Rutina específica:</strong> Compartir historias con el hashtag #MeToo</li>
+                    <li><strong>Recompensa:</strong> Sensación de empoderamiento y apoyo</li>
+                    <li><strong>Lazos débiles digitales:</strong> Conexiones a través de redes sociales</li>
+                    <li><strong>Creencias cultivadas:</strong> "Mi experiencia es válida y compartida"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Simulador de Redes Sociales -->
+        <div class="simulator">
+            <h3>🔄 Simulador de Propagación de Hábitos Sociales</h3>
+            <p>Experimenta con diferentes factores para ver cómo se propagan los hábitos sociales:</p>
+
+            <form id="socialHabitForm">
+                <div class="form-group">
+                    <label for="movementType">Tipo de Movimiento</label>
+                    <select id="movementType" name="movementType" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="environmental">Ambiental</option>
+                        <option value="health">Salud y bienestar</option>
+                        <option value="digital">Digital/tecnológico</option>
+                        <option value="social">Social/igualdad</option>
+                        <option value="educational">Educativo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="crisisType">Tipo de Crisis o Urgencia</label>
+                    <select id="crisisType" name="crisisType" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="immediate">Crisis inmediata (desastre, escándalo)</option>
+                        <option value="gradual">Crisis gradual (problema creciente)</option>
+                        <option value="perceived">Crisis percibida (conciencia creciente)</option>
+                        <option value="opportunity">Oportunidad de mejora</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="networkStrength">Fuerza de la Red de Lazos Débiles</label>
+                    <select id="networkStrength" name="networkStrength" required>
+                        <option value="">Selecciona la fuerza</option>
+                        <option value="strong">Fuerte (muchas conexiones entre grupos)</option>
+                        <option value="moderate">Moderada (algunas conexiones)</option>
+                        <option value="weak">Débil (pocas conexiones)</option>
+                        <option value="isolated">Aislada (grupos separados)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="beliefStrength">Fuerza de las Creencias</label>
+                    <select id="beliefStrength" name="beliefStrength" required>
+                        <option value="">Selecciona la fuerza</option>
+                        <option value="strong">Fuerte (creencias arraigadas)</option>
+                        <option value="moderate">Moderada (algunas creencias)</option>
+                        <option value="weak">Débil (creencias superficiales)</option>
+                        <option value="none">Sin creencias establecidas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="routineClarity">Claridad de las Rutinas</label>
+                    <select id="routineClarity" name="routineClarity" required>
+                        <option value="">Selecciona la claridad</option>
+                        <option value="very-clear">Muy claras (comportamientos específicos)</option>
+                        <option value="clear">Claras (comportamientos generales)</option>
+                        <option value="unclear">Poco claras (comportamientos vagos)</option>
+                        <option value="none">Sin rutinas definidas</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Simular Propagación</button>
+                <button type="button" class="btn btn-secondary" onclick="resetSimulator()">Reiniciar</button>
+            </form>
+        </div>
+
+        <div class="results" id="simulationResults">
+            <h3>📊 Resultados de la Simulación</h3>
+            <div id="simulationContent"></div>
+        </div>
+
+        <div class="network-diagram">
+            <h4>🌐 Visualización de Red de Lazos Débiles</h4>
+            <div class="network-node">Grupo A</div>
+            <div class="network-connection"></div>
+            <div class="network-node">Lazo Débil</div>
+            <div class="network-connection"></div>
+            <div class="network-node">Grupo B</div>
+            <div class="network-connection"></div>
+            <div class="network-node">Grupo C</div>
+            <div class="network-connection"></div>
+            <div class="network-node">Grupo D</div>
+        </div>
+
+        <div class="tips">
+            <h4>🎯 Estrategias para Crear Hábitos Sociales</h4>
+            <ul>
+                <li><strong>Identifica la crisis:</strong> Encuentra el momento que crea urgencia</li>
+                <li><strong>Activa lazos débiles:</strong> Conecta diferentes grupos y comunidades</li>
+                <li><strong>Cultiva creencias:</strong> Ayuda a las personas a creer en el cambio</li>
+                <li><strong>Crea rutinas específicas:</strong> Proporciona comportamientos claros</li>
+                <li><strong>Celebra pequeños éxitos:</strong> Reconoce el progreso para mantener el momentum</li>
+                <li><strong>Usa tecnología:</strong> Aprovecha las redes sociales y medios digitales</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📝 Ejemplos de Hábitos Sociales Modernos</h4>
+            
+            <div class="example-box">
+                <h5>🌱 Movimiento Ambiental</h5>
+                <p><strong>Hábito social:</strong> Reciclar y reducir el consumo de plástico</p>
+                <p><strong>Señal:</strong> Crisis climática y contaminación</p>
+                <p><strong>Rutina:</strong> Separar basura, usar bolsas reutilizables</p>
+                <p><strong>Recompensa:</strong> Sensación de contribución al planeta</p>
+            </div>
+
+            <div class="example-box">
+                <h5>💻 Revolución Digital</h5>
+                <p><strong>Hábito social:</strong> Usar redes sociales y tecnología móvil</p>
+                <p><strong>Señal:</strong> Necesidad de conexión y comunicación</p>
+                <p><strong>Rutina:</strong> Revisar notificaciones, compartir contenido</p>
+                <p><strong>Recompensa:</strong> Conexión social e información</p>
+            </div>
+
+            <div class="example-box">
+                <h5>🏃‍♀️ Movimiento de Fitness</h5>
+                <p><strong>Hábito social:</strong> Hacer ejercicio regular y comer saludable</p>
+                <p><strong>Señal:</strong> Crisis de salud pública</p>
+                <p><strong>Rutina:</strong> Ejercicios en casa, apps de fitness</p>
+                <p><strong>Recompensa:</strong> Mejor salud y bienestar</p>
+            </div>
+        </div>
+
+        <div class="analysis">
+            <h4>🚀 Aplicación en Tu Comunidad</h4>
+            <p>Para crear hábitos sociales en tu comunidad:</p>
+            <ol>
+                <li><strong>Identifica una crisis o necesidad</strong> que afecte a tu comunidad</li>
+                <li><strong>Conecta con diferentes grupos</strong> usando tus lazos débiles</li>
+                <li><strong>Ayuda a crear creencias</strong> de que el cambio es posible</li>
+                <li><strong>Proporciona rutinas específicas</strong> para que las personas participen</li>
+                <li><strong>Celebra y comparte</strong> los pequeños éxitos</li>
+                <li><strong>Mantén el momentum</strong> con comunicación constante</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('socialHabitForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const movementType = document.getElementById('movementType').value;
+            const crisisType = document.getElementById('crisisType').value;
+            const networkStrength = document.getElementById('networkStrength').value;
+            const beliefStrength = document.getElementById('beliefStrength').value;
+            const routineClarity = document.getElementById('routineClarity').value;
+
+            if (!movementType || !crisisType || !networkStrength || !beliefStrength || !routineClarity) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            // Calcular probabilidad de éxito
+            const successProbability = calculateSuccessProbability(movementType, crisisType, networkStrength, beliefStrength, routineClarity);
+            
+            // Generar análisis
+            const analysis = generateSocialAnalysis(movementType, crisisType, networkStrength, beliefStrength, routineClarity, successProbability);
+            
+            // Mostrar resultados
+            document.getElementById('simulationContent').innerHTML = analysis;
+            document.getElementById('simulationResults').style.display = 'block';
+            
+            // Hacer scroll a los resultados
+            document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function calculateSuccessProbability(movementType, crisisType, networkStrength, beliefStrength, routineClarity) {
+            let score = 0;
+            
+            // Puntuación por tipo de movimiento
+            const movementScores = {
+                'environmental': 8,
+                'health': 7,
+                'digital': 9,
+                'social': 8,
+                'educational': 6
+            };
+            score += movementScores[movementType] || 5;
+
+            // Puntuación por tipo de crisis
+            const crisisScores = {
+                'immediate': 9,
+                'gradual': 7,
+                'perceived': 6,
+                'opportunity': 5
+            };
+            score += crisisScores[crisisType] || 5;
+
+            // Puntuación por fuerza de red
+            const networkScores = {
+                'strong': 9,
+                'moderate': 7,
+                'weak': 4,
+                'isolated': 2
+            };
+            score += networkScores[networkStrength] || 5;
+
+            // Puntuación por fuerza de creencias
+            const beliefScores = {
+                'strong': 9,
+                'moderate': 7,
+                'weak': 4,
+                'none': 2
+            };
+            score += beliefScores[beliefStrength] || 5;
+
+            // Puntuación por claridad de rutinas
+            const routineScores = {
+                'very-clear': 9,
+                'clear': 7,
+                'unclear': 4,
+                'none': 2
+            };
+            score += routineScores[routineClarity] || 5;
+
+            return Math.min(100, Math.round((score / 45) * 100));
+        }
+
+        function generateSocialAnalysis(movementType, crisisType, networkStrength, beliefStrength, routineClarity, probability) {
+            const movementNames = {
+                'environmental': 'Ambiental',
+                'health': 'Salud y bienestar',
+                'digital': 'Digital/tecnológico',
+                'social': 'Social/igualdad',
+                'educational': 'Educativo'
+            };
+
+            const crisisNames = {
+                'immediate': 'Crisis inmediata',
+                'gradual': 'Crisis gradual',
+                'perceived': 'Crisis percibida',
+                'opportunity': 'Oportunidad de mejora'
+            };
+
+            const networkNames = {
+                'strong': 'Fuerte',
+                'moderate': 'Moderada',
+                'weak': 'Débil',
+                'isolated': 'Aislada'
+            };
+
+            const beliefNames = {
+                'strong': 'Fuerte',
+                'moderate': 'Moderada',
+                'weak': 'Débil',
+                'none': 'Sin creencias'
+            };
+
+            const routineNames = {
+                'very-clear': 'Muy claras',
+                'clear': 'Claras',
+                'unclear': 'Poco claras',
+                'none': 'Sin rutinas'
+            };
+
+            let assessment = '';
+            let recommendations = '';
+
+            if (probability >= 80) {
+                assessment = 'Excelente - Este hábito social tiene muy alta probabilidad de propagarse exitosamente.';
+                recommendations = 'Enfócate en mantener el momentum y expandir el alcance.';
+            } else if (probability >= 60) {
+                assessment = 'Buena - Este hábito social tiene buena probabilidad de éxito.';
+                recommendations = 'Fortalece los lazos débiles y clarifica las rutinas.';
+            } else if (probability >= 40) {
+                assessment = 'Moderada - Este hábito social requerirá más esfuerzo para propagarse.';
+                recommendations = 'Trabaja en crear una crisis más clara y fortalecer las creencias.';
+            } else {
+                assessment = 'Baja - Este hábito social será difícil de propagar.';
+                recommendations = 'Considera cambiar el enfoque o trabajar en los factores débiles primero.';
+            }
+
+            return `
+                <div class="example-box">
+                    <h4>🔄 Análisis de tu Hábito Social</h4>
+                    <p><strong>Tipo de movimiento:</strong> ${movementNames[movementType]}</p>
+                    <p><strong>Tipo de crisis:</strong> ${crisisNames[crisisType]}</p>
+                    <p><strong>Fuerza de red:</strong> ${networkNames[networkStrength]}</p>
+                    <p><strong>Fuerza de creencias:</strong> ${beliefNames[beliefStrength]}</p>
+                    <p><strong>Claridad de rutinas:</strong> ${routineNames[routineClarity]}</p>
+                </div>
+
+                <div class="analysis">
+                    <h4>📊 Probabilidad de Éxito</h4>
+                    <p><strong>Puntuación:</strong> ${probability}%</p>
+                    <p><strong>Evaluación:</strong> ${assessment}</p>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Recomendaciones</h4>
+                    <p><strong>${recommendations}</strong></p>
+                    <ul>
+                        <li><strong>Para mejorar la red:</strong> ${getNetworkAdvice(networkStrength)}</li>
+                        <li><strong>Para fortalecer creencias:</strong> ${getBeliefAdvice(beliefStrength)}</li>
+                        <li><strong>Para clarificar rutinas:</strong> ${getRoutineAdvice(routineClarity)}</li>
+                        <li><strong>Para aprovechar la crisis:</strong> ${getCrisisAdvice(crisisType)}</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function getNetworkAdvice(networkStrength) {
+            const advice = {
+                'strong': 'Mantén las conexiones existentes y busca nuevas oportunidades de colaboración.',
+                'moderate': 'Identifica grupos adicionales para conectar y fortalece las conexiones existentes.',
+                'weak': 'Trabaja activamente para crear conexiones entre diferentes grupos y comunidades.',
+                'isolated': 'Prioriza la creación de redes antes de intentar propagar el hábito.'
+            };
+            return advice[networkStrength] || '';
+        }
+
+        function getBeliefAdvice(beliefStrength) {
+            const advice = {
+                'strong': 'Aprovecha las creencias existentes y compártelas ampliamente.',
+                'moderate': 'Refuerza las creencias existentes y trabaja para expandirlas.',
+                'weak': 'Crea narrativas poderosas y comparte historias de éxito.',
+                'none': 'Comienza por crear creencias básicas antes de intentar el cambio.'
+            };
+            return advice[beliefStrength] || '';
+        }
+
+        function getRoutineAdvice(routineClarity) {
+            const advice = {
+                'very-clear': 'Las rutinas están bien definidas. Enfócate en hacerlas más accesibles.',
+                'clear': 'Refina las rutinas para hacerlas más específicas y fáciles de seguir.',
+                'unclear': 'Define rutinas específicas y proporciona ejemplos claros.',
+                'none': 'Crea rutinas específicas antes de intentar propagar el hábito.'
+            };
+            return advice[routineClarity] || '';
+        }
+
+        function getCrisisAdvice(crisisType) {
+            const advice = {
+                'immediate': 'Aprovecha la urgencia inmediata para crear momentum rápido.',
+                'gradual': 'Comunica la gravedad del problema de manera más efectiva.',
+                'perceived': 'Trabaja para hacer la crisis más tangible y urgente.',
+                'opportunity': 'Convierte la oportunidad en una necesidad más urgente.'
+            };
+            return advice[crisisType] || '';
+        }
+
+        function resetSimulator() {
+            document.getElementById('socialHabitForm').reset();
+            document.getElementById('simulationResults').style.display = 'none';
+        }
+    </script>
+</body>
+</html> 

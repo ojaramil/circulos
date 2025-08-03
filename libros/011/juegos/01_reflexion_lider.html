@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión: Tu Líder Interior</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-container {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #005BAA;
+        }
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background-color: white;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #f0f8ff;
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #005BAA, #0077CC);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .power-analysis {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .power-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #005BAA;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤔 Reflexión: Tu Líder Interior</h1>
+        <p>Descubre qué tan desarrollado tienes tu líder interior según los principios LSC</p>
+    </div>
+
+    <div class="content">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div id="questionContainer" class="question-container">
+            <div class="question" id="questionText">¿Cómo te sientes cuando llegas al trabajo cada mañana?</div>
+            <div class="options" id="optionsContainer">
+                <div class="option" data-value="1">A) Con energía y entusiasmo por hacer un buen trabajo</div>
+                <div class="option" data-value="2">B) Con la esperanza de que el día pase rápido</div>
+                <div class="option" data-value="3">C) Con resignación, es solo otro día más</div>
+                <div class="option" data-value="4">D) Con frustración, preferiría estar en otro lugar</div>
+            </div>
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente</button>
+        </div>
+
+        <div id="resultContainer" class="result">
+            <h2>🎯 Análisis de Tu Líder Interior</h2>
+            <div class="power-score" id="finalScore"></div>
+            <div class="power-analysis" id="powerAnalysis"></div>
+            <button class="btn" onclick="restartQuiz()">Volver a Intentar</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "¿Cómo te sientes cuando llegas al trabajo cada mañana?",
+                options: [
+                    { text: "Con energía y entusiasmo por hacer un buen trabajo", value: 4 },
+                    { text: "Con la esperanza de que el día pase rápido", value: 2 },
+                    { text: "Con resignación, es solo otro día más", value: 1 },
+                    { text: "Con frustración, preferiría estar en otro lugar", value: 0 }
+                ]
+            },
+            {
+                question: "Cuando ves un problema en tu trabajo, ¿qué haces?",
+                options: [
+                    { text: "Me involucro activamente para encontrar una solución", value: 4 },
+                    { text: "Lo reporto a mi supervisor y espero instrucciones", value: 2 },
+                    { text: "Lo ignoro si no es mi responsabilidad directa", value: 1 },
+                    { text: "Me quejo con mis compañeros sobre el problema", value: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo tratas a tus compañeros de trabajo?",
+                options: [
+                    { text: "Los apoyo y animo constantemente", value: 4 },
+                    { text: "Soy amigable pero mantengo distancia", value: 2 },
+                    { text: "Solo hablo con ellos cuando es necesario", value: 1 },
+                    { text: "Evito la interacción social en el trabajo", value: 0 }
+                ]
+            },
+            {
+                question: "¿Qué haces cuando las cosas no salen como esperabas?",
+                options: [
+                    { text: "Aprendo de la experiencia y busco mejorar", value: 4 },
+                    { text: "Analizo qué salió mal para evitar repetirlo", value: 3 },
+                    { text: "Me frustro pero sigo adelante", value: 1 },
+                    { text: "Me desanimo y pierdo motivación", value: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo ves tu trabajo actual?",
+                options: [
+                    { text: "Como una oportunidad para crecer y contribuir", value: 4 },
+                    { text: "Como un medio para ganar dinero", value: 2 },
+                    { text: "Como algo temporal hasta encontrar algo mejor", value: 1 },
+                    { text: "Como una carga necesaria", value: 0 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+        let selectedOption = null;
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${String.fromCharCode(65 + index)}) ${option.text}`;
+                optionDiv.dataset.value = option.value;
+                optionDiv.onclick = () => selectOption(optionDiv);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('nextBtn').disabled = true;
+            updateProgress();
+        }
+
+        function selectOption(optionElement) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select new option
+            optionElement.classList.add('selected');
+            selectedOption = parseInt(optionElement.dataset.value);
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (selectedOption !== null) {
+                totalScore += selectedOption;
+                currentQuestion++;
+                
+                if (currentQuestion < questions.length) {
+                    selectedOption = null;
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            const maxScore = questions.length * 4;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            document.getElementById('finalScore').textContent = `${Math.round(percentage)}% - Líder Interior`;
+            
+            let analysis = '';
+            if (percentage >= 80) {
+                analysis = `
+                    <h3>🌟 ¡Excelente! Eres un Líder Sin Cargo Natural</h3>
+                    <p>Tienes un líder interior muy desarrollado. Ya aplicas los principios LSC de manera natural. 
+                    Tu actitud positiva y proactiva inspira a otros. Continúa desarrollando tu potencial y 
+                    comparte tu sabiduría con quienes te rodean.</p>
+                    <p><strong>Próximo paso:</strong> Busca oportunidades para mentorizar a otros y expandir tu influencia positiva.</p>
+                `;
+            } else if (percentage >= 60) {
+                analysis = `
+                    <h3>🚀 ¡Muy bien! Tienes un Buen Líder Interior</h3>
+                    <p>Tu líder interior está despertando. Tienes una buena base y actitud positiva. 
+                    Con un poco más de práctica y conciencia, puedes desarrollar todo tu potencial LSC.</p>
+                    <p><strong>Próximo paso:</strong> Enfócate en mejorar en las áreas donde obtuviste puntuaciones más bajas.</p>
+                `;
+            } else if (percentage >= 40) {
+                analysis = `
+                    <h3>💡 ¡Buen potencial! Tu Líder Interior Está Dormido</h3>
+                    <p>Tienes el potencial para ser un gran líder, pero tu líder interior necesita despertar. 
+                    Es normal sentirse así, especialmente si has pasado por momentos difíciles. 
+                    El primer paso es tomar conciencia de tu poder.</p>
+                    <p><strong>Próximo paso:</strong> Comienza aplicando los principios LSC en pequeñas acciones diarias.</p>
+                `;
+            } else {
+                analysis = `
+                    <h3>🌱 ¡Tiempo de Despertar! Tu Líder Interior Te Espera</h3>
+                    <p>Tu líder interior está esperando que lo despiertes. No te preocupes, todos tenemos 
+                    ese potencial dentro. Como Blake en el libro, puedes transformar tu vida y tu trabajo 
+                    aplicando los principios LSC.</p>
+                    <p><strong>Próximo paso:</strong> Lee las lecciones de este curso con mente abierta y comienza tu transformación.</p>
+                `;
+            }
+            
+            document.getElementById('powerAnalysis').innerHTML = analysis;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            totalScore = 0;
+            selectedOption = null;
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            showQuestion();
+        }
+
+        // Initialize the quiz
+        showQuestion();
+    </script>
+</body>
+</html> 

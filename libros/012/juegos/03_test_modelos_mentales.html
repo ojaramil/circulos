@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Modelos Mentales - La Quinta Disciplina</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .options {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #e7f3ff;
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        .feedback {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .next-btn {
+            background-color: #005BAA;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .next-btn:hover {
+            background-color: #004085;
+        }
+        .next-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .highlight {
+            background-color: #e7f3ff;
+            border-left: 4px solid #005BAA;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .score {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧩 Test de Modelos Mentales</h1>
+        <p>Descubre tus modelos mentales y cómo influyen en tu pensamiento</p>
+    </div>
+
+    <div class="content">
+        <div id="intro">
+            <h2>¿Qué es el Test de Modelos Mentales?</h2>
+            <p>Este test te ayudará a identificar los modelos mentales que influyen en tu forma de pensar y actuar. Los modelos mentales son las "lentes" a través de las cuales vemos el mundo, y pueden tanto facilitar como limitar nuestro aprendizaje.</p>
+            
+            <div class="highlight">
+                <strong>Objetivos del test:</strong><br>
+                • Identificar modelos mentales limitantes<br>
+                • Reconocer modelos mentales facilitadores<br>
+                • Entender cómo influyen en tus decisiones<br>
+                • Descubrir oportunidades de transformación
+            </div>
+            
+            <button class="next-btn" onclick="startTest()">Comenzar Test</button>
+        </div>
+
+        <div id="test" style="display: none;">
+            <div id="question-container"></div>
+            <div id="feedback-container"></div>
+            <button id="next-btn" class="next-btn" onclick="nextQuestion()" style="display: none;">Siguiente Pregunta</button>
+        </div>
+
+        <div id="final-results" style="display: none;">
+            <h2>🎯 Resultados de tu Test de Modelos Mentales</h2>
+            <div id="score-display"></div>
+            <div id="analysis"></div>
+            <button class="next-btn" onclick="restartTest()">Repetir Test</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "Cuando enfrentas un problema en el trabajo, ¿qué sueles pensar primero?",
+                options: [
+                    {
+                        text: "¿Quién tiene la culpa de esto?",
+                        score: 1,
+                        feedback: "Este modelo mental se enfoca en buscar culpables en lugar de soluciones. Limita la capacidad de aprendizaje y colaboración."
+                    },
+                    {
+                        text: "¿Qué podemos aprender de esta situación?",
+                        score: 5,
+                        feedback: "¡Excelente! Este modelo mental facilitador ve los problemas como oportunidades de aprendizaje y crecimiento."
+                    },
+                    {
+                        text: "¿Por qué siempre me pasa esto a mí?",
+                        score: 0,
+                        feedback: "Este modelo mental de victimización impide tomar responsabilidad y buscar soluciones activas."
+                    },
+                    {
+                        text: "¿Cómo podemos resolver esto juntos?",
+                        score: 4,
+                        feedback: "Muy bien. Este modelo mental promueve la colaboración y el trabajo en equipo."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                question: "Cuando alguien propone una idea diferente a la tuya, ¿cómo reaccionas?",
+                options: [
+                    {
+                        text: "Defiendo mi posición y explico por qué mi idea es mejor",
+                        score: 2,
+                        feedback: "Este modelo mental de competencia puede limitar el aprendizaje y la innovación."
+                    },
+                    {
+                        text: "Escucho con curiosidad y busco cómo combinar ambas ideas",
+                        score: 5,
+                        feedback: "¡Perfecto! Este modelo mental de colaboración y síntesis facilita el aprendizaje y la innovación."
+                    },
+                    {
+                        text: "Me callo para evitar conflictos",
+                        score: 1,
+                        feedback: "Este modelo mental de evitación impide el diálogo constructivo y el aprendizaje."
+                    },
+                    {
+                        text: "Analizo los pros y contras de cada opción",
+                        score: 4,
+                        feedback: "Bien. Este modelo mental analítico es útil, pero podría ser más colaborativo."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                question: "Cuando tu equipo comete un error, ¿qué piensas?",
+                options: [
+                    {
+                        text: "Alguien debe ser sancionado para que no vuelva a pasar",
+                        score: 1,
+                        feedback: "Este modelo mental punitivo impide el aprendizaje y crea miedo al error."
+                    },
+                    {
+                        text: "¿Qué podemos aprender de este error para mejorar?",
+                        score: 5,
+                        feedback: "¡Excelente! Este modelo mental de aprendizaje ve los errores como oportunidades de mejora."
+                    },
+                    {
+                        text: "Es mejor ocultar el error para proteger al equipo",
+                        score: 0,
+                        feedback: "Este modelo mental de ocultamiento impide el aprendizaje y puede agravar problemas."
+                    },
+                    {
+                        text: "Necesitamos mejores procedimientos para evitar errores",
+                        score: 3,
+                        feedback: "Bien, pero este modelo mental se enfoca solo en procedimientos, no en aprendizaje."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                question: "Cuando tu organización anuncia cambios, ¿cuál es tu primera reacción?",
+                options: [
+                    {
+                        text: "Me resisto porque los cambios siempre son difíciles",
+                        score: 1,
+                        feedback: "Este modelo mental de resistencia al cambio limita la adaptabilidad y el crecimiento."
+                    },
+                    {
+                        text: "Me entusiasmo por las nuevas oportunidades que pueden traer",
+                        score: 5,
+                        feedback: "¡Perfecto! Este modelo mental facilitador ve el cambio como oportunidad de crecimiento."
+                    },
+                    {
+                        text: "Me preocupo por cómo me afectará personalmente",
+                        score: 2,
+                        feedback: "Este modelo mental egocéntrico puede limitar la visión sistémica."
+                    },
+                    {
+                        text: "Analizo los beneficios y riesgos del cambio",
+                        score: 4,
+                        feedback: "Bien. Este modelo mental analítico es útil, pero podría ser más optimista."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                question: "Cuando trabajas con personas de diferentes departamentos, ¿qué piensas?",
+                options: [
+                    {
+                        text: "Cada departamento debe cuidar sus propios intereses",
+                        score: 1,
+                        feedback: "Este modelo mental de silos organizacionales impide la colaboración efectiva."
+                    },
+                    {
+                        text: "La diversidad de perspectivas enriquece nuestras soluciones",
+                        score: 5,
+                        feedback: "¡Excelente! Este modelo mental facilitador valora la diversidad y la colaboración."
+                    },
+                    {
+                        text: "Es difícil trabajar con personas que piensan diferente",
+                        score: 2,
+                        feedback: "Este modelo mental de incompatibilidad limita las oportunidades de aprendizaje."
+                    },
+                    {
+                        text: "Necesitamos coordinación para evitar conflictos",
+                        score: 3,
+                        feedback: "Bien, pero este modelo mental se enfoca en evitar conflictos en lugar de aprovechar la diversidad."
+                    }
+                ]
+            },
+            {
+                id: 6,
+                question: "Cuando tu jefe te da retroalimentación, ¿cómo la recibes?",
+                options: [
+                    {
+                        text: "Me defiendo y explico por qué hice las cosas así",
+                        score: 1,
+                        feedback: "Este modelo mental defensivo impide el aprendizaje y el crecimiento."
+                    },
+                    {
+                        text: "Escucho con apertura y busco cómo mejorar",
+                        score: 5,
+                        feedback: "¡Perfecto! Este modelo mental de apertura facilita el aprendizaje continuo."
+                    },
+                    {
+                        text: "Me siento atacado y me pongo a la defensiva",
+                        score: 0,
+                        feedback: "Este modelo mental de victimización impide recibir retroalimentación constructiva."
+                    },
+                    {
+                        text: "Acepto la retroalimentación pero no estoy seguro de cómo aplicarla",
+                        score: 3,
+                        feedback: "Bien, pero este modelo mental podría ser más proactivo en la aplicación."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                question: "Cuando tu equipo logra un éxito, ¿qué piensas?",
+                options: [
+                    {
+                        text: "Fue gracias a mi contribución individual",
+                        score: 2,
+                        feedback: "Este modelo mental individualista puede limitar la colaboración futura."
+                    },
+                    {
+                        text: "Fue el resultado del trabajo colaborativo del equipo",
+                        score: 5,
+                        feedback: "¡Excelente! Este modelo mental sistémico reconoce la importancia de la colaboración."
+                    },
+                    {
+                        text: "Fue suerte, no creo que podamos repetirlo",
+                        score: 1,
+                        feedback: "Este modelo mental de suerte impide reconocer las capacidades del equipo."
+                    },
+                    {
+                        text: "Fue gracias al liderazgo efectivo",
+                        score: 3,
+                        feedback: "Bien, pero este modelo mental podría reconocer más la contribución de todos."
+                    }
+                ]
+            },
+            {
+                id: 8,
+                question: "Cuando enfrentas una situación compleja, ¿qué haces?",
+                options: [
+                    {
+                        text: "Busco la causa raíz del problema",
+                        score: 3,
+                        feedback: "Bien, pero este modelo mental lineal puede ser limitado para problemas complejos."
+                    },
+                    {
+                        text: "Analizo las interconexiones y patrones del sistema",
+                        score: 5,
+                        feedback: "¡Perfecto! Este modelo mental sistémico es ideal para problemas complejos."
+                    },
+                    {
+                        text: "Me enfoco en resolver los síntomas más urgentes",
+                        score: 2,
+                        feedback: "Este modelo mental reactivo puede crear soluciones temporales."
+                    },
+                    {
+                        text: "Busco la solución más rápida y eficiente",
+                        score: 1,
+                        feedback: "Este modelo mental de eficiencia puede ignorar la complejidad del problema."
+                    }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedOption = null;
+        let totalScore = 0;
+        let answers = [];
+
+        function startTest() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('test').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>Pregunta ${question.id} de ${questions.length}</h3>
+                    <p>${question.question}</p>
+                </div>
+                <div class="options">
+                    ${question.options.map((option, index) => `
+                        <div class="option" onclick="selectOption(${index})">
+                            ${option.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectOption(optionIndex) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select new option
+            event.target.classList.add('selected');
+            selectedOption = optionIndex;
+            
+            // Show next button
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            if (selectedOption === null) return;
+
+            const question = questions[currentQuestion];
+            const option = question.options[selectedOption];
+            
+            // Add to score and answers
+            totalScore += option.score;
+            answers.push({
+                question: question.question,
+                choice: option.text,
+                score: option.score,
+                feedback: option.feedback
+            });
+
+            // Show feedback
+            const feedbackContainer = document.getElementById('feedback-container');
+            feedbackContainer.innerHTML = `
+                <div class="feedback">
+                    <h4>Tu Respuesta:</h4>
+                    <p><strong>${option.text}</strong></p>
+                    <h4>Análisis:</h4>
+                    <p>${option.feedback}</p>
+                    <div class="score">
+                        Puntuación: ${option.score}/5 puntos
+                    </div>
+                </div>
+            `;
+
+            // Hide next button
+            document.getElementById('next-btn').style.display = 'none';
+            selectedOption = null;
+
+            // Move to next question or show final results
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                setTimeout(() => {
+                    feedbackContainer.innerHTML = '';
+                    showQuestion();
+                }, 4000);
+            } else {
+                setTimeout(showFinalResults, 4000);
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('test').style.display = 'none';
+            document.getElementById('final-results').style.display = 'block';
+
+            const maxScore = questions.length * 5;
+            const percentage = (totalScore / maxScore) * 100;
+
+            let level = '';
+            let analysis = '';
+
+            if (percentage >= 90) {
+                level = 'Modelos Mentales Facilitadores Avanzados';
+                analysis = 'Tienes modelos mentales muy facilitadores que promueven el aprendizaje, la colaboración y la innovación. Tu forma de pensar es sistémica y abierta al cambio.';
+            } else if (percentage >= 75) {
+                level = 'Modelos Mentales Facilitadores';
+                analysis = 'Tienes buenos modelos mentales facilitadores con algunas áreas de oportunidad. Tu pensamiento es generalmente abierto y colaborativo.';
+            } else if (percentage >= 60) {
+                level = 'Modelos Mentales Mixtos';
+                analysis = 'Tienes una mezcla de modelos mentales facilitadores y limitantes. Hay oportunidades para desarrollar más perspectivas sistémicas.';
+            } else if (percentage >= 40) {
+                level = 'Modelos Mentales Limitantes';
+                analysis = 'Tienes varios modelos mentales limitantes que pueden estar impidiendo tu aprendizaje y crecimiento. Hay oportunidades significativas de transformación.';
+            } else {
+                level = 'Modelos Mentales Altamente Limitantes';
+                analysis = 'Tienes muchos modelos mentales limitantes que están impidiendo tu desarrollo. La transformación de estos modelos puede abrir nuevas posibilidades de aprendizaje y crecimiento.';
+            }
+
+            document.getElementById('score-display').innerHTML = `
+                <div class="score">
+                    <h3>Puntuación Final: ${totalScore}/${maxScore} (${percentage.toFixed(0)}%)</h3>
+                    <h4>Nivel: ${level}</h4>
+                </div>
+            `;
+
+            document.getElementById('analysis').innerHTML = `
+                <div class="highlight">
+                    <h4>Análisis de tus Modelos Mentales:</h4>
+                    <p>${analysis}</p>
+                </div>
+                <h4>Resumen de tus Respuestas:</h4>
+                ${answers.map(answer => `
+                    <div class="question">
+                        <h5>${answer.question}</h5>
+                        <p><strong>Tu elección:</strong> ${answer.choice}</p>
+                        <p><strong>Puntuación:</strong> ${answer.score}/5</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            selectedOption = null;
+            totalScore = 0;
+            answers = [];
+            
+            document.getElementById('final-results').style.display = 'none';
+            document.getElementById('intro').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

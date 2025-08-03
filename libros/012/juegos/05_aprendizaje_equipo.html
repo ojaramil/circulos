@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje en Equipo - La Quinta Disciplina</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .team-learning-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .learning-panel {
+            background-color: #e2e3e5;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #6c757d;
+        }
+        .learning-panel h3 {
+            color: #6c757d;
+            margin-top: 0;
+            text-align: center;
+        }
+        .scenario {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .scenario h4 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #545b62;
+        }
+        .btn-primary {
+            background-color: #005BAA;
+        }
+        .btn-primary:hover {
+            background-color: #004080;
+        }
+        .dialogue-practice {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .dialogue-practice h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .dialogue-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        .feedback {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+        }
+        .tips li {
+            margin: 5px 0;
+        }
+        .team-assessment {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .assessment-question {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 4px solid #6c757d;
+        }
+        .assessment-question h4 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .assessment-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .assessment-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .assessment-options input[type="radio"] {
+            margin: 0;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>👥 Aprendizaje en Equipo</h1>
+        <p>Desarrolla la capacidad de tu equipo para aprender juntos</p>
+    </div>
+
+    <div class="content">
+        <p>Este ejercicio te ayudará a desarrollar las habilidades de aprendizaje en equipo. El aprendizaje en equipo va más allá de la suma de los aprendizajes individuales; es la capacidad de un grupo para pensar y actuar de manera coordinada y creativa.</p>
+
+        <div class="team-learning-container">
+            <div class="learning-panel">
+                <h3>🎯 Escenarios de Aprendizaje</h3>
+                
+                <div class="scenario">
+                    <h4>Escenario 1: Nuevo Proyecto</h4>
+                    <p>Tu equipo debe desarrollar una nueva funcionalidad para un producto. Hay diferentes opiniones sobre el enfoque a tomar.</p>
+                    <button class="btn" onclick="showScenario(1)">Ver Detalles</button>
+                </div>
+
+                <div class="scenario">
+                    <h4>Escenario 2: Problema Recurrente</h4>
+                    <p>El equipo enfrenta un problema que se repite constantemente. Cada persona tiene su propia teoría sobre la causa.</p>
+                    <button class="btn" onclick="showScenario(2)">Ver Detalles</button>
+                </div>
+
+                <div class="scenario">
+                    <h4>Escenario 3: Cambio Organizacional</h4>
+                    <p>La empresa está implementando un cambio importante. Algunos miembros están entusiasmados, otros preocupados.</p>
+                    <button class="btn" onclick="showScenario(3)">Ver Detalles</button>
+                </div>
+
+                <div class="scenario">
+                    <h4>Escenario 4: Innovación</h4>
+                    <p>El equipo necesita generar ideas innovadoras para un nuevo producto. Hay presión por resultados rápidos.</p>
+                    <button class="btn" onclick="showScenario(4)">Ver Detalles</button>
+                </div>
+            </div>
+
+            <div class="learning-panel">
+                <h3>🗣️ Práctica de Diálogo</h3>
+                <div id="scenario-details">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Selecciona un escenario para comenzar la práctica
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dialogue-practice">
+            <h3>💬 Ejercicio de Diálogo</h3>
+            <p>Practica las habilidades de diálogo respondiendo a las siguientes situaciones:</p>
+            
+            <div class="form-group">
+                <label for="dialogue-response">Si alguien dice: "Siempre hemos hecho las cosas así, ¿por qué cambiar ahora?"</label>
+                <textarea id="dialogue-response" class="dialogue-input" placeholder="Escribe tu respuesta usando técnicas de diálogo..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="dialogue-question">Si alguien dice: "Esta idea nunca funcionará"</label>
+                <textarea id="dialogue-question" class="dialogue-input" placeholder="Escribe una pregunta que fomente la exploración..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="evaluateDialogue()">Evaluar Respuestas</button>
+        </div>
+
+        <div class="team-assessment">
+            <h3>📊 Evaluación de tu Equipo</h3>
+            <p>Evalúa las prácticas de aprendizaje en tu equipo actual:</p>
+
+            <div class="assessment-question">
+                <h4>1. ¿Con qué frecuencia tu equipo tiene conversaciones profundas sobre problemas complejos?</h4>
+                <div class="assessment-options">
+                    <label><input type="radio" name="q1" value="1"> Raramente</label>
+                    <label><input type="radio" name="q1" value="2"> Ocasionalmente</label>
+                    <label><input type="radio" name="q1" value="3"> Regularmente</label>
+                    <label><input type="radio" name="q1" value="4"> Frecuentemente</label>
+                    <label><input type="radio" name="q1" value="5"> Siempre</label>
+                </div>
+            </div>
+
+            <div class="assessment-question">
+                <h4>2. ¿Qué tan bien escuchan los miembros del equipo las perspectivas de otros?</h4>
+                <div class="assessment-options">
+                    <label><input type="radio" name="q2" value="1"> Muy mal</label>
+                    <label><input type="radio" name="q2" value="2"> Mal</label>
+                    <label><input type="radio" name="q2" value="3"> Regular</label>
+                    <label><input type="radio" name="q2" value="4"> Bien</label>
+                    <label><input type="radio" name="q2" value="5"> Excelente</label>
+                </div>
+            </div>
+
+            <div class="assessment-question">
+                <h4>3. ¿Con qué frecuencia el equipo cuestiona sus supuestos?</h4>
+                <div class="assessment-options">
+                    <label><input type="radio" name="q3" value="1"> Nunca</label>
+                    <label><input type="radio" name="q3" value="2"> Raramente</label>
+                    <label><input type="radio" name="q3" value="3"> A veces</label>
+                    <label><input type="radio" name="q3" value="4"> Frecuentemente</label>
+                    <label><input type="radio" name="q3" value="5"> Siempre</label>
+                </div>
+            </div>
+
+            <div class="assessment-question">
+                <h4>4. ¿Qué tan efectivo es tu equipo para resolver problemas complejos juntos?</h4>
+                <div class="assessment-options">
+                    <label><input type="radio" name="q4" value="1"> Muy inefectivo</label>
+                    <label><input type="radio" name="q4" value="2"> Inefectivo</label>
+                    <label><input type="radio" name="q4" value="3"> Neutral</label>
+                    <label><input type="radio" name="q4" value="4"> Efectivo</label>
+                    <label><input type="radio" name="q4" value="5"> Muy efectivo</label>
+                </div>
+            </div>
+
+            <div class="assessment-question">
+                <h4>5. ¿Qué tan bien comparte el equipo sus aprendizajes y conocimientos?</h4>
+                <div class="assessment-options">
+                    <label><input type="radio" name="q5" value="1"> Muy mal</label>
+                    <label><input type="radio" name="q5" value="2"> Mal</label>
+                    <label><input type="radio" name="q5" value="3"> Regular</label>
+                    <label><input type="radio" name="q5" value="4"> Bien</label>
+                    <label><input type="radio" name="q5" value="5"> Excelente</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="calculateTeamScore()">Calcular Puntuación</button>
+        </div>
+
+        <div class="tips">
+            <h3>💡 Prácticas para el Aprendizaje en Equipo</h3>
+            <ul>
+                <li><strong>Suspender juicios:</strong> Temporalmente dejar de lado opiniones para explorar nuevas perspectivas</li>
+                <li><strong>Escuchar profundamente:</strong> Escuchar no solo las palabras, sino las emociones y valores detrás de ellas</li>
+                <li><strong>Identificar supuestos:</strong> Hacer explícitos los supuestos que guían el pensamiento</li>
+                <li><strong>Inquirir:</strong> Hacer preguntas genuinas que busquen entender mejor</li>
+                <li><strong>Crear espacios seguros:</strong> Fomentar un ambiente donde las personas se sientan seguras para ser vulnerables</li>
+                <li><strong>Reflexionar juntos:</strong> Tomar tiempo para reflexionar sobre el proceso de aprendizaje</li>
+            </ul>
+        </div>
+
+        <div class="feedback" id="feedback" style="display: none;">
+            <h3>🎯 Evaluación de tu Práctica</h3>
+            <div id="feedback-content"></div>
+        </div>
+
+        <div class="results" id="results" style="display: none;">
+            <h3>📊 Resultados de la Evaluación</h3>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = {
+            1: {
+                title: "Nuevo Proyecto",
+                description: "Tu equipo debe desarrollar una nueva funcionalidad para un producto. Hay diferentes opiniones sobre el enfoque a tomar.",
+                details: `
+                    <h4>Situación:</h4>
+                    <p>El equipo está dividido sobre cómo implementar una nueva característica. Algunos prefieren un enfoque rápido y simple, otros quieren una solución más robusta pero compleja.</p>
+                    
+                    <h4>Práctica de Diálogo:</h4>
+                    <ul>
+                        <li>¿Qué problemas reales estamos tratando de resolver?</li>
+                        <li>¿Cuáles son los supuestos detrás de cada enfoque?</li>
+                        <li>¿Qué podríamos aprender de cada perspectiva?</li>
+                        <li>¿Cómo podemos integrar lo mejor de ambas opciones?</li>
+                    </ul>
+                `
+            },
+            2: {
+                title: "Problema Recurrente",
+                description: "El equipo enfrenta un problema que se repite constantemente. Cada persona tiene su propia teoría sobre la causa.",
+                details: `
+                    <h4>Situación:</h4>
+                    <p>El proyecto siempre se retrasa en la fase de testing. Cada miembro del equipo tiene una explicación diferente: falta de tiempo, especificaciones poco claras, herramientas inadecuadas.</p>
+                    
+                    <h4>Práctica de Diálogo:</h4>
+                    <ul>
+                        <li>¿Qué patrones observamos en estos retrasos?</li>
+                        <li>¿Cómo contribuimos cada uno a esta situación?</li>
+                        <li>¿Qué supuestos tenemos sobre el proceso de testing?</li>
+                        <li>¿Qué podríamos hacer diferente colectivamente?</li>
+                    </ul>
+                `
+            },
+            3: {
+                title: "Cambio Organizacional",
+                description: "La empresa está implementando un cambio importante. Algunos miembros están entusiasmados, otros preocupados.",
+                details: `
+                    <h4>Situación:</h4>
+                    <p>La empresa está adoptando una nueva metodología de trabajo. Algunos ven oportunidades de mejora, otros temen perder su forma de trabajar actual.</p>
+                    
+                    <h4>Práctica de Diálogo:</h4>
+                    <ul>
+                        <li>¿Qué esperanzas y temores tenemos sobre este cambio?</li>
+                        <li>¿Qué valores y principios queremos preservar?</li>
+                        <li>¿Cómo podemos apoyarnos mutuamente en esta transición?</li>
+                        <li>¿Qué aprendizajes podemos extraer de experiencias pasadas?</li>
+                    </ul>
+                `
+            },
+            4: {
+                title: "Innovación",
+                description: "El equipo necesita generar ideas innovadoras para un nuevo producto. Hay presión por resultados rápidos.",
+                details: `
+                    <h4>Situación:</h4>
+                    <p>El equipo debe crear algo completamente nuevo en poco tiempo. La presión por resultados rápidos está limitando la creatividad y generando estrés.</p>
+                    
+                    <h4>Práctica de Diálogo:</h4>
+                    <ul>
+                        <li>¿Qué posibilidades reales tenemos dentro de nuestras limitaciones?</li>
+                        <li>¿Cómo podemos crear un espacio seguro para ideas "locas"?</li>
+                        <li>¿Qué podemos aprender de fracasos pasados?</li>
+                        <li>¿Cómo podemos apoyar la creatividad de cada miembro?</li>
+                    </ul>
+                `
+            }
+        };
+
+        function showScenario(scenarioId) {
+            const scenario = scenarios[scenarioId];
+            const detailsDiv = document.getElementById('scenario-details');
+            detailsDiv.innerHTML = scenario.details;
+        }
+
+        function evaluateDialogue() {
+            const response = document.getElementById('dialogue-response').value;
+            const question = document.getElementById('dialogue-question').value;
+            
+            let feedback = '<ul>';
+            let score = 0;
+
+            // Evaluar respuesta
+            if (response.toLowerCase().includes('pregunta') || response.toLowerCase().includes('explorar') || response.toLowerCase().includes('entender')) {
+                feedback += '<li>✅ <strong>Respuesta 1:</strong> Buena práctica de diálogo - buscas entender en lugar de defender</li>';
+                score += 25;
+            } else {
+                feedback += '<li>⚠️ <strong>Respuesta 1:</strong> Considera hacer preguntas que exploren la perspectiva de la otra persona</li>';
+            }
+
+            // Evaluar pregunta
+            if (question.toLowerCase().includes('qué') || question.toLowerCase().includes('cómo') || question.toLowerCase().includes('por qué')) {
+                feedback += '<li>✅ <strong>Respuesta 2:</strong> Excelente pregunta abierta que fomenta la exploración</li>';
+                score += 25;
+            } else {
+                feedback += '<li>⚠️ <strong>Respuesta 2:</strong> Intenta hacer preguntas que comiencen con qué, cómo o por qué</li>';
+            }
+
+            feedback += '</ul>';
+
+            let overallFeedback = '';
+            if (score >= 40) {
+                overallFeedback = '<p style="color: #155724; font-weight: bold;">🎉 ¡Excelente! Estás practicando buenas técnicas de diálogo.</p>';
+            } else if (score >= 20) {
+                overallFeedback = '<p style="color: #856404; font-weight: bold;">👍 Buen intento. Continúa practicando las técnicas de diálogo.</p>';
+            } else {
+                overallFeedback = '<p style="color: #721c24; font-weight: bold;">📝 Necesitas más práctica. Revisa las técnicas de diálogo sugeridas.</p>';
+            }
+
+            document.getElementById('feedback-content').innerHTML = overallFeedback + feedback;
+            document.getElementById('feedback').style.display = 'block';
+        }
+
+        function calculateTeamScore() {
+            let totalScore = 0;
+            let answeredQuestions = 0;
+
+            for (let i = 1; i <= 5; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    totalScore += parseInt(selected.value);
+                    answeredQuestions++;
+                }
+            }
+
+            if (answeredQuestions < 5) {
+                alert('Por favor, responde todas las preguntas antes de calcular la puntuación.');
+                return;
+            }
+
+            const averageScore = totalScore / 5;
+            let level = '';
+            let recommendations = '';
+
+            if (averageScore >= 4.5) {
+                level = 'Excelente';
+                recommendations = 'Tu equipo tiene prácticas sólidas de aprendizaje. Continúa fortaleciendo estas habilidades y comparte tu experiencia con otros equipos.';
+            } else if (averageScore >= 3.5) {
+                level = 'Bueno';
+                recommendations = 'Tu equipo tiene una buena base. Enfócate en mejorar las áreas más débiles y practicar más el diálogo.';
+            } else if (averageScore >= 2.5) {
+                level = 'Regular';
+                recommendations = 'Hay oportunidades significativas de mejora. Comienza con prácticas básicas de diálogo y escucha activa.';
+            } else {
+                level = 'Necesita Mejora';
+                recommendations = 'Tu equipo necesita desarrollar fundamentos básicos de aprendizaje en equipo. Considera capacitación específica.';
+            }
+
+            const resultsContent = `
+                <p><strong>Puntuación Promedio:</strong> ${averageScore.toFixed(1)}/5.0</p>
+                <p><strong>Nivel:</strong> ${level}</p>
+                <h4>Recomendaciones:</h4>
+                <p>${recommendations}</p>
+                <h4>Próximos Pasos:</h4>
+                <ul>
+                    <li>Programa sesiones regulares de diálogo</li>
+                    <li>Practica técnicas de escucha activa</li>
+                    <li>Desarrolla rutinas de reflexión en equipo</li>
+                    <li>Celebra los aprendizajes y éxitos</li>
+                </ul>
+            `;
+
+            document.getElementById('results-content').innerHTML = resultsContent;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Sistemas - La Quinta Disciplina</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .simulation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .system-panel {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+        }
+        .system-panel h3 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+        .variable {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .variable label {
+            font-weight: bold;
+            color: #333;
+        }
+        .variable input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .feedback {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .principle-highlight {
+            background-color: #e7f3ff;
+            border-left: 4px solid #005BAA;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Simulador de Pensamiento Sistémico</h1>
+        <p>Experimenta con los principios de sistemas y descubre cómo las acciones tienen consecuencias inesperadas</p>
+    </div>
+
+    <div class="content">
+        <h2>El Sistema de Productividad de la Empresa</h2>
+        <p>En este simulador, explorarás cómo las decisiones aparentemente simples pueden tener efectos complejos en un sistema organizacional. Ajusta las variables y observa cómo se comporta el sistema.</p>
+
+        <div class="simulation-container">
+            <div class="system-panel">
+                <h3>🎯 Variables de Entrada</h3>
+                <div class="variable">
+                    <label>Presión por Resultados:</label>
+                    <input type="range" id="pressure" min="0" max="10" value="5" oninput="updateSimulation()">
+                    <span id="pressureValue">5</span>
+                </div>
+                <div class="variable">
+                    <label>Recursos Disponibles:</label>
+                    <input type="range" id="resources" min="0" max="10" value="7" oninput="updateSimulation()">
+                    <span id="resourcesValue">7</span>
+                </div>
+                <div class="variable">
+                    <label>Moral del Equipo:</label>
+                    <input type="range" id="morale" min="0" max="10" value="6" oninput="updateSimulation()">
+                    <span id="moraleValue">6</span>
+                </div>
+                <div class="variable">
+                    <label>Tiempo de Planificación:</label>
+                    <input type="range" id="planning" min="0" max="10" value="4" oninput="updateSimulation()">
+                    <span id="planningValue">4</span>
+                </div>
+            </div>
+
+            <div class="system-panel">
+                <h3>📊 Resultados del Sistema</h3>
+                <div class="variable">
+                    <label>Productividad Inmediata:</label>
+                    <span id="immediateProductivity">0</span>
+                </div>
+                <div class="variable">
+                    <label>Calidad del Trabajo:</label>
+                    <span id="quality">0</span>
+                </div>
+                <div class="variable">
+                    <label>Rotación de Personal:</label>
+                    <span id="turnover">0</span>
+                </div>
+                <div class="variable">
+                    <label>Productividad a Largo Plazo:</label>
+                    <span id="longTermProductivity">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="resetSimulation()">🔄 Reiniciar</button>
+            <button class="btn" onclick="showPreset('traditional')">🏢 Enfoque Tradicional</button>
+            <button class="btn" onclick="showPreset('systems')">🧠 Enfoque Sistémico</button>
+        </div>
+
+        <div id="feedback" class="feedback" style="display: none;">
+            <h3>💡 Análisis del Sistema</h3>
+            <div id="feedbackContent"></div>
+        </div>
+
+        <div class="principle-highlight">
+            <h3>🔍 Principios de Sistemas que Estás Observando:</h3>
+            <ul>
+                <li><strong>Causalidad Circular:</strong> Las variables se influyen mutuamente</li>
+                <li><strong>Retrasos:</strong> Los efectos no son inmediatos</li>
+                <li><strong>Efectos No Lineales:</strong> Pequeños cambios pueden tener grandes efectos</li>
+                <li><strong>Estructuras Emergentes:</strong> El comportamiento del sistema es más que la suma de sus partes</li>
+            </ul>
+        </div>
+
+        <div class="results">
+            <h3>🎯 Lecciones Clave del Pensamiento Sistémico:</h3>
+            <ol>
+                <li><strong>Los problemas de hoy vienen de las soluciones de ayer:</strong> Las mejoras a corto plazo pueden crear problemas a largo plazo</li>
+                <li><strong>Cuanto más se presiona, más presiona el sistema:</strong> Las soluciones rápidas pueden empeorar la situación</li>
+                <li><strong>La conducta mejora antes de empeorar:</strong> Los sistemas pueden mostrar mejoras temporales antes de deteriorarse</li>
+                <li><strong>La causa y el efecto no están próximos en el tiempo y el espacio:</strong> Los efectos de nuestras acciones pueden aparecer en lugares y momentos inesperados</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function updateSimulation() {
+            // Get input values
+            const pressure = parseInt(document.getElementById('pressure').value);
+            const resources = parseInt(document.getElementById('resources').value);
+            const morale = parseInt(document.getElementById('morale').value);
+            const planning = parseInt(document.getElementById('planning').value);
+
+            // Update display values
+            document.getElementById('pressureValue').textContent = pressure;
+            document.getElementById('resourcesValue').textContent = resources;
+            document.getElementById('moraleValue').textContent = morale;
+            document.getElementById('planningValue').textContent = planning;
+
+            // Calculate system outputs
+            const immediateProductivity = Math.min(10, (pressure * 0.4) + (resources * 0.3) + (morale * 0.2) + (planning * 0.1));
+            const quality = Math.max(0, (planning * 0.4) + (resources * 0.3) + (morale * 0.2) - (pressure * 0.1));
+            const turnover = Math.min(10, (pressure * 0.5) - (morale * 0.3) - (resources * 0.2));
+            const longTermProductivity = Math.max(0, (quality * 0.4) + (morale * 0.3) + (planning * 0.2) - (turnover * 0.1));
+
+            // Update results
+            document.getElementById('immediateProductivity').textContent = immediateProductivity.toFixed(1);
+            document.getElementById('quality').textContent = quality.toFixed(1);
+            document.getElementById('turnover').textContent = turnover.toFixed(1);
+            document.getElementById('longTermProductivity').textContent = longTermProductivity.toFixed(1);
+
+            // Generate feedback
+            generateFeedback(pressure, resources, morale, planning, immediateProductivity, quality, turnover, longTermProductivity);
+        }
+
+        function generateFeedback(pressure, resources, morale, planning, immediate, quality, turnover, longTerm) {
+            const feedback = document.getElementById('feedback');
+            const content = document.getElementById('feedbackContent');
+            
+            let analysis = '<h4>📈 Análisis del Comportamiento del Sistema:</h4>';
+            
+            // Analyze pressure effects
+            if (pressure > 7) {
+                analysis += '<p>⚠️ <strong>Alta presión:</strong> Aunque aumenta la productividad inmediata, está afectando la calidad y aumentando la rotación de personal.</p>';
+            } else if (pressure < 3) {
+                analysis += '<p>😴 <strong>Baja presión:</strong> La productividad inmediata es baja, pero la calidad y el ambiente laboral son mejores.</p>';
+            }
+
+            // Analyze resources
+            if (resources < 4) {
+                analysis += '<p>🔧 <strong>Recursos limitados:</strong> Está limitando tanto la productividad como la calidad del trabajo.</p>';
+            }
+
+            // Analyze morale
+            if (morale < 4) {
+                analysis += '<p>😞 <strong>Moral baja:</strong> Está afectando negativamente la calidad y aumentando la rotación.</p>';
+            } else if (morale > 7) {
+                analysis += '<p>😊 <strong>Moral alta:</strong> Contribuye positivamente a la calidad y reduce la rotación.</p>';
+            }
+
+            // Analyze planning
+            if (planning < 3) {
+                analysis += '<p>📝 <strong>Poca planificación:</strong> Está afectando la calidad del trabajo y la productividad a largo plazo.</p>';
+            }
+
+            // System behavior insights
+            if (immediate > longTerm) {
+                analysis += '<p>🔄 <strong>Patrón de mejora temporal:</strong> El sistema muestra mejoras inmediatas que pueden no ser sostenibles.</p>';
+            }
+
+            if (turnover > 6) {
+                analysis += '<p>🚨 <strong>Alto riesgo de rotación:</strong> El sistema está perdiendo talento, lo que afectará la productividad futura.</p>';
+            }
+
+            analysis += '<h4>💡 Recomendaciones Sistémicas:</h4>';
+            analysis += '<ul>';
+            analysis += '<li>Equilibra la presión con el apoyo y recursos</li>';
+            analysis += '<li>Invierte en la moral del equipo para resultados sostenibles</li>';
+            analysis += '<li>Dedica tiempo a la planificación para mejorar la calidad</li>';
+            analysis += '<li>Considera los efectos a largo plazo de las decisiones</li>';
+            analysis += '</ul>';
+
+            content.innerHTML = analysis;
+            feedback.style.display = 'block';
+        }
+
+        function resetSimulation() {
+            document.getElementById('pressure').value = 5;
+            document.getElementById('resources').value = 7;
+            document.getElementById('morale').value = 6;
+            document.getElementById('planning').value = 4;
+            updateSimulation();
+        }
+
+        function showPreset(type) {
+            if (type === 'traditional') {
+                // Traditional management approach: high pressure, low planning
+                document.getElementById('pressure').value = 8;
+                document.getElementById('resources').value = 6;
+                document.getElementById('morale').value = 4;
+                document.getElementById('planning').value = 2;
+            } else if (type === 'systems') {
+                // Systems thinking approach: balanced, with focus on long-term
+                document.getElementById('pressure').value = 5;
+                document.getElementById('resources').value = 8;
+                document.getElementById('morale').value = 8;
+                document.getElementById('planning').value = 7;
+            }
+            updateSimulation();
+        }
+
+        // Initialize simulation
+        updateSimulation();
+    </script>
+</body>
+</html> 

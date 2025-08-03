@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Acción LSC - El Líder que no Tenía Cargo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+            border-bottom: 3px solid #005BAA;
+            padding-bottom: 10px;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .content h1 {
+            color: #005BAA;
+            border-bottom: 3px solid #005BAA;
+            padding-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            color: #0077CC;
+        }
+        textarea {
+            width: 100%;
+            min-height: 60px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 1em;
+        }
+        button {
+            background: #005BAA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0077CC;
+        }
+        .result {
+            margin-top: 30px;
+            background: #e7f3ff;
+            border-left: 4px solid #005BAA;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Plan de Acción LSC</h1>
+        <p>Define tus próximos pasos como líder sin cargo</p>
+    </div>
+    <div class="content">
+        <form id="planForm">
+            <label for="objetivo">¿Cuál es tu objetivo principal de liderazgo?</label>
+            <textarea id="objetivo" required></textarea>
+            <label for="acciones">¿Qué acciones concretas realizarás esta semana?</label>
+            <textarea id="acciones" required></textarea>
+            <label for="obstaculos">¿Qué obstáculos prevés y cómo los superarás?</label>
+            <textarea id="obstaculos" required></textarea>
+            <button type="submit">Generar mi plan</button>
+        </form>
+        <div class="result" id="planResult" style="display:none;"></div>
+    </div>
+    <script>
+        document.getElementById('planForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const objetivo = document.getElementById('objetivo').value;
+            const acciones = document.getElementById('acciones').value;
+            const obstaculos = document.getElementById('obstaculos').value;
+            const resultDiv = document.getElementById('planResult');
+            resultDiv.innerHTML = `<h2>Tu Plan de Acción LSC</h2><ul><li><strong>Objetivo:</strong> ${objetivo}</li><li><strong>Acciones:</strong> ${acciones}</li><li><strong>Obstáculos y soluciones:</strong> ${obstaculos}</li></ul><p><em>¡Recuerda revisar tu plan cada día y ajustar según tus aprendizajes!</em></p>`;
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html> 

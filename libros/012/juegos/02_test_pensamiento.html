@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Pensamiento - La Quinta Disciplina</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-container {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #005BAA;
+        }
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background-color: white;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #f0f8ff;
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #005BAA, #0077CC);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .thinking-analysis {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .thinking-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #005BAA;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Test: Tu Pensamiento</h1>
+        <p>Descubre qué tan sistémico es tu pensamiento según los principios de La Quinta Disciplina</p>
+    </div>
+
+    <div class="content">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div id="questionContainer" class="question-container">
+            <div class="question" id="questionText">Cuando enfrentas un problema en tu organización, ¿qué haces primero?</div>
+            <div class="options" id="optionsContainer">
+                <div class="option" data-value="4">A) Analizo las causas raíz y las interconexiones</div>
+                <div class="option" data-value="2">B) Busco una solución rápida para resolver el síntoma</div>
+                <div class="option" data-value="1">C) Culpo a las personas involucradas</div>
+                <div class="option" data-value="0">D) Ignoro el problema hasta que se resuelva solo</div>
+            </div>
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente</button>
+        </div>
+
+        <div id="resultContainer" class="result">
+            <h2>🎯 Análisis de Tu Pensamiento</h2>
+            <div class="thinking-score" id="finalScore"></div>
+            <div class="thinking-analysis" id="thinkingAnalysis"></div>
+            <button class="btn" onclick="restartQuiz()">Volver a Intentar</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Cuando enfrentas un problema en tu organización, ¿qué haces primero?",
+                principle: "Causas Raíz vs Síntomas",
+                options: [
+                    { text: "Analizo las causas raíz y las interconexiones", value: 4 },
+                    { text: "Busco una solución rápida para resolver el síntoma", value: 2 },
+                    { text: "Culpo a las personas involucradas", value: 1 },
+                    { text: "Ignoro el problema hasta que se resuelva solo", value: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo ves las relaciones entre diferentes departamentos?",
+                principle: "Pensamiento Holístico",
+                options: [
+                    { text: "Como un sistema interconectado donde las acciones de uno afectan a otros", value: 4 },
+                    { text: "Como unidades independientes que deben optimizarse por separado", value: 2 },
+                    { text: "Como competidores que deben ser controlados", value: 1 },
+                    { text: "Como entidades sin relación entre sí", value: 0 }
+                ]
+            },
+            {
+                question: "Cuando una solución no funciona como esperabas, ¿qué piensas?",
+                principle: "Efectos No Intencionados",
+                options: [
+                    { text: "Analizo los efectos secundarios y las consecuencias no previstas", value: 4 },
+                    { text: "Busco otra solución rápida", value: 2 },
+                    { text: "Me frustro y abandono el intento", value: 1 },
+                    { text: "Culpo a otros por el fracaso", value: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo abordas los cambios en tu organización?",
+                principle: "Cambio Sistémico",
+                options: [
+                    { text: "Considero los efectos a largo plazo y las interconexiones", value: 4 },
+                    { text: "Implemento cambios graduales y evalúo resultados", value: 3 },
+                    { text: "Hago cambios rápidos para resolver problemas inmediatos", value: 1 },
+                    { text: "Evito los cambios por miedo a las consecuencias", value: 0 }
+                ]
+            },
+            {
+                question: "¿Qué piensas sobre los patrones de comportamiento organizacional?",
+                principle: "Patrones y Estructuras",
+                options: [
+                    { text: "Los patrones revelan estructuras subyacentes que deben entenderse", value: 4 },
+                    { text: "Los patrones son interesantes pero no muy útiles", value: 2 },
+                    { text: "Los patrones son coincidencias sin importancia", value: 1 },
+                    { text: "No presto atención a los patrones", value: 0 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+        let selectedOption = null;
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${String.fromCharCode(65 + index)}) ${option.text}`;
+                optionDiv.dataset.value = option.value;
+                optionDiv.onclick = () => selectOption(optionDiv);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('nextBtn').disabled = true;
+            updateProgress();
+        }
+
+        function selectOption(optionElement) {
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            optionElement.classList.add('selected');
+            selectedOption = parseInt(optionElement.dataset.value);
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (selectedOption !== null) {
+                totalScore += selectedOption;
+                currentQuestion++;
+                
+                if (currentQuestion < questions.length) {
+                    selectedOption = null;
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            const maxScore = questions.length * 4;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            document.getElementById('finalScore').textContent = `${Math.round(percentage)}% - Pensamiento Sistémico`;
+            
+            let analysis = '';
+            if (percentage >= 80) {
+                analysis = `
+                    <h3>🌟 ¡Excelente! Eres un Pensador Sistémico Avanzado</h3>
+                    <p>Tu capacidad de pensamiento sistémico es excepcional. Ya entiendes las interconexiones, 
+                    las causas raíz y los efectos no intencionados. Puedes ver el todo, no solo las partes.</p>
+                    <p><strong>Próximo paso:</strong> Comparte tu sabiduría sistémica con otros y ayuda a tu organización a desarrollar esta capacidad.</p>
+                `;
+            } else if (percentage >= 60) {
+                analysis = `
+                    <h3>🚀 ¡Muy bien! Tienes Buen Pensamiento Sistémico</h3>
+                    <p>Tu pensamiento sistémico está bien desarrollado. Entiendes muchos de los principios 
+                    y puedes aplicarlos en situaciones complejas.</p>
+                    <p><strong>Próximo paso:</strong> Profundiza en los arquetipos sistémicos y las herramientas de modelado.</p>
+                `;
+            } else if (percentage >= 40) {
+                analysis = `
+                    <h3>💡 ¡Buen potencial! Tu Pensamiento Sistémico Está Despertando</h3>
+                    <p>Tienes el potencial para desarrollar un pensamiento sistémico sólido. 
+                    Ya reconoces algunos patrones y relaciones.</p>
+                    <p><strong>Próximo paso:</strong> Practica identificando causas raíz y efectos secundarios en situaciones cotidianas.</p>
+                `;
+            } else {
+                analysis = `
+                    <h3>🌱 ¡Tiempo de Despertar! Tu Pensador Sistémico Te Espera</h3>
+                    <p>Tu pensador sistémico está esperando ser despertado. No te preocupes, todos tenemos 
+                    esa capacidad dentro. Como Peter Senge enseña, es una disciplina que se puede aprender.</p>
+                    <p><strong>Próximo paso:</strong> Lee las lecciones de este curso con mente abierta y comienza a ver el mundo de manera sistémica.</p>
+                `;
+            }
+            
+            document.getElementById('thinkingAnalysis').innerHTML = analysis;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            totalScore = 0;
+            selectedOption = null;
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            showQuestion();
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html> 

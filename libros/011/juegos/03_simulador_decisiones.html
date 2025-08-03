@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Decisiones LSC - El Líder que no Tenía Cargo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .scenario {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .options {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #e7f3ff;
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        .result {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .score {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .next-btn {
+            background-color: #005BAA;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .next-btn:hover {
+            background-color: #004085;
+        }
+        .next-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .highlight {
+            background-color: #e7f3ff;
+            border-left: 4px solid #005BAA;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎲 Simulador de Decisiones LSC</h1>
+        <p>Pon a prueba tu liderazgo sin cargo en situaciones reales</p>
+    </div>
+
+    <div class="content">
+        <div id="intro">
+            <h2>¿Qué es el Simulador de Decisiones LSC?</h2>
+            <p>Este simulador te presenta situaciones reales que enfrentan los líderes sin cargo en el día a día. Cada decisión que tomes te ayudará a desarrollar los Cuatro Poderes Naturales y a entender mejor cómo aplicar los principios LSC.</p>
+            
+            <div class="highlight">
+                <strong>Instrucciones:</strong><br>
+                • Lee cada escenario cuidadosamente<br>
+                • Selecciona la opción que mejor refleje el liderazgo sin cargo<br>
+                • Recibirás retroalimentación sobre tu decisión<br>
+                • Al final, obtendrás un análisis de tu estilo de liderazgo
+            </div>
+            
+            <button class="next-btn" onclick="startSimulation()">Comenzar Simulación</button>
+        </div>
+
+        <div id="simulation" style="display: none;">
+            <div id="scenario-container"></div>
+            <div id="result-container"></div>
+            <button id="next-btn" class="next-btn" onclick="nextScenario()" style="display: none;">Siguiente Escenario</button>
+        </div>
+
+        <div id="final-results" style="display: none;">
+            <h2>🎯 Resultados de tu Simulación LSC</h2>
+            <div id="score-display"></div>
+            <div id="analysis"></div>
+            <button class="next-btn" onclick="restartSimulation()">Repetir Simulación</button>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                id: 1,
+                title: "Crisis en el Proyecto",
+                description: "Tu equipo está trabajando en un proyecto importante con una fecha límite próxima. El líder del proyecto está ausente por enfermedad y hay confusión sobre las responsabilidades. Algunos miembros del equipo están estresados y la calidad del trabajo está decayendo.",
+                options: [
+                    {
+                        text: "Esperar a que el líder regrese y maneje la situación",
+                        score: 1,
+                        feedback: "Esta opción refleja una mentalidad de dependencia. Los líderes LSC toman iniciativa sin esperar autoridad formal."
+                    },
+                    {
+                        text: "Organizar una reunión de equipo para aclarar responsabilidades y motivar al grupo",
+                        score: 5,
+                        feedback: "¡Excelente! Esta es una acción típica de liderazgo sin cargo. Tomas iniciativa, organizas al equipo y mantienes la moral alta."
+                    },
+                    {
+                        text: "Quejarte con otros sobre la falta de liderazgo",
+                        score: 0,
+                        feedback: "Esta opción es contraproducente. Los líderes LSC buscan soluciones, no culpan a otros."
+                    },
+                    {
+                        text: "Enfocarte solo en tu parte del trabajo y dejar que otros se preocupen",
+                        score: 2,
+                        feedback: "Aunque es responsable, no aprovecha la oportunidad de liderazgo. Los líderes LSC piensan en el equipo completo."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Nuevo Compañero de Trabajo",
+                description: "Se ha unido un nuevo miembro al equipo. Es su primer día y parece nervioso. Los demás miembros están ocupados con sus tareas y nadie se ha acercado a ayudarlo a integrarse.",
+                options: [
+                    {
+                        text: "Esperar a que alguien más lo ayude",
+                        score: 1,
+                        feedback: "Esta opción pierde una oportunidad de liderazgo. Los líderes LSC ven necesidades y actúan."
+                    },
+                    {
+                        text: "Tomar la iniciativa de presentarte, mostrarle las instalaciones y presentarlo al equipo",
+                        score: 5,
+                        feedback: "¡Perfecto! Esta es una acción clásica de liderazgo sin cargo. Demuestras empatía, iniciativa y construyes relaciones."
+                    },
+                    {
+                        text: "Ignorarlo hasta que se adapte por sí mismo",
+                        score: 0,
+                        feedback: "Esta opción va contra los principios LSC. Los líderes sin cargo ayudan a otros a crecer."
+                    },
+                    {
+                        text: "Mencionar al jefe que debería asignar a alguien para ayudarlo",
+                        score: 2,
+                        feedback: "Aunque es considerada, delega la responsabilidad. Los líderes LSC actúan directamente."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Proceso Ineficiente",
+                description: "Has notado que un proceso en tu departamento es ineficiente y está causando retrasos. El proceso ha estado así por años y todos se quejan, pero nadie hace nada al respecto.",
+                options: [
+                    {
+                        text: "Quejarte junto con los demás sobre lo malo que es el proceso",
+                        score: 0,
+                        feedback: "Esta opción solo perpetúa el problema. Los líderes LSC buscan soluciones, no se unen a las quejas."
+                    },
+                    {
+                        text: "Analizar el proceso, documentar los problemas y proponer mejoras específicas",
+                        score: 5,
+                        feedback: "¡Excelente! Esta es la mentalidad de un líder sin cargo. Tomas responsabilidad, analizas y propones soluciones."
+                    },
+                    {
+                        text: "Esperar a que la dirección se dé cuenta del problema",
+                        score: 1,
+                        feedback: "Esta opción refleja pasividad. Los líderes LSC no esperan que otros resuelvan problemas que pueden abordar."
+                    },
+                    {
+                        text: "Hacer solo tu parte del proceso lo mejor posible",
+                        score: 3,
+                        feedback: "Es responsable, pero no aprovecha la oportunidad de liderar el cambio y mejorar el sistema."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Conflicto en el Equipo",
+                description: "Hay tensión entre dos miembros del equipo que están afectando la colaboración y la moral del grupo. El conflicto está impactando la productividad y creando un ambiente negativo.",
+                options: [
+                    {
+                        text: "Evitar el conflicto y esperar a que se resuelva solo",
+                        score: 1,
+                        feedback: "Esta opción permite que el problema empeore. Los líderes LSC abordan los problemas directamente."
+                    },
+                    {
+                        text: "Tomar la iniciativa de mediar, escuchar a ambas partes y facilitar una conversación constructiva",
+                        score: 5,
+                        feedback: "¡Perfecto! Esta es una acción de liderazgo sin cargo. Tomas responsabilidad por el bienestar del equipo."
+                    },
+                    {
+                        text: "Tomar partido por uno de los miembros",
+                        score: 0,
+                        feedback: "Esta opción empeora el conflicto. Los líderes LSC buscan soluciones que beneficien a todos."
+                    },
+                    {
+                        text: "Reportar el problema al jefe para que lo maneje",
+                        score: 2,
+                        feedback: "Aunque es apropiado en algunos casos, los líderes LSC intentan resolver problemas directamente primero."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Oportunidad de Mejora",
+                description: "Has identificado una oportunidad para mejorar significativamente un producto o servicio de la empresa. La mejora podría beneficiar a los clientes y aumentar la eficiencia, pero requiere tiempo y esfuerzo adicional.",
+                options: [
+                    {
+                        text: "Mantener la idea para ti mismo por si acaso no funciona",
+                        score: 1,
+                        feedback: "Esta opción desperdicia una oportunidad de contribuir. Los líderes LSC comparten ideas valiosas."
+                    },
+                    {
+                        text: "Desarrollar la idea, crear un plan detallado y presentarlo a la dirección",
+                        score: 5,
+                        feedback: "¡Excelente! Esta es la mentalidad de un líder sin cargo. Tomas iniciativa, desarrollas ideas y contribuyes al crecimiento."
+                    },
+                    {
+                        text: "Esperar a que alguien más tenga la misma idea",
+                        score: 0,
+                        feedback: "Esta opción refleja falta de iniciativa. Los líderes LSC actúan cuando ven oportunidades."
+                    },
+                    {
+                        text: "Mencionar la idea casualmente sin desarrollarla",
+                        score: 2,
+                        feedback: "Aunque comparte la idea, no aprovecha completamente la oportunidad de liderar el cambio."
+                    }
+                ]
+            }
+        ];
+
+        let currentScenario = 0;
+        let selectedOption = null;
+        let totalScore = 0;
+        let answers = [];
+
+        function startSimulation() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('simulation').style.display = 'block';
+            showScenario();
+        }
+
+        function showScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <h3>${scenario.title}</h3>
+                    <p>${scenario.description}</p>
+                </div>
+                <h4>¿Qué harías en esta situación?</h4>
+                <div class="options">
+                    ${scenario.options.map((option, index) => `
+                        <div class="option" onclick="selectOption(${index})">
+                            ${option.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectOption(optionIndex) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select new option
+            event.target.classList.add('selected');
+            selectedOption = optionIndex;
+            
+            // Show next button
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextScenario() {
+            if (selectedOption === null) return;
+
+            const scenario = scenarios[currentScenario];
+            const option = scenario.options[selectedOption];
+            
+            // Add to score and answers
+            totalScore += option.score;
+            answers.push({
+                scenario: scenario.title,
+                choice: option.text,
+                score: option.score,
+                feedback: option.feedback
+            });
+
+            // Show result
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.innerHTML = `
+                <div class="result">
+                    <h4>Tu Decisión:</h4>
+                    <p><strong>${option.text}</strong></p>
+                    <h4>Retroalimentación:</h4>
+                    <p>${option.feedback}</p>
+                    <div class="score">
+                        Puntuación: ${option.score}/5 puntos
+                    </div>
+                </div>
+            `;
+
+            // Hide next button
+            document.getElementById('next-btn').style.display = 'none';
+            selectedOption = null;
+
+            // Move to next scenario or show final results
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                setTimeout(() => {
+                    resultContainer.innerHTML = '';
+                    showScenario();
+                }, 3000);
+            } else {
+                setTimeout(showFinalResults, 3000);
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('simulation').style.display = 'none';
+            document.getElementById('final-results').style.display = 'block';
+
+            const maxScore = scenarios.length * 5;
+            const percentage = (totalScore / maxScore) * 100;
+
+            let level = '';
+            let analysis = '';
+
+            if (percentage >= 90) {
+                level = 'Líder LSC Experto';
+                analysis = 'Tienes una comprensión excepcional de los principios del liderazgo sin cargo. Tu capacidad para tomar iniciativa, asumir responsabilidad y crear impacto positivo es sobresaliente.';
+            } else if (percentage >= 75) {
+                level = 'Líder LSC Avanzado';
+                analysis = 'Demuestras una sólida comprensión de los principios LSC. Tienes buena iniciativa y capacidad de liderazgo, con espacio para seguir creciendo.';
+            } else if (percentage >= 60) {
+                level = 'Líder LSC en Desarrollo';
+                analysis = 'Tienes una base sólida en liderazgo sin cargo, pero hay oportunidades para desarrollar más iniciativa y responsabilidad personal.';
+            } else if (percentage >= 40) {
+                level = 'Líder LSC Principiante';
+                analysis = 'Estás comenzando tu viaje en el liderazgo sin cargo. Hay muchas oportunidades para desarrollar los Cuatro Poderes Naturales.';
+            } else {
+                level = 'Oportunidad de Crecimiento';
+                analysis = 'Hay una gran oportunidad para desarrollar tu liderazgo sin cargo. Enfócate en tomar más iniciativa y asumir responsabilidad personal.';
+            }
+
+            document.getElementById('score-display').innerHTML = `
+                <div class="score">
+                    <h3>Puntuación Final: ${totalScore}/${maxScore} (${percentage.toFixed(0)}%)</h3>
+                    <h4>Nivel: ${level}</h4>
+                </div>
+            `;
+
+            document.getElementById('analysis').innerHTML = `
+                <div class="highlight">
+                    <h4>Análisis de tu Estilo de Liderazgo:</h4>
+                    <p>${analysis}</p>
+                </div>
+                <h4>Resumen de tus Decisiones:</h4>
+                ${answers.map(answer => `
+                    <div class="scenario">
+                        <h5>${answer.scenario}</h5>
+                        <p><strong>Tu elección:</strong> ${answer.choice}</p>
+                        <p><strong>Puntuación:</strong> ${answer.score}/5</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function restartSimulation() {
+            currentScenario = 0;
+            selectedOption = null;
+            totalScore = 0;
+            answers = [];
+            
+            document.getElementById('final-results').style.display = 'none';
+            document.getElementById('intro').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

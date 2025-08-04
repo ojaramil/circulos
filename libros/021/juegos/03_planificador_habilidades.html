@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Habilidades - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .planner-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .skill-form {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #005BAA;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #005BAA;
+        }
+        
+        .skill-type-selector {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .skill-type {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .skill-type:hover {
+            border-color: #005BAA;
+            background-color: #e3f2fd;
+        }
+        
+        .skill-type.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        
+        .add-skill-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .add-skill-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .skills-list {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .skill-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #005BAA;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .skill-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #005BAA;
+        }
+        
+        .skill-type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .skill-type-badge.hard {
+            background-color: #e8f5e8;
+            color: #2d5016;
+        }
+        
+        .skill-type-badge.soft {
+            background-color: #f3e5f5;
+            color: #4a148c;
+        }
+        
+        .skill-progress {
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50);
+            transition: width 0.8s ease;
+        }
+        
+        .skill-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .practice-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .practice-btn:hover {
+            background-color: #218838;
+        }
+        
+        .edit-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .edit-btn:hover {
+            background-color: #e0a800;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .practice-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .practice-session {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .session-timer {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+            margin: 20px 0;
+        }
+        
+        .timer-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .timer-btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .start-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .pause-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .stats-panel {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Planificador de Habilidades</h1>
+        <h2>Organiza y desarrolla tus talentos de manera sistemática</h2>
+
+        <div class="quote">
+            "El primer paso para desarrollar una habilidad es determinar exactamente qué tipo de habilidad estamos construyendo."
+        </div>
+
+        <div class="planner-container">
+            <div class="skill-form">
+                <h3>🎯 Agregar Nueva Habilidad</h3>
+                
+                <div class="form-group">
+                    <label for="skillName">Nombre de la Habilidad:</label>
+                    <input type="text" id="skillName" placeholder="Ej: Tocar guitarra, Programar en Python, Liderazgo...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo de Habilidad:</label>
+                    <div class="skill-type-selector">
+                        <div class="skill-type" data-type="hard" onclick="selectSkillType('hard')">
+                            <h4>🎯 Habilidad Dura</h4>
+                            <p>Precisión y repetición exacta</p>
+                        </div>
+                        <div class="skill-type" data-type="soft" onclick="selectSkillType('soft')">
+                            <h4>🧠 Habilidad Blanda</h4>
+                            <p>Flexibilidad y adaptación</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="skillDescription">Descripción:</label>
+                    <textarea id="skillDescription" rows="3" placeholder="Describe qué quieres lograr con esta habilidad..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="skillGoal">Meta Específica:</label>
+                    <input type="text" id="skillGoal" placeholder="Ej: Tocar 5 canciones completas, Crear una aplicación web...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="practiceTime">Tiempo de Práctica Diario (minutos):</label>
+                    <input type="number" id="practiceTime" min="5" max="480" value="30">
+                </div>
+                
+                <button class="add-skill-btn" onclick="addSkill()">➕ Agregar Habilidad</button>
+            </div>
+
+            <div class="skills-list">
+                <h3>📋 Mis Habilidades</h3>
+                <div id="skillsContainer">
+                    <!-- Las habilidades se agregarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <h3>📊 Estadísticas de Práctica</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalSkills">0</div>
+                        <div class="stat-label">Habilidades Activas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalPracticeTime">0</div>
+                        <div class="stat-label">Minutos de Práctica</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="averageProgress">0%</div>
+                        <div class="stat-label">Progreso Promedio</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="practiceStreak">0</div>
+                        <div class="stat-label">Días Consecutivos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Práctica -->
+        <div class="practice-modal" id="practiceModal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closePracticeModal()">&times;</span>
+                <h3>⏱️ Sesión de Práctica</h3>
+                <div id="practiceSessionContent"></div>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> Recuerda que la práctica intensa es más efectiva que la práctica superficial. Enfócate en la calidad, no solo en la cantidad de tiempo.</p>
+        </div>
+    </div>
+
+    <script>
+        let skills = [];
+        let selectedSkillType = '';
+        let currentPracticeSession = null;
+        let practiceTimer = null;
+        
+        // Cargar habilidades guardadas
+        loadSkills();
+
+        function selectSkillType(type) {
+            selectedSkillType = type;
+            document.querySelectorAll('.skill-type').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+        }
+
+        function addSkill() {
+            const name = document.getElementById('skillName').value.trim();
+            const description = document.getElementById('skillDescription').value.trim();
+            const goal = document.getElementById('skillGoal').value.trim();
+            const practiceTime = parseInt(document.getElementById('practiceTime').value);
+            
+            if (!name || !selectedSkillType) {
+                alert('Por favor completa todos los campos requeridos.');
+                return;
+            }
+            
+            const skill = {
+                id: Date.now(),
+                name: name,
+                type: selectedSkillType,
+                description: description,
+                goal: goal,
+                practiceTime: practiceTime,
+                progress: 0,
+                totalPracticeTime: 0,
+                lastPractice: null,
+                practiceHistory: []
+            };
+            
+            skills.push(skill);
+            saveSkills();
+            renderSkills();
+            resetForm();
+            updateStats();
+        }
+
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = '';
+            
+            skills.forEach(skill => {
+                const skillCard = document.createElement('div');
+                skillCard.className = 'skill-card';
+                skillCard.innerHTML = `
+                    <div class="skill-header">
+                        <div class="skill-title">${skill.name}</div>
+                        <div class="skill-type-badge ${skill.type}">${skill.type === 'hard' ? 'Habilidad Dura' : 'Habilidad Blanda'}</div>
+                    </div>
+                    <p><strong>Meta:</strong> ${skill.goal}</p>
+                    <p><strong>Descripción:</strong> ${skill.description}</p>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${skill.progress}%"></div>
+                        </div>
+                        <p>Progreso: ${skill.progress}%</p>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="action-btn practice-btn" onclick="startPracticeSession(${skill.id})">⏱️ Practicar</button>
+                        <button class="action-btn edit-btn" onclick="editSkill(${skill.id})">✏️ Editar</button>
+                        <button class="action-btn delete-btn" onclick="deleteSkill(${skill.id})">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(skillCard);
+            });
+        }
+
+        function startPracticeSession(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            if (!skill) return;
+            
+            currentPracticeSession = {
+                skillId: skillId,
+                startTime: Date.now(),
+                duration: skill.practiceTime * 60 * 1000, // Convertir a milisegundos
+                elapsed: 0
+            };
+            
+            const modal = document.getElementById('practiceModal');
+            const content = document.getElementById('practiceSessionContent');
+            
+            content.innerHTML = `
+                <div class="practice-session">
+                    <h4>Practicando: ${skill.name}</h4>
+                    <p><strong>Meta:</strong> ${skill.goal}</p>
+                    <p><strong>Tiempo objetivo:</strong> ${skill.practiceTime} minutos</p>
+                    
+                    <div class="session-timer" id="sessionTimer">00:00</div>
+                    
+                    <div class="timer-controls">
+                        <button class="timer-btn start-btn" onclick="startTimer()">▶️ Iniciar</button>
+                        <button class="timer-btn pause-btn" onclick="pauseTimer()">⏸️ Pausar</button>
+                        <button class="timer-btn reset-btn" onclick="resetTimer()">🔄 Reiniciar</button>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h5>🎯 Consejos para esta sesión:</h5>
+                        <ul>
+                            <li>Enfócate en el punto óptimo de dificultad</li>
+                            <li>Corrige errores inmediatamente</li>
+                            <li>Cuenta repeticiones, no solo tiempo</li>
+                            <li>Mantén la concentración total</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function startTimer() {
+            if (practiceTimer) return;
+            
+            practiceTimer = setInterval(() => {
+                currentPracticeSession.elapsed += 1000;
+                updateTimerDisplay();
+                
+                if (currentPracticeSession.elapsed >= currentPracticeSession.duration) {
+                    completePracticeSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (practiceTimer) {
+                clearInterval(practiceTimer);
+                practiceTimer = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            currentPracticeSession.elapsed = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const timer = document.getElementById('sessionTimer');
+            const minutes = Math.floor(currentPracticeSession.elapsed / 60000);
+            const seconds = Math.floor((currentPracticeSession.elapsed % 60000) / 1000);
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function completePracticeSession() {
+            pauseTimer();
+            
+            const skill = skills.find(s => s.id === currentPracticeSession.skillId);
+            if (skill) {
+                // Actualizar progreso
+                const practiceMinutes = Math.floor(currentPracticeSession.elapsed / 60000);
+                skill.totalPracticeTime += practiceMinutes;
+                skill.progress = Math.min(100, skill.progress + Math.floor(practiceMinutes / 10));
+                skill.lastPractice = new Date().toISOString();
+                
+                skill.practiceHistory.push({
+                    date: new Date().toISOString(),
+                    duration: practiceMinutes,
+                    progress: skill.progress
+                });
+                
+                saveSkills();
+                updateStats();
+            }
+            
+            alert('¡Sesión de práctica completada! Has mejorado tu habilidad.');
+            closePracticeModal();
+        }
+
+        function closePracticeModal() {
+            document.getElementById('practiceModal').style.display = 'none';
+            if (practiceTimer) {
+                clearInterval(practiceTimer);
+                practiceTimer = null;
+            }
+            currentPracticeSession = null;
+        }
+
+        function editSkill(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            if (!skill) return;
+            
+            // Implementar edición (simplificado)
+            const newName = prompt('Nuevo nombre:', skill.name);
+            if (newName) {
+                skill.name = newName;
+                saveSkills();
+                renderSkills();
+            }
+        }
+
+        function deleteSkill(skillId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta habilidad?')) {
+                skills = skills.filter(s => s.id !== skillId);
+                saveSkills();
+                renderSkills();
+                updateStats();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('skillName').value = '';
+            document.getElementById('skillDescription').value = '';
+            document.getElementById('skillGoal').value = '';
+            document.getElementById('practiceTime').value = '30';
+            selectedSkillType = '';
+            document.querySelectorAll('.skill-type').forEach(el => el.classList.remove('selected'));
+        }
+
+        function updateStats() {
+            document.getElementById('totalSkills').textContent = skills.length;
+            
+            const totalTime = skills.reduce((sum, skill) => sum + skill.totalPracticeTime, 0);
+            document.getElementById('totalPracticeTime').textContent = totalTime;
+            
+            const avgProgress = skills.length > 0 ? 
+                Math.round(skills.reduce((sum, skill) => sum + skill.progress, 0) / skills.length) : 0;
+            document.getElementById('averageProgress').textContent = avgProgress + '%';
+            
+            // Calcular racha (simplificado)
+            const today = new Date().toDateString();
+            const hasPracticedToday = skills.some(skill => 
+                skill.lastPractice && new Date(skill.lastPractice).toDateString() === today
+            );
+            const streak = hasPracticedToday ? 1 : 0; // Simplificado
+            document.getElementById('practiceStreak').textContent = streak;
+        }
+
+        function saveSkills() {
+            localStorage.setItem('talentSkills', JSON.stringify(skills));
+        }
+
+        function loadSkills() {
+            const saved = localStorage.getItem('talentSkills');
+            if (saved) {
+                skills = JSON.parse(saved);
+                renderSkills();
+                updateStats();
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('practiceModal');
+            if (event.target === modal) {
+                closePracticeModal();
+            }
+        }
+    </script>
+</body>
+</html> 

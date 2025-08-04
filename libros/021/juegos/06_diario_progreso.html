@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario de Progreso - El Pequeño Libro del Talento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .diary-form {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .diary-form h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        .form-group label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 10px 10px 0;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn.success {
+            background: #27ae60;
+        }
+        .btn.danger {
+            background: #e74c3c;
+        }
+        .entries {
+            margin: 30px 0;
+        }
+        .entry {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .entry:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .entry-date {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .entry-skill {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .entry-content {
+            margin: 15px 0;
+        }
+        .entry-section {
+            margin: 10px 0;
+        }
+        .entry-section h5 {
+            color: #34495e;
+            margin: 5px 0;
+        }
+        .metrics {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .metric {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 120px;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .metric-value {
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+        .stats {
+            background: #f1f8e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .stats h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #f57c00;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+        }
+        .tips li {
+            margin: 8px 0;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navigation a:hover {
+            background: #2980b9;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        .empty-state h3 {
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 Diario de Progreso</h1>
+        <p>Documenta tu desarrollo y genera claridad en tu camino hacia la excelencia</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Objetivo del Diario</h3>
+            <p>Este diario te permite documentar tu progreso, reflexionar sobre tus actuaciones y generar claridad en tu desarrollo. Como dijo Daniel Coyle: "Los cuadernos funcionan como los mapas: generan claridad."</p>
+        </div>
+
+        <div class="diary-form">
+            <h3>✍️ Nueva Entrada del Diario</h3>
+            
+            <form id="diaryForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Fecha:</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="skill">Habilidad Practicada:</label>
+                        <select id="skill" required>
+                            <option value="">Selecciona una habilidad</option>
+                            <option value="piano">🎹 Piano</option>
+                            <option value="tennis">🎾 Tenis</option>
+                            <option value="writing">✍️ Escritura</option>
+                            <option value="math">🔢 Matemáticas</option>
+                            <option value="golf">⛳ Golf</option>
+                            <option value="programming">💻 Programación</option>
+                            <option value="cooking">👨‍🍳 Cocina</option>
+                            <option value="custom">🎯 Personalizada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="customSkillGroup" style="display: none;">
+                    <label for="customSkill">Habilidad Personalizada:</label>
+                    <input type="text" id="customSkill" placeholder="Ej: Tocar guitarra, Bailar, Pintar...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duración de la Práctica (minutos):</label>
+                        <input type="number" id="duration" min="1" max="480" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attempts">Número de Intentos:</label>
+                        <input type="number" id="attempts" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="successes">Éxitos:</label>
+                        <input type="number" id="successes" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="difficulty">Nivel de Dificultad:</label>
+                        <select id="difficulty" required>
+                            <option value="">Selecciona el nivel</option>
+                            <option value="comfort">🏠 Zona Cómoda</option>
+                            <option value="optimal">🎯 Punto Óptimo</option>
+                            <option value="survival">💀 Zona de Supervivencia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="results">Resultados de Hoy:</label>
+                    <textarea id="results" placeholder="¿Qué lograste hoy? ¿Cuáles fueron tus éxitos y fracasos?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="ideas">Ideas para Mañana:</label>
+                    <textarea id="ideas" placeholder="¿Qué quieres mejorar? ¿Qué nuevas técnicas quieres probar?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reflections">Reflexiones:</label>
+                    <textarea id="reflections" placeholder="¿Qué aprendiste hoy? ¿Qué patrones observas? ¿Qué te sorprendió?"></textarea>
+                </div>
+
+                <button type="submit" class="btn success">💾 Guardar Entrada</button>
+                <button type="button" class="btn" onclick="clearForm()">🗑️ Limpiar Formulario</button>
+            </form>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <h4>📊 Estadísticas de tu Progreso</h4>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalEntries">0</div>
+                    <div class="stat-label">Entradas Totales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalTime">0</div>
+                    <div class="stat-label">Minutos Totales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalAttempts">0</div>
+                    <div class="stat-label">Intentos Totales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="avgSuccessRate">0%</div>
+                    <div class="stat-label">Tasa Promedio de Éxito</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="entries" id="entries">
+            <h3>📚 Entradas Anteriores</h3>
+            <div class="empty-state" id="emptyState">
+                <h3>📝 No hay entradas aún</h3>
+                <p>Comienza agregando tu primera entrada del diario para documentar tu progreso.</p>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Consejos para un Diario Efectivo</h4>
+            <ul>
+                <li><strong>Sé consistente:</strong> Escribe regularmente, incluso si solo son unas pocas líneas</li>
+                <li><strong>Sé específico:</strong> En lugar de "practiqué bien", escribe "mejoré mi precisión en los tiros libres"</li>
+                <li><strong>Sé honesto:</strong> Documenta tanto los éxitos como los fracasos</li>
+                <li><strong>Revisa regularmente:</strong> Dedica tiempo a revisar entradas anteriores</li>
+                <li><strong>Usa tu propio estilo:</strong> No hay una forma "correcta" de llevar un diario</li>
+                <li><strong>Incluye métricas:</strong> Cuantifica tu progreso cuando sea posible</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎯 Recordatorio Importante</h3>
+            <p>El diario es una herramienta personal. No te preocupes por la gramática o el formato perfecto. Lo importante es que sea útil para ti y te ayude a mejorar.</p>
+        </div>
+
+        <div class="navigation">
+            <a href="05_practica_intensa.html">← Juego Anterior: Simulador de Práctica Intensa</a>
+            <a href="07_visualizacion.html">Siguiente Juego: Ejercicios de Visualización →</a>
+        </div>
+    </div>
+
+    <script>
+        let entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+
+        // Event listeners
+        document.getElementById('skill').addEventListener('change', function() {
+            const customGroup = document.getElementById('customSkillGroup');
+            if (this.value === 'custom') {
+                customGroup.style.display = 'block';
+            } else {
+                customGroup.style.display = 'none';
+            }
+        });
+
+        document.getElementById('diaryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addEntry();
+        });
+
+        function addEntry() {
+            const skill = document.getElementById('skill').value;
+            const customSkill = document.getElementById('customSkill').value;
+            const skillName = skill === 'custom' ? customSkill : document.getElementById('skill').options[document.getElementById('skill').selectedIndex].text;
+
+            const entry = {
+                id: Date.now(),
+                date: document.getElementById('date').value,
+                skill: skillName,
+                duration: parseInt(document.getElementById('duration').value),
+                attempts: parseInt(document.getElementById('attempts').value),
+                successes: parseInt(document.getElementById('successes').value),
+                difficulty: document.getElementById('difficulty').value,
+                results: document.getElementById('results').value,
+                ideas: document.getElementById('ideas').value,
+                reflections: document.getElementById('reflections').value
+            };
+
+            entries.unshift(entry);
+            localStorage.setItem('diaryEntries', JSON.stringify(entries));
+            
+            clearForm();
+            displayEntries();
+            updateStats();
+        }
+
+        function clearForm() {
+            document.getElementById('diaryForm').reset();
+            document.getElementById('customSkillGroup').style.display = 'none';
+        }
+
+        function displayEntries() {
+            const entriesContainer = document.getElementById('entries');
+            const emptyState = document.getElementById('emptyState');
+
+            if (entries.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            let entriesHTML = '<h3>📚 Entradas Anteriores</h3>';
+            
+            entries.forEach(entry => {
+                const successRate = entry.attempts > 0 ? Math.round((entry.successes / entry.attempts) * 100) : 0;
+                
+                entriesHTML += `
+                    <div class="entry">
+                        <div class="entry-header">
+                            <div class="entry-date">${formatDate(entry.date)}</div>
+                            <div class="entry-skill">${entry.skill}</div>
+                        </div>
+                        <div class="entry-content">
+                            <div class="metrics">
+                                <div class="metric">
+                                    <div class="metric-label">Duración</div>
+                                    <div class="metric-value">${entry.duration} min</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Intentos</div>
+                                    <div class="metric-value">${entry.attempts}</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Éxitos</div>
+                                    <div class="metric-value">${entry.successes}</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Tasa de Éxito</div>
+                                    <div class="metric-value">${successRate}%</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Dificultad</div>
+                                    <div class="metric-value">${getDifficultyText(entry.difficulty)}</div>
+                                </div>
+                            </div>
+                            
+                            ${entry.results ? `
+                                <div class="entry-section">
+                                    <h5>📊 Resultados de Hoy:</h5>
+                                    <p>${entry.results}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${entry.ideas ? `
+                                <div class="entry-section">
+                                    <h5>💡 Ideas para Mañana:</h5>
+                                    <p>${entry.ideas}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${entry.reflections ? `
+                                <div class="entry-section">
+                                    <h5>🤔 Reflexiones:</h5>
+                                    <p>${entry.reflections}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="btn danger" onclick="deleteEntry(${entry.id})">🗑️ Eliminar</button>
+                    </div>
+                `;
+            });
+
+            entriesContainer.innerHTML = entriesHTML;
+        }
+
+        function deleteEntry(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
+                entries = entries.filter(entry => entry.id !== id);
+                localStorage.setItem('diaryEntries', JSON.stringify(entries));
+                displayEntries();
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            if (entries.length === 0) {
+                document.getElementById('stats').style.display = 'none';
+                return;
+            }
+
+            const totalEntries = entries.length;
+            const totalTime = entries.reduce((sum, entry) => sum + entry.duration, 0);
+            const totalAttempts = entries.reduce((sum, entry) => sum + entry.attempts, 0);
+            const totalSuccesses = entries.reduce((sum, entry) => sum + entry.successes, 0);
+            const avgSuccessRate = totalAttempts > 0 ? Math.round((totalSuccesses / totalAttempts) * 100) : 0;
+
+            document.getElementById('totalEntries').textContent = totalEntries;
+            document.getElementById('totalTime').textContent = totalTime;
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+            document.getElementById('avgSuccessRate').textContent = avgSuccessRate + '%';
+
+            document.getElementById('stats').style.display = 'block';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function getDifficultyText(difficulty) {
+            switch(difficulty) {
+                case 'comfort': return '🏠 Cómoda';
+                case 'optimal': return '🎯 Óptima';
+                case 'survival': return '💀 Supervivencia';
+                default: return difficulty;
+            }
+        }
+
+        // Set today's date as default
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        // Initialize display
+        displayEntries();
+        updateStats();
+    </script>
+</body>
+</html> 

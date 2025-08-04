@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Práctica Intensa - El Pequeño Libro del Talento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .simulator {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .simulator h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .skill-selector {
+            margin: 20px 0;
+        }
+        .skill-selector label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .skill-selector select, .skill-selector input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .practice-session {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .practice-session h4 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .timer {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .btn.success {
+            background: #27ae60;
+        }
+        .btn.danger {
+            background: #e74c3c;
+        }
+        .progress-tracker {
+            background: #f1f8e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .progress-tracker h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .feedback {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .feedback h4 {
+            color: #f57c00;
+            margin-top: 0;
+        }
+        .zone-indicator {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .zone-comfort {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        .zone-optimal {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 2px solid #ff9800;
+        }
+        .zone-survival {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+        .tips {
+            background: #f3e5f5;
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+        }
+        .tips li {
+            margin: 8px 0;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navigation a:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💪 Simulador de Práctica Intensa</h1>
+        <p>Experimenta con diferentes técnicas de práctica y encuentra tu punto óptimo</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Objetivo del Simulador</h3>
+            <p>Este simulador te permite experimentar con diferentes técnicas de práctica intensa y encontrar tu punto óptimo de dificultad. La práctica intensa se mide en intentos y repeticiones de alta calidad, no en minutos.</p>
+        </div>
+
+        <div class="simulator">
+            <h3>⚙️ Configuración de la Práctica</h3>
+            
+            <div class="skill-selector">
+                <label for="skill">Habilidad a Practicar:</label>
+                <select id="skill">
+                    <option value="piano">🎹 Piano</option>
+                    <option value="tennis">🎾 Tenis</option>
+                    <option value="writing">✍️ Escritura</option>
+                    <option value="math">🔢 Matemáticas</option>
+                    <option value="golf">⛳ Golf</option>
+                    <option value="custom">🎯 Personalizada</option>
+                </select>
+            </div>
+
+            <div class="skill-selector">
+                <label for="customSkill">Habilidad Personalizada (si seleccionaste "Personalizada"):</label>
+                <input type="text" id="customSkill" placeholder="Ej: Tocar guitarra, Programar, Cocinar...">
+            </div>
+
+            <div class="skill-selector">
+                <label for="difficulty">Nivel de Dificultad:</label>
+                <select id="difficulty">
+                    <option value="comfort">Zona Cómoda (80%+ éxito)</option>
+                    <option value="optimal">Punto Óptimo (50-80% éxito)</option>
+                    <option value="survival">Zona de Supervivencia (<50% éxito)</option>
+                </select>
+            </div>
+
+            <div class="skill-selector">
+                <label for="sessionType">Tipo de Sesión:</label>
+                <select id="sessionType">
+                    <option value="segmentation">Segmentación (practicar partes pequeñas)</option>
+                    <option value="slow">Práctica Superlenta</option>
+                    <option value="error">Error Productivo</option>
+                    <option value="repetition">Repeticiones Intensivas</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="practice-session">
+            <h4>🎯 Sesión de Práctica</h4>
+            
+            <div class="zone-indicator" id="zoneIndicator">
+                Selecciona la configuración y comienza la práctica
+            </div>
+
+            <div class="timer" id="timer">00:00</div>
+            
+            <div class="controls">
+                <button class="btn" id="startBtn" onclick="startSession()">Iniciar Sesión</button>
+                <button class="btn danger" id="stopBtn" onclick="stopSession()" disabled>Detener</button>
+                <button class="btn success" id="successBtn" onclick="recordSuccess()" disabled>✅ Éxito</button>
+                <button class="btn" id="failureBtn" onclick="recordFailure()" disabled>❌ Fracaso</button>
+            </div>
+
+            <div class="progress-tracker">
+                <h4>📊 Progreso de la Sesión</h4>
+                <p>Intentos: <span id="attempts">0</span> | Éxitos: <span id="successes">0</span> | Tasa de éxito: <span id="successRate">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p>Objetivo: <span id="target">0</span> repeticiones exitosas</p>
+            </div>
+        </div>
+
+        <div class="feedback" id="feedback">
+            <h4>💡 Feedback de la Sesión</h4>
+            <div id="feedbackContent"></div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Consejos para la Práctica Intensa</h4>
+            <ul>
+                <li><strong>Cuenta intentos, no minutos:</strong> Enfócate en la calidad de las repeticiones</li>
+                <li><strong>Busca el punto óptimo:</strong> Deberías sentirte desafiado pero no abrumado</li>
+                <li><strong>Presta atención a los errores:</strong> Son información valiosa para mejorar</li>
+                <li><strong>Practica en segmentos:</strong> Divide habilidades complejas en partes más pequeñas</li>
+                <li><strong>Usa imágenes:</strong> Crea representaciones mentales vívidas de lo que quieres lograr</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎯 Recordatorio Importante</h3>
+            <p>La práctica intensa no se trata de trabajar más tiempo, sino de trabajar de manera más inteligente. El objetivo es crear conexiones neuronales más fuertes y eficientes.</p>
+        </div>
+
+        <div class="navigation">
+            <a href="04_casos_talento.html">← Juego Anterior: Casos de Desarrollo de Talento</a>
+            <a href="06_diario_progreso.html">Siguiente Juego: Diario de Progreso →</a>
+        </div>
+    </div>
+
+    <script>
+        let sessionActive = false;
+        let startTime = 0;
+        let timerInterval;
+        let attempts = 0;
+        let successes = 0;
+        let target = 10;
+
+        function updateZoneIndicator() {
+            const difficulty = document.getElementById('difficulty').value;
+            const indicator = document.getElementById('zoneIndicator');
+            
+            switch(difficulty) {
+                case 'comfort':
+                    indicator.className = 'zone-indicator zone-comfort';
+                    indicator.textContent = '🏠 Zona Cómoda - Fácil, sin mucho esfuerzo';
+                    break;
+                case 'optimal':
+                    indicator.className = 'zone-indicator zone-optimal';
+                    indicator.textContent = '🎯 Punto Óptimo - Desafiante pero alcanzable';
+                    break;
+                case 'survival':
+                    indicator.className = 'zone-indicator zone-survival';
+                    indicator.textContent = '💀 Zona de Supervivencia - Muy difícil, casi imposible';
+                    break;
+            }
+        }
+
+        function startSession() {
+            const skill = document.getElementById('skill').value;
+            const customSkill = document.getElementById('customSkill').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const sessionType = document.getElementById('sessionType').value;
+
+            if (skill === 'custom' && !customSkill.trim()) {
+                alert('Por favor, especifica tu habilidad personalizada');
+                return;
+            }
+
+            sessionActive = true;
+            startTime = Date.now();
+            attempts = 0;
+            successes = 0;
+
+            // Establecer objetivo basado en la dificultad
+            switch(difficulty) {
+                case 'comfort':
+                    target = 15;
+                    break;
+                case 'optimal':
+                    target = 10;
+                    break;
+                case 'survival':
+                    target = 5;
+                    break;
+            }
+
+            document.getElementById('target').textContent = target;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('successBtn').disabled = false;
+            document.getElementById('failureBtn').disabled = false;
+
+            timerInterval = setInterval(updateTimer, 1000);
+            updateZoneIndicator();
+        }
+
+        function stopSession() {
+            sessionActive = false;
+            clearInterval(timerInterval);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('successBtn').disabled = true;
+            document.getElementById('failureBtn').disabled = true;
+
+            showFeedback();
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function recordSuccess() {
+            attempts++;
+            successes++;
+            updateProgress();
+        }
+
+        function recordFailure() {
+            attempts++;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('successes').textContent = successes;
+            
+            const successRate = attempts > 0 ? Math.round((successes / attempts) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+            
+            const progressPercent = Math.min((successes / target) * 100, 100);
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+
+            if (successes >= target) {
+                setTimeout(() => {
+                    alert('¡Felicitaciones! Has alcanzado tu objetivo de práctica intensa.');
+                    stopSession();
+                }, 100);
+            }
+        }
+
+        function showFeedback() {
+            const skill = document.getElementById('skill').value;
+            const customSkill = document.getElementById('customSkill').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const sessionType = document.getElementById('sessionType').value;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const successRate = attempts > 0 ? Math.round((successes / attempts) * 100) : 0;
+
+            const skillName = skill === 'custom' ? customSkill : document.getElementById('skill').options[document.getElementById('skill').selectedIndex].text;
+
+            let feedback = `
+                <h5>📊 Resumen de la Sesión</h5>
+                <p><strong>Habilidad:</strong> ${skillName}</p>
+                <p><strong>Duración:</strong> ${minutes} minutos</p>
+                <p><strong>Intentos:</strong> ${attempts}</p>
+                <p><strong>Éxitos:</strong> ${successes}</p>
+                <p><strong>Tasa de éxito:</strong> ${successRate}%</p>
+            `;
+
+            if (successRate >= 80) {
+                feedback += '<p><strong>🎯 Análisis:</strong> Estás en la zona cómoda. Considera aumentar la dificultad para maximizar el aprendizaje.</p>';
+            } else if (successRate >= 50) {
+                feedback += '<p><strong>🎯 Análisis:</strong> ¡Perfecto! Estás en el punto óptimo. Esta es la zona ideal para el desarrollo de habilidades.</p>';
+            } else {
+                feedback += '<p><strong>🎯 Análisis:</strong> Estás en la zona de supervivencia. Considera reducir la dificultad para evitar la frustración.</p>';
+            }
+
+            feedback += `
+                <h5>💡 Recomendaciones</h5>
+                <ul>
+                    <li>Continúa practicando regularmente</li>
+                    <li>Mantén un diario de tu progreso</li>
+                    <li>Varía las técnicas de práctica</li>
+                    <li>Busca feedback de expertos</li>
+                </ul>
+            `;
+
+            document.getElementById('feedbackContent').innerHTML = feedback;
+            document.getElementById('feedback').style.display = 'block';
+        }
+
+        // Event listeners
+        document.getElementById('difficulty').addEventListener('change', updateZoneIndicator);
+        document.getElementById('skill').addEventListener('change', function() {
+            if (this.value !== 'custom') {
+                document.getElementById('customSkill').style.display = 'none';
+            } else {
+                document.getElementById('customSkill').style.display = 'block';
+            }
+        });
+
+        // Initialize
+        updateZoneIndicator();
+    </script>
+</body>
+</html> 

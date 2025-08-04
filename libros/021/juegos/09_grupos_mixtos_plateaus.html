@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego: Grupos Mixtos y Plateaus - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .game-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .scenario-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .scenario-card:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .scenario-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .feedback {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .plateau-simulator {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .strategy-item {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .strategy-item:hover {
+            background: #bbdefb;
+        }
+        .strategy-item.selected {
+            background: #4caf50;
+            color: white;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .score-display {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Juego: Grupos Mixtos y Plateaus</h1>
+        
+        <div class="game-section">
+            <h2>📊 Tu Progreso</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="score-display" id="scoreDisplay">
+                Puntuación: <span id="score">0</span> / <span id="totalScore">0</span>
+            </div>
+        </div>
+
+        <!-- Sección 1: Grupos Mixtos -->
+        <div class="game-section" id="section1">
+            <h2>👥 Sección 1: Grupos de Edades Mixtas</h2>
+            <p>En esta sección, aprenderás a identificar y aprovechar las oportunidades de aprendizaje en grupos mixtos.</p>
+            
+            <h3>Pregunta 1: ¿Cuál es el beneficio principal de los grupos mixtos para los principiantes?</h3>
+            <div class="scenario-card" data-correct="true">
+                <strong>A)</strong> Ven ejemplos concretos de lo que pueden lograr y reciben mentoría natural
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>B)</strong> Pueden competir directamente con personas más experimentadas
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>C)</strong> Aprenden más rápido porque tienen que esforzarse más
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>D)</strong> Reciben atención individualizada de los instructores
+            </div>
+            <div class="feedback" id="feedback1"></div>
+            
+            <h3>Pregunta 2: ¿Qué beneficio obtienen los más experimentados en grupos mixtos?</h3>
+            <div class="scenario-card" data-correct="false">
+                <strong>A)</strong> Pueden mostrar sus habilidades superiores
+            </div>
+            <div class="scenario-card" data-correct="true">
+                <strong>B)</strong> Refuerzan sus conocimientos enseñando y desarrollan liderazgo
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>C)</strong> Aprenden técnicas nuevas de los principiantes
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>D)</strong> Tienen menos presión para rendir al máximo
+            </div>
+            <div class="feedback" id="feedback2"></div>
+            
+            <button class="btn" onclick="checkSection1()">Verificar Respuestas</button>
+        </div>
+
+        <!-- Sección 2: Plateaus -->
+        <div class="game-section" id="section2" style="display: none;">
+            <h2>📈 Sección 2: Entendiendo los Plateaus</h2>
+            <p>Los plateaus son períodos normales donde el progreso parece estancarse. Aprende a identificarlos y superarlos.</p>
+            
+            <h3>Pregunta 3: ¿Cuál es la causa principal de los plateaus?</h3>
+            <div class="scenario-card" data-correct="true">
+                <strong>A)</strong> El cerebro está consolidando lo aprendido y preparando nuevas conexiones
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>B)</strong> La persona ha alcanzado su límite natural de habilidad
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>C)</strong> El método de práctica no es efectivo
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>D)</strong> Falta de motivación o interés en la actividad
+            </div>
+            <div class="feedback" id="feedback3"></div>
+            
+            <h3>Pregunta 4: ¿Cuál es la mejor estrategia cuando te encuentras en un plateau?</h3>
+            <div class="scenario-card" data-correct="false">
+                <strong>A)</strong> Aumentar la intensidad de la práctica sin cambiar el enfoque
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>B)</strong> Tomar un descanso completo hasta que pase la frustración
+            </div>
+            <div class="scenario-card" data-correct="true">
+                <strong>C)</strong> Mantener la consistencia pero variar el método de práctica
+            </div>
+            <div class="scenario-card" data-correct="false">
+                <strong>D)</strong> Cambiar completamente de actividad para evitar el aburrimiento
+            </div>
+            <div class="feedback" id="feedback4"></div>
+            
+            <button class="btn" onclick="checkSection2()">Verificar Respuestas</button>
+        </div>
+
+        <!-- Sección 3: Simulador de Plateau -->
+        <div class="game-section" id="section3" style="display: none;">
+            <h2>🎯 Sección 3: Simulador de Estrategias para Plateaus</h2>
+            <p>Elige las mejores estrategias para superar diferentes tipos de plateaus.</p>
+            
+            <div class="plateau-simulator">
+                <h3>Escenario: Plateau de Integración</h3>
+                <p><strong>Situación:</strong> Puedes ejecutar técnicas individuales bien, pero te cuesta combinarlas en secuencias fluidas.</p>
+                <p><strong>Selecciona las 3 mejores estrategias:</strong></p>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-item" data-correct="true">
+                        <strong>Práctica de Variación</strong><br>
+                        Cambiar el orden y contexto de las técnicas
+                    </div>
+                    <div class="strategy-item" data-correct="true">
+                        <strong>Análisis Detallado</strong><br>
+                        Grabar y revisar tus sesiones de práctica
+                    </div>
+                    <div class="strategy-item" data-correct="false">
+                        <strong>Más Práctica</strong><br>
+                        Simplemente practicar más tiempo sin cambios
+                    </div>
+                    <div class="strategy-item" data-correct="true">
+                        <strong>Segmentación</strong><br>
+                        Dividir las secuencias en partes más pequeñas
+                    </div>
+                    <div class="strategy-item" data-correct="false">
+                        <strong>Descanso Completo</strong><br>
+                        Tomar una semana de descanso total
+                    </div>
+                    <div class="strategy-item" data-correct="false">
+                        <strong>Cambio Radical</strong><br>
+                        Cambiar completamente de enfoque
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="checkStrategies()">Verificar Estrategias</button>
+                <div class="feedback" id="feedbackStrategies"></div>
+            </div>
+        </div>
+
+        <!-- Sección 4: Aplicación Práctica -->
+        <div class="game-section" id="section4" style="display: none;">
+            <h2>🚀 Sección 4: Plan de Acción Personal</h2>
+            <p>Crea tu plan personal para implementar estos conceptos en tu desarrollo de talento.</p>
+            
+            <h3>Tu Plan de 90 Días</h3>
+            <div class="strategy-grid">
+                <div class="strategy-item">
+                    <h4>Semanas 1-2: Preparación</h4>
+                    <ul>
+                        <li>Elegir habilidad específica</li>
+                        <li>Establecer metas claras</li>
+                        <li>Crear espacio de práctica</li>
+                        <li>Identificar mentores</li>
+                    </ul>
+                </div>
+                <div class="strategy-item">
+                    <h4>Semanas 3-8: Implementación</h4>
+                    <ul>
+                        <li>Práctica diaria consistente</li>
+                        <li>Aplicar técnicas aprendidas</li>
+                        <li>Llevar diario de progreso</li>
+                        <li>Buscar retroalimentación</li>
+                    </ul>
+                </div>
+                <div class="strategy-item">
+                    <h4>Semanas 9-12: Consolidación</h4>
+                    <ul>
+                        <li>Evaluar progreso</li>
+                        <li>Introducir variaciones</li>
+                        <li>Compartir conocimientos</li>
+                        <li>Planificar siguiente ciclo</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plateau-simulator">
+                <h3>Reflexión Final</h3>
+                <p><strong>¿Qué habilidad elegirás para desarrollar? ¿Cómo implementarás los principios de grupos mixtos y manejo de plateaus?</strong></p>
+                <textarea id="reflection" rows="4" cols="50" placeholder="Escribe tu reflexión aquí..." style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+            </div>
+            
+            <button class="btn" onclick="completeGame()">Completar Juego</button>
+        </div>
+
+        <!-- Resultados Finales -->
+        <div class="game-section" id="results" style="display: none;">
+            <h2>🎉 ¡Juego Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>%</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="plateau-simulator">
+                <h3>🎯 Próximos Pasos</h3>
+                <ul>
+                    <li><strong>Implementa tu plan de 90 días</strong> con las estrategias aprendidas</li>
+                    <li><strong>Busca grupos mixtos</strong> en tu área de interés</li>
+                    <li><strong>Prepara estrategias</strong> para cuando encuentres plateaus</li>
+                    <li><strong>Mantén un diario</strong> de tu progreso y aprendizajes</li>
+                    <li><strong>Comparte tu experiencia</strong> con otros aprendices</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="restartGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        let score = 0;
+        let totalQuestions = 0;
+        let selectedStrategies = [];
+
+        // Inicializar el juego
+        function initGame() {
+            totalQuestions = 4; // 4 preguntas principales
+            updateProgress();
+            updateScore();
+        }
+
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progress = ((currentSection - 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Actualizar puntuación
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('totalScore').textContent = totalQuestions;
+        }
+
+        // Verificar sección 1
+        function checkSection1() {
+            let correct = 0;
+            
+            // Verificar pregunta 1
+            const selected1 = document.querySelector('#section1 .scenario-card.selected');
+            if (selected1 && selected1.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback1', '¡Correcto! Los principiantes se benefician de ver ejemplos concretos y recibir mentoría natural.', 'correct');
+            } else {
+                showFeedback('feedback1', 'Incorrecto. La respuesta correcta es A. Los grupos mixtos proporcionan modelos a seguir y mentoría natural.', 'incorrect');
+            }
+            
+            // Verificar pregunta 2
+            const selected2 = document.querySelectorAll('#section1 .scenario-card.selected')[1];
+            if (selected2 && selected2.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback2', '¡Correcto! Enseñar refuerza el conocimiento y desarrolla liderazgo.', 'correct');
+            } else {
+                showFeedback('feedback2', 'Incorrecto. La respuesta correcta es B. Enseñar consolida el aprendizaje y desarrolla habilidades de liderazgo.', 'incorrect');
+            }
+            
+            score += correct;
+            updateScore();
+            
+            setTimeout(() => {
+                document.getElementById('section1').style.display = 'none';
+                document.getElementById('section2').style.display = 'block';
+                currentSection = 2;
+                updateProgress();
+            }, 2000);
+        }
+
+        // Verificar sección 2
+        function checkSection2() {
+            let correct = 0;
+            
+            // Verificar pregunta 3
+            const selected3 = document.querySelector('#section2 .scenario-card.selected');
+            if (selected3 && selected3.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback3', '¡Correcto! Los plateaus son períodos de consolidación neural.', 'correct');
+            } else {
+                showFeedback('feedback3', 'Incorrecto. La respuesta correcta es A. Los plateaus son períodos normales de consolidación.', 'incorrect');
+            }
+            
+            // Verificar pregunta 4
+            const selected4 = document.querySelectorAll('#section2 .scenario-card.selected')[1];
+            if (selected4 && selected4.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback4', '¡Correcto! Variar el método manteniendo la consistencia es la mejor estrategia.', 'correct');
+            } else {
+                showFeedback('feedback4', 'Incorrecto. La respuesta correcta es C. Mantener consistencia pero variar el enfoque.', 'incorrect');
+            }
+            
+            score += correct;
+            updateScore();
+            
+            setTimeout(() => {
+                document.getElementById('section2').style.display = 'none';
+                document.getElementById('section3').style.display = 'block';
+                currentSection = 3;
+                updateProgress();
+            }, 2000);
+        }
+
+        // Verificar estrategias
+        function checkStrategies() {
+            const selected = document.querySelectorAll('#section3 .strategy-item.selected');
+            let correct = 0;
+            
+            selected.forEach(item => {
+                if (item.getAttribute('data-correct') === 'true') {
+                    correct++;
+                }
+            });
+            
+            if (selected.length === 3 && correct === 3) {
+                showFeedback('feedbackStrategies', '¡Perfecto! Has seleccionado las 3 mejores estrategias para superar el plateau de integración.', 'correct');
+                score += 1;
+                updateScore();
+                
+                setTimeout(() => {
+                    document.getElementById('section3').style.display = 'none';
+                    document.getElementById('section4').style.display = 'block';
+                    currentSection = 4;
+                    updateProgress();
+                }, 2000);
+            } else {
+                showFeedback('feedbackStrategies', 'Selecciona exactamente 3 estrategias. Las mejores son: Práctica de Variación, Análisis Detallado y Segmentación.', 'incorrect');
+            }
+        }
+
+        // Completar juego
+        function completeGame() {
+            const reflection = document.getElementById('reflection').value;
+            if (reflection.trim() === '') {
+                alert('Por favor, escribe tu reflexión antes de completar el juego.');
+                return;
+            }
+            
+            document.getElementById('section4').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const finalScore = Math.round((score / totalQuestions) * 100);
+            document.getElementById('finalScore').textContent = finalScore;
+            
+            let message = '';
+            if (finalScore >= 90) {
+                message = '¡Excelente! Tienes un dominio excepcional de estos conceptos.';
+            } else if (finalScore >= 70) {
+                message = '¡Muy bien! Tienes una buena comprensión de los conceptos clave.';
+            } else if (finalScore >= 50) {
+                message = '¡Bien! Tienes una comprensión básica. Revisa las lecciones para mejorar.';
+            } else {
+                message = 'Necesitas revisar los conceptos. Te recomiendo volver a las lecciones.';
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+        }
+
+        // Reiniciar juego
+        function restartGame() {
+            location.reload();
+        }
+
+        // Mostrar feedback
+        function showFeedback(id, message, type) {
+            const feedback = document.getElementById(id);
+            feedback.textContent = message;
+            feedback.className = 'feedback ' + type;
+            feedback.style.display = 'block';
+        }
+
+        // Event listeners para selección de respuestas
+        document.addEventListener('DOMContentLoaded', function() {
+            initGame();
+            
+            // Selección de respuestas de opción múltiple
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const section = this.closest('.game-section');
+                    const cards = section.querySelectorAll('.scenario-card');
+                    
+                    // Deseleccionar todas las tarjetas en la sección
+                    cards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Seleccionar la tarjeta clickeada
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Selección de estrategias (múltiple)
+            document.querySelectorAll('.strategy-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.closest('.game-section');
+                    const items = section.querySelectorAll('.strategy-item');
+                    const selected = section.querySelectorAll('.strategy-item.selected');
+                    
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                    } else if (selected.length < 3) {
+                        this.classList.add('selected');
+                    } else {
+                        alert('Puedes seleccionar máximo 3 estrategias.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

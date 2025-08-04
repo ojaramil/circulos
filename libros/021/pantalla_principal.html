@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Pequeño Libro del Talento - Interactivo</title>
+  <link rel="stylesheet" href="nuevo-style.css">
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #005BAA;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #005BAA;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a:hover .icon-placeholder {
+      color: #9cc2ff;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #005BAA;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-left: none;
+        border-right: none;
+        padding: 18px 10px 10px 10px;
+      }
+      .main-content-area { order: 1; padding: 10px; }
+      .sidebar-left { order: 2; }
+      .sidebar-right { order: 3; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">⭐</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Desarrollo Personal</span>
+        <span class="content-title">El Pequeño Libro del Talento - Daniel Coyle</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+    </nav>
+  </header>
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_introduccion.html" class="active-lesson"><span class="icon-placeholder">📄</span>Introducción</a></li>
+          <li><a href="#" data-src="lecciones/02_ponerse_marcha.html"><span class="icon-placeholder">🚀</span>Ponerse en Marcha</a></li>
+          <li><a href="#" data-src="lecciones/03_mejorar_habilidades.html"><span class="icon-placeholder">⚡</span>Mejorar las Habilidades</a></li>
+          <li><a href="#" data-src="lecciones/04_mantener_progresos.html"><span class="icon-placeholder">🔄</span>Mantener los Progresos</a></li>
+          <li><a href="#" data-src="lecciones/05_ignicion.html"><span class="icon-placeholder">🔥</span>La Ignición del Talento</a></li>
+          <li><a href="#" data-src="lecciones/06_parabrisas.html"><span class="icon-placeholder">👁️</span>Llenar el Parabrisas</a></li>
+          <li><a href="#" data-src="lecciones/07_grabado.html"><span class="icon-placeholder">🎯</span>El Método del Grabado</a></li>
+          <li><a href="#" data-src="lecciones/08_robar_arte.html"><span class="icon-placeholder">🎨</span>Robar el Arte</a></li>
+          <li><a href="#" data-src="lecciones/09_diario_actuaciones.html"><span class="icon-placeholder">📝</span>Llevar un Diario</a></li>
+          <li><a href="#" data-src="lecciones/10_hacer_ridiculo.html"><span class="icon-placeholder">😅</span>Estar Dispuesto a Hacer el Ridículo</a></li>
+          <li><a href="#" data-src="lecciones/11_espacios_austeros.html"><span class="icon-placeholder">🏠</span>Buscar Espacios Austeros</a></li>
+          <li><a href="#" data-src="lecciones/12_habilidades_duras_blandas.html"><span class="icon-placeholder">⚖️</span>Habilidades Duras vs Blandas</a></li>
+          <li><a href="#" data-src="lecciones/13_practica_intensa.html"><span class="icon-placeholder">💪</span>La Práctica Intensa</a></li>
+          <li><a href="#" data-src="lecciones/14_punto_optimo.html"><span class="icon-placeholder">🎯</span>Encontrar el Punto Óptimo</a></li>
+          <li><a href="#" data-src="lecciones/15_contar_intentos.html"><span class="icon-placeholder">🔢</span>Contar Intentos, No Minutos</a></li>
+          <li><a href="#" data-src="lecciones/16_segmentar.html"><span class="icon-placeholder">🧩</span>Segmentar las Habilidades</a></li>
+          <li><a href="#" data-src="lecciones/17_mlp.html"><span class="icon-placeholder">✅</span>El Mínimo Logro Posible</a></li>
+          <li><a href="#" data-src="lecciones/18_abrazar_lucha.html"><span class="icon-placeholder">🥊</span>Abrazar la Lucha</a></li>
+          <li><a href="#" data-src="lecciones/19_practica_diaria.html"><span class="icon-placeholder">📅</span>Practicar Todos los Días</a></li>
+          <li><a href="#" data-src="lecciones/20_jugar.html"><span class="icon-placeholder">🎮</span>Jugar en Lugar de Ejercitar</a></li>
+          <li><a href="#" data-src="lecciones/21_practica_solitario.html"><span class="icon-placeholder">🧘</span>Practicar en Solitario</a></li>
+          <li><a href="#" data-src="lecciones/22_imagenes.html"><span class="icon-placeholder">🖼️</span>Usar Imágenes</a></li>
+          <li><a href="#" data-src="lecciones/23_prestar_atencion_errores.html"><span class="icon-placeholder">👀</span>Prestar Atención a los Errores</a></li>
+          <li><a href="#" data-src="lecciones/24_visualizar_cerebro.html"><span class="icon-placeholder">🧠</span>Visualizar el Cerebro</a></li>
+          <li><a href="#" data-src="lecciones/25_espacios_reducidos.html"><span class="icon-placeholder">📦</span>Usar Espacios Reducidos</a></li>
+          <li><a href="#" data-src="lecciones/26_practica_lenta.html"><span class="icon-placeholder">🐌</span>Practicar Superlento</a></li>
+          <li><a href="#" data-src="lecciones/27_cerrar_ojos.html"><span class="icon-placeholder">😴</span>Cerrar los Ojos</a></li>
+          <li><a href="#" data-src="lecciones/28_practica_aire.html"><span class="icon-placeholder">💨</span>Practicar en el Aire</a></li>
+          <li><a href="#" data-src="lecciones/29_memorizar_perfeccion.html"><span class="icon-placeholder">💎</span>Memorizar la Perfección</a></li>
+          <li><a href="#" data-src="lecciones/30_siestas.html"><span class="icon-placeholder">😴</span>Tomar Siestas</a></li>
+          <li><a href="#" data-src="lecciones/31_exagerar.html"><span class="icon-placeholder">🎭</span>Exagerar los Movimientos</a></li>
+          <li><a href="#" data-src="lecciones/32_enfoque_positivo.html"><span class="icon-placeholder">➕</span>Enfoque Positivo</a></li>
+          <li><a href="#" data-src="lecciones/33_esforzarse.html"><span class="icon-placeholder">💪</span>Aprender es Esforzarse</a></li>
+          <li><a href="#" data-src="lecciones/34_tecnica_sandwich.html"><span class="icon-placeholder">🥪</span>La Técnica del Sándwich</a></li>
+          <li><a href="#" data-src="lecciones/35_regla_tres.html"><span class="icon-placeholder">3️⃣</span>La Regla de las Tres</a></li>
+          <li><a href="#" data-src="lecciones/36_inventar_examenes.html"><span class="icon-placeholder">📋</span>Inventar Exámenes</a></li>
+          <li><a href="#" data-src="lecciones/37_baremo_eife.html"><span class="icon-placeholder">📊</span>El Baremo EIFE</a></li>
+          <li><a href="#" data-src="lecciones/38_evitar_agotamiento.html"><span class="icon-placeholder">⚡</span>Evitar el Agotamiento</a></li>
+          <li><a href="#" data-src="lecciones/39_practica_post_actuacion.html"><span class="icon-placeholder">🎭</span>Practicar Después de Actuar</a></li>
+          <li><a href="#" data-src="lecciones/40_visualizacion_nocturna.html"><span class="icon-placeholder">🌙</span>Visualización Nocturna</a></li>
+          <li><a href="#" data-src="lecciones/41_recompensa_dulce.html"><span class="icon-placeholder">🍫</span>Recompensa Dulce</a></li>
+          <li><a href="#" data-src="lecciones/42_ser_maestro.html"><span class="icon-placeholder">👨‍🏫</span>Ser Maestro</a></li>
+          <li><a href="#" data-src="lecciones/43_repeticiones.html"><span class="icon-placeholder">🔄</span>Abrazar las Repeticiones</a></li>
+          <li><a href="#" data-src="lecciones/44_mentalidad_obrero.html"><span class="icon-placeholder">👷</span>Mentalidad de Obrero</a></li>
+          <li><a href="#" data-src="lecciones/45_evitar_competicion.html"><span class="icon-placeholder">🏆</span>Evitar la Competición Temprana</a></li>
+          <li><a href="#" data-src="lecciones/46_crear_habitos.html"><span class="icon-placeholder">🔄</span>Crear Nuevos Hábitos</a></li>
+          <li><a href="#" data-src="lecciones/47_grupos_mixtos.html"><span class="icon-placeholder">👥</span>Grupos de Edades Mixtas</a></li>
+          <li><a href="#" data-src="lecciones/48_ocho_semanas.html"><span class="icon-placeholder">📅</span>Las Ocho Semanas</a></li>
+          <li><a href="#" data-src="lecciones/49_plateaus.html"><span class="icon-placeholder">📈</span>Los Plateaus</a></li>
+          <li><a href="#" data-src="lecciones/50_aplicacion_practica.html"><span class="icon-placeholder">🚀</span>Aplicación Práctica</a></li>
+        </ul>
+      </section>
+      <section class="sidebar-section">
+        <h3>Recursos</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="recursos.html"><span class="icon-placeholder">📚</span>Recursos</a></li>
+          <li><a href="#" data-src="lecturas_recomendadas.html"><span class="icon-placeholder">📖</span>Lecturas recomendadas</a></li>
+        </ul>
+      </section>
+      <section class="sidebar-section">
+        <h3>Club Asperger</h3>
+        <ul class="sidebar-list">
+          <li><a href="https://club.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">👥</span>Club Social y Educativo</a></li>
+          <li><a href="https://tienda.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">🛒</span>Tienda</a></li>
+          <li><a href="https://revista.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">📰</span>Revista</a></li>
+          <li><a href="https://www.autenticamentecapaces.work" target="_blank"><span class="icon-placeholder">💼</span>Bolsa de Empleo</a></li>
+          <li><a href="https://comunidad.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">🌐</span>Comunidad</a></li>
+          <li><a href="https://www.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">📝</span>Blog</a></li>
+          <li><a href="https://www.aspergerparaasperger.org" target="_blank"><span class="icon-placeholder">🔧</span>Centro de Soluciones</a></li>
+        </ul>
+      </section>
+    </aside>
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_test_talento.html"><span class="icon-placeholder">🧠</span>Test: Tu Perfil de Talento</a></li>
+          <li><a href="#" data-src="juegos/02_simulador_ignicion.html"><span class="icon-placeholder">🔥</span>Simulador de Ignición</a></li>
+          <li><a href="#" data-src="juegos/03_planificador_habilidades.html"><span class="icon-placeholder">📅</span>Planificador de Habilidades</a></li>
+          <li><a href="#" data-src="juegos/04_casos_talento.html"><span class="icon-placeholder">💼</span>Casos de Desarrollo de Talento</a></li>
+          <li><a href="#" data-src="juegos/05_practica_intensa.html"><span class="icon-placeholder">💪</span>Simulador de Práctica Intensa</a></li>
+          <li><a href="#" data-src="juegos/06_diario_progreso.html"><span class="icon-placeholder">📝</span>Diario de Progreso</a></li>
+          <li><a href="#" data-src="juegos/07_visualizacion.html"><span class="icon-placeholder">🖼️</span>Ejercicios de Visualización</a></li>
+          <li><a href="#" data-src="juegos/08_habitos_talento.html"><span class="icon-placeholder">✅</span>Hábitos de Talento</a></li>
+          <li><a href="#" data-src="juegos/09_grupos_mixtos_plateaus.html"><span class="icon-placeholder">👥</span>Grupos Mixtos y Plateaus</a></li>
+          <li><a href="#" data-src="juegos/10_plan_ocho_semanas.html"><span class="icon-placeholder">📅</span>Plan de Ocho Semanas</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Solo interceptar enlaces internos (con data-src)
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
+          frame.src = this.getAttribute('data-src');
+        }
+        // Los enlaces externos (sin data-src) funcionarán normalmente
+      });
+    });
+  </script>
+</body>
+</html> 

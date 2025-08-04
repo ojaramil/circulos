@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Ignición - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .simulator-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .ignition-area {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .spark-container {
+            text-align: center;
+            margin: 30px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+            transition: all 0.5s ease;
+        }
+        
+        .spark-container.ignited {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #005BAA;
+            box-shadow: 0 8px 25px rgba(0,91,170,0.3);
+        }
+        
+        .spark {
+            font-size: 4em;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.6s ease;
+        }
+        
+        .spark.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .motivation-meter {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .meter-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50, #2196f3);
+            transition: width 0.8s ease;
+            width: 0%;
+        }
+        
+        .trigger-button {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .trigger-button:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .trigger-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results-panel {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            display: none;
+        }
+        
+        .results-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .ignition-tip {
+            background-color: #e8f5e8;
+            border-left: 4px solid #48bb78;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            color: #2d5016;
+        }
+        
+        .activity-log {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+            color: #333333;
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .log-time {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .reset-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Ignición del Talento</h1>
+        <h2>Descubre qué enciende tu motivación</h2>
+
+        <div class="quote">
+            "La ignición es ese momento mágico cuando piensas: 'Yo podría ser uno de ellos'."
+        </div>
+
+        <div class="simulator-container">
+            <div class="ignition-area">
+                <h3>🔥 Zona de Ignición</h3>
+                <p>Haz clic en los botones para simular diferentes tipos de experiencias que pueden encender tu motivación. Observa cómo cambia tu nivel de motivación.</p>
+                
+                <div class="spark-container" id="sparkContainer">
+                    <div class="spark" id="spark">⚡</div>
+                </div>
+                
+                <div class="motivation-meter">
+                    <h4>Nivel de Motivación</h4>
+                    <div class="meter-bar">
+                        <div class="meter-fill" id="meterFill"></div>
+                    </div>
+                    <p id="motivationText">Motivación: 0% - Sin ignición</p>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="trigger-button" onclick="triggerIgnition('observation')">👁️ Observar a un Experto</button>
+                    <button class="trigger-button" onclick="triggerIgnition('success')">🏆 Ver un Éxito</button>
+                    <button class="trigger-button" onclick="triggerIgnition('challenge')">🎯 Recibir un Desafío</button>
+                    <button class="trigger-button" onclick="triggerIgnition('inspiration')">💡 Escuchar una Historia Inspiradora</button>
+                    <button class="trigger-button" onclick="triggerIgnition('recognition')">👏 Recibir Reconocimiento</button>
+                    <button class="trigger-button" onclick="triggerIgnition('community')">👥 Unirse a una Comunidad</button>
+                </div>
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h3>🎯 Análisis de tu Ignición</h3>
+                <div id="ignitionAnalysis"></div>
+                
+                <div class="ignition-tip">
+                    <h4>💡 Consejo Personalizado</h4>
+                    <p id="personalizedTip"></p>
+                </div>
+            </div>
+
+            <div class="activity-log">
+                <h3>📝 Registro de Actividades</h3>
+                <div id="activityLog"></div>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Recuerda:</strong> La ignición es solo el primer paso. Para que sea efectiva, necesitas canalizar esa motivación en práctica intensa y consistente.</p>
+        </div>
+
+        <button class="reset-btn" onclick="resetSimulator()">🔄 Reiniciar Simulador</button>
+    </div>
+
+    <script>
+        let motivationLevel = 0;
+        let ignitionTriggers = {};
+        let activityLog = [];
+        
+        const triggers = {
+            observation: { name: "Observar a un Experto", value: 15, description: "Ver a alguien excelente en acción" },
+            success: { name: "Ver un Éxito", value: 20, description: "Presenciar un logro significativo" },
+            challenge: { name: "Recibir un Desafío", value: 18, description: "Ser desafiado a mejorar" },
+            inspiration: { name: "Escuchar una Historia Inspiradora", value: 12, description: "Conectar con una narrativa motivadora" },
+            recognition: { name: "Recibir Reconocimiento", value: 10, description: "Ser reconocido por tus esfuerzos" },
+            community: { name: "Unirse a una Comunidad", value: 14, description: "Conectar con personas que comparten tu pasión" }
+        };
+
+        function triggerIgnition(type) {
+            const trigger = triggers[type];
+            if (!trigger) return;
+            
+            // Incrementar motivación
+            motivationLevel = Math.min(100, motivationLevel + trigger.value);
+            
+            // Registrar actividad
+            ignitionTriggers[type] = (ignitionTriggers[type] || 0) + 1;
+            
+            // Agregar al log
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            activityLog.unshift({
+                time: timeString,
+                action: trigger.name,
+                value: trigger.value,
+                newLevel: motivationLevel
+            });
+            
+            // Actualizar interfaz
+            updateMotivationMeter();
+            updateSpark();
+            updateActivityLog();
+            
+            // Mostrar resultados si alcanza cierto nivel
+            if (motivationLevel >= 50 && !document.getElementById('resultsPanel').classList.contains('show')) {
+                showResults();
+            }
+            
+            // Deshabilitar botón temporalmente
+            const button = event.target;
+            button.disabled = true;
+            setTimeout(() => {
+                button.disabled = false;
+            }, 1000);
+        }
+
+        function updateMotivationMeter() {
+            const meterFill = document.getElementById('meterFill');
+            const motivationText = document.getElementById('motivationText');
+            
+            meterFill.style.width = motivationLevel + '%';
+            
+            let text = `Motivación: ${motivationLevel}% - `;
+            if (motivationLevel < 20) {
+                text += "Sin ignición";
+            } else if (motivationLevel < 40) {
+                text += "Chispa inicial";
+            } else if (motivationLevel < 60) {
+                text += "Motivación creciente";
+            } else if (motivationLevel < 80) {
+                text += "Fuego encendido";
+            } else {
+                text += "¡Motivación máxima!";
+            }
+            
+            motivationText.textContent = text;
+        }
+
+        function updateSpark() {
+            const sparkContainer = document.getElementById('sparkContainer');
+            const spark = document.getElementById('spark');
+            
+            if (motivationLevel > 30) {
+                sparkContainer.classList.add('ignited');
+                spark.classList.add('visible');
+            } else {
+                sparkContainer.classList.remove('ignited');
+                spark.classList.remove('visible');
+            }
+        }
+
+        function updateActivityLog() {
+            const logContainer = document.getElementById('activityLog');
+            logContainer.innerHTML = '';
+            
+            activityLog.slice(0, 10).forEach(entry => {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <span class="log-time">${entry.time}</span> - 
+                    <strong>${entry.action}</strong> (+${entry.value}%) → ${entry.newLevel}%
+                `;
+                logContainer.appendChild(logEntry);
+            });
+        }
+
+        function showResults() {
+            const resultsPanel = document.getElementById('resultsPanel');
+            const analysis = document.getElementById('ignitionAnalysis');
+            const tip = document.getElementById('personalizedTip');
+            
+            // Encontrar el trigger más efectivo
+            let mostEffective = null;
+            let maxValue = 0;
+            
+            Object.keys(ignitionTriggers).forEach(type => {
+                const totalValue = ignitionTriggers[type] * triggers[type].value;
+                if (totalValue > maxValue) {
+                    maxValue = totalValue;
+                    mostEffective = type;
+                }
+            });
+            
+            // Generar análisis
+            let analysisHTML = '<h4>📊 Tu Perfil de Ignición</h4><ul>';
+            Object.keys(ignitionTriggers).forEach(type => {
+                const count = ignitionTriggers[type];
+                const totalValue = count * triggers[type].value;
+                analysisHTML += `<li><strong>${triggers[type].name}:</strong> ${count} veces (${totalValue} puntos)</li>`;
+            });
+            analysisHTML += '</ul>';
+            
+            if (mostEffective) {
+                analysisHTML += `<p><strong>Tu trigger más efectivo:</strong> ${triggers[mostEffective].name}</p>`;
+            }
+            
+            analysis.innerHTML = analysisHTML;
+            
+            // Generar consejo personalizado
+            let tipText = '';
+            if (motivationLevel >= 80) {
+                tipText = "¡Excelente! Tu motivación está en su punto máximo. Ahora es el momento perfecto para canalizar esa energía en práctica intensa y estructurada.";
+            } else if (motivationLevel >= 60) {
+                tipText = "Tu motivación está creciendo bien. Continúa exponiéndote a experiencias que te inspiren y considera establecer un plan de práctica regular.";
+            } else if (motivationLevel >= 40) {
+                tipText = "Has encendido la chispa inicial. Para mantener la motivación, busca más experiencias similares y comienza a practicar de manera consistente.";
+            } else {
+                tipText = "Estás en las primeras etapas de la ignición. Experimenta con diferentes tipos de experiencias para encontrar qué te motiva más.";
+            }
+            
+            tip.textContent = tipText;
+            
+            resultsPanel.classList.add('show');
+        }
+
+        function resetSimulator() {
+            motivationLevel = 0;
+            ignitionTriggers = {};
+            activityLog = [];
+            
+            document.getElementById('meterFill').style.width = '0%';
+            document.getElementById('motivationText').textContent = 'Motivación: 0% - Sin ignición';
+            document.getElementById('sparkContainer').classList.remove('ignited');
+            document.getElementById('spark').classList.remove('visible');
+            document.getElementById('resultsPanel').classList.remove('show');
+            document.getElementById('activityLog').innerHTML = '';
+        }
+
+        // Inicializar
+        updateMotivationMeter();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .flashcards-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .flashcard {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .card-term {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .card-definition {
+            font-size: 1.2em;
+            color: #333333;
+            line-height: 1.6;
+            max-width: 90%;
+        }
+        
+        .card-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .category-ignition {
+            background-color: #e8f5e8;
+            color: #2d5016;
+        }
+        
+        .category-practice {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+        
+        .category-mastery {
+            background-color: #f3e5f5;
+            color: #4a148c;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .control-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .control-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .stats-panel {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .category-filter {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #005BAA;
+            border-radius: 20px;
+            background-color: #ffffff;
+            color: #005BAA;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #005BAA;
+            color: white;
+        }
+        
+        .results-panel {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .results-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .flip-hint {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #6c757d;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Flashcards del Talento</h1>
+        <h2>Memoriza los conceptos clave del desarrollo del talento</h2>
+
+        <div class="quote">
+            "La repetición es la madre del aprendizaje. Cada vez que repasas un concepto, fortaleces las conexiones neuronales."
+        </div>
+
+        <div class="flashcards-container">
+            <div class="category-filter">
+                <h3>🎯 Filtrar por Categoría</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterCards('all')">Todas</button>
+                    <button class="filter-btn" onclick="filterCards('ignition')">Ignición</button>
+                    <button class="filter-btn" onclick="filterCards('practice')">Práctica</button>
+                    <button class="filter-btn" onclick="filterCards('mastery')">Maestría</button>
+                </div>
+            </div>
+
+            <div class="progress-info">
+                <h3>Progreso de Estudio</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Tarjeta 1 de 20</p>
+            </div>
+
+            <div class="stats-panel">
+                <h3>📊 Estadísticas de Estudio</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="cardsStudied">0</div>
+                        <div class="stat-label">Tarjetas Estudiadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="cardsMastered">0</div>
+                        <div class="stat-label">Dominadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="studyStreak">0</div>
+                        <div class="stat-label">Días Consecutivos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalTime">0</div>
+                        <div class="stat-label">Minutos de Estudio</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="flashcardContainer">
+                <!-- Las flashcards se cargarán aquí dinámicamente -->
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="previousCard()" id="prevBtn">← Anterior</button>
+                <button class="control-btn" onclick="flipCard()" id="flipBtn">🔄 Girar Tarjeta</button>
+                <button class="control-btn" onclick="nextCard()" id="nextBtn">Siguiente →</button>
+                <button class="control-btn" onclick="markAsMastered()" id="masterBtn">✅ Dominada</button>
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h3>🎯 Resumen de Estudio</h3>
+                <div id="resultsContent"></div>
+                <button class="control-btn" onclick="restartStudy()" style="margin-top: 20px;">🔄 Reiniciar Estudio</button>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> Haz clic en la tarjeta para girarla y ver la definición. Repite los conceptos que te resulten más difíciles hasta que los domines completamente.</p>
+        </div>
+    </div>
+
+    <script>
+        const flashcards = [
+            {
+                term: "Ignición",
+                definition: "El momento mágico cuando piensas: 'Yo podría ser uno de ellos'. Es un pensamiento minúsculo pero capaz de cambiar el mundo que enciende tu mente inconsciente.",
+                category: "ignition"
+            },
+            {
+                term: "Punto Óptimo",
+                definition: "Trabajar en el límite de tu capacidad actual, donde el porcentaje de éxito está entre el 50% y el 80%. Es la zona donde el aprendizaje es máximo.",
+                category: "practice"
+            },
+            {
+                term: "Práctica Intensa",
+                definition: "No se mide en minutos ni en horas, sino en el número de intentos y repeticiones de alta calidad que realizamos; básicamente, en la cantidad de conexiones que formamos en nuestro cerebro.",
+                category: "practice"
+            },
+            {
+                term: "Llenar el Parabrisas",
+                definition: "Exponer tu cerebro a imágenes vívidas de excelencia de manera consistente y deliberada. Es como llenar tu 'parabrisas' con modelos de lo que quieres convertirte.",
+                category: "ignition"
+            },
+            {
+                term: "Método del Grabado",
+                definition: "Observar cómo se lleva a cabo la acción, desde muy cerca y prestando gran atención, una y otra vez, hasta crear un modelo mental de alta definición.",
+                category: "ignition"
+            },
+            {
+                term: "Práctica Superlenta",
+                definition: "Ejecutar movimientos muy despacio para detectar y corregir errores sutiles. Como dijo Ben Hogan: 'Lo que importa no es lo deprisa que puedes hacer algo, sino lo despacio que puedes hacerlo bien.'",
+                category: "practice"
+            },
+            {
+                term: "Habilidades Duras",
+                definition: "Acciones que se ejecutan siempre de la manera más correcta y rigurosa posible. Ejemplos: swing de golf, saque de tenis, acordes de guitarra, operaciones matemáticas básicas.",
+                category: "practice"
+            },
+            {
+                term: "Habilidades Blandas",
+                definition: "Actividades que permiten alcanzar un buen resultado a través de múltiples caminos. Ejemplos: liderazgo, creatividad, comunicación, toma de decisiones.",
+                category: "practice"
+            },
+            {
+                term: "Técnica del Sándwich",
+                definition: "Ejecutar el movimiento correcto, luego el incorrecto, y finalmente el correcto de nuevo. Esto refuerza el patrón correcto y hace más evidente el error.",
+                category: "practice"
+            },
+            {
+                term: "Practicar en el Aire",
+                definition: "Simular movimientos sin herramientas o equipos para enfocarse en la técnica pura. Muchos músicos practican digitación en superficies planas.",
+                category: "practice"
+            },
+            {
+                term: "Cerrar los Ojos",
+                definition: "Eliminar distracciones visuales para enfocarse en las sensaciones y movimientos internos. Esto activa otros sentidos y mejora la conciencia corporal.",
+                category: "practice"
+            },
+            {
+                term: "Segmentar Habilidades",
+                definition: "Dividir habilidades complejas en partes más pequeñas y practicar cada segmento por separado antes de combinarlos.",
+                category: "practice"
+            },
+            {
+                term: "Dificultad Deseable",
+                definition: "La frustración es una señal positiva en la práctica intensa. Indica que estás trabajando en el punto óptimo, donde el aprendizaje es máximo.",
+                category: "practice"
+            },
+            {
+                term: "Contar Intentos",
+                definition: "En lugar de medir el tiempo, cuenta las repeticiones de alta calidad. Es la cantidad de conexiones neuronales, no el tiempo, lo que importa.",
+                category: "practice"
+            },
+            {
+                term: "Persistencia",
+                definition: "La motivación inicial es importante, pero la persistencia es lo que realmente marca la diferencia. Muchas personas comienzan con entusiasmo, pero pocas mantienen ese entusiasmo a lo largo del tiempo.",
+                category: "mastery"
+            },
+            {
+                term: "Conexiones Neuronales",
+                definition: "Cada vez que practicas una habilidad, tu cerebro forma nuevas conexiones neuronales. La práctica intensa acelera este proceso al crear más conexiones de mayor calidad.",
+                category: "mastery"
+            },
+            {
+                term: "Modelo Mental",
+                definition: "Una representación interna de alta definición de cómo se ejecuta una habilidad. Se crea a través de observación cuidadosa y práctica deliberada.",
+                category: "mastery"
+            },
+            {
+                term: "Retroalimentación Inmediata",
+                definition: "Corregir errores inmediatamente durante la práctica. Esto evita que se formen patrones incorrectos y acelera el aprendizaje.",
+                category: "practice"
+            },
+            {
+                term: "Conciencia Corporal",
+                definition: "La capacidad de sentir y controlar los movimientos del cuerpo con precisión. Se mejora a través de técnicas como cerrar los ojos y práctica superlenta.",
+                category: "mastery"
+            },
+            {
+                term: "Maestría",
+                definition: "El estado donde una habilidad se ejecuta de manera automática y precisa, sin necesidad de pensamiento consciente. Se logra a través de miles de horas de práctica intensa.",
+                category: "mastery"
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let currentFilter = 'all';
+        let masteredCards = [];
+        let studyStartTime = Date.now();
+        let cardsStudied = 0;
+
+        function initFlashcards() {
+            currentCardIndex = 0;
+            isFlipped = false;
+            showCurrentCard();
+            updateProgress();
+            updateStats();
+        }
+
+        function showCurrentCard() {
+            const container = document.getElementById('flashcardContainer');
+            const filteredCards = getFilteredCards();
+            
+            if (filteredCards.length === 0) {
+                container.innerHTML = '<div class="flashcard"><p>No hay tarjetas en esta categoría.</p></div>';
+                return;
+            }
+            
+            const card = filteredCards[currentCardIndex];
+            
+            container.innerHTML = `
+                <div class="flashcard" onclick="flipCard()">
+                    <div class="card-category category-${card.category}">${getCategoryName(card.category)}</div>
+                    <div class="card-front">
+                        <div class="card-term">${card.term}</div>
+                        <div class="flip-hint">Haz clic para ver la definición</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-definition">${card.definition}</div>
+                        <div class="flip-hint">Haz clic para ver el término</div>
+                    </div>
+                </div>
+            `;
+            
+            updateControls();
+        }
+
+        function flipCard() {
+            const flashcard = document.querySelector('.flashcard');
+            isFlipped = !isFlipped;
+            
+            if (isFlipped) {
+                flashcard.classList.add('flipped');
+            } else {
+                flashcard.classList.remove('flipped');
+            }
+        }
+
+        function nextCard() {
+            const filteredCards = getFilteredCards();
+            if (currentCardIndex < filteredCards.length - 1) {
+                currentCardIndex++;
+                isFlipped = false;
+                showCurrentCard();
+                updateProgress();
+            }
+        }
+
+        function previousCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                isFlipped = false;
+                showCurrentCard();
+                updateProgress();
+            }
+        }
+
+        function markAsMastered() {
+            const filteredCards = getFilteredCards();
+            const currentCard = filteredCards[currentCardIndex];
+            
+            if (!masteredCards.includes(currentCard.term)) {
+                masteredCards.push(currentCard.term);
+                localStorage.setItem('masteredCards', JSON.stringify(masteredCards));
+                updateStats();
+            }
+            
+            nextCard();
+        }
+
+        function filterCards(category) {
+            currentFilter = category;
+            currentCardIndex = 0;
+            isFlipped = false;
+            
+            // Actualizar botones de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            showCurrentCard();
+            updateProgress();
+        }
+
+        function getFilteredCards() {
+            if (currentFilter === 'all') {
+                return flashcards;
+            }
+            return flashcards.filter(card => card.category === currentFilter);
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'ignition': 'Ignición',
+                'practice': 'Práctica',
+                'mastery': 'Maestría'
+            };
+            return names[category] || category;
+        }
+
+        function updateProgress() {
+            const filteredCards = getFilteredCards();
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            const progress = ((currentCardIndex + 1) / filteredCards.length) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Tarjeta ${currentCardIndex + 1} de ${filteredCards.length}`;
+        }
+
+        function updateControls() {
+            const filteredCards = getFilteredCards();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentCardIndex === 0;
+            nextBtn.disabled = currentCardIndex === filteredCards.length - 1;
+        }
+
+        function updateStats() {
+            const totalTime = Math.floor((Date.now() - studyStartTime) / 60000);
+            
+            document.getElementById('cardsStudied').textContent = cardsStudied;
+            document.getElementById('cardsMastered').textContent = masteredCards.length;
+            document.getElementById('totalTime').textContent = totalTime;
+            
+            // Calcular racha (simplificado)
+            const today = new Date().toDateString();
+            const lastStudy = localStorage.getItem('lastStudyDate');
+            const streak = (lastStudy === today) ? 1 : 0;
+            document.getElementById('studyStreak').textContent = streak;
+        }
+
+        function restartStudy() {
+            const resultsPanel = document.getElementById('resultsPanel');
+            resultsPanel.classList.remove('show');
+            
+            studyStartTime = Date.now();
+            cardsStudied = 0;
+            initFlashcards();
+        }
+
+        // Cargar datos guardados
+        function loadSavedData() {
+            const saved = localStorage.getItem('masteredCards');
+            if (saved) {
+                masteredCards = JSON.parse(saved);
+            }
+            
+            localStorage.setItem('lastStudyDate', new Date().toDateString());
+        }
+
+        // Inicializar cuando se carga la página
+        window.onload = function() {
+            loadSavedData();
+            initFlashcards();
+        };
+
+        // Contar tarjetas estudiadas
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.flashcard') || e.target.closest('.control-btn')) {
+                cardsStudied++;
+                updateStats();
+            }
+        });
+    </script>
+</body>
+</html> 

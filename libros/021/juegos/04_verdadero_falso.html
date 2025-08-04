@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .question-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .question-text {
+            font-size: 1.2em;
+            color: #333333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .answer-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .answer-btn {
+            padding: 15px 30px;
+            border: 2px solid #005BAA;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #005BAA;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+        
+        .answer-btn:hover {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.2);
+        }
+        
+        .answer-btn.correct {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .answer-btn.incorrect {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        
+        .answer-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .explanation {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .explanation.correct {
+            border-left-color: #28a745;
+            background-color: #e8f5e8;
+        }
+        
+        .explanation.incorrect {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        
+        .progress-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .next-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .next-btn.show {
+            display: inline-block;
+        }
+        
+        .results-panel {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .results-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .score-excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .score-good {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        
+        .score-needs-improvement {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+        
+        .restart-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .restart-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verdadero o Falso</h1>
+        <h2>Pon a prueba tu conocimiento sobre el desarrollo del talento</h2>
+
+        <div class="quote">
+            "El talento no es un don, sino una habilidad que se puede desarrollar a través de la práctica intensa y deliberada."
+        </div>
+
+        <div class="quiz-container">
+            <div class="progress-info">
+                <h3>Progreso del Quiz</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Pregunta 1 de 15</p>
+            </div>
+
+            <div id="questionContainer">
+                <!-- Las preguntas se cargarán aquí dinámicamente -->
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h3>🎯 Resultados del Quiz</h3>
+                <div class="score-display">
+                    <div class="score-circle" id="scoreCircle">0%</div>
+                    <h4 id="scoreMessage">¡Excelente trabajo!</h4>
+                </div>
+                <div id="resultsDetails"></div>
+                <button class="restart-btn" onclick="restartQuiz()">🔄 Reiniciar Quiz</button>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> Lee cada afirmación cuidadosamente. Algunas pueden parecer obvias, pero los detalles importan en el desarrollo del talento.</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "La práctica intensa se mide en minutos y horas, no en repeticiones.",
+                answer: false,
+                explanation: "FALSO. La práctica intensa se mide en el número de intentos y repeticiones de alta calidad, no en tiempo. Es la cantidad de conexiones neuronales lo que importa."
+            },
+            {
+                question: "El punto óptimo de práctica es donde el porcentaje de éxito está entre 50% y 80%.",
+                answer: true,
+                explanation: "VERDADERO. El punto óptimo es trabajar en el límite de tu capacidad actual, donde el porcentaje de éxito está entre 50% y 80%. Es la zona donde el aprendizaje es máximo."
+            },
+            {
+                question: "La ignición es el momento cuando piensas: 'Yo podría ser uno de ellos'.",
+                answer: true,
+                explanation: "VERDADERO. La ignición es ese momento mágico cuando piensas: 'Yo podría ser uno de ellos'. Es un pensamiento minúsculo pero capaz de cambiar el mundo."
+            },
+            {
+                question: "Las habilidades duras y blandas requieren exactamente el mismo tipo de práctica.",
+                answer: false,
+                explanation: "FALSO. Las habilidades duras requieren precisión y repetición exacta, mientras que las habilidades blandas permiten múltiples caminos y requieren exploración y variabilidad."
+            },
+            {
+                question: "La frustración durante la práctica es una señal negativa que indica que debes parar.",
+                answer: false,
+                explanation: "FALSO. La frustración es una señal positiva en la práctica intensa. Indica que estás trabajando en el punto óptimo, donde el aprendizaje es máximo."
+            },
+            {
+                question: "El método del grabado consiste en observar cómo se lleva a cabo la acción desde muy cerca.",
+                answer: true,
+                explanation: "VERDADERO. El método del grabado es observar cómo se lleva a cabo la acción, desde muy cerca y prestando gran atención, una y otra vez, hasta crear un modelo mental de alta definición."
+            },
+            {
+                question: "Llenar el parabrisas significa exponer tu cerebro a imágenes vívidas de excelencia.",
+                answer: true,
+                explanation: "VERDADERO. Llenar el parabrisas es exponer tu cerebro a imágenes vívidas de excelencia de manera consistente y deliberada. Es como llenar tu 'parabrisas' con modelos de lo que quieres convertirte."
+            },
+            {
+                question: "La práctica superlenta es una técnica ineficaz que ralentiza el aprendizaje.",
+                answer: false,
+                explanation: "FALSO. La práctica superlenta es muy efectiva. Ejecutar movimientos muy despacio permite detectar y corregir errores sutiles que de otra manera pasarían desapercibidos."
+            },
+            {
+                question: "El talento es principalmente genético y no se puede desarrollar significativamente.",
+                answer: false,
+                explanation: "FALSO. El talento no es principalmente genético. Es una habilidad que se puede desarrollar a través de la práctica intensa y deliberada, como demuestran numerosos estudios."
+            },
+            {
+                question: "Cerrar los ojos durante la práctica puede mejorar la conciencia corporal.",
+                answer: true,
+                explanation: "VERDADERO. Cerrar los ojos elimina distracciones visuales y permite enfocarse en las sensaciones y movimientos internos, mejorando la conciencia corporal."
+            },
+            {
+                question: "La técnica del sándwich consiste en ejecutar correcto-incorrecto-correcto.",
+                answer: true,
+                explanation: "VERDADERO. La técnica del sándwich es ejecutar el movimiento correcto, luego el incorrecto, y finalmente el correcto de nuevo. Esto refuerza el patrón correcto."
+            },
+            {
+                question: "Practicar en el aire es una pérdida de tiempo sin herramientas reales.",
+                answer: false,
+                explanation: "FALSO. Practicar en el aire es muy efectivo. Simular movimientos sin herramientas permite enfocarse en la técnica pura y es usado por muchos expertos."
+            },
+            {
+                question: "La motivación inicial es más importante que la persistencia a largo plazo.",
+                answer: false,
+                explanation: "FALSO. Aunque la motivación inicial es importante, la persistencia es lo que realmente marca la diferencia. Muchas personas comienzan con entusiasmo, pero pocas mantienen ese entusiasmo a lo largo del tiempo."
+            },
+            {
+                question: "Segmentar las habilidades complejas en partes más pequeñas mejora el aprendizaje.",
+                answer: true,
+                explanation: "VERDADERO. Segmentar las habilidades complejas en partes más pequeñas y practicar cada segmento por separado antes de combinarlos es una técnica muy efectiva."
+            },
+            {
+                question: "El cerebro forma nuevas conexiones neuronales cada vez que practicas una habilidad.",
+                answer: true,
+                explanation: "VERDADERO. Cada vez que practicas una habilidad, tu cerebro forma nuevas conexiones neuronales. La práctica intensa acelera este proceso al crear más conexiones de mayor calidad."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            showQuestion();
+            updateProgress();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question-card active">
+                    <div class="question-text">${question.question}</div>
+                    <div class="answer-buttons">
+                        <button class="answer-btn" onclick="selectAnswer(true)">✅ VERDADERO</button>
+                        <button class="answer-btn" onclick="selectAnswer(false)">❌ FALSO</button>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <h4>💡 Explicación:</h4>
+                        <p>${question.explanation}</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="next-btn" onclick="nextQuestion()" id="nextBtn">Siguiente Pregunta →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectAnswer(userAnswer) {
+            if (answered) return;
+            
+            answered = true;
+            const question = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.answer-btn');
+            const explanation = document.getElementById('explanation');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Deshabilitar botones
+            buttons.forEach(btn => btn.classList.add('disabled'));
+            
+            // Marcar respuesta correcta/incorrecta
+            if (userAnswer === question.answer) {
+                score++;
+                buttons[userAnswer ? 0 : 1].classList.add('correct');
+                explanation.classList.add('correct');
+            } else {
+                buttons[userAnswer ? 0 : 1].classList.add('incorrect');
+                buttons[question.answer ? 0 : 1].classList.add('correct');
+                explanation.classList.add('incorrect');
+            }
+            
+            // Mostrar explicación
+            explanation.classList.add('show');
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                answered = false;
+                showQuestion();
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+        }
+
+        function showResults() {
+            const container = document.getElementById('questionContainer');
+            const resultsPanel = document.getElementById('resultsPanel');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreMessage = document.getElementById('scoreMessage');
+            const resultsDetails = document.getElementById('resultsDetails');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            // Ocultar contenedor de preguntas
+            container.style.display = 'none';
+            
+            // Actualizar círculo de puntuación
+            scoreCircle.textContent = percentage + '%';
+            scoreCircle.className = 'score-circle';
+            
+            if (percentage >= 80) {
+                scoreCircle.classList.add('score-excellent');
+                scoreMessage.textContent = '¡Excelente! Tienes un gran dominio de los conceptos del talento.';
+            } else if (percentage >= 60) {
+                scoreCircle.classList.add('score-good');
+                scoreMessage.textContent = '¡Buen trabajo! Tienes una comprensión sólida, pero hay espacio para mejorar.';
+            } else {
+                scoreCircle.classList.add('score-needs-improvement');
+                scoreMessage.textContent = 'Necesitas repasar los conceptos. La práctica hace al maestro.';
+            }
+            
+            // Mostrar detalles
+            resultsDetails.innerHTML = `
+                <div style="text-align: center; margin: 20px 0;">
+                    <p><strong>Puntuación:</strong> ${score} de ${questions.length} preguntas correctas</p>
+                    <p><strong>Porcentaje:</strong> ${percentage}%</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4>📚 Conceptos Clave que Deberías Recordar:</h4>
+                    <ul>
+                        <li>La práctica intensa se mide en repeticiones, no en tiempo</li>
+                        <li>El punto óptimo está entre 50% y 80% de éxito</li>
+                        <li>La ignición es el momento de conexión con la excelencia</li>
+                        <li>Las habilidades duras y blandas requieren enfoques diferentes</li>
+                        <li>La frustración es una señal positiva de aprendizaje</li>
+                    </ul>
+                </div>
+            `;
+            
+            resultsPanel.classList.add('show');
+        }
+
+        function restartQuiz() {
+            const container = document.getElementById('questionContainer');
+            const resultsPanel = document.getElementById('resultsPanel');
+            
+            container.style.display = 'block';
+            resultsPanel.classList.remove('show');
+            
+            initQuiz();
+        }
+
+        // Inicializar el quiz cuando se carga la página
+        window.onload = function() {
+            initQuiz();
+        };
+    </script>
+</body>
+</html> 

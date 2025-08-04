@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego: Plan de Ocho Semanas - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .game-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .week-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .week-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .week-card:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .week-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .week-number {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        .week-card.selected .week-number {
+            background: #28a745;
+        }
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .activity-item {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .activity-item:hover {
+            background: #bbdefb;
+        }
+        .activity-item.selected {
+            background: #4caf50;
+            color: white;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .feedback {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .score-display {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .plan-preview {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .milestone {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>📅 Juego: Plan de Ocho Semanas</h1>
+        
+        <div class="game-section">
+            <h2>📊 Tu Progreso</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="score-display" id="scoreDisplay">
+                Puntuación: <span id="score">0</span> / <span id="totalScore">0</span>
+            </div>
+        </div>
+
+        <!-- Sección 1: Entendiendo las Ocho Semanas -->
+        <div class="game-section" id="section1">
+            <h2>🧠 Sección 1: La Ciencia de las Ocho Semanas</h2>
+            <p>Las primeras ocho semanas son cruciales para establecer las bases neuronales del talento.</p>
+            
+            <h3>Pregunta 1: ¿Por qué son importantes las primeras ocho semanas?</h3>
+            <div class="activity-item" data-correct="true">
+                <strong>A)</strong> Se forman las conexiones neuronales básicas que sostendrán el talento
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>B)</strong> Es el tiempo mínimo para ver resultados visibles
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>C)</strong> Es cuando la motivación está en su punto más alto
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>D)</strong> Es el período establecido por los expertos
+            </div>
+            <div class="feedback" id="feedback1"></div>
+            
+            <h3>Pregunta 2: ¿Cuál es el objetivo de las semanas 1-2?</h3>
+            <div class="activity-item" data-correct="false">
+                <strong>A)</strong> Alcanzar un nivel intermedio de competencia
+            </div>
+            <div class="activity-item" data-correct="true">
+                <strong>B)</strong> Aprender los fundamentos básicos y crear las primeras conexiones neuronales
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>C)</strong> Practicar técnicas avanzadas
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>D)</strong> Evaluar si la actividad es adecuada
+            </div>
+            <div class="feedback" id="feedback2"></div>
+            
+            <button class="btn" onclick="checkSection1()">Verificar Respuestas</button>
+        </div>
+
+        <!-- Sección 2: Cronograma de las Ocho Semanas -->
+        <div class="game-section" id="section2" style="display: none;">
+            <h2>📅 Sección 2: Cronograma de las Ocho Semanas</h2>
+            <p>Organiza las semanas en el orden correcto según su propósito y enfoque.</p>
+            
+            <div class="week-timeline">
+                <div class="week-card" data-week="1">
+                    <div class="week-number">1-2</div>
+                    <h4>Establecimiento de Bases</h4>
+                    <p>Aprender fundamentos básicos</p>
+                </div>
+                <div class="week-card" data-week="2">
+                    <div class="week-number">3-4</div>
+                    <h4>Consolidación Inicial</h4>
+                    <p>Repetir hasta automatizar</p>
+                </div>
+                <div class="week-card" data-week="3">
+                    <div class="week-number">5-6</div>
+                    <h4>Expansión de Habilidades</h4>
+                    <p>Introducir variaciones</p>
+                </div>
+                <div class="week-card" data-week="4">
+                    <div class="week-number">7-8</div>
+                    <h4>Integración y Maestría</h4>
+                    <p>Integrar todo el sistema</p>
+                </div>
+            </div>
+            
+            <p><strong>Selecciona las semanas en el orden correcto:</strong></p>
+            <div id="weekOrder" style="margin: 20px 0;"></div>
+            
+            <button class="btn" onclick="checkWeekOrder()">Verificar Orden</button>
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Sección 3: Estrategias para las Ocho Semanas -->
+        <div class="game-section" id="section3" style="display: none;">
+            <h2>🎯 Sección 3: Estrategias para las Ocho Semanas</h2>
+            <p>Selecciona las mejores estrategias para cada fase del plan de ocho semanas.</p>
+            
+            <h3>¿Cuál es la estrategia más importante para las primeras ocho semanas?</h3>
+            <div class="activity-item" data-correct="true">
+                <strong>Práctica Diaria Consistente</strong><br>
+                Mínimo 30 minutos diarios, misma hora, sin excepciones
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>Práctica Intensiva Ocasional</strong><br>
+                Sesiones largas cuando tengas tiempo disponible
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>Práctica Grupal</strong><br>
+                Solo practicar cuando puedas reunirte con otros
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>Práctica Espontánea</strong><br>
+                Practicar cuando te sientas motivado
+            </div>
+            <div class="feedback" id="feedback4"></div>
+            
+            <h3>¿Qué debes hacer cuando encuentres dificultades en las primeras semanas?</h3>
+            <div class="activity-item" data-correct="false">
+                <strong>A)</strong> Cambiar completamente de enfoque
+            </div>
+            <div class="activity-item" data-correct="true">
+                <strong>B)</strong> Mantener la consistencia y revisar los fundamentos
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>C)</strong> Tomar un descanso hasta que pase la frustración
+            </div>
+            <div class="activity-item" data-correct="false">
+                <strong>D)</strong> Buscar una actividad más fácil
+            </div>
+            <div class="feedback" id="feedback5"></div>
+            
+            <button class="btn" onclick="checkSection3()">Verificar Respuestas</button>
+        </div>
+
+        <!-- Sección 4: Crear tu Plan Personal -->
+        <div class="game-section" id="section4" style="display: none;">
+            <h2>🚀 Sección 4: Crear tu Plan Personal de Ocho Semanas</h2>
+            <p>Diseña tu propio plan de ocho semanas para una habilidad específica.</p>
+            
+            <div class="plan-preview">
+                <h3>Tu Plan de Ocho Semanas</h3>
+                <p><strong>Habilidad elegida:</strong> <input type="text" id="skillChoice" placeholder="Ej: Tocar guitarra, Programar, Bailar..." style="width: 100%; padding: 8px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc;"></p>
+                
+                <div class="milestone">
+                    <h4>🎯 Semana 2: Primer Hito</h4>
+                    <p><strong>Logro esperado:</strong> <input type="text" id="milestone1" placeholder="Ej: Poder tocar 3 acordes básicos" style="width: 100%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc;"></p>
+                </div>
+                
+                <div class="milestone">
+                    <h4>🎯 Semana 4: Segundo Hito</h4>
+                    <p><strong>Logro esperado:</strong> <input type="text" id="milestone2" placeholder="Ej: Transiciones fluidas entre acordes" style="width: 100%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc;"></p>
+                </div>
+                
+                <div class="milestone">
+                    <h4>🎯 Semana 6: Tercer Hito</h4>
+                    <p><strong>Logro esperado:</strong> <input type="text" id="milestone3" placeholder="Ej: Tocar ritmos básicos" style="width: 100%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc;"></p>
+                </div>
+                
+                <div class="milestone">
+                    <h4>🎯 Semana 8: Hito Final</h4>
+                    <p><strong>Logro esperado:</strong> <input type="text" id="milestone4" placeholder="Ej: Tocar una canción completa" style="width: 100%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc;"></p>
+                </div>
+                
+                <h4>📅 Horario de Práctica</h4>
+                <p><strong>Duración diaria:</strong> <input type="number" id="practiceTime" value="30" min="15" max="120" style="width: 80px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;"> minutos</p>
+                <p><strong>Hora preferida:</strong> <input type="time" id="practiceTime" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;"></p>
+            </div>
+            
+            <button class="btn" onclick="completePlan()">Completar Plan</button>
+        </div>
+
+        <!-- Resultados Finales -->
+        <div class="game-section" id="results" style="display: none;">
+            <h2>🎉 ¡Plan de Ocho Semanas Completado!</h2>
+            <div class="score-display">
+                <h3>Puntuación Final: <span id="finalScore">0</span>%</h3>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="plan-preview">
+                <h3>🎯 Tu Plan Personal</h3>
+                <div id="personalPlan"></div>
+            </div>
+            
+            <div class="milestone">
+                <h3>🚀 Próximos Pasos</h3>
+                <ul>
+                    <li><strong>Comienza hoy mismo</strong> con tu primera sesión de práctica</li>
+                    <li><strong>Mantén un diario</strong> de tu progreso diario</li>
+                    <li><strong>Revisa semanalmente</strong> si estás cumpliendo tus hitos</li>
+                    <li><strong>Ajusta el plan</strong> según tus necesidades específicas</li>
+                    <li><strong>Celebra cada hito</strong> que alcances</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="restartGame()">Crear Nuevo Plan</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        let score = 0;
+        let totalQuestions = 0;
+        let weekOrder = [];
+
+        // Inicializar el juego
+        function initGame() {
+            totalQuestions = 5; // 5 preguntas principales
+            updateProgress();
+            updateScore();
+        }
+
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progress = ((currentSection - 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Actualizar puntuación
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('totalScore').textContent = totalQuestions;
+        }
+
+        // Verificar sección 1
+        function checkSection1() {
+            let correct = 0;
+            
+            // Verificar pregunta 1
+            const selected1 = document.querySelector('#section1 .activity-item.selected');
+            if (selected1 && selected1.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback1', '¡Correcto! Las ocho semanas son cruciales para formar las conexiones neuronales básicas.', 'correct');
+            } else {
+                showFeedback('feedback1', 'Incorrecto. La respuesta correcta es A. Las ocho semanas forman las conexiones neuronales fundamentales.', 'incorrect');
+            }
+            
+            // Verificar pregunta 2
+            const selected2 = document.querySelectorAll('#section1 .activity-item.selected')[1];
+            if (selected2 && selected2.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback2', '¡Correcto! Las semanas 1-2 se enfocan en los fundamentos básicos.', 'correct');
+            } else {
+                showFeedback('feedback2', 'Incorrecto. La respuesta correcta es B. Las primeras semanas son para fundamentos básicos.', 'incorrect');
+            }
+            
+            score += correct;
+            updateScore();
+            
+            setTimeout(() => {
+                document.getElementById('section1').style.display = 'none';
+                document.getElementById('section2').style.display = 'block';
+                currentSection = 2;
+                updateProgress();
+            }, 2000);
+        }
+
+        // Verificar orden de semanas
+        function checkWeekOrder() {
+            const selectedWeeks = document.querySelectorAll('#section2 .week-card.selected');
+            let correct = 0;
+            
+            selectedWeeks.forEach((week, index) => {
+                const weekNumber = parseInt(week.getAttribute('data-week'));
+                if (weekNumber === index + 1) {
+                    correct++;
+                }
+            });
+            
+            if (selectedWeeks.length === 4 && correct === 4) {
+                showFeedback('feedback3', '¡Perfecto! Has ordenado las semanas correctamente según su propósito y enfoque.', 'correct');
+                score += 1;
+                updateScore();
+                
+                setTimeout(() => {
+                    document.getElementById('section2').style.display = 'none';
+                    document.getElementById('section3').style.display = 'block';
+                    currentSection = 3;
+                    updateProgress();
+                }, 2000);
+            } else {
+                showFeedback('feedback3', 'Selecciona las 4 semanas en el orden correcto: 1-2 (Bases), 3-4 (Consolidación), 5-6 (Expansión), 7-8 (Integración).', 'incorrect');
+            }
+        }
+
+        // Verificar sección 3
+        function checkSection3() {
+            let correct = 0;
+            
+            // Verificar pregunta 1
+            const selected1 = document.querySelector('#section3 .activity-item.selected');
+            if (selected1 && selected1.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback4', '¡Correcto! La práctica diaria consistente es la estrategia más importante.', 'correct');
+            } else {
+                showFeedback('feedback4', 'Incorrecto. La respuesta correcta es la Práctica Diaria Consistente.', 'incorrect');
+            }
+            
+            // Verificar pregunta 2
+            const selected2 = document.querySelectorAll('#section3 .activity-item.selected')[1];
+            if (selected2 && selected2.getAttribute('data-correct') === 'true') {
+                correct++;
+                showFeedback('feedback5', '¡Correcto! Mantener la consistencia y revisar fundamentos es la mejor estrategia.', 'correct');
+            } else {
+                showFeedback('feedback5', 'Incorrecto. La respuesta correcta es B. Mantener consistencia y revisar fundamentos.', 'incorrect');
+            }
+            
+            score += correct;
+            updateScore();
+            
+            setTimeout(() => {
+                document.getElementById('section3').style.display = 'none';
+                document.getElementById('section4').style.display = 'block';
+                currentSection = 4;
+                updateProgress();
+            }, 2000);
+        }
+
+        // Completar plan
+        function completePlan() {
+            const skill = document.getElementById('skillChoice').value;
+            const milestone1 = document.getElementById('milestone1').value;
+            const milestone2 = document.getElementById('milestone2').value;
+            const milestone3 = document.getElementById('milestone3').value;
+            const milestone4 = document.getElementById('milestone4').value;
+            
+            if (!skill || !milestone1 || !milestone2 || !milestone3 || !milestone4) {
+                alert('Por favor, completa todos los campos del plan.');
+                return;
+            }
+            
+            document.getElementById('section4').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const finalScore = Math.round((score / totalQuestions) * 100);
+            document.getElementById('finalScore').textContent = finalScore;
+            
+            let message = '';
+            if (finalScore >= 90) {
+                message = '¡Excelente! Tienes un dominio excepcional del plan de ocho semanas.';
+            } else if (finalScore >= 70) {
+                message = '¡Muy bien! Tienes una buena comprensión del plan de ocho semanas.';
+            } else if (finalScore >= 50) {
+                message = '¡Bien! Tienes una comprensión básica. Revisa las lecciones para mejorar.';
+            } else {
+                message = 'Necesitas revisar los conceptos. Te recomiendo volver a las lecciones.';
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+            
+            // Mostrar plan personal
+            document.getElementById('personalPlan').innerHTML = `
+                <p><strong>Habilidad:</strong> ${skill}</p>
+                <p><strong>Semana 2:</strong> ${milestone1}</p>
+                <p><strong>Semana 4:</strong> ${milestone2}</p>
+                <p><strong>Semana 6:</strong> ${milestone3}</p>
+                <p><strong>Semana 8:</strong> ${milestone4}</p>
+            `;
+        }
+
+        // Reiniciar juego
+        function restartGame() {
+            location.reload();
+        }
+
+        // Mostrar feedback
+        function showFeedback(id, message, type) {
+            const feedback = document.getElementById(id);
+            feedback.textContent = message;
+            feedback.className = 'feedback ' + type;
+            feedback.style.display = 'block';
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initGame();
+            
+            // Selección de respuestas de opción múltiple
+            document.querySelectorAll('.activity-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.closest('.game-section');
+                    const items = section.querySelectorAll('.activity-item');
+                    
+                    // Deseleccionar todas las opciones en la sección
+                    items.forEach(i => i.classList.remove('selected'));
+                    
+                    // Seleccionar la opción clickeada
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Selección de semanas (orden)
+            document.querySelectorAll('.week-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                    } else {
+                        this.classList.add('selected');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

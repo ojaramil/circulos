@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío de Práctica - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .challenge-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .challenge-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .challenge-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .challenge-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .challenge-title {
+            font-size: 1.5em;
+            color: #005BAA;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .challenge-description {
+            color: #333333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .challenge-difficulty {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+        
+        .difficulty-beginner {
+            background-color: #e8f5e8;
+            color: #2d5016;
+        }
+        
+        .difficulty-intermediate {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .difficulty-advanced {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .practice-area {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .practice-timer {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #005BAA;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        
+        .timer-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .timer-btn {
+            padding: 12px 24px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .start-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .start-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .pause-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .pause-btn:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .practice-instructions {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .instruction-step {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-color: #005BAA;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .progress-tracker {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .challenge-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .completion-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .completion-icon {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+        
+        .completion-title {
+            font-size: 1.8em;
+            color: #005BAA;
+            margin-bottom: 15px;
+        }
+        
+        .completion-message {
+            color: #333333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .challenge-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        
+        .nav-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .challenge-selector {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .challenge-option {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .challenge-option:hover {
+            border-color: #005BAA;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .challenge-option.selected {
+            border-color: #005BAA;
+            background-color: #e3f2fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Desafío de Práctica</h1>
+        <h2>Pon a prueba tus habilidades con ejercicios estructurados</h2>
+
+        <div class="quote">
+            "La práctica intensa no es fácil, pero es la forma más rápida y efectiva de desarrollar talento."
+        </div>
+
+        <div class="challenge-container">
+            <div class="challenge-selector" id="challengeSelector">
+                <h3>🎯 Selecciona tu Desafío</h3>
+                <div class="challenge-grid" id="challengeGrid">
+                    <!-- Los desafíos se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div id="challengeContainer">
+                <!-- El desafío seleccionado se mostrará aquí -->
+            </div>
+
+            <div class="challenge-navigation">
+                <button class="nav-btn" onclick="previousChallenge()" id="prevBtn">← Anterior</button>
+                <button class="nav-btn" onclick="nextChallenge()" id="nextBtn">Siguiente →</button>
+            </div>
+        </div>
+
+        <!-- Modal de Completación -->
+        <div class="completion-modal" id="completionModal">
+            <div class="modal-content">
+                <div class="completion-icon">🎉</div>
+                <div class="completion-title">¡Desafío Completado!</div>
+                <div class="completion-message" id="completionMessage"></div>
+                <button class="nav-btn" onclick="closeCompletionModal()">Continuar</button>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> Recuerda que la práctica intensa se mide en repeticiones de alta calidad, no en tiempo. Enfócate en la precisión y la corrección de errores.</p>
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            {
+                id: 1,
+                title: "Práctica Superlenta",
+                description: "Ejecuta movimientos muy despacio para detectar y corregir errores sutiles.",
+                difficulty: "beginner",
+                duration: 300, // 5 minutos
+                instructions: [
+                    "Elige una habilidad que quieras mejorar",
+                    "Ejecuta el movimiento 3 veces más despacio de lo normal",
+                    "Presta atención a cada detalle del movimiento",
+                    "Corrige cualquier error que detectes inmediatamente",
+                    "Repite el proceso 10 veces"
+                ],
+                category: "práctica"
+            },
+            {
+                id: 2,
+                title: "Cerrar los Ojos",
+                description: "Elimina distracciones visuales para enfocarte en las sensaciones internas.",
+                difficulty: "beginner",
+                duration: 240, // 4 minutos
+                instructions: [
+                    "Elige una habilidad que puedas practicar sin ver",
+                    "Cierra los ojos y concéntrate en las sensaciones",
+                    "Presta atención a la posición de tu cuerpo",
+                    "Ejecuta el movimiento 5 veces con los ojos cerrados",
+                    "Abre los ojos y compara la precisión"
+                ],
+                category: "conciencia"
+            },
+            {
+                id: 3,
+                title: "Practicar en el Aire",
+                description: "Simula movimientos sin herramientas para enfocarte en la técnica pura.",
+                difficulty: "intermediate",
+                duration: 360, // 6 minutos
+                instructions: [
+                    "Identifica una habilidad que normalmente requiere herramientas",
+                    "Simula el movimiento sin las herramientas",
+                    "Enfócate en la técnica y la forma correcta",
+                    "Ejecuta 20 repeticiones perfectas",
+                    "Visualiza el resultado deseado"
+                ],
+                category: "técnica"
+            },
+            {
+                id: 4,
+                title: "Técnica del Sándwich",
+                description: "Ejecuta correcto-incorrecto-correcto para reforzar el patrón correcto.",
+                difficulty: "intermediate",
+                duration: 420, // 7 minutos
+                instructions: [
+                    "Ejecuta el movimiento correcto 3 veces",
+                    "Ejecuta el movimiento incorrecto 1 vez",
+                    "Ejecuta el movimiento correcto 3 veces más",
+                    "Observa la diferencia entre correcto e incorrecto",
+                    "Repite el ciclo 5 veces"
+                ],
+                category: "patrones"
+            },
+            {
+                id: 5,
+                title: "Segmentación de Habilidades",
+                description: "Divide una habilidad compleja en partes más pequeñas.",
+                difficulty: "advanced",
+                duration: 600, // 10 minutos
+                instructions: [
+                    "Identifica una habilidad compleja",
+                    "Divídela en 3-5 partes más pequeñas",
+                    "Practica cada parte por separado",
+                    "Combina las partes de dos en dos",
+                    "Finalmente, combina todas las partes"
+                ],
+                category: "análisis"
+            },
+            {
+                id: 6,
+                title: "Punto Óptimo",
+                description: "Trabaja en el límite de tu capacidad actual.",
+                difficulty: "advanced",
+                duration: 480, // 8 minutos
+                instructions: [
+                    "Elige una habilidad que conozcas bien",
+                    "Aumenta la dificultad hasta que falles 30-50% del tiempo",
+                    "Mantén esa dificultad durante toda la sesión",
+                    "Corrige errores inmediatamente",
+                    "No te frustres, es señal de que estás aprendiendo"
+                ],
+                category: "intensidad"
+            },
+            {
+                id: 7,
+                title: "Contar Repeticiones",
+                description: "Enfócate en la cantidad de repeticiones, no en el tiempo.",
+                difficulty: "intermediate",
+                duration: 300, // 5 minutos
+                instructions: [
+                    "Establece una meta de 50 repeticiones perfectas",
+                    "Cuenta cada repetición en voz alta",
+                    "Si cometes un error, no cuentes esa repetición",
+                    "Mantén un ritmo constante",
+                    "Celebra cuando alcances tu meta"
+                ],
+                category: "cantidad"
+            },
+            {
+                id: 8,
+                title: "Retroalimentación Inmediata",
+                description: "Corrige errores inmediatamente durante la práctica.",
+                difficulty: "beginner",
+                duration: 360, // 6 minutos
+                instructions: [
+                    "Practica una habilidad con un espejo o grabación",
+                    "Detente inmediatamente cuando detectes un error",
+                    "Corrige el error antes de continuar",
+                    "No acumules errores",
+                    "Enfócate en la precisión, no en la velocidad"
+                ],
+                category: "corrección"
+            }
+        ];
+
+        let currentChallengeIndex = 0;
+        let selectedChallenge = null;
+        let practiceTimer = null;
+        let practiceTime = 0;
+        let isPracticing = false;
+        let completedChallenges = [];
+
+        function initChallenges() {
+            showChallengeSelector();
+            loadCompletedChallenges();
+        }
+
+        function showChallengeSelector() {
+            const grid = document.getElementById('challengeGrid');
+            const container = document.getElementById('challengeContainer');
+            
+            grid.innerHTML = '';
+            challenges.forEach((challenge, index) => {
+                const option = document.createElement('div');
+                option.className = 'challenge-option';
+                option.onclick = () => selectChallenge(index);
+                option.innerHTML = `
+                    <h4>${challenge.title}</h4>
+                    <p>${challenge.description}</p>
+                    <div class="challenge-difficulty difficulty-${challenge.difficulty}">
+                        ${getDifficultyName(challenge.difficulty)}
+                    </div>
+                    <p><strong>${Math.floor(challenge.duration / 60)} minutos</strong></p>
+                `;
+                grid.appendChild(option);
+            });
+            
+            container.style.display = 'none';
+            document.getElementById('challengeSelector').style.display = 'block';
+        }
+
+        function selectChallenge(index) {
+            currentChallengeIndex = index;
+            selectedChallenge = challenges[index];
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.challenge-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.challenge-option').classList.add('selected');
+            
+            showChallenge();
+        }
+
+        function showChallenge() {
+            const container = document.getElementById('challengeContainer');
+            const selector = document.getElementById('challengeSelector');
+            
+            selector.style.display = 'none';
+            container.style.display = 'block';
+            
+            container.innerHTML = `
+                <div class="challenge-card active">
+                    <div class="challenge-header">
+                        <div class="challenge-title">${selectedChallenge.title}</div>
+                        <div class="challenge-description">${selectedChallenge.description}</div>
+                        <div class="challenge-difficulty difficulty-${selectedChallenge.difficulty}">
+                            ${getDifficultyName(selectedChallenge.difficulty)}
+                        </div>
+                    </div>
+                    
+                    <div class="practice-area">
+                        <div class="practice-timer" id="practiceTimer">${formatTime(selectedChallenge.duration)}</div>
+                        <div class="timer-controls">
+                            <button class="timer-btn start-btn" onclick="startPractice()" id="startBtn">▶️ Iniciar</button>
+                            <button class="timer-btn pause-btn" onclick="pausePractice()" id="pauseBtn" style="display: none;">⏸️ Pausar</button>
+                            <button class="timer-btn reset-btn" onclick="resetPractice()" id="resetBtn">🔄 Reiniciar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="practice-instructions">
+                        <h4>📋 Instrucciones:</h4>
+                        ${selectedChallenge.instructions.map((instruction, index) => `
+                            <div class="instruction-step">
+                                <span class="step-number">${index + 1}</span>
+                                ${instruction}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="progress-tracker">
+                        <h4>📊 Progreso</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="progressText">Tiempo restante: ${formatTime(selectedChallenge.duration)}</p>
+                    </div>
+                    
+                    <div class="challenge-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="timeElapsed">0:00</div>
+                            <div class="stat-label">Tiempo Transcurrido</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="timeRemaining">${formatTime(selectedChallenge.duration)}</div>
+                            <div class="stat-label">Tiempo Restante</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="completionRate">0%</div>
+                            <div class="stat-label">Progreso</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            updateNavigation();
+        }
+
+        function startPractice() {
+            if (isPracticing) return;
+            
+            isPracticing = true;
+            practiceTime = selectedChallenge.duration;
+            
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+            
+            practiceTimer = setInterval(() => {
+                practiceTime--;
+                updateTimer();
+                
+                if (practiceTime <= 0) {
+                    completeChallenge();
+                }
+            }, 1000);
+        }
+
+        function pausePractice() {
+            if (!isPracticing) return;
+            
+            isPracticing = false;
+            clearInterval(practiceTimer);
+            
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            
+            startBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+
+        function resetPractice() {
+            pausePractice();
+            practiceTime = selectedChallenge.duration;
+            updateTimer();
+        }
+
+        function updateTimer() {
+            const timer = document.getElementById('practiceTimer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const timeElapsed = document.getElementById('timeElapsed');
+            const timeRemaining = document.getElementById('timeRemaining');
+            const completionRate = document.getElementById('completionRate');
+            
+            timer.textContent = formatTime(practiceTime);
+            
+            const elapsed = selectedChallenge.duration - practiceTime;
+            const progress = ((elapsed) / selectedChallenge.duration) * 100;
+            
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Tiempo restante: ${formatTime(practiceTime)}`;
+            timeElapsed.textContent = formatTime(elapsed);
+            timeRemaining.textContent = formatTime(practiceTime);
+            completionRate.textContent = Math.round(progress) + '%';
+        }
+
+        function completeChallenge() {
+            pausePractice();
+            
+            if (!completedChallenges.includes(selectedChallenge.id)) {
+                completedChallenges.push(selectedChallenge.id);
+                localStorage.setItem('completedChallenges', JSON.stringify(completedChallenges));
+            }
+            
+            const modal = document.getElementById('completionModal');
+            const message = document.getElementById('completionMessage');
+            
+            message.innerHTML = `
+                <p>¡Has completado el desafío <strong>${selectedChallenge.title}</strong>!</p>
+                <p>Tiempo total: ${formatTime(selectedChallenge.duration)}</p>
+                <p>Desafíos completados: ${completedChallenges.length} de ${challenges.length}</p>
+                <p>Continúa practicando para mejorar tus habilidades.</p>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeCompletionModal() {
+            document.getElementById('completionModal').style.display = 'none';
+        }
+
+        function previousChallenge() {
+            if (currentChallengeIndex > 0) {
+                currentChallengeIndex--;
+                selectedChallenge = challenges[currentChallengeIndex];
+                showChallenge();
+            }
+        }
+
+        function nextChallenge() {
+            if (currentChallengeIndex < challenges.length - 1) {
+                currentChallengeIndex++;
+                selectedChallenge = challenges[currentChallengeIndex];
+                showChallenge();
+            }
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentChallengeIndex === 0;
+            nextBtn.disabled = currentChallengeIndex === challenges.length - 1;
+        }
+
+        function getDifficultyName(difficulty) {
+            const names = {
+                'beginner': 'Principiante',
+                'intermediate': 'Intermedio',
+                'advanced': 'Avanzado'
+            };
+            return names[difficulty] || difficulty;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function loadCompletedChallenges() {
+            const saved = localStorage.getItem('completedChallenges');
+            if (saved) {
+                completedChallenges = JSON.parse(saved);
+            }
+        }
+
+        // Inicializar cuando se carga la página
+        window.onload = function() {
+            initChallenges();
+        };
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('completionModal');
+            if (event.target === modal) {
+                closeCompletionModal();
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios de Visualización - El Pequeño Libro del Talento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .visualization-exercise {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .visualization-exercise:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+        .visualization-exercise h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .exercise-content {
+            display: none;
+            margin-top: 20px;
+        }
+        .visualization-exercise.active .exercise-content {
+            display: block;
+        }
+        .toggle-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        .toggle-btn:hover {
+            background: #2980b9;
+        }
+        .toggle-btn.active {
+            background: #e74c3c;
+        }
+        .meditation-area {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .meditation-area h4 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        .timer {
+            font-size: 3em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .meditation-controls {
+            margin: 20px 0;
+        }
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .visualization-steps {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .visualization-steps h4 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .visualization-steps ol {
+            margin: 10px 0;
+        }
+        .visualization-steps li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+        .brain-visualization {
+            background: #f1f8e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .brain-visualization h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .brain-animation {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2em;
+        }
+        .progress-indicator {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .tips {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #f57c00;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+        }
+        .tips li {
+            margin: 8px 0;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navigation a:hover {
+            background: #2980b9;
+        }
+        .breathing-guide {
+            background: #f3e5f5;
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .breathing-guide h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            animation: breathe 4s infinite ease-in-out;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🖼️ Ejercicios de Visualización</h1>
+        <p>Desarrolla tu capacidad de visualización mental para mejorar el aprendizaje</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Objetivo de la Visualización</h3>
+            <p>La visualización mental es una herramienta poderosa para el desarrollo del talento. Nuestro cerebro se ha evolucionado para registrar las imágenes con más viveza y duración que las ideas abstractas. Usa esta capacidad para mejorar tu aprendizaje.</p>
+        </div>
+
+        <div class="visualization-exercise">
+            <h3>🧠 Visualización del Cerebro</h3>
+            <button class="toggle-btn" onclick="toggleExercise(this)">Iniciar Ejercicio</button>
+            <div class="exercise-content">
+                <div class="brain-visualization">
+                    <h4>🎯 Visualiza tu Cerebro en Acción</h4>
+                    <p>Cuando practicas intensamente, la red neuronal de tu cerebro va más deprisa cada vez. Con el tiempo, la velocidad de las señales pasa de 3 a 300 kilómetros por hora.</p>
+                    
+                    <div class="brain-animation">
+                        🧠 ⚡ 🧠 ⚡ 🧠
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        <div class="progress-fill" id="brainProgress"></div>
+                    </div>
+                    
+                    <p><strong>Instrucciones:</strong> Cierra los ojos y visualiza tu cerebro como una red de cables que se transforman de simples cables de cobre a otros de banda ancha y alta velocidad.</p>
+                </div>
+
+                <div class="meditation-area">
+                    <h4>🕐 Sesión de Visualización (5 minutos)</h4>
+                    <div class="timer" id="meditationTimer">05:00</div>
+                    <div class="meditation-controls">
+                        <button class="btn" id="startMeditation" onclick="startMeditation()">Iniciar</button>
+                        <button class="btn" id="pauseMeditation" onclick="pauseMeditation()" disabled>Pausar</button>
+                        <button class="btn" id="resetMeditation" onclick="resetMeditation()">Reiniciar</button>
+                    </div>
+                    <div class="progress-indicator">
+                        <div class="progress-fill" id="meditationProgress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-exercise">
+            <h3>🎵 Visualización Musical</h3>
+            <button class="toggle-btn" onclick="toggleExercise(this)">Iniciar Ejercicio</button>
+            <div class="exercise-content">
+                <div class="visualization-steps">
+                    <h4>🎼 Pasos para la Visualización Musical</h4>
+                    <ol>
+                        <li><strong>Elige una pieza:</strong> Selecciona una canción o pieza musical que conozcas bien</li>
+                        <li><strong>Visualiza los movimientos:</strong> Imagina tus dedos moviéndose sobre las teclas, cuerdas o instrumento</li>
+                        <li><strong>Escucha mentalmente:</strong> Reproduce la música en tu mente con todos sus detalles</li>
+                        <li><strong>Siente las sensaciones:</strong> Imagina las sensaciones físicas de tocar el instrumento</li>
+                        <li><strong>Practica la respiración:</strong> Coordina tu respiración con el ritmo de la música</li>
+                    </ol>
+                </div>
+
+                <div class="breathing-guide">
+                    <h4>🫁 Guía de Respiración</h4>
+                    <div class="breathing-circle" id="breathingCircle">
+                        Inhala
+                    </div>
+                    <p>Sincroniza tu respiración con el ritmo de la música que estás visualizando.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-exercise">
+            <h3>⚽ Visualización Deportiva</h3>
+            <button class="toggle-btn" onclick="toggleExercise(this)">Iniciar Ejercicio</button>
+            <div class="exercise-content">
+                <div class="visualization-steps">
+                    <h4>🏃 Pasos para la Visualización Deportiva</h4>
+                    <ol>
+                        <li><strong>Elige una habilidad específica:</strong> Enfócate en un movimiento o técnica particular</li>
+                        <li><strong>Visualiza desde primera persona:</strong> Imagina que eres tú quien ejecuta el movimiento</li>
+                        <li><strong>Incluye todos los sentidos:</strong> Siente el movimiento, escucha los sonidos, percibe el entorno</li>
+                        <li><strong>Practica en cámara lenta:</strong> Visualiza el movimiento paso a paso, muy despacio</li>
+                        <li><strong>Repite mentalmente:</strong> Ejecuta el movimiento varias veces en tu mente</li>
+                    </ol>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Consejos para la Visualización Deportiva</h4>
+                    <ul>
+                        <li>Visualiza tanto el éxito como la corrección de errores</li>
+                        <li>Incluye el contexto completo (público, condiciones, etc.)</li>
+                        <li>Practica la visualización antes de dormir</li>
+                        <li>Combina la visualización con la práctica física</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-exercise">
+            <h3>📚 Visualización de Aprendizaje</h3>
+            <button class="toggle-btn" onclick="toggleExercise(this)">Iniciar Ejercicio</button>
+            <div class="exercise-content">
+                <div class="visualization-steps">
+                    <h4>📖 Pasos para la Visualización de Aprendizaje</h4>
+                    <ol>
+                        <li><strong>Elige un concepto:</strong> Selecciona algo que estés aprendiendo</li>
+                        <li><strong>Crea imágenes mentales:</strong> Convierte conceptos abstractos en imágenes concretas</li>
+                        <li><strong>Construye conexiones:</strong> Visualiza cómo se relacionan los conceptos</li>
+                        <li><strong>Practica la explicación:</strong> Imagina explicando el concepto a alguien más</li>
+                        <li><strong>Visualiza el éxito:</strong> Imagina aplicando exitosamente lo aprendido</li>
+                    </ol>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Técnicas de Visualización para el Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Mapas mentales visuales:</strong> Crea diagramas mentales coloridos</li>
+                        <li><strong>Historias mentales:</strong> Convierte la información en una narrativa</li>
+                        <li><strong>Analogías visuales:</strong> Relaciona conceptos con objetos familiares</li>
+                        <li><strong>Palacios de memoria:</strong> Asocia información con lugares específicos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Consejos Generales para la Visualización</h4>
+            <ul>
+                <li><strong>Usa todos los sentidos:</strong> No solo la vista, incluye sonidos, olores, texturas</li>
+                <li><strong>Sé específico:</strong> Cuanto más detallada sea la visualización, mejor</li>
+                <li><strong>Practica regularmente:</strong> La visualización mejora con la práctica</li>
+                <li><strong>Combina con práctica física:</strong> La visualización complementa, no reemplaza, la práctica</li>
+                <li><strong>Visualiza el proceso, no solo el resultado:</strong> Enfócate en los pasos, no solo en el éxito final</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎯 Recordatorio Importante</h3>
+            <p>La visualización es una herramienta complementaria. No reemplaza la práctica física, pero puede acelerar significativamente tu aprendizaje cuando se usa junto con la práctica intensa.</p>
+        </div>
+
+        <div class="navigation">
+            <a href="06_diario_progreso.html">← Juego Anterior: Diario de Progreso</a>
+            <a href="08_habitos_talento.html">Siguiente Juego: Hábitos de Talento →</a>
+        </div>
+    </div>
+
+    <script>
+        let meditationTimer;
+        let meditationTime = 300; // 5 minutes in seconds
+        let isMeditationActive = false;
+        let isPaused = false;
+
+        function toggleExercise(button) {
+            const exercise = button.parentElement;
+            const content = exercise.querySelector('.exercise-content');
+            
+            if (exercise.classList.contains('active')) {
+                exercise.classList.remove('active');
+                button.textContent = 'Iniciar Ejercicio';
+                button.classList.remove('active');
+            } else {
+                exercise.classList.add('active');
+                button.textContent = 'Ocultar Ejercicio';
+                button.classList.add('active');
+            }
+        }
+
+        function startMeditation() {
+            if (!isMeditationActive) {
+                isMeditationActive = true;
+                isPaused = false;
+                document.getElementById('startMeditation').disabled = true;
+                document.getElementById('pauseMeditation').disabled = false;
+                
+                meditationTimer = setInterval(() => {
+                    if (!isPaused) {
+                        meditationTime--;
+                        updateMeditationDisplay();
+                        
+                        if (meditationTime <= 0) {
+                            clearInterval(meditationTimer);
+                            alert('¡Sesión de visualización completada!');
+                            resetMeditation();
+                        }
+                    }
+                }, 1000);
+            } else if (isPaused) {
+                isPaused = false;
+                document.getElementById('pauseMeditation').textContent = 'Pausar';
+            }
+        }
+
+        function pauseMeditation() {
+            if (isMeditationActive && !isPaused) {
+                isPaused = true;
+                document.getElementById('pauseMeditation').textContent = 'Continuar';
+            }
+        }
+
+        function resetMeditation() {
+            clearInterval(meditationTimer);
+            meditationTime = 300;
+            isMeditationActive = false;
+            isPaused = false;
+            document.getElementById('startMeditation').disabled = false;
+            document.getElementById('pauseMeditation').disabled = true;
+            document.getElementById('pauseMeditation').textContent = 'Pausar';
+            updateMeditationDisplay();
+        }
+
+        function updateMeditationDisplay() {
+            const minutes = Math.floor(meditationTime / 60);
+            const seconds = meditationTime % 60;
+            document.getElementById('meditationTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const progress = ((300 - meditationTime) / 300) * 100;
+            document.getElementById('meditationProgress').style.width = progress + '%';
+        }
+
+        // Brain visualization animation
+        let brainProgress = 0;
+        setInterval(() => {
+            brainProgress = (brainProgress + 1) % 100;
+            document.getElementById('brainProgress').style.width = brainProgress + '%';
+        }, 100);
+
+        // Breathing animation
+        let breathingPhase = 'inhale';
+        setInterval(() => {
+            const circle = document.getElementById('breathingCircle');
+            if (breathingPhase === 'inhale') {
+                circle.textContent = 'Inhala';
+                breathingPhase = 'exhale';
+            } else {
+                circle.textContent = 'Exhala';
+                breathingPhase = 'inhale';
+            }
+        }, 2000);
+
+        // Initialize
+        updateMeditationDisplay();
+    </script>
+</body>
+</html> 

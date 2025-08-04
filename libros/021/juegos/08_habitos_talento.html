@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos de Talento - El Pequeño Libro del Talento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .habit-form {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+        }
+        .btn.success { background: #27ae60; }
+        .btn.danger { background: #e74c3c; }
+        .habit-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tips {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ Hábitos de Talento</h1>
+        <p>Construye hábitos sostenibles para el desarrollo a largo plazo</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Objetivo de los Hábitos</h3>
+            <p>Los hábitos son la base del desarrollo sostenible del talento. Como dijo Aristóteles: "Somos lo que hacemos reiteradamente. Así pues, la excelencia no es un acto sino un hábito."</p>
+        </div>
+
+        <div class="habit-form">
+            <h3>➕ Crear Nuevo Hábito</h3>
+            <form id="habitForm">
+                <div class="form-group">
+                    <label for="habitName">Nombre del Hábito:</label>
+                    <input type="text" id="habitName" placeholder="Ej: Practicar piano 30 minutos diarios" required>
+                </div>
+                <div class="form-group">
+                    <label for="habitDescription">Descripción:</label>
+                    <textarea id="habitDescription" placeholder="Describe qué harás específicamente..."></textarea>
+                </div>
+                <button type="submit" class="btn success">💾 Crear Hábito</button>
+            </form>
+        </div>
+
+        <div id="habitsContainer">
+            <h3>📋 Mis Hábitos</h3>
+            <div id="emptyState">
+                <p>No hay hábitos creados. Comienza creando tu primer hábito.</p>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Consejos para Construir Hábitos Efectivos</h4>
+            <ul>
+                <li><strong>Empieza pequeño:</strong> Comienza con hábitos que puedas completar fácilmente</li>
+                <li><strong>Establece disparadores claros:</strong> Conecta el hábito con una acción existente</li>
+                <li><strong>Hazlo visible:</strong> Coloca recordatorios en lugares donde los veas</li>
+                <li><strong>No rompas la cadena:</strong> Mantén una racha consistente</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎯 Recordatorio Importante</h3>
+            <p>Los hábitos se construyen gradualmente. Se necesitan aproximadamente 30 días para establecer un nuevo hábito. La consistencia es más importante que la perfección.</p>
+        </div>
+    </div>
+
+    <script>
+        let habits = JSON.parse(localStorage.getItem('talentHabits')) || [];
+
+        document.getElementById('habitForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            createHabit();
+        });
+
+        function createHabit() {
+            const habit = {
+                id: Date.now(),
+                name: document.getElementById('habitName').value,
+                description: document.getElementById('habitDescription').value,
+                createdAt: new Date().toISOString()
+            };
+
+            habits.push(habit);
+            localStorage.setItem('talentHabits', JSON.stringify(habits));
+            
+            document.getElementById('habitForm').reset();
+            displayHabits();
+        }
+
+        function displayHabits() {
+            const container = document.getElementById('habitsContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (habits.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            let habitsHTML = '<h3>📋 Mis Hábitos</h3>';
+            
+            habits.forEach(habit => {
+                habitsHTML += `
+                    <div class="habit-card">
+                        <h4>${habit.name}</h4>
+                        <p>${habit.description}</p>
+                        <button class="btn danger" onclick="deleteHabit(${habit.id})">🗑️ Eliminar</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = habitsHTML;
+        }
+
+        function deleteHabit(habitId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este hábito?')) {
+                habits = habits.filter(h => h.id !== habitId);
+                localStorage.setItem('talentHabits', JSON.stringify(habits));
+                displayHabits();
+            }
+        }
+
+        displayHabits();
+    </script>
+</body>
+</html> 

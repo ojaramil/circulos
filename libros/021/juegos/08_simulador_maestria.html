@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Maestría - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .mastery-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .mastery-dashboard {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .skill-selector {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .skill-input {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            align-items: center;
+        }
+        
+        .skill-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        .skill-input input:focus {
+            outline: none;
+            border-color: #005BAA;
+        }
+        
+        .add-skill-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .add-skill-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .skill-card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .skill-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #005BAA;
+        }
+        
+        .skill-level {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .level-novice {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .level-apprentice {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .level-journeyman {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .level-expert {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .level-master {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .skill-progress {
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50, #2196f3);
+            transition: width 0.8s ease;
+        }
+        
+        .skill-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.8em;
+        }
+        
+        .skill-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .practice-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .practice-btn:hover {
+            background-color: #218838;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .mastery-overview {
+            background-color: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .overview-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .overview-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 10px;
+        }
+        
+        .overview-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .practice-session {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            display: none;
+        }
+        
+        .session-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .session-timer {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #005BAA;
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        
+        .session-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .session-btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .start-session-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .pause-session-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .end-session-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .session-feedback {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #48bb78;
+            display: none;
+        }
+        
+        .feedback-title {
+            color: #2d5016;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .feedback-content {
+            color: #2d5016;
+            line-height: 1.5;
+        }
+        
+        .mastery-path {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .path-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .path-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            border: 3px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            color: #6c757d;
+            transition: all 0.3s;
+        }
+        
+        .step-circle.completed {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .step-circle.current {
+            background-color: #005BAA;
+            border-color: #005BAA;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .path-line {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background-color: #dee2e6;
+            z-index: -1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .mastery-insights {
+            background-color: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9f7aea;
+        }
+        
+        .insight-item {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .insight-title {
+            color: #4a148c;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .insight-text {
+            color: #4a148c;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Maestría</h1>
+        <h2>Visualiza tu camino hacia la excelencia en cualquier habilidad</h2>
+
+        <div class="quote">
+            "La maestría no es un destino, sino un viaje de práctica intensa y deliberada a lo largo del tiempo."
+        </div>
+
+        <div class="mastery-container">
+            <div class="mastery-dashboard">
+                <h3>🎯 Panel de Control de Maestría</h3>
+                
+                <div class="skill-selector">
+                    <h4>Agregar Nueva Habilidad</h4>
+                    <div class="skill-input">
+                        <input type="text" id="skillName" placeholder="Ej: Tocar guitarra, Programar, Liderazgo...">
+                        <button class="add-skill-btn" onclick="addSkill()">➕ Agregar</button>
+                    </div>
+                </div>
+
+                <div class="skills-grid" id="skillsGrid">
+                    <!-- Las habilidades se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="mastery-overview">
+                <h3>📊 Resumen de Maestría</h3>
+                <div class="overview-stats">
+                    <div class="overview-card">
+                        <div class="overview-value" id="totalSkills">0</div>
+                        <div class="overview-label">Habilidades Activas</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-value" id="totalHours">0</div>
+                        <div class="overview-label">Horas de Práctica</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-value" id="averageLevel">0%</div>
+                        <div class="overview-label">Nivel Promedio</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-value" id="daysStreak">0</div>
+                        <div class="overview-label">Días Consecutivos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-session" id="practiceSession">
+                <div class="session-header">
+                    <h3>⏱️ Sesión de Práctica</h3>
+                    <p id="sessionSkillName">Practicando: [Habilidad]</p>
+                </div>
+                
+                <div class="session-timer" id="sessionTimer">25:00</div>
+                
+                <div class="session-controls">
+                    <button class="session-btn start-session-btn" onclick="startSession()" id="startSessionBtn">▶️ Iniciar</button>
+                    <button class="session-btn pause-session-btn" onclick="pauseSession()" id="pauseSessionBtn" style="display: none;">⏸️ Pausar</button>
+                    <button class="session-btn end-session-btn" onclick="endSession()" id="endSessionBtn">⏹️ Terminar</button>
+                </div>
+                
+                <div class="session-feedback" id="sessionFeedback">
+                    <div class="feedback-title">💡 Feedback de la Sesión</div>
+                    <div class="feedback-content" id="feedbackContent"></div>
+                </div>
+            </div>
+
+            <div class="mastery-path">
+                <h3>🛤️ Camino hacia la Maestría</h3>
+                <div class="path-steps">
+                    <div class="path-line"></div>
+                    <div class="path-step">
+                        <div class="step-circle" id="step1">1</div>
+                        <div class="step-label">Novato</div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-circle" id="step2">2</div>
+                        <div class="step-label">Aprendiz</div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-circle" id="step3">3</div>
+                        <div class="step-label">Oficial</div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-circle" id="step4">4</div>
+                        <div class="step-label">Experto</div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-circle" id="step5">5</div>
+                        <div class="step-label">Maestro</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mastery-insights">
+                <h3>💭 Insights de Maestría</h3>
+                <div id="insightsContainer">
+                    <!-- Los insights se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> La maestría se logra a través de miles de horas de práctica intensa. Cada sesión cuenta, sin importar cuán pequeña sea.</p>
+        </div>
+    </div>
+
+    <script>
+        let skills = [];
+        let currentSession = null;
+        let sessionTimer = null;
+        let sessionTime = 1500; // 25 minutos en segundos
+        let isSessionActive = false;
+
+        const masteryLevels = [
+            { name: 'Novato', minHours: 0, maxHours: 100, color: 'novice' },
+            { name: 'Aprendiz', minHours: 100, maxHours: 500, color: 'apprentice' },
+            { name: 'Oficial', minHours: 500, maxHours: 1000, color: 'journeyman' },
+            { name: 'Experto', minHours: 1000, maxHours: 5000, color: 'expert' },
+            { name: 'Maestro', minHours: 5000, maxHours: Infinity, color: 'master' }
+        ];
+
+        const insights = [
+            {
+                title: "La Regla de las 10,000 Horas",
+                text: "Según Malcolm Gladwell, se necesitan aproximadamente 10,000 horas de práctica deliberada para alcanzar la maestría en cualquier campo."
+            },
+            {
+                title: "Práctica Deliberada vs. Práctica Superficial",
+                text: "La práctica deliberada se enfoca en mejorar aspectos específicos, mientras que la práctica superficial solo repite lo que ya sabes hacer."
+            },
+            {
+                title: "El Punto Óptimo de Aprendizaje",
+                text: "El aprendizaje máximo ocurre cuando trabajas en el límite de tu capacidad actual, donde el porcentaje de éxito está entre 50% y 80%."
+            },
+            {
+                title: "La Importancia de la Retroalimentación",
+                text: "Sin retroalimentación inmediata y específica, es imposible mejorar. Los expertos siempre buscan formas de obtener feedback sobre su rendimiento."
+            },
+            {
+                title: "Mentalidad de Crecimiento",
+                text: "Los maestros creen que sus habilidades se pueden desarrollar a través del esfuerzo, no que son fijas o innatas."
+            }
+        ];
+
+        function initMastery() {
+            loadSkills();
+            renderSkills();
+            updateOverview();
+            renderInsights();
+            updateMasteryPath();
+        }
+
+        function addSkill() {
+            const skillName = document.getElementById('skillName').value.trim();
+            if (!skillName) return;
+
+            const skill = {
+                id: Date.now(),
+                name: skillName,
+                hours: 0,
+                sessions: 0,
+                lastPractice: null,
+                level: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            skills.push(skill);
+            saveSkills();
+            renderSkills();
+            updateOverview();
+            updateMasteryPath();
+            
+            document.getElementById('skillName').value = '';
+        }
+
+        function renderSkills() {
+            const grid = document.getElementById('skillsGrid');
+            grid.innerHTML = '';
+
+            skills.forEach(skill => {
+                const level = getSkillLevel(skill.hours);
+                const progress = getSkillProgress(skill.hours);
+                
+                const card = document.createElement('div');
+                card.className = 'skill-card';
+                card.innerHTML = `
+                    <div class="skill-header">
+                        <div class="skill-name">${skill.name}</div>
+                        <div class="skill-level level-${level.color}">${level.name}</div>
+                    </div>
+                    
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <p>${skill.hours} horas de práctica</p>
+                    </div>
+                    
+                    <div class="skill-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${skill.sessions}</div>
+                            <div class="stat-label">Sesiones</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${Math.round(skill.hours / 10)}%</div>
+                            <div class="stat-label">Hacia Maestría</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-actions">
+                        <button class="action-btn practice-btn" onclick="startPracticeSession(${skill.id})">⏱️ Practicar</button>
+                        <button class="action-btn delete-btn" onclick="deleteSkill(${skill.id})">🗑️ Eliminar</button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function getSkillLevel(hours) {
+            for (let i = masteryLevels.length - 1; i >= 0; i--) {
+                if (hours >= masteryLevels[i].minHours) {
+                    return masteryLevels[i];
+                }
+            }
+            return masteryLevels[0];
+        }
+
+        function getSkillProgress(hours) {
+            if (hours >= 10000) return 100;
+            return Math.min(100, (hours / 10000) * 100);
+        }
+
+        function startPracticeSession(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            if (!skill) return;
+
+            currentSession = {
+                skillId: skillId,
+                startTime: Date.now(),
+                duration: sessionTime
+            };
+
+            const session = document.getElementById('practiceSession');
+            const skillName = document.getElementById('sessionSkillName');
+            
+            skillName.textContent = `Practicando: ${skill.name}`;
+            session.style.display = 'block';
+            
+            session.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function startSession() {
+            if (isSessionActive) return;
+            
+            isSessionActive = true;
+            sessionTime = 1500; // 25 minutos
+            
+            const startBtn = document.getElementById('startSessionBtn');
+            const pauseBtn = document.getElementById('pauseSessionBtn');
+            
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+            
+            sessionTimer = setInterval(() => {
+                sessionTime--;
+                updateSessionTimer();
+                
+                if (sessionTime <= 0) {
+                    completeSession();
+                }
+            }, 1000);
+        }
+
+        function pauseSession() {
+            if (!isSessionActive) return;
+            
+            isSessionActive = false;
+            clearInterval(sessionTimer);
+            
+            const startBtn = document.getElementById('startSessionBtn');
+            const pauseBtn = document.getElementById('pauseSessionBtn');
+            
+            startBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+
+        function endSession() {
+            if (isSessionActive) {
+                clearInterval(sessionTimer);
+                isSessionActive = false;
+            }
+            
+            completeSession();
+        }
+
+        function completeSession() {
+            if (!currentSession) return;
+            
+            const skill = skills.find(s => s.id === currentSession.skillId);
+            if (skill) {
+                const practiceHours = (1500 - sessionTime) / 3600; // Convertir segundos a horas
+                skill.hours += practiceHours;
+                skill.sessions++;
+                skill.lastPractice = new Date().toISOString();
+                
+                saveSkills();
+                renderSkills();
+                updateOverview();
+                updateMasteryPath();
+                
+                showSessionFeedback(skill, practiceHours);
+            }
+            
+            // Resetear sesión
+            currentSession = null;
+            sessionTime = 1500;
+            updateSessionTimer();
+            
+            const startBtn = document.getElementById('startSessionBtn');
+            const pauseBtn = document.getElementById('pauseSessionBtn');
+            
+            startBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+
+        function showSessionFeedback(skill, practiceHours) {
+            const feedback = document.getElementById('sessionFeedback');
+            const content = document.getElementById('feedbackContent');
+            
+            const level = getSkillLevel(skill.hours);
+            const progress = getSkillProgress(skill.hours);
+            
+            content.innerHTML = `
+                <p><strong>¡Excelente sesión!</strong></p>
+                <p>Has practicado <strong>${practiceHours.toFixed(2)} horas</strong> de ${skill.name}.</p>
+                <p>Total acumulado: <strong>${skill.hours.toFixed(1)} horas</strong></p>
+                <p>Nivel actual: <strong>${level.name}</strong></p>
+                <p>Progreso hacia maestría: <strong>${Math.round(progress)}%</strong></p>
+                <p>¡Continúa practicando para alcanzar la maestría!</p>
+            `;
+            
+            feedback.style.display = 'block';
+            
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 5000);
+        }
+
+        function updateSessionTimer() {
+            const timer = document.getElementById('sessionTimer');
+            const minutes = Math.floor(sessionTime / 60);
+            const seconds = sessionTime % 60;
+            timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function deleteSkill(skillId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta habilidad?')) {
+                skills = skills.filter(s => s.id !== skillId);
+                saveSkills();
+                renderSkills();
+                updateOverview();
+                updateMasteryPath();
+            }
+        }
+
+        function updateOverview() {
+            const totalSkills = skills.length;
+            const totalHours = skills.reduce((sum, skill) => sum + skill.hours, 0);
+            const averageLevel = skills.length > 0 ? 
+                Math.round(skills.reduce((sum, skill) => sum + getSkillProgress(skill.hours), 0) / skills.length) : 0;
+            
+            // Calcular racha (simplificado)
+            const today = new Date().toDateString();
+            const hasPracticedToday = skills.some(skill => 
+                skill.lastPractice && new Date(skill.lastPractice).toDateString() === today
+            );
+            const streak = hasPracticedToday ? 1 : 0;
+            
+            document.getElementById('totalSkills').textContent = totalSkills;
+            document.getElementById('totalHours').textContent = Math.round(totalHours);
+            document.getElementById('averageLevel').textContent = averageLevel + '%';
+            document.getElementById('daysStreak').textContent = streak;
+        }
+
+        function updateMasteryPath() {
+            const totalHours = skills.reduce((sum, skill) => sum + skill.hours, 0);
+            const progress = getSkillProgress(totalHours);
+            
+            // Actualizar pasos del camino
+            const steps = [1, 2, 3, 4, 5];
+            steps.forEach((step, index) => {
+                const stepCircle = document.getElementById(`step${step}`);
+                const minHours = masteryLevels[index].minHours;
+                const maxHours = masteryLevels[index].maxHours;
+                
+                if (totalHours >= maxHours) {
+                    stepCircle.classList.add('completed');
+                    stepCircle.classList.remove('current');
+                } else if (totalHours >= minHours) {
+                    stepCircle.classList.add('current');
+                    stepCircle.classList.remove('completed');
+                } else {
+                    stepCircle.classList.remove('completed', 'current');
+                }
+            });
+        }
+
+        function renderInsights() {
+            const container = document.getElementById('insightsContainer');
+            container.innerHTML = '';
+            
+            insights.forEach(insight => {
+                const item = document.createElement('div');
+                item.className = 'insight-item';
+                item.innerHTML = `
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-text">${insight.text}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function saveSkills() {
+            localStorage.setItem('masterySkills', JSON.stringify(skills));
+        }
+
+        function loadSkills() {
+            const saved = localStorage.getItem('masterySkills');
+            if (saved) {
+                skills = JSON.parse(saved);
+            }
+        }
+
+        // Inicializar cuando se carga la página
+        window.onload = function() {
+            initMastery();
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión del Talento - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .reflection-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .reflection-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .reflection-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .reflection-question {
+            font-size: 1.3em;
+            color: #005BAA;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        
+        .reflection-prompt {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+            color: #333333;
+        }
+        
+        .response-area {
+            margin: 25px 0;
+        }
+        
+        .response-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .response-textarea:focus {
+            outline: none;
+            border-color: #005BAA;
+        }
+        
+        .insight-panel {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #48bb78;
+            display: none;
+        }
+        
+        .insight-panel.show {
+            display: block;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .insight-title {
+            color: #2d5016;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .insight-content {
+            color: #2d5016;
+            line-height: 1.6;
+        }
+        
+        .action-plan {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .action-item {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .action-text {
+            flex: 1;
+            color: #333333;
+        }
+        
+        .action-completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        
+        .nav-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.3);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-indicator {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #dee2e6;
+            transition: background-color 0.3s;
+        }
+        
+        .progress-dot.active {
+            background-color: #005BAA;
+        }
+        
+        .progress-dot.completed {
+            background-color: #28a745;
+        }
+        
+        .reflection-summary {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .reflection-summary.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .summary-section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .summary-insights {
+            background-color: #e8f5e8;
+            border-left: 4px solid #48bb78;
+        }
+        
+        .summary-actions {
+            background-color: #e3f2fd;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .summary-goals {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .save-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reflexión del Talento</h1>
+        <h2>Explora tu relación con el desarrollo de habilidades</h2>
+
+        <div class="quote">
+            "La reflexión es el primer paso hacia el cambio consciente. Solo cuando entendemos dónde estamos, podemos planificar hacia dónde queremos ir."
+        </div>
+
+        <div class="reflection-container">
+            <div class="progress-indicator">
+                <h3>Progreso de Reflexión</h3>
+                <div class="progress-dots" id="progressDots">
+                    <!-- Los puntos de progreso se generarán dinámicamente -->
+                </div>
+                <p id="progressText">Pregunta 1 de 8</p>
+            </div>
+
+            <div id="reflectionContainer">
+                <!-- Las preguntas de reflexión se cargarán aquí dinámicamente -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn" onclick="previousQuestion()" id="prevBtn">← Anterior</button>
+                <button class="nav-btn" onclick="nextQuestion()" id="nextBtn">Siguiente →</button>
+            </div>
+
+            <div class="reflection-summary" id="reflectionSummary">
+                <h3>🎯 Resumen de tu Reflexión</h3>
+                <div id="summaryContent"></div>
+                <button class="save-btn" onclick="saveReflection()">💾 Guardar Reflexión</button>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Consejo:</strong> Tómate tu tiempo para reflexionar honestamente. No hay respuestas correctas o incorrectas, solo tu verdad personal.</p>
+        </div>
+    </div>
+
+    <script>
+        const reflectionQuestions = [
+            {
+                question: "¿Qué habilidad o talento te gustaría desarrollar más en este momento de tu vida?",
+                prompt: "Piensa en algo que te apasione, que te haga sentir vivo cuando lo practicas, o que te gustaría dominar para tu crecimiento personal o profesional.",
+                category: "identificación"
+            },
+            {
+                question: "¿Qué te motiva realmente a desarrollar esta habilidad?",
+                prompt: "Ve más allá de las razones superficiales. ¿Es por reconocimiento, satisfacción personal, ayudar a otros, o algo más profundo?",
+                category: "motivación"
+            },
+            {
+                question: "¿Cómo te sientes cuando piensas en practicar esta habilidad?",
+                prompt: "Describe las emociones que surgen: ¿excitación, miedo, curiosidad, frustración, o una mezcla de sensaciones?",
+                category: "emociones"
+            },
+            {
+                question: "¿Qué obstáculos internos y externos percibes para desarrollar esta habilidad?",
+                prompt: "Considera tanto las barreras mentales (miedos, creencias limitantes) como las prácticas (tiempo, recursos, apoyo).",
+                category: "obstáculos"
+            },
+            {
+                question: "¿Qué experiencias previas has tenido con el aprendizaje de habilidades similares?",
+                prompt: "Reflexiona sobre éxitos y fracasos pasados. ¿Qué funcionó bien? ¿Qué te gustaría hacer diferente esta vez?",
+                category: "experiencia"
+            },
+            {
+                question: "¿Cómo te imaginas que sería tu vida si dominaras completamente esta habilidad?",
+                prompt: "Visualiza el futuro ideal. ¿Cómo te sentirías? ¿Qué cambiaría en tu día a día? ¿Qué impacto tendría en otros?",
+                category: "visión"
+            },
+            {
+                question: "¿Qué tipo de práctica te resulta más efectiva y disfrutable?",
+                prompt: "Piensa en momentos de aprendizaje donde te sentiste completamente involucrado y el tiempo volaba. ¿Qué características tenía esa experiencia?",
+                category: "práctica"
+            },
+            {
+                question: "¿Qué apoyo necesitarías para mantener la consistencia en tu desarrollo?",
+                prompt: "Considera recursos, personas, sistemas, o estructuras que te ayudarían a mantener el momentum a largo plazo.",
+                category: "soporte"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let responses = {};
+        let insights = {};
+
+        function initReflection() {
+            currentQuestionIndex = 0;
+            responses = {};
+            insights = {};
+            showCurrentQuestion();
+            updateProgress();
+            loadSavedResponses();
+        }
+
+        function showCurrentQuestion() {
+            const question = reflectionQuestions[currentQuestionIndex];
+            const container = document.getElementById('reflectionContainer');
+            
+            container.innerHTML = `
+                <div class="reflection-card active">
+                    <div class="reflection-question">${question.question}</div>
+                    <div class="reflection-prompt">
+                        <strong>💡 Para reflexionar:</strong> ${question.prompt}
+                    </div>
+                    <div class="response-area">
+                        <label for="responseText"><strong>Tu respuesta:</strong></label>
+                        <textarea 
+                            class="response-textarea" 
+                            id="responseText" 
+                            placeholder="Escribe tus pensamientos aquí..."
+                            onchange="saveResponse()"
+                        >${responses[currentQuestionIndex] || ''}</textarea>
+                    </div>
+                    <div class="insight-panel" id="insightPanel">
+                        <div class="insight-title">💭 Insight Sugerido</div>
+                        <div class="insight-content" id="insightContent"></div>
+                    </div>
+                    <div class="action-plan" id="actionPlan">
+                        <h4>🎯 Plan de Acción Sugerido</h4>
+                        <div id="actionItems"></div>
+                    </div>
+                </div>
+            `;
+            
+            updateNavigation();
+            showInsights();
+        }
+
+        function saveResponse() {
+            const responseText = document.getElementById('responseText').value;
+            responses[currentQuestionIndex] = responseText;
+            localStorage.setItem('reflectionResponses', JSON.stringify(responses));
+        }
+
+        function showInsights() {
+            const question = reflectionQuestions[currentQuestionIndex];
+            const response = responses[currentQuestionIndex] || '';
+            const insightPanel = document.getElementById('insightPanel');
+            const insightContent = document.getElementById('insightContent');
+            const actionPlan = document.getElementById('actionPlan');
+            const actionItems = document.getElementById('actionItems');
+            
+            if (response.trim().length > 20) {
+                const insight = generateInsight(question.category, response);
+                const actions = generateActions(question.category, response);
+                
+                insightContent.innerHTML = insight;
+                insightPanel.classList.add('show');
+                
+                actionItems.innerHTML = actions.map(action => `
+                    <div class="action-item">
+                        <input type="checkbox" class="action-checkbox" onchange="toggleAction(this)">
+                        <span class="action-text">${action}</span>
+                    </div>
+                `).join('');
+                
+                actionPlan.style.display = 'block';
+            } else {
+                insightPanel.classList.remove('show');
+                actionPlan.style.display = 'none';
+            }
+        }
+
+        function generateInsight(category, response) {
+            const insights = {
+                'identificación': 'Has identificado una habilidad que te apasiona. Esto es el primer paso crucial hacia el desarrollo del talento. La claridad sobre qué quieres desarrollar te dará dirección y propósito.',
+                'motivación': 'Entender tu motivación profunda es clave para mantener el momentum a largo plazo. Las motivaciones intrínsecas (internas) suelen ser más sostenibles que las extrínsecas (externas).',
+                'emociones': 'Las emociones que sientes hacia la práctica son indicadores importantes. La excitación y curiosidad son señales positivas, mientras que el miedo puede indicar que estás en el punto óptimo de crecimiento.',
+                'obstáculos': 'Reconocer los obstáculos es el primer paso para superarlos. Los obstáculos internos suelen ser más desafiantes que los externos, pero también más transformadores cuando se superan.',
+                'experiencia': 'Tu experiencia previa es un recurso valioso. Los patrones que identificas pueden guiar tu enfoque actual y ayudarte a evitar errores pasados.',
+                'visión': 'Tener una visión clara del futuro es un poderoso motivador. Esta imagen mental puede servir como faro durante los momentos difíciles del desarrollo.',
+                'práctica': 'Identificar qué tipo de práctica te resulta más efectiva es crucial. Esto te ayudará a diseñar sesiones de práctica que sean tanto productivas como sostenibles.',
+                'soporte': 'Reconocer la necesidad de apoyo es una señal de madurez. El desarrollo del talento raramente es un viaje solitario, y el apoyo adecuado puede marcar la diferencia.'
+            };
+            
+            return insights[category] || 'Tu reflexión muestra una comprensión profunda de tu relación con el desarrollo de habilidades.';
+        }
+
+        function generateActions(category, response) {
+            const actionTemplates = {
+                'identificación': [
+                    'Investigar más sobre esta habilidad y sus aplicaciones',
+                    'Conectar con personas que ya dominan esta habilidad',
+                    'Establecer una meta específica y medible para el desarrollo'
+                ],
+                'motivación': [
+                    'Revisar regularmente tu motivación profunda',
+                    'Crear recordatorios visuales de tu "por qué"',
+                    'Compartir tu motivación con personas de confianza'
+                ],
+                'emociones': [
+                    'Practicar técnicas de regulación emocional',
+                    'Celebrar las emociones positivas durante la práctica',
+                    'Ver las emociones difíciles como señales de crecimiento'
+                ],
+                'obstáculos': [
+                    'Desarrollar estrategias específicas para cada obstáculo',
+                    'Buscar apoyo para superar barreras internas',
+                    'Crear un plan de contingencia para obstáculos externos'
+                ],
+                'experiencia': [
+                    'Documentar lecciones aprendidas de experiencias pasadas',
+                    'Adaptar estrategias exitosas a tu situación actual',
+                    'Evitar patrones que no funcionaron anteriormente'
+                ],
+                'visión': [
+                    'Crear una representación visual de tu visión',
+                    'Revisar y actualizar tu visión regularmente',
+                    'Compartir tu visión con personas que te apoyen'
+                ],
+                'práctica': [
+                    'Diseñar sesiones de práctica basadas en tus preferencias',
+                    'Experimentar con diferentes enfoques de práctica',
+                    'Establecer rutinas que aprovechen tu estilo de aprendizaje'
+                ],
+                'soporte': [
+                    'Identificar y contactar a posibles mentores o coaches',
+                    'Unirte a comunidades relacionadas con tu habilidad',
+                    'Crear sistemas de responsabilidad y seguimiento'
+                ]
+            };
+            
+            return actionTemplates[category] || [
+                'Reflexionar más sobre esta área',
+                'Buscar recursos adicionales',
+                'Establecer un plan de acción específico'
+            ];
+        }
+
+        function toggleAction(checkbox) {
+            const actionText = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                actionText.classList.add('action-completed');
+            } else {
+                actionText.classList.remove('action-completed');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < reflectionQuestions.length - 1) {
+                currentQuestionIndex++;
+                showCurrentQuestion();
+                updateProgress();
+            } else {
+                showSummary();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showCurrentQuestion();
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const dotsContainer = document.getElementById('progressDots');
+            const progressText = document.getElementById('progressText');
+            
+            dotsContainer.innerHTML = '';
+            reflectionQuestions.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (index < currentQuestionIndex) {
+                    dot.classList.add('completed');
+                } else if (index === currentQuestionIndex) {
+                    dot.classList.add('active');
+                }
+                dotsContainer.appendChild(dot);
+            });
+            
+            progressText.textContent = `Pregunta ${currentQuestionIndex + 1} de ${reflectionQuestions.length}`;
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === reflectionQuestions.length - 1) {
+                nextBtn.textContent = 'Ver Resumen →';
+            } else {
+                nextBtn.textContent = 'Siguiente →';
+            }
+        }
+
+        function showSummary() {
+            const container = document.getElementById('reflectionContainer');
+            const summary = document.getElementById('reflectionSummary');
+            const summaryContent = document.getElementById('summaryContent');
+            
+            container.style.display = 'none';
+            
+            let insightsHtml = '<div class="summary-section summary-insights"><h4>💭 Insights Clave</h4><ul>';
+            Object.keys(responses).forEach(index => {
+                if (responses[index] && responses[index].trim()) {
+                    const question = reflectionQuestions[index];
+                    insightsHtml += `<li><strong>${question.question}</strong><br>${responses[index]}</li>`;
+                }
+            });
+            insightsHtml += '</ul></div>';
+            
+            const actionsHtml = `
+                <div class="summary-section summary-actions">
+                    <h4>🎯 Próximos Pasos Sugeridos</h4>
+                    <ul>
+                        <li>Revisar tus respuestas regularmente</li>
+                        <li>Establecer un plan de práctica consistente</li>
+                        <li>Buscar mentores o comunidades de apoyo</li>
+                        <li>Documentar tu progreso y aprendizajes</li>
+                        <li>Celebrar pequeños logros en el camino</li>
+                    </ul>
+                </div>
+            `;
+            
+            const goalsHtml = `
+                <div class="summary-section summary-goals">
+                    <h4>🌟 Metas a 30 Días</h4>
+                    <ul>
+                        <li>Establecer una rutina de práctica diaria</li>
+                        <li>Conectar con al menos una persona que domine la habilidad</li>
+                        <li>Crear un sistema de seguimiento de progreso</li>
+                        <li>Identificar y superar al menos un obstáculo principal</li>
+                    </ul>
+                </div>
+            `;
+            
+            summaryContent.innerHTML = insightsHtml + actionsHtml + goalsHtml;
+            summary.classList.add('show');
+        }
+
+        function saveReflection() {
+            const reflectionData = {
+                responses: responses,
+                timestamp: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            localStorage.setItem('reflectionData', JSON.stringify(reflectionData));
+            alert('¡Reflexión guardada exitosamente!');
+        }
+
+        function loadSavedResponses() {
+            const saved = localStorage.getItem('reflectionResponses');
+            if (saved) {
+                responses = JSON.parse(saved);
+            }
+        }
+
+        // Inicializar cuando se carga la página
+        window.onload = function() {
+            initReflection();
+        };
+    </script>
+</body>
+</html> 

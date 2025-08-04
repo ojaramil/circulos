@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Perfil de Talento - El Pequeño Libro del Talento</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .question {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #005BAA;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .question h3 {
+            color: #005BAA;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            background-color: #f8f9fa;
+            color: #333333;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #dee2e6;
+            font-weight: 500;
+        }
+        
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #005BAA;
+            color: #005BAA;
+        }
+        
+        .option.selected {
+            background-color: #005BAA;
+            border-color: #005BAA;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .progress-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #005BAA;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-container h3 {
+            color: #005BAA;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .progress-container p {
+            color: #333333;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #005BAA;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .results {
+            display: none;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 2px solid #005BAA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .result-section {
+            background-color: #f8f9fa;
+            color: #333333;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+            border: 1px solid #dee2e6;
+        }
+        
+        .result-section h3 {
+            color: #005BAA;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .result-section h4 {
+            color: #1a365d;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .result-section p {
+            color: #333333;
+            line-height: 1.6;
+        }
+        
+        .result-section ul {
+            color: #333333;
+        }
+        
+        .result-section li {
+            color: #333333;
+            margin-bottom: 8px;
+        }
+        
+        .score-bar {
+            background-color: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.8s ease;
+        }
+        
+        .restart-btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,91,170,0.3);
+        }
+        
+        .restart-btn:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,91,170,0.4);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test: Tu Perfil de Talento</h1>
+        <h2>Descubre tu estilo de aprendizaje y desarrollo</h2>
+        
+        <div class="progress-container">
+            <h3>Progreso del Test</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Pregunta 1 de 15</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="question active" id="question1">
+                <h3>1. Cuando aprendes algo nuevo, ¿qué prefieres hacer primero?</h3>
+                <div class="options">
+                    <div class="option" data-value="ignicion">Observar a expertos hacerlo y analizar su técnica</div>
+                    <div class="option" data-value="practica">Lanzarte directamente a practicar, aunque cometas errores</div>
+                    <div class="option" data-value="teoria">Leer sobre la teoría y entender los principios básicos</div>
+                    <div class="option" data-value="social">Aprender junto con otras personas en un grupo</div>
+                </div>
+            </div>
+
+            <div class="question" id="question2">
+                <h3>2. ¿Cómo te sientes cuando cometes errores durante el aprendizaje?</h3>
+                <div class="options">
+                    <div class="option" data-value="resiliente">Los veo como oportunidades para mejorar</div>
+                    <div class="option" data-value="frustrado">Me frustran, pero sigo intentando</div>
+                    <div class="option" data-value="analitico">Los analizo detalladamente para entender qué salió mal</div>
+                    <div class="option" data-value="evitativo">Intento evitarlos a toda costa</div>
+                </div>
+            </div>
+
+            <div class="question" id="question3">
+                <h3>3. ¿Cuál es tu enfoque preferido para la práctica?</h3>
+                <div class="options">
+                    <div class="option" data-value="intenso">Sesiones cortas pero muy intensas y concentradas</div>
+                    <div class="option" data-value="constante">Práctica diaria regular, aunque sea breve</div>
+                    <div class="option" data-value="largo">Sesiones largas cuando tengo tiempo disponible</div>
+                    <div class="option" data-value="flexible">Práctica cuando me siento motivado</div>
+                </div>
+            </div>
+
+            <div class="question" id="question4">
+                <h3>4. ¿Qué tipo de metas prefieres establecer?</h3>
+                <div class="options">
+                    <div class="option" data-value="especificas">Metas muy específicas y medibles</div>
+                    <div class="option" data-value="desafiantes">Metas ambiciosas que me empujen al límite</div>
+                    <div class="option" data-value="graduales">Metas pequeñas que se van construyendo</div>
+                    <div class="option" data-value="flexibles">Metas generales que puedo adaptar</div>
+                </div>
+            </div>
+
+            <div class="question" id="question5">
+                <h3>5. ¿Cómo prefieres recibir retroalimentación?</h3>
+                <div class="options">
+                    <div class="option" data-value="inmediata">Inmediata y específica sobre lo que hice bien o mal</div>
+                    <div class="option" data-value="constructiva">Constructiva y orientada a la mejora</div>
+                    <div class="option" data-value="reflexiva">Tiempo para reflexionar por mi cuenta</div>
+                    <div class="option" data-value="positiva">Principalmente positiva y motivadora</div>
+                </div>
+            </div>
+
+            <div class="question" id="question6">
+                <h3>6. ¿Qué te motiva más para aprender?</h3>
+                <div class="options">
+                    <div class="option" data-value="excelencia">El deseo de alcanzar la excelencia</div>
+                    <div class="option" data-value="progreso">Ver mi progreso y mejora constante</div>
+                    <div class="option" data-value="desafio">El desafío de superar obstáculos</div>
+                    <div class="option" data-value="disfrute">El disfrute y la pasión por la actividad</div>
+                </div>
+            </div>
+
+            <div class="question" id="question7">
+                <h3>7. ¿Cómo manejas los períodos de estancamiento?</h3>
+                <div class="options">
+                    <div class="option" data-value="persistente">Persisto y busco nuevas estrategias</div>
+                    <div class="option" data-value="analitico">Analizo qué está causando el estancamiento</div>
+                    <div class="option" data-value="adaptativo">Cambio mi enfoque o busco ayuda</div>
+                    <div class="option" data-value="paciente">Tengo paciencia y confío en que pasará</div>
+                </div>
+            </div>
+
+            <div class="question" id="question8">
+                <h3>8. ¿Qué tipo de entorno prefieres para aprender?</h3>
+                <div class="options">
+                    <div class="option" data-value="competitivo">Un entorno competitivo que me empuje</div>
+                    <div class="option" data-value="colaborativo">Un entorno colaborativo con otros aprendices</div>
+                    <div class="option" data-value="tranquilo">Un entorno tranquilo y sin distracciones</div>
+                    <div class="option" data-value="dinamico">Un entorno dinámico y variado</div>
+                </div>
+            </div>
+
+            <div class="question" id="question9">
+                <h3>9. ¿Cómo prefieres estructurar tu práctica?</h3>
+                <div class="options">
+                    <div class="option" data-value="segmentada">Dividir las habilidades en partes pequeñas</div>
+                    <div class="option" data-value="holistica">Practicar la habilidad completa</div>
+                    <div class="option" data-value="variada">Alternar entre diferentes aspectos</div>
+                    <div class="option" data-value="intuitiva">Seguir mi intuición del momento</div>
+                </div>
+            </div>
+
+            <div class="question" id="question10">
+                <h3>10. ¿Qué te ayuda más a mantener la motivación?</h3>
+                <div class="options">
+                    <div class="option" data-value="vision">Tener una visión clara de mi objetivo final</div>
+                    <div class="option" data-value="habitos">Establecer rutinas y hábitos consistentes</div>
+                    <div class="option" data-value="logros">Celebrar pequeños logros y progresos</div>
+                    <div class="option" data-value="pasion">Mantener viva la pasión por lo que hago</div>
+                </div>
+            </div>
+
+            <div class="question" id="question11">
+                <h3>11. ¿Cómo prefieres aprender de los expertos?</h3>
+                <div class="options">
+                    <div class="option" data-value="observacion">Observándolos de cerca y analizando su técnica</div>
+                    <div class="option" data-value="mentoria">Recibiendo mentoria directa de ellos</div>
+                    <div class="option" data-value="estudio">Estudiando sus métodos y filosofías</div>
+                    <div class="option" data-value="imitacion">Imitando su estilo y adaptándolo</div>
+                </div>
+            </div>
+
+            <div class="question" id="question12">
+                <h3>12. ¿Qué te resulta más efectivo para memorizar?</h3>
+                <div class="options">
+                    <div class="option" data-value="repeticion">Repetición constante y práctica</div>
+                    <div class="option" data-value="comprension">Entender los principios subyacentes</div>
+                    <div class="option" data-value="visualizacion">Visualizar y crear imágenes mentales</div>
+                    <div class="option" data-value="aplicacion">Aplicar el conocimiento en situaciones reales</div>
+                </div>
+            </div>
+
+            <div class="question" id="question13">
+                <h3>13. ¿Cómo manejas la presión y el estrés durante el aprendizaje?</h3>
+                <div class="options">
+                    <div class="option" data-value="enfocado">Me mantengo enfocado en la tarea</div>
+                    <div class="option" data-value="relajado">Busco formas de relajarme y mantener la calma</div>
+                    <div class="option" data-value="energizado">La presión me energiza y mejora mi rendimiento</div>
+                    <div class="option" data-value="adaptativo">Ajusto mi enfoque según la situación</div>
+                </div>
+            </div>
+
+            <div class="question" id="question14">
+                <h3>14. ¿Qué te motiva más a largo plazo?</h3>
+                <div class="options">
+                    <div class="option" data-value="maestria">Alcanzar un nivel de maestría en mi campo</div>
+                    <div class="option" data-value="impacto">Hacer un impacto positivo en otros</div>
+                    <div class="option" data-value="crecimiento">El crecimiento personal continuo</div>
+                    <div class="option" data-value="reconocimiento">El reconocimiento de mis logros</div>
+                </div>
+            </div>
+
+            <div class="question" id="question15">
+                <h3>15. ¿Cómo prefieres medir tu progreso?</h3>
+                <div class="options">
+                    <div class="option" data-value="metrica">Medidas objetivas y métricas específicas</div>
+                    <div class="option" data-value="sensacion">Cómo me siento y mi confianza</div>
+                    <div class="option" data-value="comparacion">Comparándome con otros en mi nivel</div>
+                    <div class="option" data-value="reflexion">Reflexión personal sobre mi desarrollo</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Tu Perfil de Talento</h2>
+            
+            <div class="result-section">
+                <h3>🎯 Tu Estilo de Aprendizaje Principal</h3>
+                <p id="mainStyle"></p>
+            </div>
+
+            <div class="result-section">
+                <h3>📊 Tus Fortalezas</h3>
+                <div id="strengths"></div>
+            </div>
+
+            <div class="result-section">
+                <h3>💡 Áreas de Oportunidad</h3>
+                <div id="opportunities"></div>
+            </div>
+
+            <div class="result-section">
+                <h3>🚀 Estrategias Recomendadas</h3>
+                <div id="strategies"></div>
+            </div>
+
+            <button class="restart-btn" onclick="restartQuiz()">Hacer el Test de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let totalQuestions = 15;
+        let answers = {};
+        
+        const questions = document.querySelectorAll('.question');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const results = document.getElementById('results');
+
+        // Configurar opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover selección previa en esta pregunta
+                const question = this.closest('.question');
+                question.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                
+                // Seleccionar esta opción
+                this.classList.add('selected');
+                
+                // Guardar respuesta
+                const questionId = question.id.replace('question', '');
+                answers[questionId] = this.dataset.value;
+                
+                // Esperar un momento y pasar a la siguiente pregunta
+                setTimeout(() => {
+                    nextQuestion();
+                }, 500);
+            });
+        });
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                questions[currentQuestion - 1].classList.remove('active');
+                currentQuestion++;
+                questions[currentQuestion - 1].classList.add('active');
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Pregunta ${currentQuestion} de ${totalQuestions}`;
+        }
+
+        function showResults() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            results.style.display = 'block';
+            
+            calculateResults();
+        }
+
+        function calculateResults() {
+            // Contar respuestas por categoría
+            const counts = {};
+            Object.values(answers).forEach(answer => {
+                counts[answer] = (counts[answer] || 0) + 1;
+            });
+
+            // Determinar estilo principal
+            const mainStyle = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            
+            // Definir perfiles
+            const profiles = {
+                ignicion: {
+                    name: "El Inspirado",
+                    description: "Te motiva ver ejemplos de excelencia y te inspiras en modelos a seguir. Eres visual y necesitas llenar tu 'parabrisas' con imágenes de éxito.",
+                    strengths: [
+                        "Excelente capacidad de observación",
+                        "Motivación intrínseca fuerte",
+                        "Visión clara de tus objetivos",
+                        "Capacidad de inspirarte en otros"
+                    ],
+                    opportunities: [
+                        "Desarrollar práctica más estructurada",
+                        "Aprender a manejar la frustración",
+                        "Construir hábitos más consistentes"
+                    ],
+                    strategies: [
+                        "Llena tu entorno con imágenes de excelencia",
+                        "Observa a expertos en tu campo",
+                        "Crea una visión clara de tu yo futuro",
+                        "Usa videos e imágenes como motivación"
+                    ]
+                },
+                practica: {
+                    name: "El Practicante",
+                    description: "Prefieres aprender haciendo y no temes cometer errores. Te sientes cómodo en el punto óptimo donde el aprendizaje es máximo.",
+                    strengths: [
+                        "Alta tolerancia al error",
+                        "Enfoque en la acción",
+                        "Capacidad de trabajar en el punto óptimo",
+                        "Aprendizaje rápido por experiencia"
+                    ],
+                    opportunities: [
+                        "Desarrollar más reflexión sobre la práctica",
+                        "Aprender de modelos y expertos",
+                        "Estructurar mejor tu práctica"
+                    ],
+                    strategies: [
+                        "Practica en el punto óptimo (50-80% de éxito)",
+                        "Cuenta intentos, no minutos",
+                        "Segmenta las habilidades complejas",
+                        "Busca retroalimentación inmediata"
+                    ]
+                },
+                teoria: {
+                    name: "El Analítico",
+                    description: "Prefieres entender los principios antes de actuar. Te gusta analizar y comprender la teoría detrás de las habilidades.",
+                    strengths: [
+                        "Comprensión profunda de conceptos",
+                        "Análisis detallado",
+                        "Enfoque sistemático",
+                        "Capacidad de planificación"
+                    ],
+                    opportunities: [
+                        "Aplicar más la teoría en la práctica",
+                        "Desarrollar tolerancia al error",
+                        "Actuar más y analizar menos"
+                    ],
+                    strategies: [
+                        "Combina teoría con práctica intensa",
+                        "Usa el método del grabado",
+                        "Aplica principios en situaciones reales",
+                        "Busca el punto óptimo en la práctica"
+                    ]
+                },
+                social: {
+                    name: "El Colaborativo",
+                    description: "Aprendes mejor en grupo y te motiva la interacción social. El apoyo y la competencia sana te impulsan.",
+                    strengths: [
+                        "Excelente trabajo en equipo",
+                        "Motivación social",
+                        "Capacidad de enseñar a otros",
+                        "Aprendizaje por observación social"
+                    ],
+                    opportunities: [
+                        "Desarrollar práctica individual",
+                        "Construir autodisciplina",
+                        "Trabajar en habilidades específicas"
+                    ],
+                    strategies: [
+                        "Únete a grupos de práctica",
+                        "Enseña a otros para aprender mejor",
+                        "Busca mentores y coaches",
+                        "Participa en comunidades de aprendizaje"
+                    ]
+                }
+            };
+
+            const profile = profiles[mainStyle];
+            
+            // Mostrar resultados
+            document.getElementById('mainStyle').innerHTML = `
+                <h4>${profile.name}</h4>
+                <p>${profile.description}</p>
+            `;
+
+            document.getElementById('strengths').innerHTML = `
+                <ul>
+                    ${profile.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('opportunities').innerHTML = `
+                <ul>
+                    ${profile.opportunities.map(opportunity => `<li>${opportunity}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('strategies').innerHTML = `
+                <ul>
+                    ${profile.strategies.map(strategy => `<li>${strategy}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            answers = {};
+            
+            // Resetear todas las preguntas
+            questions.forEach((q, index) => {
+                q.classList.remove('active');
+                q.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            });
+            
+            // Mostrar primera pregunta
+            questions[0].classList.add('active');
+            
+            // Mostrar contenedores
+            document.querySelector('.quiz-container').style.display = 'block';
+            document.querySelector('.progress-container').style.display = 'block';
+            results.style.display = 'none';
+            
+            // Resetear progreso
+            updateProgress();
+        }
+
+        // Inicializar progreso
+        updateProgress();
+    </script>
+</body>
+</html> 

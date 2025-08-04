@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión Diaria - Mentalidad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+            border-bottom: 3px solid #005BAA;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .quote {
+            font-style: italic;
+            background-color: #f8f9fa;
+            border-left: 4px solid #005BAA;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .reflection-form {
+            background-color: #e7f3ff;
+            border: 2px solid #005BAA;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .reflection-form h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0077CC;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .reflection-entry {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .reflection-entry h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .entry-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .entry-content {
+            margin: 10px 0;
+        }
+        .entry-content h5 {
+            color: #005BAA;
+            margin: 15px 0 5px 0;
+        }
+        .mood-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .mood-excellent {
+            background-color: #28a745;
+            color: white;
+        }
+        .mood-good {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .mood-neutral {
+            background-color: #ffc107;
+            color: black;
+        }
+        .mood-poor {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .mood-terrible {
+            background-color: #dc3545;
+            color: white;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .tips {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .tips h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+        }
+        .tips li {
+            margin: 5px 0;
+        }
+        .progress-chart {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .progress-chart h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .chart-bar {
+            background-color: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .chart-fill {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ Reflexión Diaria</h1>
+        <p>Desarrolla mentalidad de crecimiento a través de la reflexión diaria</p>
+    </div>
+
+    <div class="content">
+        <h2>¿Por qué la Reflexión Diaria?</h2>
+        <p>La reflexión diaria es una herramienta poderosa para desarrollar mentalidad de crecimiento. Te permite identificar patrones, celebrar el progreso y aprender de tus experiencias.</p>
+
+        <div class="quote">
+            <p>"La reflexión es el espejo del aprendizaje. Sin ella, pasamos por la vida sin ver realmente lo que está sucediendo."</p>
+        </div>
+
+        <h2>Nueva Reflexión</h2>
+        <p>Completa tu reflexión diaria para desarrollar mentalidad de crecimiento:</p>
+
+        <div class="reflection-form">
+            <h4>📝 Reflexión del Día</h4>
+            <form id="reflection-form">
+                <div class="form-group">
+                    <label for="reflection-date">Fecha:</label>
+                    <input type="date" id="reflection-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mood-rating">¿Cómo te sientes hoy? (1-10):</label>
+                    <input type="range" id="mood-rating" min="1" max="10" value="5" required>
+                    <div class="rating-labels">
+                        <span>1 - Terrible</span>
+                        <span>5 - Neutral</span>
+                        <span>10 - Excelente</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="growth-moment">Momento de Crecimiento:</label>
+                    <textarea id="growth-moment" placeholder="Describe un momento hoy donde mostraste mentalidad de crecimiento. ¿Qué hiciste? ¿Cómo te sentiste?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="challenge-faced">Desafío Enfrentado:</label>
+                    <textarea id="challenge-faced" placeholder="¿Qué desafío enfrentaste hoy? ¿Cómo lo manejaste? ¿Qué aprendiste?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="effort-celebrated">Esfuerzo Celebrado:</label>
+                    <textarea id="effort-celebrated" placeholder="¿Qué esfuerzo hiciste hoy que quieres celebrar? (No solo resultados, sino el trabajo duro)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="learning-moment">Momento de Aprendizaje:</label>
+                    <textarea id="learning-moment" placeholder="¿Qué aprendiste hoy? ¿Qué error o fracaso te enseñó algo nuevo?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gratitude">Gratitud:</label>
+                    <textarea id="gratitude" placeholder="¿Por qué estás agradecido hoy? ¿Qué persona, situación o cosa te ayudó a crecer?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tomorrow-goal">Meta para Mañana:</label>
+                    <textarea id="tomorrow-goal" placeholder="¿Qué quieres lograr mañana? ¿Qué desafío quieres buscar? ¿Qué mentalidad quieres cultivar?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mindset-language">Lenguaje de Mentalidad:</label>
+                    <select id="mindset-language" required>
+                        <option value="">Selecciona la opción que mejor describe tu día</option>
+                        <option value="growth">Usé "aún no" y lenguaje de crecimiento</option>
+                        <option value="mixed">Mezclé mentalidad fija y de crecimiento</option>
+                        <option value="fixed">Predominó mentalidad fija</option>
+                        <option value="aware">Fui consciente de mis pensamientos</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Guardar Reflexión</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Limpiar Formulario</button>
+            </form>
+        </div>
+
+        <h2>Tus Reflexiones</h2>
+        <div id="reflections-container">
+            <!-- Las reflexiones se mostrarán aquí -->
+        </div>
+
+        <div class="stats" id="stats-container">
+            <!-- Las estadísticas se mostrarán aquí -->
+        </div>
+
+        <div class="progress-chart">
+            <h4>📈 Progreso de Mentalidad de Crecimiento</h4>
+            <div id="progress-chart">
+                <!-- El gráfico de progreso se mostrará aquí -->
+            </div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 Consejos para una Reflexión Efectiva</h4>
+            <ul>
+                <li><strong>Sé honesto:</strong> La reflexión solo funciona si eres sincero contigo mismo</li>
+                <li><strong>Enfócate en el proceso:</strong> No solo en los resultados, sino en el esfuerzo</li>
+                <li><strong>Celebra los pequeños logros:</strong> Cada paso hacia la mentalidad de crecimiento cuenta</li>
+                <li><strong>Aprende de los errores:</strong> Ve los fracasos como oportunidades de aprendizaje</li>
+                <li><strong>Sé consistente:</strong> La reflexión diaria es más efectiva que la ocasional</li>
+                <li><strong>Practica la autocompasión:</strong> Sé amable contigo mismo</li>
+                <li><strong>Busca patrones:</strong> Identifica tendencias en tus pensamientos y comportamientos</li>
+            </ul>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Recuerda:</strong> La reflexión diaria no es un juicio, sino una herramienta de crecimiento. Cada día es una nueva oportunidad para desarrollar tu mentalidad de crecimiento.</p>
+        </div>
+    </div>
+
+    <script>
+        let reflections = JSON.parse(localStorage.getItem('mindset-reflections')) || [];
+        
+        // Establecer fecha actual por defecto
+        document.getElementById('reflection-date').value = new Date().toISOString().split('T')[0];
+        
+        document.getElementById('reflection-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveReflection();
+        });
+        
+        function saveReflection() {
+            const date = document.getElementById('reflection-date').value;
+            const moodRating = document.getElementById('mood-rating').value;
+            const growthMoment = document.getElementById('growth-moment').value;
+            const challengeFaced = document.getElementById('challenge-faced').value;
+            const effortCelebrated = document.getElementById('effort-celebrated').value;
+            const learningMoment = document.getElementById('learning-moment').value;
+            const gratitude = document.getElementById('gratitude').value;
+            const tomorrowGoal = document.getElementById('tomorrow-goal').value;
+            const mindsetLanguage = document.getElementById('mindset-language').value;
+            
+            const reflection = {
+                id: Date.now(),
+                date: date,
+                moodRating: parseInt(moodRating),
+                growthMoment: growthMoment,
+                challengeFaced: challengeFaced,
+                effortCelebrated: effortCelebrated,
+                learningMoment: learningMoment,
+                gratitude: gratitude,
+                tomorrowGoal: tomorrowGoal,
+                mindsetLanguage: mindsetLanguage,
+                createdAt: new Date().toISOString()
+            };
+            
+            reflections.push(reflection);
+            saveReflections();
+            displayReflections();
+            clearForm();
+        }
+        
+        function displayReflections() {
+            const container = document.getElementById('reflections-container');
+            container.innerHTML = '';
+            
+            if (reflections.length === 0) {
+                container.innerHTML = '<p>No tienes reflexiones guardadas. ¡Comienza tu primera reflexión arriba!</p>';
+                return;
+            }
+            
+            // Ordenar por fecha (más reciente primero)
+            const sortedReflections = reflections.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedReflections.forEach(reflection => {
+                const reflectionCard = createReflectionCard(reflection);
+                container.appendChild(reflectionCard);
+            });
+            
+            updateStats();
+            updateProgressChart();
+        }
+        
+        function createReflectionCard(reflection) {
+            const card = document.createElement('div');
+            card.className = 'reflection-entry';
+            
+            const moodClass = getMoodClass(reflection.moodRating);
+            const moodText = getMoodText(reflection.moodRating);
+            
+            card.innerHTML = `
+                <h4>Reflexión del ${new Date(reflection.date).toLocaleDateString()}</h4>
+                <div class="entry-date">Guardada el ${new Date(reflection.createdAt).toLocaleDateString()}</div>
+                
+                <div class="entry-content">
+                    <h5>Estado de Ánimo:</h5>
+                    <span class="mood-indicator ${moodClass}">${reflection.moodRating}/10 - ${moodText}</span>
+                    
+                    <h5>Momento de Crecimiento:</h5>
+                    <p>${reflection.growthMoment || 'No especificado'}</p>
+                    
+                    <h5>Desafío Enfrentado:</h5>
+                    <p>${reflection.challengeFaced || 'No especificado'}</p>
+                    
+                    <h5>Esfuerzo Celebrado:</h5>
+                    <p>${reflection.effortCelebrated || 'No especificado'}</p>
+                    
+                    <h5>Momento de Aprendizaje:</h5>
+                    <p>${reflection.learningMoment || 'No especificado'}</p>
+                    
+                    <h5>Gratitud:</h5>
+                    <p>${reflection.gratitude || 'No especificado'}</p>
+                    
+                    <h5>Meta para Mañana:</h5>
+                    <p>${reflection.tomorrowGoal || 'No especificado'}</p>
+                    
+                    <h5>Lenguaje de Mentalidad:</h5>
+                    <p>${getMindsetLanguageText(reflection.mindsetLanguage)}</p>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="deleteReflection(${reflection.id})">Eliminar</button>
+            `;
+            
+            return card;
+        }
+        
+        function getMoodClass(rating) {
+            if (rating >= 9) return 'mood-excellent';
+            if (rating >= 7) return 'mood-good';
+            if (rating >= 5) return 'mood-neutral';
+            if (rating >= 3) return 'mood-poor';
+            return 'mood-terrible';
+        }
+        
+        function getMoodText(rating) {
+            if (rating >= 9) return 'Excelente';
+            if (rating >= 7) return 'Bueno';
+            if (rating >= 5) return 'Neutral';
+            if (rating >= 3) return 'Malo';
+            return 'Terrible';
+        }
+        
+        function getMindsetLanguageText(language) {
+            const texts = {
+                'growth': 'Usé "aún no" y lenguaje de crecimiento',
+                'mixed': 'Mezclé mentalidad fija y de crecimiento',
+                'fixed': 'Predominó mentalidad fija',
+                'aware': 'Fui consciente de mis pensamientos'
+            };
+            return texts[language] || 'No especificado';
+        }
+        
+        function updateStats() {
+            const container = document.getElementById('stats-container');
+            const totalReflections = reflections.length;
+            const avgMood = totalReflections > 0 ? 
+                Math.round(reflections.reduce((sum, r) => sum + r.moodRating, 0) / totalReflections) : 0;
+            const growthDays = reflections.filter(r => r.mindsetLanguage === 'growth').length;
+            const streak = calculateStreak();
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalReflections}</div>
+                    <div class="stat-label">Días de Reflexión</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgMood}/10</div>
+                    <div class="stat-label">Estado de Ánimo Promedio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${growthDays}</div>
+                    <div class="stat-label">Días con Mentalidad de Crecimiento</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${streak}</div>
+                    <div class="stat-label">Racha Actual (días)</div>
+                </div>
+            `;
+        }
+        
+        function calculateStreak() {
+            if (reflections.length === 0) return 0;
+            
+            const sortedReflections = reflections.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const today = new Date().toISOString().split('T')[0];
+            let streak = 0;
+            let currentDate = new Date(today);
+            
+            for (let i = 0; i < sortedReflections.length; i++) {
+                const reflectionDate = new Date(sortedReflections[i].date);
+                const diffTime = currentDate - reflectionDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays <= 1) {
+                    streak++;
+                    currentDate = reflectionDate;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function updateProgressChart() {
+            const container = document.getElementById('progress-chart');
+            const totalReflections = reflections.length;
+            const growthDays = reflections.filter(r => r.mindsetLanguage === 'growth').length;
+            const percentage = totalReflections > 0 ? (growthDays / totalReflections) * 100 : 0;
+            
+            container.innerHTML = `
+                <p><strong>Días con Mentalidad de Crecimiento:</strong> ${growthDays} de ${totalReflections} (${Math.round(percentage)}%)</p>
+                <div class="chart-bar">
+                    <div class="chart-fill" style="width: ${percentage}%"></div>
+                </div>
+                <p><small>Este gráfico muestra el porcentaje de días donde predominó tu mentalidad de crecimiento.</small></p>
+            `;
+        }
+        
+        function deleteReflection(reflectionId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta reflexión?')) {
+                reflections = reflections.filter(r => r.id !== reflectionId);
+                saveReflections();
+                displayReflections();
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('reflection-form').reset();
+            document.getElementById('reflection-date').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function saveReflections() {
+            localStorage.setItem('mindset-reflections', JSON.stringify(reflections));
+        }
+        
+        // Mostrar reflexiones al cargar la página
+        displayReflections();
+    </script>
+</body>
+</html> 

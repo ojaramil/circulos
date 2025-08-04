@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Interés Compuesto - The Slight Edge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .calculator-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+        }
+        .calculator-panel h3 {
+            color: #005BAA;
+            margin-top: 0;
+            border-bottom: 2px solid #005BAA;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #005BAA;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #005BAA;
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            width: 100%;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .results-panel {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .results-panel h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .result-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #005BAA;
+        }
+        .result-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .chart-container {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: #005BAA;
+            color: white;
+            font-weight: 600;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-box h3 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .example-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧮 Calculadora de Interés Compuesto</h1>
+        <p>Descubre el poder transformador del tiempo y la consistencia</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 El Poder del Interés Compuesto</h3>
+            <p>El interés compuesto es la "octava maravilla del mundo". Es el principio que hace que pequeñas inversiones consistentes se conviertan en fortunas con el tiempo. Esta es la matemática detrás del Slight Edge.</p>
+        </div>
+
+        <div class="calculator-grid">
+            <div class="calculator-panel">
+                <h3>📊 Calculadora Básica</h3>
+                <div class="form-group">
+                    <label for="initialAmount">Inversión Inicial ($):</label>
+                    <input type="number" id="initialAmount" value="1000" min="0" step="100">
+                </div>
+                <div class="form-group">
+                    <label for="monthlyContribution">Contribución Mensual ($):</label>
+                    <input type="number" id="monthlyContribution" value="100" min="0" step="10">
+                </div>
+                <div class="form-group">
+                    <label for="annualRate">Tasa de Interés Anual (%):</label>
+                    <input type="number" id="annualRate" value="8" min="0" max="20" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="years">Años de Inversión:</label>
+                    <input type="number" id="years" value="30" min="1" max="50">
+                </div>
+                <button class="btn" onclick="calculateCompound()">Calcular</button>
+            </div>
+
+            <div class="calculator-panel">
+                <h3>⚡ Calculadora de Comparación</h3>
+                <div class="form-group">
+                    <label for="scenario1Amount">Escenario 1 - Inversión Mensual ($):</label>
+                    <input type="number" id="scenario1Amount" value="100" min="0" step="10">
+                </div>
+                <div class="form-group">
+                    <label for="scenario2Amount">Escenario 2 - Inversión Mensual ($):</label>
+                    <input type="number" id="scenario2Amount" value="200" min="0" step="10">
+                </div>
+                <div class="form-group">
+                    <label for="comparisonRate">Tasa de Interés Anual (%):</label>
+                    <input type="number" id="comparisonRate" value="8" min="0" max="20" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="comparisonYears">Años de Inversión:</label>
+                    <input type="number" id="comparisonYears" value="30" min="1" max="50">
+                </div>
+                <button class="btn" onclick="compareScenarios()">Comparar</button>
+            </div>
+        </div>
+
+        <div class="results-panel" id="resultsPanel" style="display: none;">
+            <h3>📈 Resultados de la Inversión</h3>
+            <div class="result-item">
+                <span class="result-label">Inversión Total:</span>
+                <span class="result-value" id="totalInvestment">$0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Interés Ganado:</span>
+                <span class="result-value" id="totalInterest">$0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Valor Final:</span>
+                <span class="result-value" id="finalValue">$0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Multiplicador:</span>
+                <span class="result-value" id="multiplier">0x</span>
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h3>💰 Ejemplo Práctico: El Poder de Empezar Temprano</h3>
+            <p><strong>Escenario A:</strong> Empiezas a invertir $200 al mes a los 25 años</p>
+            <p><strong>Escenario B:</strong> Empiezas a invertir $400 al mes a los 35 años</p>
+            <p><strong>Resultado a los 65 años:</strong> Ambos tendrán aproximadamente $1 millón, pero el Escenario A habrá invertido $96,000 mientras que el Escenario B habrá invertido $144,000.</p>
+            <p><strong>Lección:</strong> El tiempo es más valioso que el dinero.</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ El Costo de Esperar</h3>
+            <p>Si esperas 5 años para empezar a invertir, tendrás que invertir significativamente más dinero para alcanzar el mismo resultado. El tiempo perdido es dinero perdido.</p>
+        </div>
+
+        <div class="chart-container" id="chartContainer">
+            <h3>📊 Visualización del Crecimiento</h3>
+            <div id="chart" style="width: 100%; height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+                Ingresa los datos y haz clic en "Calcular" para ver el gráfico
+            </div>
+        </div>
+
+        <table class="comparison-table" id="comparisonTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>Escenario 1</th>
+                    <th>Escenario 2</th>
+                    <th>Diferencia</th>
+                </tr>
+            </thead>
+            <tbody id="comparisonTableBody">
+                <!-- Los datos se generarán dinámicamente -->
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h3>💡 Aplicación del Slight Edge</h3>
+            <p>El interés compuesto es la matemática del Slight Edge en acción. Cada pequeña inversión, repetida consistentemente, se multiplica con el tiempo. Lo mismo aplica para:</p>
+            <ul>
+                <li><strong>Hábitos:</strong> Cada día de ejercicio suma a tu salud futura</li>
+                <li><strong>Aprendizaje:</strong> Cada página leída construye tu conocimiento</li>
+                <li><strong>Relaciones:</strong> Cada interacción positiva fortalece tus conexiones</li>
+                <li><strong>Habilidades:</strong> Cada hora de práctica mejora tu maestría</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function calculateCompound() {
+            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+            const annualRate = parseFloat(document.getElementById('annualRate').value);
+            const years = parseInt(document.getElementById('years').value);
+
+            const monthlyRate = annualRate / 100 / 12;
+            const totalMonths = years * 12;
+
+            let balance = initialAmount;
+            const dataPoints = [];
+
+            for (let month = 1; month <= totalMonths; month++) {
+                balance = balance * (1 + monthlyRate) + monthlyContribution;
+                
+                if (month % 12 === 0) { // Cada año
+                    dataPoints.push({
+                        year: month / 12,
+                        balance: balance
+                    });
+                }
+            }
+
+            const totalInvestment = initialAmount + (monthlyContribution * totalMonths);
+            const totalInterest = balance - totalInvestment;
+            const multiplier = balance / totalInvestment;
+
+            // Mostrar resultados
+            document.getElementById('totalInvestment').textContent = '$' + totalInvestment.toLocaleString();
+            document.getElementById('totalInterest').textContent = '$' + totalInterest.toLocaleString();
+            document.getElementById('finalValue').textContent = '$' + balance.toLocaleString();
+            document.getElementById('multiplier').textContent = multiplier.toFixed(2) + 'x';
+
+            document.getElementById('resultsPanel').style.display = 'block';
+
+            // Generar gráfico simple
+            generateSimpleChart(dataPoints);
+        }
+
+        function compareScenarios() {
+            const scenario1Amount = parseFloat(document.getElementById('scenario1Amount').value);
+            const scenario2Amount = parseFloat(document.getElementById('scenario2Amount').value);
+            const annualRate = parseFloat(document.getElementById('comparisonRate').value);
+            const years = parseInt(document.getElementById('comparisonYears').value);
+
+            const monthlyRate = annualRate / 100 / 12;
+            const totalMonths = years * 12;
+
+            let balance1 = 0;
+            let balance2 = 0;
+            const tableBody = document.getElementById('comparisonTableBody');
+            tableBody.innerHTML = '';
+
+            for (let year = 1; year <= years; year++) {
+                // Calcular para el año actual
+                for (let month = 1; month <= 12; month++) {
+                    balance1 = balance1 * (1 + monthlyRate) + scenario1Amount;
+                    balance2 = balance2 * (1 + monthlyRate) + scenario2Amount;
+                }
+
+                const difference = balance2 - balance1;
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${year}</td>
+                    <td>$${balance1.toLocaleString()}</td>
+                    <td>$${balance2.toLocaleString()}</td>
+                    <td>$${difference.toLocaleString()}</td>
+                `;
+            }
+
+            document.getElementById('comparisonTable').style.display = 'table';
+        }
+
+        function generateSimpleChart(dataPoints) {
+            const chartDiv = document.getElementById('chart');
+            const maxBalance = Math.max(...dataPoints.map(d => d.balance));
+            
+            let chartHTML = '<div style="display: flex; align-items: end; height: 100%; gap: 2px;">';
+            
+            dataPoints.forEach(point => {
+                const height = (point.balance / maxBalance) * 100;
+                const color = height > 50 ? '#005BAA' : '#0077CC';
+                
+                chartHTML += `
+                    <div style="
+                        background: ${color};
+                        height: ${height}%;
+                        flex: 1;
+                        border-radius: 2px 2px 0 0;
+                        position: relative;
+                        min-width: 8px;
+                    " title="Año ${point.year}: $${point.balance.toLocaleString()}"></div>
+                `;
+            });
+            
+            chartHTML += '</div>';
+            chartDiv.innerHTML = chartHTML;
+        }
+
+        // Ejemplos predefinidos
+        function loadExample(example) {
+            switch(example) {
+                case 'early':
+                    document.getElementById('initialAmount').value = '0';
+                    document.getElementById('monthlyContribution').value = '200';
+                    document.getElementById('annualRate').value = '8';
+                    document.getElementById('years').value = '40';
+                    break;
+                case 'late':
+                    document.getElementById('initialAmount').value = '0';
+                    document.getElementById('monthlyContribution').value = '400';
+                    document.getElementById('annualRate').value = '8';
+                    document.getElementById('years').value = '30';
+                    break;
+                case 'aggressive':
+                    document.getElementById('initialAmount').value = '5000';
+                    document.getElementById('monthlyContribution').value = '500';
+                    document.getElementById('annualRate').value = '10';
+                    document.getElementById('years').value = '25';
+                    break;
+            }
+            calculateCompound();
+        }
+
+        // Inicializar con un ejemplo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExample('early');
+        });
+    </script>
+</body>
+</html> 

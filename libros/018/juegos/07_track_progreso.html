@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Progreso Slight Edge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 10px;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .metric-progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .metric-fill {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .tracking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tracking-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .tracking-card h3 {
+            color: #005BAA;
+            margin-top: 0;
+            border-bottom: 2px solid #005BAA;
+            padding-bottom: 10px;
+        }
+        .habit-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .habit-info {
+            flex: 1;
+        }
+        .habit-name {
+            font-weight: 600;
+            color: #005BAA;
+            margin-bottom: 5px;
+        }
+        .habit-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .habit-toggle {
+            background: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            width: 50px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .habit-toggle.completed {
+            background: #28a745;
+        }
+        .habit-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .habit-toggle.completed::after {
+            transform: translateX(25px);
+        }
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .day-cell {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+        .day-cell:hover {
+            background-color: #f0f8ff;
+        }
+        .day-cell.completed {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .day-cell.today {
+            border: 2px solid #005BAA;
+            font-weight: bold;
+        }
+        .btn {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .insights-panel {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .insights-panel h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .insight-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .insight-title {
+            font-weight: 600;
+            color: #005BAA;
+            margin-bottom: 5px;
+        }
+        .insight-content {
+            color: #666;
+        }
+        .chart-container {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 300px;
+        }
+        .chart-container h3 {
+            color: #005BAA;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .chart {
+            width: 100%;
+            height: 250px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        .add-habit-form {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .add-habit-form h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #005BAA;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Seguimiento de Progreso Slight Edge</h1>
+        <p>Monitorea tu progreso diario y visualiza tu transformación</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Instrucciones</h3>
+            <p>Usa esta herramienta para hacer seguimiento de tus hábitos diarios y ver cómo las pequeñas acciones se acumulan con el tiempo. Recuerda: el progreso real es invisible al principio, pero inevitable con el tiempo.</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="metric-card">
+                <div class="metric-value" id="totalDays">0</div>
+                <div class="metric-label">Días de Seguimiento</div>
+                <div class="metric-progress">
+                    <div class="metric-fill" id="daysProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="completionRate">0%</div>
+                <div class="metric-label">Tasa de Completado</div>
+                <div class="metric-progress">
+                    <div class="metric-fill" id="completionProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="currentStreak">0</div>
+                <div class="metric-label">Racha Actual</div>
+                <div class="metric-progress">
+                    <div class="metric-fill" id="streakProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="totalHabits">5</div>
+                <div class="metric-label">Hábitos Activos</div>
+                <div class="metric-progress">
+                    <div class="metric-fill" id="habitsProgress" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-habit-form">
+            <h3>✨ Agregar Nuevo Hábito</h3>
+            <div class="form-group">
+                <label for="habitName">Nombre del Hábito:</label>
+                <input type="text" id="habitName" placeholder="Ej: Leer 10 páginas">
+            </div>
+            <div class="form-group">
+                <label for="habitDescription">Descripción:</label>
+                <textarea id="habitDescription" placeholder="Describe tu hábito y por qué es importante..."></textarea>
+            </div>
+            <button class="btn" onclick="addHabit()">Agregar Hábito</button>
+        </div>
+
+        <div class="tracking-grid">
+            <!-- Hábito 1: Lectura -->
+            <div class="tracking-card">
+                <h3>📖 Lectura Diaria</h3>
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <div class="habit-name">Leer 10 páginas</div>
+                        <div class="habit-description">Lectura de desarrollo personal</div>
+                    </div>
+                    <button class="habit-toggle" data-habit="reading" onclick="toggleHabit('reading')"></button>
+                </div>
+                <div class="week-grid" id="readingWeek">
+                    <div class="day-cell" data-day="1">Lun</div>
+                    <div class="day-cell" data-day="2">Mar</div>
+                    <div class="day-cell" data-day="3">Mié</div>
+                    <div class="day-cell" data-day="4">Jue</div>
+                    <div class="day-cell" data-day="5">Vie</div>
+                    <div class="day-cell" data-day="6">Sáb</div>
+                    <div class="day-cell" data-day="7">Dom</div>
+                </div>
+            </div>
+
+            <!-- Hábito 2: Ejercicio -->
+            <div class="tracking-card">
+                <h3>💪 Ejercicio Diario</h3>
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <div class="habit-name">Caminar 20 minutos</div>
+                        <div class="habit-description">Actividad física diaria</div>
+                    </div>
+                    <button class="habit-toggle" data-habit="exercise" onclick="toggleHabit('exercise')"></button>
+                </div>
+                <div class="week-grid" id="exerciseWeek">
+                    <div class="day-cell" data-day="1">Lun</div>
+                    <div class="day-cell" data-day="2">Mar</div>
+                    <div class="day-cell" data-day="3">Mié</div>
+                    <div class="day-cell" data-day="4">Jue</div>
+                    <div class="day-cell" data-day="5">Vie</div>
+                    <div class="day-cell" data-day="6">Sáb</div>
+                    <div class="day-cell" data-day="7">Dom</div>
+                </div>
+            </div>
+
+            <!-- Hábito 3: Ahorro -->
+            <div class="tracking-card">
+                <h3>💰 Ahorro Diario</h3>
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <div class="habit-name">Ahorrar $10</div>
+                        <div class="habit-description">Construir riqueza gradualmente</div>
+                    </div>
+                    <button class="habit-toggle" data-habit="savings" onclick="toggleHabit('savings')"></button>
+                </div>
+                <div class="week-grid" id="savingsWeek">
+                    <div class="day-cell" data-day="1">Lun</div>
+                    <div class="day-cell" data-day="2">Mar</div>
+                    <div class="day-cell" data-day="3">Mié</div>
+                    <div class="day-cell" data-day="4">Jue</div>
+                    <div class="day-cell" data-day="5">Vie</div>
+                    <div class="day-cell" data-day="6">Sáb</div>
+                    <div class="day-cell" data-day="7">Dom</div>
+                </div>
+            </div>
+
+            <!-- Hábito 4: Meditación -->
+            <div class="tracking-card">
+                <h3>🧠 Meditación</h3>
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <div class="habit-name">Meditar 10 minutos</div>
+                        <div class="habit-description">Claridad mental y paz</div>
+                    </div>
+                    <button class="habit-toggle" data-habit="meditation" onclick="toggleHabit('meditation')"></button>
+                </div>
+                <div class="week-grid" id="meditationWeek">
+                    <div class="day-cell" data-day="1">Lun</div>
+                    <div class="day-cell" data-day="2">Mar</div>
+                    <div class="day-cell" data-day="3">Mié</div>
+                    <div class="day-cell" data-day="4">Jue</div>
+                    <div class="day-cell" data-day="5">Vie</div>
+                    <div class="day-cell" data-day="6">Sáb</div>
+                    <div class="day-cell" data-day="7">Dom</div>
+                </div>
+            </div>
+
+            <!-- Hábito 5: Gratitud -->
+            <div class="tracking-card">
+                <h3>🙏 Gratitud</h3>
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <div class="habit-name">Escribir 3 gratitudes</div>
+                        <div class="habit-description">Cultivar actitud positiva</div>
+                    </div>
+                    <button class="habit-toggle" data-habit="gratitude" onclick="toggleHabit('gratitude')"></button>
+                </div>
+                <div class="week-grid" id="gratitudeWeek">
+                    <div class="day-cell" data-day="1">Lun</div>
+                    <div class="day-cell" data-day="2">Mar</div>
+                    <div class="day-cell" data-day="3">Mié</div>
+                    <div class="day-cell" data-day="4">Jue</div>
+                    <div class="day-cell" data-day="5">Vie</div>
+                    <div class="day-cell" data-day="6">Sáb</div>
+                    <div class="day-cell" data-day="7">Dom</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>📈 Progreso Semanal</h3>
+            <div class="chart" id="weeklyChart">
+                Haz clic en los hábitos para ver tu progreso semanal
+            </div>
+        </div>
+
+        <div class="insights-panel" id="insightsPanel" style="display: none;">
+            <h3>💡 Insights de tu Progreso</h3>
+            <div id="insightsContent">
+                <!-- Los insights se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn" onclick="generateInsights()">Generar Insights</button>
+            <button class="btn" onclick="resetProgress()">Reiniciar Progreso</button>
+        </div>
+    </div>
+
+    <script>
+        let habitData = {
+            reading: { completed: [], streak: 0 },
+            exercise: { completed: [], streak: 0 },
+            savings: { completed: [], streak: 0 },
+            meditation: { completed: [], streak: 0 },
+            gratitude: { completed: [], streak: 0 }
+        };
+        
+        let currentDay = new Date().getDay() || 7; // Lunes = 1, Domingo = 7
+        let totalDays = 0;
+
+        function toggleHabit(habitName) {
+            const toggle = document.querySelector(`[data-habit="${habitName}"]`);
+            const today = new Date().toDateString();
+            
+            if (toggle.classList.contains('completed')) {
+                // Desmarcar
+                toggle.classList.remove('completed');
+                habitData[habitName].completed = habitData[habitName].completed.filter(date => date !== today);
+            } else {
+                // Marcar como completado
+                toggle.classList.add('completed');
+                if (!habitData[habitName].completed.includes(today)) {
+                    habitData[habitName].completed.push(today);
+                }
+            }
+            
+            updateWeekGrid(habitName);
+            updateMetrics();
+            updateChart();
+        }
+
+        function updateWeekGrid(habitName) {
+            const weekGrid = document.getElementById(`${habitName}Week`);
+            const cells = weekGrid.querySelectorAll('.day-cell');
+            
+            cells.forEach((cell, index) => {
+                const dayNumber = index + 1;
+                cell.classList.remove('completed');
+                
+                // Marcar como completado si corresponde
+                if (habitData[habitName].completed.length > 0) {
+                    // Simular días completados (en una implementación real, esto vendría de una base de datos)
+                    if (dayNumber <= habitData[habitName].completed.length) {
+                        cell.classList.add('completed');
+                    }
+                }
+                
+                // Marcar el día actual
+                if (dayNumber === currentDay) {
+                    cell.classList.add('today');
+                }
+            });
+        }
+
+        function updateMetrics() {
+            const totalHabits = Object.keys(habitData).length;
+            const totalCompleted = Object.values(habitData).reduce((sum, habit) => sum + habit.completed.length, 0);
+            const completionRate = totalHabits > 0 ? Math.round((totalCompleted / (totalHabits * 7)) * 100) : 0;
+            
+            // Calcular racha actual (simplificado)
+            const currentStreak = Math.min(totalCompleted, 7);
+            
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('currentStreak').textContent = currentStreak;
+            
+            // Actualizar barras de progreso
+            document.getElementById('daysProgress').style.width = Math.min((totalDays / 30) * 100, 100) + '%';
+            document.getElementById('completionProgress').style.width = completionRate + '%';
+            document.getElementById('streakProgress').style.width = Math.min((currentStreak / 7) * 100, 100) + '%';
+        }
+
+        function updateChart() {
+            const chart = document.getElementById('weeklyChart');
+            const habits = Object.keys(habitData);
+            const maxCompletions = Math.max(...habits.map(habit => habitData[habit].completed.length));
+            
+            if (maxCompletions === 0) {
+                chart.innerHTML = 'Haz clic en los hábitos para ver tu progreso semanal';
+                return;
+            }
+            
+            let chartHTML = '<div style="display: flex; align-items: end; height: 100%; gap: 10px; padding: 20px;">';
+            
+            habits.forEach(habit => {
+                const completions = habitData[habit].completed.length;
+                const height = maxCompletions > 0 ? (completions / maxCompletions) * 100 : 0;
+                const color = completions > 0 ? '#005BAA' : '#e9ecef';
+                
+                chartHTML += `
+                    <div style="
+                        background: ${color};
+                        height: ${height}%;
+                        flex: 1;
+                        border-radius: 4px 4px 0 0;
+                        position: relative;
+                        min-width: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 0.8em;
+                        font-weight: bold;
+                    " title="${habit}: ${completions} días">${completions}</div>
+                `;
+            });
+            
+            chartHTML += '</div>';
+            chart.innerHTML = chartHTML;
+        }
+
+        function addHabit() {
+            const name = document.getElementById('habitName').value.trim();
+            const description = document.getElementById('habitDescription').value.trim();
+            
+            if (name && description) {
+                // En una implementación real, agregarías el hábito a la lista
+                alert(`Hábito "${name}" agregado exitosamente. En una implementación completa, aparecería en la lista de seguimiento.`);
+                
+                document.getElementById('habitName').value = '';
+                document.getElementById('habitDescription').value = '';
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
+        }
+
+        function generateInsights() {
+            const insightsContent = document.getElementById('insightsContent');
+            const totalCompleted = Object.values(habitData).reduce((sum, habit) => sum + habit.completed.length, 0);
+            const totalPossible = Object.keys(habitData).length * 7;
+            const completionRate = totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+            
+            let html = '';
+            
+            html += `
+                <div class="insight-item">
+                    <div class="insight-title">📊 Progreso General</div>
+                    <div class="insight-content">Has completado ${totalCompleted} de ${totalPossible} posibles hábitos esta semana (${completionRate}%).</div>
+                </div>
+            `;
+            
+            // Encontrar el hábito más consistente
+            const mostConsistent = Object.entries(habitData).reduce((max, [habit, data]) => 
+                data.completed.length > max.completed.length ? {habit, completed: data.completed.length} : max, 
+                {habit: '', completed: 0}
+            );
+            
+            if (mostConsistent.completed > 0) {
+                html += `
+                    <div class="insight-item">
+                        <div class="insight-title">🏆 Hábito Más Consistente</div>
+                        <div class="insight-content">Tu hábito más consistente es "${mostConsistent.habit}" con ${mostConsistent.completed} días completados.</div>
+                    </div>
+                `;
+            }
+            
+            // Encontrar el hábito que necesita más atención
+            const leastConsistent = Object.entries(habitData).reduce((min, [habit, data]) => 
+                data.completed.length < min.completed.length ? {habit, completed: data.completed.length} : min, 
+                {habit: '', completed: 7}
+            );
+            
+            if (leastConsistent.completed < 7) {
+                html += `
+                    <div class="insight-item">
+                        <div class="insight-title">🎯 Área de Mejora</div>
+                        <div class="insight-content">Considera enfocarte más en "${leastConsistent.habit}" (${leastConsistent.completed}/7 días).</div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="insight-item">
+                    <div class="insight-title">💡 Recordatorio del Slight Edge</div>
+                    <div class="insight-content">Recuerda: la consistencia es más importante que la perfección. Es mejor hacer algo pequeño todos los días que algo grande ocasionalmente.</div>
+                </div>
+            `;
+            
+            insightsContent.innerHTML = html;
+            document.getElementById('insightsPanel').style.display = 'block';
+        }
+
+        function resetProgress() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+                habitData = {
+                    reading: { completed: [], streak: 0 },
+                    exercise: { completed: [], streak: 0 },
+                    savings: { completed: [], streak: 0 },
+                    meditation: { completed: [], streak: 0 },
+                    gratitude: { completed: [], streak: 0 }
+                };
+                
+                // Resetear toggles
+                document.querySelectorAll('.habit-toggle').forEach(toggle => {
+                    toggle.classList.remove('completed');
+                });
+                
+                // Resetear grids
+                Object.keys(habitData).forEach(habit => {
+                    updateWeekGrid(habit);
+                });
+                
+                updateMetrics();
+                updateChart();
+                document.getElementById('insightsPanel').style.display = 'none';
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMetrics();
+            updateChart();
+            
+            // Marcar el día actual en todos los grids
+            Object.keys(habitData).forEach(habit => {
+                updateWeekGrid(habit);
+            });
+        });
+    </script>
+</body>
+</html> 

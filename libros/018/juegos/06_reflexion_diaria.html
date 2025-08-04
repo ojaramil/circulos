@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión Diaria Slight Edge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .reflection-container {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            display: none;
+        }
+        .reflection-container.active {
+            display: block;
+        }
+        .reflection-header {
+            background: #005BAA;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .reflection-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .reflection-number {
+            background: white;
+            color: #005BAA;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .question-box {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .question-box h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 10px 0;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .answer-input:focus {
+            outline: none;
+            border-color: #005BAA;
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+        }
+        .rating-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .rating-label {
+            font-weight: 600;
+            color: #005BAA;
+        }
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .rating-btn {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .rating-btn:hover {
+            border-color: #005BAA;
+            background-color: #f0f8ff;
+        }
+        .rating-btn.selected {
+            border-color: #005BAA;
+            background-color: #005BAA;
+            color: white;
+        }
+        .btn {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .insights-panel {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            display: none;
+        }
+        .insights-panel h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .insight-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .insight-title {
+            font-weight: 600;
+            color: #005BAA;
+            margin-bottom: 5px;
+        }
+        .insight-content {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .completion-message {
+            background: #d4edda;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        .completion-message h3 {
+            color: #2d5a2d;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤔 Reflexión Diaria Slight Edge</h1>
+        <p>Examina tu día y alinea tus acciones con los principios del Slight Edge</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Instrucciones</h3>
+            <p>Responde honestamente a cada pregunta de reflexión. Esta práctica diaria te ayudará a mantener el enfoque en los principios del Slight Edge y construir hábitos que transformen tu vida.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="currentReflection">1</div>
+                <div class="stat-label">Reflexión Actual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalReflections">5</div>
+                <div class="stat-label">Total de Reflexiones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Tasa de Completado</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+        </div>
+
+        <!-- Reflexión 1: Consistencia -->
+        <div class="reflection-container active" id="reflection1">
+            <div class="reflection-header">
+                <h3><span class="reflection-number">1</span>Reflexión sobre Consistencia</h3>
+            </div>
+            <div class="question-box">
+                <h4>📅 ¿Qué acciones pequeñas hice hoy de manera consistente?</h4>
+                <textarea class="answer-input" placeholder="Describe las acciones pequeñas que realizaste hoy de manera consistente..."></textarea>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿En qué escala del 1 al 10 calificarías tu consistencia hoy?</h4>
+                <div class="rating-container">
+                    <span class="rating-label">Muy inconsistente</span>
+                    <div class="rating-buttons">
+                        <div class="rating-btn" data-rating="1">1</div>
+                        <div class="rating-btn" data-rating="2">2</div>
+                        <div class="rating-btn" data-rating="3">3</div>
+                        <div class="rating-btn" data-rating="4">4</div>
+                        <div class="rating-btn" data-rating="5">5</div>
+                        <div class="rating-btn" data-rating="6">6</div>
+                        <div class="rating-btn" data-rating="7">7</div>
+                        <div class="rating-btn" data-rating="8">8</div>
+                        <div class="rating-btn" data-rating="9">9</div>
+                        <div class="rating-btn" data-rating="10">10</div>
+                    </div>
+                    <span class="rating-label">Muy consistente</span>
+                </div>
+            </div>
+            <div class="question-box">
+                <h4>💡 ¿Qué puedo hacer mañana para mejorar mi consistencia?</h4>
+                <textarea class="answer-input" placeholder="Escribe tus ideas para mejorar la consistencia mañana..."></textarea>
+            </div>
+        </div>
+
+        <!-- Reflexión 2: Tiempo -->
+        <div class="reflection-container" id="reflection2">
+            <div class="reflection-header">
+                <h3><span class="reflection-number">2</span>Reflexión sobre el Tiempo</h3>
+            </div>
+            <div class="question-box">
+                <h4>⏰ ¿Cómo aproveché el tiempo hoy para construir mi futuro?</h4>
+                <textarea class="answer-input" placeholder="Describe cómo usaste el tiempo hoy para construir tu futuro..."></textarea>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿En qué escala del 1 al 10 calificarías tu uso del tiempo hoy?</h4>
+                <div class="rating-container">
+                    <span class="rating-label">Muy ineficiente</span>
+                    <div class="rating-buttons">
+                        <div class="rating-btn" data-rating="1">1</div>
+                        <div class="rating-btn" data-rating="2">2</div>
+                        <div class="rating-btn" data-rating="3">3</div>
+                        <div class="rating-btn" data-rating="4">4</div>
+                        <div class="rating-btn" data-rating="5">5</div>
+                        <div class="rating-btn" data-rating="6">6</div>
+                        <div class="rating-btn" data-rating="7">7</div>
+                        <div class="rating-btn" data-rating="8">8</div>
+                        <div class="rating-btn" data-rating="9">9</div>
+                        <div class="rating-btn" data-rating="10">10</div>
+                    </div>
+                    <span class="rating-label">Muy eficiente</span>
+                </div>
+            </div>
+            <div class="question-box">
+                <h4>🔮 ¿Qué acciones de hoy tendrán un impacto positivo en mi futuro?</h4>
+                <textarea class="answer-input" placeholder="Identifica las acciones de hoy que tendrán impacto futuro..."></textarea>
+            </div>
+        </div>
+
+        <!-- Reflexión 3: Simplicidad -->
+        <div class="reflection-container" id="reflection3">
+            <div class="reflection-header">
+                <h3><span class="reflection-number">3</span>Reflexión sobre Simplicidad</h3>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿Qué acciones simples pero efectivas realicé hoy?</h4>
+                <textarea class="answer-input" placeholder="Lista las acciones simples pero efectivas que hiciste hoy..."></textarea>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿En qué escala del 1 al 10 calificarías tu enfoque en la simplicidad hoy?</h4>
+                <div class="rating-container">
+                    <span class="rating-label">Muy complicado</span>
+                    <div class="rating-buttons">
+                        <div class="rating-btn" data-rating="1">1</div>
+                        <div class="rating-btn" data-rating="2">2</div>
+                        <div class="rating-btn" data-rating="3">3</div>
+                        <div class="rating-btn" data-rating="4">4</div>
+                        <div class="rating-btn" data-rating="5">5</div>
+                        <div class="rating-btn" data-rating="6">6</div>
+                        <div class="rating-btn" data-rating="7">7</div>
+                        <div class="rating-btn" data-rating="8">8</div>
+                        <div class="rating-btn" data-rating="9">9</div>
+                        <div class="rating-btn" data-rating="10">10</div>
+                    </div>
+                    <span class="rating-label">Muy simple</span>
+                </div>
+            </div>
+            <div class="question-box">
+                <h4>🔄 ¿Qué puedo simplificar mañana para ser más efectivo?</h4>
+                <textarea class="answer-input" placeholder="Identifica qué puedes simplificar mañana..."></textarea>
+            </div>
+        </div>
+
+        <!-- Reflexión 4: Elecciones -->
+        <div class="reflection-container" id="reflection4">
+            <div class="reflection-header">
+                <h3><span class="reflection-number">4</span>Reflexión sobre Elecciones</h3>
+            </div>
+            <div class="question-box">
+                <h4>🔄 ¿Qué elecciones hice hoy que me llevan hacia arriba?</h4>
+                <textarea class="answer-input" placeholder="Lista las elecciones positivas que hiciste hoy..."></textarea>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿En qué escala del 1 al 10 calificarías la calidad de mis elecciones hoy?</h4>
+                <div class="rating-container">
+                    <span class="rating-label">Muy negativas</span>
+                    <div class="rating-buttons">
+                        <div class="rating-btn" data-rating="1">1</div>
+                        <div class="rating-btn" data-rating="2">2</div>
+                        <div class="rating-btn" data-rating="3">3</div>
+                        <div class="rating-btn" data-rating="4">4</div>
+                        <div class="rating-btn" data-rating="5">5</div>
+                        <div class="rating-btn" data-rating="6">6</div>
+                        <div class="rating-btn" data-rating="7">7</div>
+                        <div class="rating-btn" data-rating="8">8</div>
+                        <div class="rating-btn" data-rating="9">9</div>
+                        <div class="rating-btn" data-rating="10">10</div>
+                    </div>
+                    <span class="rating-label">Muy positivas</span>
+                </div>
+            </div>
+            <div class="question-box">
+                <h4>🚫 ¿Qué elecciones puedo evitar mañana para no ir hacia abajo?</h4>
+                <textarea class="answer-input" placeholder="Identifica las elecciones negativas que debes evitar..."></textarea>
+            </div>
+        </div>
+
+        <!-- Reflexión 5: Responsabilidad -->
+        <div class="reflection-container" id="reflection5">
+            <div class="reflection-header">
+                <h3><span class="reflection-number">5</span>Reflexión sobre Responsabilidad</h3>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿Por qué resultados me hice responsable hoy?</h4>
+                <textarea class="answer-input" placeholder="Describe los resultados por los que te hiciste responsable hoy..."></textarea>
+            </div>
+            <div class="question-box">
+                <h4>🎯 ¿En qué escala del 1 al 10 calificarías mi nivel de responsabilidad hoy?</h4>
+                <div class="rating-container">
+                    <span class="rating-label">Muy irresponsable</span>
+                    <div class="rating-buttons">
+                        <div class="rating-btn" data-rating="1">1</div>
+                        <div class="rating-btn" data-rating="2">2</div>
+                        <div class="rating-btn" data-rating="3">3</div>
+                        <div class="rating-btn" data-rating="4">4</div>
+                        <div class="rating-btn" data-rating="5">5</div>
+                        <div class="rating-btn" data-rating="6">6</div>
+                        <div class="rating-btn" data-rating="7">7</div>
+                        <div class="rating-btn" data-rating="8">8</div>
+                        <div class="rating-btn" data-rating="9">9</div>
+                        <div class="rating-btn" data-rating="10">10</div>
+                    </div>
+                    <span class="rating-label">Muy responsable</span>
+                </div>
+            </div>
+            <div class="question-box">
+                <h4>💪 ¿Qué puedo hacer mañana para tomar más responsabilidad?</h4>
+                <textarea class="answer-input" placeholder="Escribe tus planes para tomar más responsabilidad mañana..."></textarea>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn" id="prevBtn" onclick="previousReflection()" disabled>← Anterior</button>
+            <button class="btn" id="nextBtn" onclick="nextReflection()">Siguiente →</button>
+        </div>
+
+        <div class="insights-panel" id="insightsPanel">
+            <h3>📊 Insights de tu Reflexión Diaria</h3>
+            <div id="insightsContent">
+                <!-- Los insights se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="completion-message" id="completionMessage">
+            <h3>🎉 ¡Excelente Trabajo!</h3>
+            <p>Has completado tu reflexión diaria del Slight Edge. Esta práctica te ayudará a mantener el enfoque en los principios que transforman vidas.</p>
+            <p><strong>Recuerda:</strong> La reflexión diaria es una herramienta poderosa para alinear tus acciones con tu filosofía del Slight Edge.</p>
+            <button class="btn" onclick="startOver()">Comenzar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentReflection = 1;
+        let totalReflections = 5;
+        let reflectionData = {};
+        let completedReflections = new Set();
+
+        function showReflection(reflectionNumber) {
+            // Ocultar todas las reflexiones
+            document.querySelectorAll('.reflection-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Mostrar la reflexión actual
+            document.getElementById(`reflection${reflectionNumber}`).classList.add('active');
+            
+            // Actualizar estadísticas
+            document.getElementById('currentReflection').textContent = reflectionNumber;
+            document.getElementById('progressFill').style.width = (reflectionNumber / totalReflections * 100) + '%';
+            
+            // Actualizar botones
+            document.getElementById('prevBtn').disabled = reflectionNumber === 1;
+            document.getElementById('nextBtn').textContent = reflectionNumber === totalReflections ? 'Finalizar' : 'Siguiente →';
+        }
+
+        function nextReflection() {
+            if (currentReflection < totalReflections) {
+                currentReflection++;
+                showReflection(currentReflection);
+            } else {
+                // Mostrar insights y mensaje de finalización
+                generateInsights();
+                document.querySelectorAll('.reflection-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+                document.querySelector('.navigation').style.display = 'none';
+                document.getElementById('insightsPanel').style.display = 'block';
+                document.getElementById('completionMessage').style.display = 'block';
+            }
+        }
+
+        function previousReflection() {
+            if (currentReflection > 1) {
+                currentReflection--;
+                showReflection(currentReflection);
+            }
+        }
+
+        function startOver() {
+            currentReflection = 1;
+            reflectionData = {};
+            completedReflections.clear();
+            
+            // Resetear formularios
+            document.querySelectorAll('.answer-input').forEach(input => {
+                input.value = '';
+            });
+            
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Mostrar primera reflexión
+            document.querySelectorAll('.reflection-container').forEach(container => {
+                container.style.display = 'block';
+            });
+            document.querySelector('.navigation').style.display = 'flex';
+            document.getElementById('insightsPanel').style.display = 'none';
+            document.getElementById('completionMessage').style.display = 'none';
+            
+            showReflection(1);
+        }
+
+        function generateInsights() {
+            const insightsContent = document.getElementById('insightsContent');
+            let html = '';
+            
+            // Calcular promedio de calificaciones
+            const ratings = Object.values(reflectionData).filter(data => data.rating).map(data => data.rating);
+            const averageRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 0;
+            
+            html += `
+                <div class="insight-card">
+                    <div class="insight-title">📈 Calificación Promedio</div>
+                    <div class="insight-content">Tu calificación promedio hoy fue: ${averageRating}/10</div>
+                </div>
+            `;
+            
+            // Insights específicos basados en las respuestas
+            if (reflectionData[1] && reflectionData[1].consistency) {
+                html += `
+                    <div class="insight-card">
+                        <div class="insight-title">🔄 Consistencia</div>
+                        <div class="insight-content">${reflectionData[1].consistency}</div>
+                    </div>
+                `;
+            }
+            
+            if (reflectionData[2] && reflectionData[2].timeUsage) {
+                html += `
+                    <div class="insight-card">
+                        <div class="insight-title">⏰ Uso del Tiempo</div>
+                        <div class="insight-content">${reflectionData[2].timeUsage}</div>
+                    </div>
+                `;
+            }
+            
+            if (reflectionData[3] && reflectionData[3].simplicity) {
+                html += `
+                    <div class="insight-card">
+                        <div class="insight-title">🎯 Simplicidad</div>
+                        <div class="insight-content">${reflectionData[3].simplicity}</div>
+                    </div>
+                `;
+            }
+            
+            if (reflectionData[4] && reflectionData[4].choices) {
+                html += `
+                    <div class="insight-card">
+                        <div class="insight-title">🔄 Elecciones</div>
+                        <div class="insight-content">${reflectionData[4].choices}</div>
+                    </div>
+                `;
+            }
+            
+            if (reflectionData[5] && reflectionData[5].responsibility) {
+                html += `
+                    <div class="insight-card">
+                        <div class="insight-title">🎯 Responsabilidad</div>
+                        <div class="insight-content">${reflectionData[5].responsibility}</div>
+                    </div>
+                `;
+            }
+            
+            insightsContent.innerHTML = html;
+        }
+
+        // Configurar eventos para las calificaciones
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const container = this.closest('.reflection-container');
+                const reflectionNumber = container.id.replace('reflection', '');
+                
+                // Deseleccionar otros botones en el mismo grupo
+                container.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+                
+                // Seleccionar este botón
+                this.classList.add('selected');
+                
+                // Guardar datos
+                if (!reflectionData[reflectionNumber]) {
+                    reflectionData[reflectionNumber] = {};
+                }
+                reflectionData[reflectionNumber].rating = parseInt(this.dataset.rating);
+            });
+        });
+
+        // Configurar eventos para los inputs de texto
+        document.querySelectorAll('.answer-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const container = this.closest('.reflection-container');
+                const reflectionNumber = container.id.replace('reflection', '');
+                const questionText = this.previousElementSibling.textContent;
+                
+                if (!reflectionData[reflectionNumber]) {
+                    reflectionData[reflectionNumber] = {};
+                }
+                
+                // Identificar el tipo de pregunta basado en el texto
+                if (questionText.includes('consistencia')) {
+                    reflectionData[reflectionNumber].consistency = this.value;
+                } else if (questionText.includes('tiempo')) {
+                    reflectionData[reflectionNumber].timeUsage = this.value;
+                } else if (questionText.includes('simplicidad')) {
+                    reflectionData[reflectionNumber].simplicity = this.value;
+                } else if (questionText.includes('elecciones')) {
+                    reflectionData[reflectionNumber].choices = this.value;
+                } else if (questionText.includes('responsabilidad')) {
+                    reflectionData[reflectionNumber].responsibility = this.value;
+                }
+            });
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            showReflection(1);
+        });
+    </script>
+</body>
+</html> 

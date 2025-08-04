@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Mentalidad Actual - Mentalidad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .test-section {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .test-section h3 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+        .question {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .question h4 {
+            color: #333;
+            margin-top: 0;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #f8f9fa;
+        }
+        .option input[type="radio"] {
+            margin: 0;
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .results.error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #005BAA;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .mindset-result {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .mindset-result.fixed {
+            background-color: #ffe7e7;
+            border-left-color: #dc3545;
+        }
+        .mindset-result.growth {
+            background-color: #e7ffe7;
+            border-left-color: #28a745;
+        }
+        .mindset-result h3 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .mindset-result.fixed h3 {
+            color: #dc3545;
+        }
+        .mindset-result.growth h3 {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Test: Tu Mentalidad Actual</h1>
+        <p>Descubre qué tipo de mentalidad predomina en tu vida</p>
+    </div>
+
+    <div class="content">
+        <div class="test-section">
+            <h3>📋 Instrucciones</h3>
+            <p>Lee cada afirmación y selecciona la opción que mejor refleje tu forma de pensar. No hay respuestas correctas o incorrectas - solo queremos conocer tu perspectiva actual.</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        <p id="progress-text">Pregunta 1 de 15</p>
+
+        <form id="mindset-test">
+            <div class="question" id="question-1">
+                <h4>1. Tu inteligencia es algo intrínseco a ti y no puedes hacer mucho por modificarla.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-2" style="display: none;">
+                <h4>2. Puedes aprender cosas nuevas, pero realmente no puedes cambiar lo inteligente que eres.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-3" style="display: none;">
+                <h4>3. Tengas la inteligencia que tengas, siempre puedes desarrollarla más, hasta cierto punto.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-4" style="display: none;">
+                <h4>4. Tu inteligencia puede ser sustancialmente modificada.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-5" style="display: none;">
+                <h4>5. Cuando cometes un error, te sientes como un fracasado.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-6" style="display: none;">
+                <h4>6. Prefieres los desafíos que te hacen crecer, aunque sean difíciles.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-7" style="display: none;">
+                <h4>7. El esfuerzo es para las personas que no tienen talento natural.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-8" style="display: none;">
+                <h4>8. Cuando alguien te critica, lo ves como una oportunidad para mejorar.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-9" style="display: none;">
+                <h4>9. Te sientes inteligente cuando no cometes errores.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-10" style="display: none;">
+                <h4>10. Te sientes inteligente cuando aprendes algo nuevo y difícil.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-11" style="display: none;">
+                <h4>11. Prefieres evitar situaciones donde podrías fallar.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-12" style="display: none;">
+                <h4>12. Cuando las cosas se ponen difíciles, te esfuerzas más.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-13" style="display: none;">
+                <h4>13. Te comparas con otros para evaluar tu valía.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-14" style="display: none;">
+                <h4>14. Te inspiras en el éxito de otros para mejorar.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question-15" style="display: none;">
+                <h4>15. Crees que el potencial de una persona es desconocido e incognoscible.</h4>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="5">
+                        <span>Totalmente de acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="4">
+                        <span>De acuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="3">
+                        <span>Neutral</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="2">
+                        <span>En desacuerdo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="1">
+                        <span>Totalmente en desacuerdo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="button" class="btn" id="prev-btn" style="display: none;">← Anterior</button>
+                <button type="button" class="btn" id="next-btn">Siguiente →</button>
+                <button type="button" class="btn" id="submit-btn" style="display: none;">Ver Resultados</button>
+            </div>
+        </form>
+
+        <div class="results" id="results">
+            <h2>🎯 Tus Resultados</h2>
+            <div id="mindset-result"></div>
+            <div id="detailed-results"></div>
+            <button class="btn" onclick="location.reload()">Hacer el Test de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 15;
+        const questions = [];
+
+        // Inicializar preguntas
+        for (let i = 1; i <= totalQuestions; i++) {
+            questions.push(i);
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Pregunta ${currentQuestion} de ${totalQuestions}`;
+        }
+
+        function showQuestion(questionNum) {
+            // Ocultar todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question-${i}`).style.display = 'none';
+            }
+            
+            // Mostrar la pregunta actual
+            document.getElementById(`question-${questionNum}`).style.display = 'block';
+            
+            // Actualizar botones
+            document.getElementById('prev-btn').style.display = questionNum === 1 ? 'none' : 'inline-block';
+            document.getElementById('next-btn').style.display = questionNum === totalQuestions ? 'none' : 'inline-block';
+            document.getElementById('submit-btn').style.display = questionNum === totalQuestions ? 'inline-block' : 'none';
+            
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function calculateResults() {
+            let fixedScore = 0;
+            let growthScore = 0;
+            
+            // Preguntas de mentalidad fija (1, 2, 5, 7, 9, 11, 13)
+            const fixedQuestions = [1, 2, 5, 7, 9, 11, 13];
+            // Preguntas de mentalidad de crecimiento (3, 4, 6, 8, 10, 12, 14, 15)
+            const growthQuestions = [3, 4, 6, 8, 10, 12, 14, 15];
+            
+            fixedQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q}"]:checked`);
+                if (selected) {
+                    fixedScore += parseInt(selected.value);
+                }
+            });
+            
+            growthQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q}"]:checked`);
+                if (selected) {
+                    growthScore += parseInt(selected.value);
+                }
+            });
+            
+            const maxFixedScore = fixedQuestions.length * 5;
+            const maxGrowthScore = growthQuestions.length * 5;
+            
+            const fixedPercentage = (fixedScore / maxFixedScore) * 100;
+            const growthPercentage = (growthScore / maxGrowthScore) * 100;
+            
+            return { fixedPercentage, growthPercentage };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            const resultDiv = document.getElementById('mindset-result');
+            const detailedDiv = document.getElementById('detailed-results');
+            
+            let mindsetType, mindsetClass, description, recommendations;
+            
+            if (results.growthPercentage > results.fixedPercentage) {
+                mindsetType = "Mentalidad de Crecimiento";
+                mindsetClass = "growth";
+                description = "Tienes una mentalidad predominantemente de crecimiento. Crees que las capacidades se pueden desarrollar a través del esfuerzo y el aprendizaje.";
+                recommendations = [
+                    "Continúa buscando desafíos que te hagan crecer",
+                    "Mantén tu curiosidad y disposición para aprender",
+                    "Ayuda a otros a desarrollar su mentalidad de crecimiento",
+                    "Celebra el esfuerzo y el proceso, no solo los resultados"
+                ];
+            } else if (results.fixedPercentage > results.growthPercentage) {
+                mindsetType = "Mentalidad Fija";
+                mindsetClass = "fixed";
+                description = "Tienes una mentalidad predominantemente fija. Tiendes a creer que las capacidades son innatas e inmutables.";
+                recommendations = [
+                    "Comienza a ver los errores como oportunidades de aprendizaje",
+                    "Busca desafíos que te hagan salir de tu zona de confort",
+                    "Practica elogiar el esfuerzo en lugar del talento",
+                    "Recuerda que el cerebro puede cambiar y crecer"
+                ];
+            } else {
+                mindsetType = "Mentalidad Mixta";
+                mindsetClass = "";
+                description = "Tienes una mezcla de ambas mentalidades. Esto es común y puedes trabajar para fortalecer tu mentalidad de crecimiento.";
+                recommendations = [
+                    "Identifica en qué áreas tienes mentalidad fija",
+                    "Practica conscientemente la mentalidad de crecimiento",
+                    "Busca ejemplos de personas que han superado obstáculos",
+                    "Reflexiona sobre cómo interpretas los fracasos"
+                ];
+            }
+            
+            resultDiv.innerHTML = `
+                <h3>${mindsetType}</h3>
+                <p><strong>Descripción:</strong> ${description}</p>
+                <p><strong>Mentalidad Fija:</strong> ${results.fixedPercentage.toFixed(1)}%</p>
+                <p><strong>Mentalidad de Crecimiento:</strong> ${results.growthPercentage.toFixed(1)}%</p>
+            `;
+            resultDiv.className = `mindset-result ${mindsetClass}`;
+            
+            detailedDiv.innerHTML = `
+                <h3>💡 Recomendaciones para ti:</h3>
+                <ul>
+                    ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+                <p><strong>Recuerda:</strong> La mentalidad no es algo fijo. Puedes desarrollar una mentalidad de crecimiento con práctica y conciencia.</p>
+            `;
+            
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('mindset-test').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+        document.getElementById('submit-btn').addEventListener('click', showResults);
+
+        // Inicializar
+        showQuestion(1);
+    </script>
+</body>
+</html> 

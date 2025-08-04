@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos de Vida Real - The Slight Edge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .case-container {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            display: none;
+        }
+        .case-container.active {
+            display: block;
+        }
+        .case-header {
+            background: #005BAA;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .case-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .case-number {
+            background: white;
+            color: #005BAA;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .scenario {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .scenario h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #f0f8ff;
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #e6f3ff;
+        }
+        .option.correct {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .option.incorrect {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .btn {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .explanation {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .explanation h4 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .principle-highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .principle-highlight h5 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Casos de Vida Real</h1>
+        <p>Aplica los principios del Slight Edge en situaciones cotidianas</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Instrucciones</h3>
+            <p>Lee cada caso de vida real y selecciona la opción que mejor aplica los principios del Slight Edge. Cada caso te ayudará a entender cómo usar la filosofía en situaciones cotidianas.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="currentCase">1</div>
+                <div class="stat-label">Caso Actual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="correctAnswers">0</div>
+                <div class="stat-label">Respuestas Correctas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCases">5</div>
+                <div class="stat-label">Total de Casos</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+        </div>
+
+        <!-- Caso 1: Salud y Fitness -->
+        <div class="case-container active" id="case1">
+            <div class="case-header">
+                <h3><span class="case-number">1</span>María y su Objetivo de Fitness</h3>
+            </div>
+            <div class="scenario">
+                <h4>📖 El Escenario</h4>
+                <p>María tiene 35 años y quiere ponerse en forma. Ha intentado varias veces con rutinas intensas de ejercicio, pero siempre las abandona después de unas semanas. Está frustrada y piensa que "no tiene voluntad".</p>
+                <p><strong>¿Qué enfoque debería tomar María para lograr sus objetivos de fitness?</strong></p>
+            </div>
+            <div class="options">
+                <div class="option" data-correct="true">
+                    <strong>A) Empezar con caminatas de 15 minutos diarios</strong><br>
+                    <small>Comienza pequeño y construye el hábito gradualmente</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>B) Inscribirse en un gimnasio y hacer ejercicio intenso 5 días por semana</strong><br>
+                    <small>Cambio drástico que probablemente abandonará</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>C) Esperar hasta que tenga más tiempo libre</strong><br>
+                    <small>Procrastinación que nunca llegará</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>D) Comprar equipos costosos para ejercitarse en casa</strong><br>
+                    <small>Gasto innecesario sin hábito establecido</small>
+                </div>
+            </div>
+            <div class="explanation" id="explanation1">
+                <h4>✅ Respuesta Correcta: Opción A</h4>
+                <p>María debería empezar con caminatas de 15 minutos diarios porque:</p>
+                <div class="principle-highlight">
+                    <h5>🔑 Principio de la Simplicidad</h5>
+                    <p>Las acciones simples son más fáciles de mantener. Caminar 15 minutos es algo que puede hacer todos los días sin importar su nivel de energía.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>⏰ Principio del Tiempo</h5>
+                    <p>Con el tiempo, 15 minutos diarios se convertirán en una base sólida. Puede aumentar gradualmente la duración e intensidad.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>🔄 Principio de la Consistencia</h5>
+                    <p>Es mejor hacer algo pequeño todos los días que algo grande ocasionalmente. La consistencia es más poderosa que la intensidad.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caso 2: Finanzas -->
+        <div class="case-container" id="case2">
+            <div class="case-header">
+                <h3><span class="case-number">2</span>Carlos y sus Finanzas</h3>
+            </div>
+            <div class="scenario">
+                <h4>💰 El Escenario</h4>
+                <p>Carlos tiene 28 años y gana $3,000 al mes. Vive al día y no tiene ahorros. Quiere construir riqueza pero piensa que necesita ganar más dinero primero. Sus amigos le dicen que invierta en criptomonedas para "hacerse rico rápido".</p>
+                <p><strong>¿Cuál es la mejor estrategia financiera para Carlos?</strong></p>
+            </div>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <strong>A) Invertir todo su dinero en criptomonedas</strong><br>
+                    <small>Especulación de alto riesgo, no inversión</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>B) Esperar hasta que gane más dinero para empezar a ahorrar</strong><br>
+                    <small>Procrastinación que nunca llegará</small>
+                </div>
+                <div class="option" data-correct="true">
+                    <strong>C) Ahorrar $100 al mes e invertir en un fondo indexado</strong><br>
+                    <small>Estrategia simple y consistente</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>D) Pedir un préstamo para invertir en bienes raíces</strong><br>
+                    <small>Riesgo innecesario sin base financiera</small>
+                </div>
+            </div>
+            <div class="explanation" id="explanation2">
+                <h4>✅ Respuesta Correcta: Opción C</h4>
+                <p>Carlos debería ahorrar $100 al mes e invertir en un fondo indexado porque:</p>
+                <div class="principle-highlight">
+                    <h5>🎯 Principio de la Simplicidad</h5>
+                    <p>Un fondo indexado es simple y no requiere conocimiento especializado. $100 al mes es una cantidad manejable.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>⏰ Principio del Tiempo</h5>
+                    <p>Con el interés compuesto, $100 al mes durante 30 años puede convertirse en más de $150,000.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>🔄 Principio de la Consistencia</h5>
+                    <p>Es mejor ahorrar una pequeña cantidad consistentemente que grandes cantidades ocasionalmente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caso 3: Aprendizaje -->
+        <div class="case-container" id="case3">
+            <div class="case-header">
+                <h3><span class="case-number">3</span>Ana y su Desarrollo Profesional</h3>
+            </div>
+            <div class="scenario">
+                <h4>📚 El Escenario</h4>
+                <p>Ana trabaja en marketing y quiere mejorar sus habilidades. Tiene poco tiempo libre y está considerando tomar un curso intensivo de 3 meses que cuesta $5,000. También está considerando leer 20 páginas de un buen libro cada día.</p>
+                <p><strong>¿Qué enfoque debería elegir Ana para su desarrollo profesional?</strong></p>
+            </div>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <strong>A) Tomar el curso intensivo de $5,000</strong><br>
+                    <small>Inversión grande sin garantía de aplicación</small>
+                </div>
+                <div class="option" data-correct="true">
+                    <strong>B) Leer 20 páginas diarias de libros de marketing</strong><br>
+                    <small>Hábito simple y sostenible</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>C) Esperar hasta que tenga más tiempo libre</strong><br>
+                    <small>Excusa que nunca se resolverá</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>D) Hacer ambas cosas al mismo tiempo</strong><br>
+                    <small>Sobrecarga que llevará al abandono</small>
+                </div>
+            </div>
+            <div class="explanation" id="explanation3">
+                <h4>✅ Respuesta Correcta: Opción B</h4>
+                <p>Ana debería leer 20 páginas diarias porque:</p>
+                <div class="principle-highlight">
+                    <h5>🎯 Principio de la Simplicidad</h5>
+                    <p>Leer 20 páginas es algo que puede hacer en cualquier momento del día, sin importar su horario.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>⏰ Principio del Tiempo</h5>
+                    <p>En un año, habrá leído más de 7,000 páginas (equivalente a 20-25 libros), acumulando conocimiento valioso.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>🔄 Principio de la Consistencia</h5>
+                    <p>El conocimiento se acumula con el tiempo. Es mejor leer un poco cada día que mucho ocasionalmente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caso 4: Relaciones -->
+        <div class="case-container" id="case4">
+            <div class="case-header">
+                <h3><span class="case-number">4</span>Luis y sus Relaciones</h3>
+            </div>
+            <div class="scenario">
+                <h4>👥 El Escenario</h4>
+                <p>Luis está muy ocupado con su trabajo y siente que no tiene tiempo para sus relaciones. Su esposa se queja de que no pasan tiempo juntos. Luis piensa que necesita tomarse unas vacaciones largas para "arreglar" su relación.</p>
+                <p><strong>¿Cuál es la mejor estrategia para Luis?</strong></p>
+            </div>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <strong>A) Planificar unas vacaciones de 2 semanas</strong><br>
+                    <small>Solución temporal, no sostenible</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>B) Esperar hasta que tenga menos trabajo</strong><br>
+                    <small>Excusa que nunca se resolverá</small>
+                </div>
+                <div class="option" data-correct="true">
+                    <strong>C) Pasar 30 minutos de calidad con su esposa cada día</strong><br>
+                    <small>Inversión pequeña pero consistente</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>D) Comprar regalos costosos para compensar</strong><br>
+                    <small>Reemplaza tiempo con objetos</small>
+                </div>
+            </div>
+            <div class="explanation" id="explanation4">
+                <h4>✅ Respuesta Correcta: Opción C</h4>
+                <p>Luis debería pasar 30 minutos de calidad con su esposa cada día porque:</p>
+                <div class="principle-highlight">
+                    <h5>🎯 Principio de la Simplicidad</h5>
+                    <p>30 minutos es algo que puede hacer todos los días, sin importar lo ocupado que esté.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>⏰ Principio del Tiempo</h5>
+                    <p>Con el tiempo, esos 30 minutos diarios se convertirán en una base sólida para su relación.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>🔄 Principio de la Consistencia</h5>
+                    <p>Es mejor pasar tiempo pequeño pero consistente que mucho tiempo ocasionalmente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caso 5: Productividad -->
+        <div class="case-container" id="case5">
+            <div class="case-header">
+                <h3><span class="case-number">5</span>Elena y su Productividad</h3>
+            </div>
+            <div class="scenario">
+                <h4>⚡ El Escenario</h4>
+                <p>Elena tiene muchos proyectos pendientes y se siente abrumada. Piensa que necesita trabajar 12 horas al día para ponerse al día. También está considerando planificar su día cada mañana durante 10 minutos.</p>
+                <p><strong>¿Qué enfoque debería tomar Elena?</strong></p>
+            </div>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <strong>A) Trabajar 12 horas al día hasta ponerse al día</strong><br>
+                    <small>Insostenible y llevará al agotamiento</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>B) Esperar hasta que tenga menos trabajo</strong><br>
+                    <small>Excusa que nunca se resolverá</small>
+                </div>
+                <div class="option" data-correct="true">
+                    <strong>C) Planificar 10 minutos cada mañana y enfocarse en 3 tareas importantes</strong><br>
+                    <small>Estrategia simple y efectiva</small>
+                </div>
+                <div class="option" data-correct="false">
+                    <strong>D) Contratar a alguien para que haga todo el trabajo</strong><br>
+                    <small>Solución costosa sin resolver el problema de fondo</small>
+                </div>
+            </div>
+            <div class="explanation" id="explanation5">
+                <h4>✅ Respuesta Correcta: Opción C</h4>
+                <p>Elena debería planificar 10 minutos cada mañana y enfocarse en 3 tareas importantes porque:</p>
+                <div class="principle-highlight">
+                    <h5>🎯 Principio de la Simplicidad</h5>
+                    <p>Planificar 10 minutos es simple y manejable. Enfocarse en 3 tareas evita la sobrecarga.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>⏰ Principio del Tiempo</h5>
+                    <p>Con el tiempo, esta práctica diaria se convertirá en un hábito que mejorará su productividad.</p>
+                </div>
+                <div class="principle-highlight">
+                    <h5>🔄 Principio de la Consistencia</h5>
+                    <p>Es mejor hacer un poco cada día que mucho ocasionalmente. La consistencia es más poderosa que la intensidad.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn" id="prevBtn" onclick="previousCase()" disabled>← Anterior</button>
+            <button class="btn" id="nextBtn" onclick="nextCase()">Siguiente →</button>
+        </div>
+
+        <div class="highlight-box" id="completionMessage" style="display: none;">
+            <h3>🎉 ¡Felicitaciones!</h3>
+            <p>Has completado todos los casos de vida real. Has demostrado que entiendes cómo aplicar los principios del Slight Edge en situaciones cotidianas.</p>
+            <p><strong>Recuerda:</strong> Los principios del Slight Edge no son solo teoría, sino herramientas prácticas para transformar tu vida, una pequeña decisión a la vez.</p>
+        </div>
+    </div>
+
+    <script>
+        let currentCase = 1;
+        let totalCases = 5;
+        let correctAnswers = 0;
+        let answeredCases = new Set();
+
+        function showCase(caseNumber) {
+            // Ocultar todos los casos
+            document.querySelectorAll('.case-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Mostrar el caso actual
+            document.getElementById(`case${caseNumber}`).classList.add('active');
+            
+            // Actualizar estadísticas
+            document.getElementById('currentCase').textContent = caseNumber;
+            document.getElementById('progressFill').style.width = (caseNumber / totalCases * 100) + '%';
+            
+            // Actualizar botones
+            document.getElementById('prevBtn').disabled = caseNumber === 1;
+            document.getElementById('nextBtn').textContent = caseNumber === totalCases ? 'Finalizar' : 'Siguiente →';
+            
+            // Ocultar explicación si no se ha respondido
+            if (!answeredCases.has(caseNumber)) {
+                document.getElementById(`explanation${caseNumber}`).style.display = 'none';
+            }
+        }
+
+        function nextCase() {
+            if (currentCase < totalCases) {
+                currentCase++;
+                showCase(currentCase);
+            } else {
+                // Mostrar mensaje de finalización
+                document.querySelectorAll('.case-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+                document.querySelector('.navigation').style.display = 'none';
+                document.getElementById('completionMessage').style.display = 'block';
+            }
+        }
+
+        function previousCase() {
+            if (currentCase > 1) {
+                currentCase--;
+                showCase(currentCase);
+            }
+        }
+
+        // Configurar eventos para las opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const caseContainer = this.closest('.case-container');
+                const caseNumber = caseContainer.id.replace('case', '');
+                
+                // Solo permitir una respuesta por caso
+                if (answeredCases.has(parseInt(caseNumber))) {
+                    return;
+                }
+                
+                // Deseleccionar otras opciones en el mismo caso
+                caseContainer.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Seleccionar esta opción
+                this.classList.add('selected');
+                
+                // Mostrar si es correcta o incorrecta
+                if (this.dataset.correct === 'true') {
+                    this.classList.add('correct');
+                    correctAnswers++;
+                    document.getElementById('correctAnswers').textContent = correctAnswers;
+                } else {
+                    this.classList.add('incorrect');
+                    // Mostrar la opción correcta
+                    caseContainer.querySelector('[data-correct="true"]').classList.add('correct');
+                }
+                
+                // Mostrar explicación
+                document.getElementById(`explanation${caseNumber}`).style.display = 'block';
+                
+                // Marcar como respondido
+                answeredCases.add(parseInt(caseNumber));
+            });
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            showCase(1);
+        });
+    </script>
+</body>
+</html> 

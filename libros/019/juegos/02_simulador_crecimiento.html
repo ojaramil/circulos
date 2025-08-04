@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Mentalidad de Crecimiento - Mentalidad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: white;
+        }
+        h2 {
+            color: #0077CC;
+            margin-top: 30px;
+        }
+        .simulator-section {
+            background-color: #e7f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #005BAA;
+            margin: 20px 0;
+        }
+        .simulator-section h3 {
+            color: #005BAA;
+            margin-top: 0;
+            text-align: center;
+        }
+        .scenario {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #005BAA;
+        }
+        .scenario h4 {
+            color: #333;
+            margin-top: 0;
+        }
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .choice {
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .choice:hover {
+            border-color: #005BAA;
+            background-color: #f8f9fa;
+        }
+        .choice.fixed {
+            border-color: #dc3545;
+            background-color: #ffe7e7;
+        }
+        .choice.growth {
+            border-color: #28a745;
+            background-color: #e7ffe7;
+        }
+        .choice.selected {
+            border-width: 3px;
+            transform: scale(1.02);
+        }
+        .btn {
+            background-color: #005BAA;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004080;
+        }
+        .results {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #005BAA;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .feedback {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid #005BAA;
+        }
+        .feedback h5 {
+            color: #005BAA;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .stat-card h4 {
+            color: #005BAA;
+            margin: 0 0 10px 0;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #0077CC;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌱 Simulador de Mentalidad de Crecimiento</h1>
+        <p>Practica cómo responderías con mentalidad de crecimiento en situaciones reales</p>
+    </div>
+
+    <div class="content">
+        <div class="simulator-section">
+            <h3>📋 Instrucciones</h3>
+            <p>Te presentaremos diferentes situaciones de la vida real. Para cada una, elige la respuesta que mejor refleje una mentalidad de crecimiento. Al final, verás cómo tus elecciones afectan tu desarrollo personal.</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        <p id="progress-text">Escenario 1 de 8</p>
+
+        <div id="scenarios">
+            <div class="scenario" id="scenario-1">
+                <h4>📚 Situación Académica</h4>
+                <p>Has recibido una calificación baja en un examen importante. ¿Cómo reaccionas?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "No soy bueno en esta materia. Nunca lo seré."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Necesito estudiar más y buscar ayuda para mejorar."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-2" style="display: none;">
+                <h4>💼 Situación Laboral</h4>
+                <p>Tu jefe te da retroalimentación crítica sobre tu trabajo. ¿Qué piensas?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "Mi jefe no me aprecia. No valora mi trabajo."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Esta retroalimentación me ayudará a mejorar mi desempeño."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-3" style="display: none;">
+                <h4>🏃 Situación Deportiva</h4>
+                <p>Pierdes una competencia importante. ¿Cómo te sientes?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "No tengo talento para esto. Debería rendirme."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Esta derrota me motiva a entrenar más duro."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-4" style="display: none;">
+                <h4>🎨 Situación Creativa</h4>
+                <p>Tu proyecto creativo no recibe la respuesta esperada. ¿Qué haces?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "No tengo creatividad. No debería intentar esto."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Cada proyecto es una oportunidad para aprender y mejorar."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-5" style="display: none;">
+                <h4>❤️ Situación de Relaciones</h4>
+                <p>Tu pareja te hace una crítica constructiva. ¿Cómo respondes?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "No me entiende. No debería criticarme."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Gracias por ser honesto. Esto nos ayudará a crecer juntos."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-6" style="display: none;">
+                <h4>🎯 Situación de Objetivos</h4>
+                <p>No logras alcanzar una meta importante. ¿Qué piensas?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "No estoy destinado al éxito. Debería conformarme."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Aprendí mucho en el proceso. Ajustaré mi estrategia."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-7" style="display: none;">
+                <h4>👥 Situación Social</h4>
+                <p>Alguien más logra algo que tú querías lograr. ¿Cómo reaccionas?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "Es injusto. Ellos tienen más suerte que yo."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "¡Felicitaciones! Su éxito me inspira a seguir trabajando."
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario" id="scenario-8" style="display: none;">
+                <h4>🔄 Situación de Cambio</h4>
+                <p>Te enfrentas a un cambio importante en tu vida. ¿Qué sientes?</p>
+                <div class="choices">
+                    <div class="choice fixed" data-type="fixed">
+                        <strong>Mentalidad Fija:</strong><br>
+                        "Los cambios son difíciles. Prefiero mantener las cosas como están."
+                    </div>
+                    <div class="choice growth" data-type="growth">
+                        <strong>Mentalidad de Crecimiento:</strong><br>
+                        "Los cambios traen nuevas oportunidades de crecimiento."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="button" class="btn" id="prev-btn" style="display: none;">← Anterior</button>
+            <button type="button" class="btn" id="next-btn">Siguiente →</button>
+            <button type="button" class="btn" id="submit-btn" style="display: none;">Ver Resultados</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎯 Tus Resultados</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <h4>Mentalidad de Crecimiento</h4>
+                    <div class="stat-number" id="growth-score">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Mentalidad Fija</h4>
+                    <div class="stat-number" id="fixed-score">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Escenarios Completados</h4>
+                    <div class="stat-number" id="completed">0/8</div>
+                </div>
+            </div>
+            
+            <div id="detailed-feedback"></div>
+            
+            <div class="feedback">
+                <h5>💡 Consejos para Desarrollar tu Mentalidad de Crecimiento:</h5>
+                <ul>
+                    <li>Cambia "no puedo" por "aún no puedo"</li>
+                    <li>Celebra el esfuerzo, no solo los resultados</li>
+                    <li>Ve los errores como oportunidades de aprendizaje</li>
+                    <li>Busca retroalimentación constructiva</li>
+                    <li>Inspírate en el éxito de otros</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="location.reload()">Hacer el Simulador de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 1;
+        const totalScenarios = 8;
+        let choices = [];
+        let selectedChoices = [];
+
+        function updateProgress() {
+            const progress = (currentScenario / totalScenarios) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Escenario ${currentScenario} de ${totalScenarios}`;
+        }
+
+        function showScenario(scenarioNum) {
+            // Ocultar todos los escenarios
+            for (let i = 1; i <= totalScenarios; i++) {
+                document.getElementById(`scenario-${i}`).style.display = 'none';
+            }
+            
+            // Mostrar el escenario actual
+            document.getElementById(`scenario-${scenarioNum}`).style.display = 'block';
+            
+            // Actualizar botones
+            document.getElementById('prev-btn').style.display = scenarioNum === 1 ? 'none' : 'inline-block';
+            document.getElementById('next-btn').style.display = scenarioNum === totalScenarios ? 'none' : 'inline-block';
+            document.getElementById('submit-btn').style.display = scenarioNum === totalScenarios ? 'inline-block' : 'none';
+            
+            updateProgress();
+        }
+
+        function nextScenario() {
+            if (currentScenario < totalScenarios) {
+                currentScenario++;
+                showScenario(currentScenario);
+            }
+        }
+
+        function prevScenario() {
+            if (currentScenario > 1) {
+                currentScenario--;
+                showScenario(currentScenario);
+            }
+        }
+
+        function selectChoice(choiceElement) {
+            // Remover selección previa en este escenario
+            const scenario = choiceElement.closest('.scenario');
+            scenario.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+            
+            // Seleccionar la nueva opción
+            choiceElement.classList.add('selected');
+            
+            // Guardar la elección
+            const choiceType = choiceElement.dataset.type;
+            selectedChoices[currentScenario - 1] = choiceType;
+        }
+
+        function calculateResults() {
+            let growthCount = 0;
+            let fixedCount = 0;
+            
+            selectedChoices.forEach(choice => {
+                if (choice === 'growth') {
+                    growthCount++;
+                } else if (choice === 'fixed') {
+                    fixedCount++;
+                }
+            });
+            
+            const total = selectedChoices.filter(c => c).length;
+            const growthPercentage = total > 0 ? Math.round((growthCount / total) * 100) : 0;
+            const fixedPercentage = total > 0 ? Math.round((fixedCount / total) * 100) : 0;
+            
+            return {
+                growthPercentage,
+                fixedPercentage,
+                completed: total
+            };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            
+            document.getElementById('growth-score').textContent = results.growthPercentage + '%';
+            document.getElementById('fixed-score').textContent = results.fixedPercentage + '%';
+            document.getElementById('completed').textContent = results.completed + '/8';
+            
+            const feedbackDiv = document.getElementById('detailed-feedback');
+            let feedback = '';
+            
+            if (results.growthPercentage >= 75) {
+                feedback = `
+                    <div class="feedback">
+                        <h5>🌟 ¡Excelente! Tienes una mentalidad de crecimiento muy desarrollada.</h5>
+                        <p>Continúa practicando estas respuestas en tu vida diaria. Tu capacidad para ver oportunidades de crecimiento en cada situación te ayudará a alcanzar tu máximo potencial.</p>
+                    </div>
+                `;
+            } else if (results.growthPercentage >= 50) {
+                feedback = `
+                    <div class="feedback">
+                        <h5>👍 ¡Buen trabajo! Tienes una base sólida de mentalidad de crecimiento.</h5>
+                        <p>Hay áreas donde puedes mejorar. Practica especialmente en situaciones donde tendiste a elegir respuestas de mentalidad fija.</p>
+                    </div>
+                `;
+            } else {
+                feedback = `
+                    <div class="feedback">
+                        <h5>💪 ¡No te preocupes! Todos podemos desarrollar una mentalidad de crecimiento.</h5>
+                        <p>Este simulador te ha mostrado cómo responder de manera diferente. Con práctica consciente, puedes cambiar tus patrones de pensamiento.</p>
+                    </div>
+                `;
+            }
+            
+            feedbackDiv.innerHTML = feedback;
+            
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('scenarios').style.display = 'none';
+            document.getElementById('prev-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('next-btn').addEventListener('click', nextScenario);
+        document.getElementById('prev-btn').addEventListener('click', prevScenario);
+        document.getElementById('submit-btn').addEventListener('click', showResults);
+
+        // Event listeners para las elecciones
+        document.querySelectorAll('.choice').forEach(choice => {
+            choice.addEventListener('click', () => selectChoice(choice));
+        });
+
+        // Inicializar
+        showScenario(1);
+    </script>
+</body>
+</html> 

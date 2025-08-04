@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Decisiones Diarias - The Slight Edge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stats-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .decision-scenario {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .scenario-title {
+            color: #005BAA;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .scenario-description {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .option:hover {
+            border-color: #005BAA;
+            background-color: #f0f8ff;
+            transform: translateY(-2px);
+        }
+        .option.selected {
+            border-color: #005BAA;
+            background-color: #e6f3ff;
+        }
+        .option-title {
+            font-weight: 600;
+            color: #005BAA;
+            margin-bottom: 10px;
+        }
+        .option-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .btn {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .results {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border-left: 4px solid #005BAA;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .impact-analysis {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .impact-analysis h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Simulador de Decisiones Diarias</h1>
+        <p>Experimenta cómo las pequeñas decisiones afectan tu vida a largo plazo</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Instrucciones</h3>
+            <p>En este simulador, tomarás decisiones diarias que representan las pequeñas acciones del Slight Edge. Verás cómo estas decisiones se acumulan con el tiempo y afectan diferentes áreas de tu vida.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-value" id="dayCounter">1</div>
+                <div class="stat-label">Día</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="healthScore">50</div>
+                <div class="stat-label">Salud</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="wealthScore">50</div>
+                <div class="stat-label">Riqueza</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="knowledgeScore">50</div>
+                <div class="stat-label">Conocimiento</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="relationshipsScore">50</div>
+                <div class="stat-label">Relaciones</div>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="gameContainer">
+            <div class="decision-scenario" id="scenario1">
+                <div class="scenario-title">🌅 Mañana - 7:00 AM</div>
+                <div class="scenario-description">
+                    Te acabas de despertar. Tienes 30 minutos antes de salir para el trabajo. ¿Qué decides hacer?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="+2" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">🏃‍♂️ Ejercicio ligero</div>
+                        <div class="option-description">15 minutos de estiramientos y caminata rápida</div>
+                    </div>
+                    <div class="option" data-health="-1" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">😴 Dormir más</div>
+                        <div class="option-description">Quedarte en la cama 30 minutos más</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario2">
+                <div class="scenario-title">☕ Desayuno - 7:30 AM</div>
+                <div class="scenario-description">
+                    Es hora del desayuno. ¿Qué eliges comer?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="+2" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">🥗 Desayuno saludable</div>
+                        <div class="option-description">Avena con frutas y un batido de proteínas</div>
+                    </div>
+                    <div class="option" data-health="-2" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">🍩 Comida rápida</div>
+                        <div class="option-description">Donas y café con mucha azúcar</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario3">
+                <div class="scenario-title">💼 Trabajo - 9:00 AM</div>
+                <div class="scenario-description">
+                    Llegas al trabajo. ¿Cómo organizas tu día?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="0" data-wealth="+2" data-knowledge="+1" data-relationships="0">
+                        <div class="option-title">📋 Planificar el día</div>
+                        <div class="option-description">Hacer una lista de prioridades y enfocarte en lo importante</div>
+                    </div>
+                    <div class="option" data-health="0" data-wealth="-1" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">📱 Revisar redes sociales</div>
+                        <div class="option-description">Pasar 30 minutos navegando en Instagram y Facebook</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario4">
+                <div class="scenario-title">🍽️ Almuerzo - 12:00 PM</div>
+                <div class="scenario-description">
+                    Es hora del almuerzo. ¿Dónde comes?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="+1" data-wealth="+1" data-knowledge="0" data-relationships="+1">
+                        <div class="option-title">👥 Almuerzo con colegas</div>
+                        <div class="option-description">Comer con compañeros de trabajo y fortalecer relaciones</div>
+                    </div>
+                    <div class="option" data-health="-1" data-wealth="0" data-knowledge="0" data-relationships="-1">
+                        <div class="option-title">🖥️ Comer en el escritorio</div>
+                        <div class="option-description">Comer solo mientras trabajas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario5">
+                <div class="scenario-title">📚 Tarde - 3:00 PM</div>
+                <div class="scenario-description">
+                    Tienes un descanso de 15 minutos. ¿Qué haces?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="0" data-wealth="0" data-knowledge="+2" data-relationships="0">
+                        <div class="option-title">📖 Leer un libro</div>
+                        <div class="option-description">Leer 10 páginas de un libro de desarrollo personal</div>
+                    </div>
+                    <div class="option" data-health="0" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">🎮 Jugar en el teléfono</div>
+                        <div class="option-description">Jugar Candy Crush o similar</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario6">
+                <div class="scenario-title">💰 Finanzas - 6:00 PM</div>
+                <div class="scenario-description">
+                    Recibiste tu salario. ¿Qué haces con el dinero?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="0" data-wealth="+3" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">💳 Ahorrar e invertir</div>
+                        <div class="option-description">Guardar 10% del salario y invertir en tu futuro</div>
+                    </div>
+                    <div class="option" data-health="0" data-wealth="-2" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">🛒 Compras impulsivas</div>
+                        <div class="option-description">Gastar en cosas que no necesitas realmente</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario7">
+                <div class="scenario-title">🏠 Noche - 8:00 PM</div>
+                <div class="scenario-description">
+                    Es la noche. ¿Cómo pasas tu tiempo libre?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="+1" data-wealth="0" data-knowledge="+1" data-relationships="+1">
+                        <div class="option-title">👨‍👩‍👧‍👦 Tiempo en familia</div>
+                        <div class="option-description">Pasar tiempo de calidad con tu familia</div>
+                    </div>
+                    <div class="option" data-health="0" data-wealth="0" data-knowledge="0" data-relationships="-1">
+                        <div class="option-title">📺 Ver TV pasivamente</div>
+                        <div class="option-description">Ver televisión sin prestar mucha atención</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-scenario" id="scenario8">
+                <div class="scenario-title">🌙 Antes de dormir - 10:00 PM</div>
+                <div class="scenario-description">
+                    Es hora de prepararse para dormir. ¿Qué haces?
+                </div>
+                <div class="options">
+                    <div class="option" data-health="+2" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">😴 Rutina de sueño</div>
+                        <div class="option-description">Leer un poco y dormir temprano para descansar bien</div>
+                    </div>
+                    <div class="option" data-health="-2" data-wealth="0" data-knowledge="0" data-relationships="0">
+                        <div class="option-title">📱 Usar el teléfono</div>
+                        <div class="option-description">Navegar en redes sociales hasta tarde</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" id="nextDayBtn" onclick="nextDay()">Siguiente Día</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 ¡Simulación Completada!</h2>
+            <p>Has completado 30 días de decisiones. Aquí están tus resultados finales:</p>
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <div class="stat-value" id="finalHealth">50</div>
+                    <div class="stat-label">Salud Final</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="finalWealth">50</div>
+                    <div class="stat-label">Riqueza Final</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="finalKnowledge">50</div>
+                    <div class="stat-label">Conocimiento Final</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="finalRelationships">50</div>
+                    <div class="stat-label">Relaciones Finales</div>
+                </div>
+            </div>
+            <button class="btn" onclick="resetSimulation()">Comenzar Nueva Simulación</button>
+        </div>
+
+        <div class="impact-analysis" id="impactAnalysis">
+            <h3>📊 Análisis de Impacto</h3>
+            <p id="impactText"></p>
+        </div>
+    </div>
+
+    <script>
+        let currentDay = 1;
+        let healthScore = 50;
+        let wealthScore = 50;
+        let knowledgeScore = 50;
+        let relationshipsScore = 50;
+        let currentScenario = 0;
+        const totalDays = 30;
+        const scenariosPerDay = 8;
+
+        const scenarios = [
+            'scenario1', 'scenario2', 'scenario3', 'scenario4', 
+            'scenario5', 'scenario6', 'scenario7', 'scenario8'
+        ];
+
+        // Configurar eventos para las opciones
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover selección previa en esta pregunta
+                const scenario = this.closest('.decision-scenario');
+                scenario.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Seleccionar esta opción
+                this.classList.add('selected');
+            });
+        });
+
+        function updateStats() {
+            document.getElementById('dayCounter').textContent = currentDay;
+            document.getElementById('healthScore').textContent = healthScore;
+            document.getElementById('wealthScore').textContent = wealthScore;
+            document.getElementById('knowledgeScore').textContent = knowledgeScore;
+            document.getElementById('relationshipsScore').textContent = relationshipsScore;
+            
+            // Actualizar barra de progreso
+            const progress = (currentDay / totalDays) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function nextDay() {
+            // Procesar decisiones del día actual
+            let decisionsMade = 0;
+            scenarios.forEach(scenarioId => {
+                const scenario = document.getElementById(scenarioId);
+                const selectedOption = scenario.querySelector('.option.selected');
+                
+                if (selectedOption) {
+                    decisionsMade++;
+                    const health = parseInt(selectedOption.dataset.health);
+                    const wealth = parseInt(selectedOption.dataset.wealth);
+                    const knowledge = parseInt(selectedOption.dataset.knowledge);
+                    const relationships = parseInt(selectedOption.dataset.relationships);
+                    
+                    healthScore += health;
+                    wealthScore += wealth;
+                    knowledgeScore += knowledge;
+                    relationshipsScore += relationships;
+                    
+                    // Limitar scores entre 0 y 100
+                    healthScore = Math.max(0, Math.min(100, healthScore));
+                    wealthScore = Math.max(0, Math.min(100, wealthScore));
+                    knowledgeScore = Math.max(0, Math.min(100, knowledgeScore));
+                    relationshipsScore = Math.max(0, Math.min(100, relationshipsScore));
+                }
+            });
+            
+            if (decisionsMade < scenariosPerDay) {
+                alert('Por favor, toma una decisión en cada escenario antes de continuar.');
+                return;
+            }
+            
+            currentDay++;
+            updateStats();
+            
+            // Limpiar selecciones para el siguiente día
+            scenarios.forEach(scenarioId => {
+                const scenario = document.getElementById(scenarioId);
+                scenario.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            });
+            
+            // Verificar si el juego terminó
+            if (currentDay > totalDays) {
+                endSimulation();
+            }
+        }
+
+        function endSimulation() {
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            document.getElementById('finalHealth').textContent = healthScore;
+            document.getElementById('finalWealth').textContent = wealthScore;
+            document.getElementById('finalKnowledge').textContent = knowledgeScore;
+            document.getElementById('finalRelationships').textContent = relationshipsScore;
+            
+            // Análisis de impacto
+            const impactAnalysis = document.getElementById('impactAnalysis');
+            const impactText = document.getElementById('impactText');
+            
+            let analysis = '<h4>🎯 Lecciones del Slight Edge:</h4><ul>';
+            
+            if (healthScore > 70) {
+                analysis += '<li>✅ Excelente trabajo en salud: Las pequeñas decisiones diarias han creado hábitos saludables.</li>';
+            } else if (healthScore < 30) {
+                analysis += '<li>⚠️ Salud comprometida: Las decisiones negativas se han acumulado con el tiempo.</li>';
+            }
+            
+            if (wealthScore > 70) {
+                analysis += '<li>💰 Riqueza en crecimiento: El ahorro e inversión consistente han dado resultados.</li>';
+            } else if (wealthScore < 30) {
+                analysis += '<li>💸 Riqueza disminuida: Los gastos impulsivos han afectado tu futuro financiero.</li>';
+            }
+            
+            if (knowledgeScore > 70) {
+                analysis += '<li>🧠 Conocimiento expandido: La lectura y aprendizaje diario han creado una base sólida.</li>';
+            } else if (knowledgeScore < 30) {
+                analysis += '<li>📚 Conocimiento estancado: Las oportunidades de aprendizaje se han perdido.</li>';
+            }
+            
+            if (relationshipsScore > 70) {
+                analysis += '<li>❤️ Relaciones fortalecidas: El tiempo invertido en relaciones ha dado frutos.</li>';
+            } else if (relationshipsScore < 30) {
+                analysis += '<li>💔 Relaciones descuidadas: La falta de atención ha afectado las conexiones.</li>';
+            }
+            
+            analysis += '</ul><p><strong>Recuerda:</strong> En la vida real, estos efectos son aún más dramáticos porque se acumulan durante años, no solo 30 días.</p>';
+            
+            impactText.innerHTML = analysis;
+            impactAnalysis.style.display = 'block';
+        }
+
+        function resetSimulation() {
+            currentDay = 1;
+            healthScore = 50;
+            wealthScore = 50;
+            knowledgeScore = 50;
+            relationshipsScore = 50;
+            
+            updateStats();
+            
+            // Limpiar selecciones
+            scenarios.forEach(scenarioId => {
+                const scenario = document.getElementById(scenarioId);
+                scenario.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            });
+            
+            document.getElementById('gameContainer').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('impactAnalysis').style.display = 'none';
+        }
+
+        // Inicializar
+        updateStats();
+    </script>
+</body>
+</html> 

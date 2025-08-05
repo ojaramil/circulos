@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Deep Work - Céntrate</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3a5c;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .work-mode {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .deep-work {
+            border-color: #4caf50;
+            background-color: #f1f8e9;
+        }
+        .shallow-work {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #1e3a5c;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .deep-progress {
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+        }
+        .shallow-progress {
+            background: linear-gradient(90deg, #f44336, #ef5350);
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+        .btn-primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .comparison {
+            background-color: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .distraction-log {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .distraction {
+            color: #f44336;
+        }
+        .focus {
+            color: #4caf50;
+        }
+        .formula {
+            background-color: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .simulation-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 20px 0;
+            }
+            
+            .work-mode {
+                padding: 15px;
+            }
+            
+            .timer {
+                font-size: 36px;
+                margin: 15px 0;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin: 20px 0;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .stat-label {
+                font-size: 12px;
+            }
+            
+            .comparison {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .formula {
+                font-size: 16px;
+                padding: 15px;
+            }
+            
+            .distraction-log {
+                max-height: 150px;
+                padding: 10px;
+            }
+            
+            .log-entry {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+                margin: 5px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .work-mode {
+                padding: 10px;
+            }
+            
+            .timer {
+                font-size: 28px;
+                margin: 10px 0;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 10px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            .comparison {
+                padding: 15px;
+            }
+            
+            .formula {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Simulador de Deep Work vs Trabajo Superficial</h1>
+        
+        <div class="formula">
+            Trabajo de alta calidad = (Tiempo invertido) × (Intensidad de la concentración)
+        </div>
+
+        <div class="simulation-area">
+            <div class="work-mode deep-work">
+                <h2>🧠 Trabajo Profundo</h2>
+                <div class="timer" id="deep-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill deep-progress" id="deep-progress" style="width: 0%"></div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-success" id="deep-start" onclick="startDeepWork()">Iniciar</button>
+                    <button class="btn btn-danger" id="deep-stop" onclick="stopDeepWork()" disabled>Detener</button>
+                    <button class="btn btn-primary" onclick="resetDeepWork()">Reiniciar</button>
+                </div>
+                <div class="distraction-log" id="deep-log">
+                    <div class="log-entry focus">✅ Sesión iniciada - Trabajo profundo activo</div>
+                </div>
+            </div>
+
+            <div class="work-mode shallow-work">
+                <h2>📱 Trabajo Superficial</h2>
+                <div class="timer" id="shallow-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill shallow-progress" id="shallow-progress" style="width: 0%"></div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-success" id="shallow-start" onclick="startShallowWork()">Iniciar</button>
+                    <button class="btn btn-danger" id="shallow-stop" onclick="stopShallowWork()" disabled>Detener</button>
+                    <button class="btn btn-primary" onclick="resetShallowWork()">Reiniciar</button>
+                </div>
+                <div class="distraction-log" id="shallow-log">
+                    <div class="log-entry focus">✅ Sesión iniciada - Trabajo superficial activo</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="deep-quality">0</div>
+                <div class="stat-label">Calidad del Trabajo Profundo</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="shallow-quality">0</div>
+                <div class="stat-label">Calidad del Trabajo Superficial</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="deep-distractions">0</div>
+                <div class="stat-label">Distracciones (Profundo)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="shallow-distractions">0</div>
+                <div class="stat-label">Distracciones (Superficial)</div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <h3>📊 Comparación de Resultados</h3>
+            <div id="comparison-results">
+                <p>Inicia ambas simulaciones para ver la comparación de resultados.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎯 ¿Qué demuestra esta simulación?</h3>
+            <ul>
+                <li><strong>Trabajo Profundo:</strong> Concentración intensa, pocas distracciones, alta calidad de output</li>
+                <li><strong>Trabajo Superficial:</strong> Múltiples interrupciones, bajo nivel de concentración, calidad reducida</li>
+                <li><strong>Residuo de Atención:</strong> Cada cambio de tarea reduce la eficiencia de la siguiente</li>
+                <li><strong>Fórmula de Productividad:</strong> El tiempo multiplicado por la intensidad determina la calidad</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let deepWorkTimer = null;
+        let shallowWorkTimer = null;
+        let deepSeconds = 0;
+        let shallowSeconds = 0;
+        let deepDistractions = 0;
+        let shallowDistractions = 0;
+        let deepIntensity = 0.9; // 90% de intensidad
+        let shallowIntensity = 0.3; // 30% de intensidad
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateDeepWork() {
+            deepSeconds++;
+            document.getElementById('deep-timer').textContent = formatTime(deepSeconds);
+            
+            // Simular distracciones ocasionales (menos frecuentes)
+            if (Math.random() < 0.02) { // 2% de probabilidad por segundo
+                addDistraction('deep');
+            }
+            
+            // Actualizar progreso
+            const progress = Math.min((deepSeconds / 300) * 100, 100); // 5 minutos máximo
+            document.getElementById('deep-progress').style.width = progress + '%';
+            
+            // Calcular calidad
+            const quality = Math.floor(deepSeconds * deepIntensity * (1 - deepDistractions * 0.1));
+            document.getElementById('deep-quality').textContent = quality;
+        }
+
+        function updateShallowWork() {
+            shallowSeconds++;
+            document.getElementById('shallow-timer').textContent = formatTime(shallowSeconds);
+            
+            // Simular distracciones frecuentes
+            if (Math.random() < 0.15) { // 15% de probabilidad por segundo
+                addDistraction('shallow');
+            }
+            
+            // Actualizar progreso
+            const progress = Math.min((shallowSeconds / 300) * 100, 100);
+            document.getElementById('shallow-progress').style.width = progress + '%';
+            
+            // Calcular calidad
+            const quality = Math.floor(shallowSeconds * shallowIntensity * (1 - shallowDistractions * 0.2));
+            document.getElementById('shallow-quality').textContent = quality;
+        }
+
+        function addDistraction(type) {
+            const distractions = [
+                '📱 Notificación del teléfono',
+                '📧 Correo electrónico',
+                '💬 Mensaje de WhatsApp',
+                '🌐 Navegación web',
+                '☕ Pausa para café',
+                '🗣️ Conversación con compañero',
+                '📺 Video de YouTube',
+                '📰 Artículo interesante'
+            ];
+            
+            const distraction = distractions[Math.floor(Math.random() * distractions.length)];
+            const logElement = document.getElementById(`${type}-log`);
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry distraction';
+            logEntry.textContent = `⏰ ${formatTime(type === 'deep' ? deepSeconds : shallowSeconds)} - ${distraction}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            if (type === 'deep') {
+                deepDistractions++;
+                document.getElementById('deep-distractions').textContent = deepDistractions;
+            } else {
+                shallowDistractions++;
+                document.getElementById('shallow-distractions').textContent = shallowDistractions;
+            }
+        }
+
+        function startDeepWork() {
+            if (!deepWorkTimer) {
+                deepWorkTimer = setInterval(updateDeepWork, 1000);
+                document.getElementById('deep-start').disabled = true;
+                document.getElementById('deep-stop').disabled = false;
+            }
+        }
+
+        function stopDeepWork() {
+            if (deepWorkTimer) {
+                clearInterval(deepWorkTimer);
+                deepWorkTimer = null;
+                document.getElementById('deep-start').disabled = false;
+                document.getElementById('deep-stop').disabled = true;
+            }
+        }
+
+        function resetDeepWork() {
+            stopDeepWork();
+            deepSeconds = 0;
+            deepDistractions = 0;
+            document.getElementById('deep-timer').textContent = '00:00';
+            document.getElementById('deep-progress').style.width = '0%';
+            document.getElementById('deep-quality').textContent = '0';
+            document.getElementById('deep-distractions').textContent = '0';
+            document.getElementById('deep-log').innerHTML = '<div class="log-entry focus">✅ Sesión reiniciada</div>';
+        }
+
+        function startShallowWork() {
+            if (!shallowWorkTimer) {
+                shallowWorkTimer = setInterval(updateShallowWork, 1000);
+                document.getElementById('shallow-start').disabled = true;
+                document.getElementById('shallow-stop').disabled = false;
+            }
+        }
+
+        function stopShallowWork() {
+            if (shallowWorkTimer) {
+                clearInterval(shallowWorkTimer);
+                shallowWorkTimer = null;
+                document.getElementById('shallow-start').disabled = false;
+                document.getElementById('shallow-stop').disabled = true;
+            }
+        }
+
+        function resetShallowWork() {
+            stopShallowWork();
+            shallowSeconds = 0;
+            shallowDistractions = 0;
+            document.getElementById('shallow-timer').textContent = '00:00';
+            document.getElementById('shallow-progress').style.width = '0%';
+            document.getElementById('shallow-quality').textContent = '0';
+            document.getElementById('shallow-distractions').textContent = '0';
+            document.getElementById('shallow-log').innerHTML = '<div class="log-entry focus">✅ Sesión reiniciada</div>';
+        }
+
+        // Actualizar comparación cada segundo
+        setInterval(() => {
+            const deepQuality = parseInt(document.getElementById('deep-quality').textContent);
+            const shallowQuality = parseInt(document.getElementById('shallow-quality').textContent);
+            
+            if (deepQuality > 0 || shallowQuality > 0) {
+                const comparison = document.getElementById('comparison-results');
+                const ratio = shallowQuality > 0 ? (deepQuality / shallowQuality).toFixed(1) : '∞';
+                
+                comparison.innerHTML = `
+                    <p><strong>Trabajo Profundo:</strong> ${deepQuality} puntos de calidad</p>
+                    <p><strong>Trabajo Superficial:</strong> ${shallowQuality} puntos de calidad</p>
+                    <p><strong>Ratio de Eficiencia:</strong> El trabajo profundo es ${ratio}x más eficiente</p>
+                    <p><strong>Distracciones:</strong> Profundo: ${deepDistractions} | Superficial: ${shallowDistractions}</p>
+                `;
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

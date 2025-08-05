@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Nivel de Concentración - Deep Work</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3a5c;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .question {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            background-color: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+        .btn {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #f57c00;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            display: none;
+            background-color: #f1f8e9;
+            border: 2px solid #4caf50;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .score-display {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .low-score {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 2px solid #ef5350;
+        }
+        .medium-score {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border: 2px solid #ff9800;
+        }
+        .high-score {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #ff9800;
+            transition: width 0.3s ease;
+        }
+        .recommendations {
+            background-color: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Test: Tu Nivel de Concentración</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+        
+        <div id="quiz-container">
+            <div class="question" id="question-1">
+                <h3>1. ¿Con qué frecuencia revisas tu teléfono durante el trabajo?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Cada 5-10 minutos</div>
+                    <div class="option" data-score="2">Cada 30 minutos</div>
+                    <div class="option" data-score="3">Cada 1-2 horas</div>
+                    <div class="option" data-score="4">Solo durante descansos programados</div>
+                    <div class="option" data-score="5">Raramente, solo cuando es necesario</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-2" style="display: none;">
+                <h3>2. ¿Cuánto tiempo puedes trabajar en una tarea sin distraerte?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Menos de 15 minutos</div>
+                    <div class="option" data-score="2">15-30 minutos</div>
+                    <div class="option" data-score="3">30-60 minutos</div>
+                    <div class="option" data-score="4">1-2 horas</div>
+                    <div class="option" data-score="5">Más de 2 horas</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-3" style="display: none;">
+                <h3>3. ¿Cómo manejas las notificaciones durante el trabajo?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Respondo inmediatamente a todas</div>
+                    <div class="option" data-score="2">Reviso cada pocos minutos</div>
+                    <div class="option" data-score="3">Las reviso ocasionalmente</div>
+                    <div class="option" data-score="4">Las silencio durante períodos de trabajo</div>
+                    <div class="option" data-score="5">Las desactivo completamente durante el trabajo profundo</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-4" style="display: none;">
+                <h3>4. ¿Con qué frecuencia cambias entre diferentes tareas?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Constantemente, cada pocos minutos</div>
+                    <div class="option" data-score="2">Frecuentemente, cada 15-30 minutos</div>
+                    <div class="option" data-score="3">Ocasionalmente, cada hora</div>
+                    <div class="option" data-score="4">Raramente, solo cuando termino una tarea</div>
+                    <div class="option" data-score="5">Dedico bloques largos a una sola tarea</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-5" style="display: none;">
+                <h3>5. ¿Cómo te sientes cuando trabajas sin interrupciones?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Ansioso y aburrido</div>
+                    <div class="option" data-score="2">Inquieto, necesito distracciones</div>
+                    <div class="option" data-score="3">Neutral, puedo tolerarlo</div>
+                    <div class="option" data-score="4">Cómodo y productivo</div>
+                    <div class="option" data-score="5">Muy enfocado y satisfecho</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-6" style="display: none;">
+                <h3>6. ¿Cuánto tiempo dedicas a las redes sociales durante el día laboral?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Más de 2 horas</div>
+                    <div class="option" data-score="2">1-2 horas</div>
+                    <div class="option" data-score="3">30-60 minutos</div>
+                    <div class="option" data-score="4">15-30 minutos</div>
+                    <div class="option" data-score="5">Menos de 15 minutos o nada</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-7" style="display: none;">
+                <h3>7. ¿Cómo organizas tu espacio de trabajo?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">Muy desordenado, con muchas distracciones</div>
+                    <div class="option" data-score="2">Algo desordenado, con algunas distracciones</div>
+                    <div class="option" data-score="3">Moderadamente organizado</div>
+                    <div class="option" data-score="4">Bien organizado, pocas distracciones</div>
+                    <div class="option" data-score="5">Muy organizado, sin distracciones</div>
+                </div>
+            </div>
+
+            <div class="question" id="question-8" style="display: none;">
+                <h3>8. ¿Cuánto tiempo tardas en "entrar en flujo" cuando trabajas?</h3>
+                <div class="options">
+                    <div class="option" data-score="1">No logro entrar en flujo</div>
+                    <div class="option" data-score="2">Más de 30 minutos</div>
+                    <div class="option" data-score="3">15-30 minutos</div>
+                    <div class="option" data-score="4">5-15 minutos</div>
+                    <div class="option" data-score="5">Menos de 5 minutos</div>
+                </div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎯 Resultados de tu Test de Concentración</h2>
+            <div id="score-display"></div>
+            <div id="recommendations"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let totalQuestions = 8;
+        let scores = [];
+
+        function selectOption(element) {
+            // Remove previous selection
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            element.classList.add('selected');
+        }
+
+        function nextQuestion() {
+            const currentQuestionElement = document.getElementById(`question-${currentQuestion}`);
+            const selectedOption = currentQuestionElement.querySelector('.option.selected');
+            
+            if (!selectedOption) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+
+            // Save score
+            scores.push(parseInt(selectedOption.dataset.score));
+
+            // Update progress
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
+            if (currentQuestion < totalQuestions) {
+                // Hide current question
+                currentQuestionElement.style.display = 'none';
+                
+                // Show next question
+                currentQuestion++;
+                document.getElementById(`question-${currentQuestion}`).style.display = 'block';
+                
+                // Update button text
+                if (currentQuestion === totalQuestions) {
+                    document.getElementById('next-btn').textContent = 'Ver Resultados';
+                }
+            } else {
+                // Show results
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const totalScore = scores.reduce((a, b) => a + b, 0);
+            const maxScore = totalQuestions * 5;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            const scoreDisplay = document.getElementById('score-display');
+            const recommendations = document.getElementById('recommendations');
+            
+            let scoreClass, scoreText, recommendationsText;
+            
+            if (percentage <= 30) {
+                scoreClass = 'low-score';
+                scoreText = 'Nivel Bajo de Concentración';
+                recommendationsText = `
+                    <h3>🔧 Recomendaciones para Mejorar:</h3>
+                    <ul>
+                        <li><strong>Comienza gradualmente:</strong> Dedica 15 minutos diarios a trabajo sin distracciones</li>
+                        <li><strong>Elimina notificaciones:</strong> Silencia tu teléfono durante períodos de trabajo</li>
+                        <li><strong>Organiza tu espacio:</strong> Crea un ambiente de trabajo limpio y ordenado</li>
+                        <li><strong>Usa la técnica Pomodoro:</strong> 25 minutos de trabajo, 5 minutos de descanso</li>
+                        <li><strong>Establece horarios:</strong> Designa momentos específicos para revisar correos y redes sociales</li>
+                    </ul>
+                `;
+            } else if (percentage <= 60) {
+                scoreClass = 'medium-score';
+                scoreText = 'Nivel Medio de Concentración';
+                recommendationsText = `
+                    <h3>🚀 Recomendaciones para Avanzar:</h3>
+                    <ul>
+                        <li><strong>Extiende tus períodos:</strong> Aumenta gradualmente el tiempo de trabajo profundo</li>
+                        <li><strong>Implementa bloques de tiempo:</strong> Dedica bloques de 90 minutos a tareas importantes</li>
+                        <li><strong>Reduce las transiciones:</strong> Agrupa tareas similares para minimizar cambios de contexto</li>
+                        <li><strong>Practica la atención plena:</strong> Medita 10 minutos diarios para mejorar tu concentración</li>
+                        <li><strong>Evalúa tu progreso:</strong> Lleva un registro de tus períodos de trabajo profundo</li>
+                    </ul>
+                `;
+            } else {
+                scoreClass = 'high-score';
+                scoreText = '¡Excelente Nivel de Concentración!';
+                recommendationsText = `
+                    <h3>🌟 Recomendaciones para Mantener y Mejorar:</h3>
+                    <ul>
+                        <li><strong>Optimiza tu rutina:</strong> Refina tus horarios de trabajo profundo</li>
+                        <li><strong>Comparte tu conocimiento:</strong> Ayuda a otros a desarrollar esta habilidad</li>
+                        <li><strong>Explora nuevas técnicas:</strong> Experimenta con diferentes métodos de productividad</li>
+                        <li><strong>Mantén el equilibrio:</strong> Asegúrate de incluir descansos y tiempo de recuperación</li>
+                        <li><strong>Evalúa resultados:</strong> Mide el impacto de tu trabajo profundo en tus logros</li>
+                    </ul>
+                `;
+            }
+            
+            scoreDisplay.className = `score-display ${scoreClass}`;
+            scoreDisplay.innerHTML = `
+                <div>Puntuación: ${totalScore}/${maxScore}</div>
+                <div>${scoreText}</div>
+            `;
+            
+            recommendations.innerHTML = recommendationsText;
+        }
+
+        // Add click event listeners to all options
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    selectOption(this);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

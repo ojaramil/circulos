@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Nivel de Práctica - Número Uno</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .question {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+        }
+        
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #005BAA;
+        }
+        
+        .option.selected {
+            background: #005BAA;
+            color: white;
+            border-color: #005BAA;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #005BAA, #82aaff);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #005BAA;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .recommendations {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            background: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background: #004085;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Test: Tu Nivel de Práctica</h1>
+        
+        <p>Este test te ayudará a evaluar qué tan efectiva es tu práctica actual y qué áreas puedes mejorar para alcanzar la excelencia en tus habilidades.</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="question active" id="q1">
+                <h3>Pregunta 1 de 10</h3>
+                <p>Cuando practicas una habilidad, ¿con qué frecuencia estableces objetivos específicos y medibles?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Simplemente practico sin objetivos claros</div>
+                    <div class="option" data-score="2">Raramente - A veces pienso en mejorar, pero no de forma específica</div>
+                    <div class="option" data-score="3">Ocasionalmente - Tengo algunos objetivos, pero no siempre los sigo</div>
+                    <div class="option" data-score="4">Frecuentemente - Casi siempre tengo objetivos claros</div>
+                    <div class="option" data-score="5">Siempre - Siempre establezco objetivos específicos y medibles</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q2">
+                <h3>Pregunta 2 de 10</h3>
+                <p>¿Con qué frecuencia te enfocas completamente en tu práctica, sin distracciones?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Siempre estoy distraído o haciendo otras cosas</div>
+                    <div class="option" data-score="2">Raramente - Me distraigo fácilmente</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces logro concentrarme bien</div>
+                    <div class="option" data-score="4">Frecuentemente - Casi siempre me concentro completamente</div>
+                    <div class="option" data-score="5">Siempre - Siempre practico con concentración total</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q3">
+                <h3>Pregunta 3 de 10</h3>
+                <p>¿Con qué frecuencia recibes feedback específico sobre tu rendimiento?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - No recibo feedback de nadie</div>
+                    <div class="option" data-score="2">Raramente - Solo feedback muy general</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces recibo feedback útil</div>
+                    <div class="option" data-score="4">Frecuentemente - Recibo feedback regular y específico</div>
+                    <div class="option" data-score="5">Siempre - Siempre tengo feedback detallado y específico</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q4">
+                <h3>Pregunta 4 de 10</h3>
+                <p>¿Con qué frecuencia te desafías a hacer cosas que están fuera de tu zona de confort?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Siempre hago lo que ya sé hacer</div>
+                    <div class="option" data-score="2">Raramente - Prefiero mantenerme en mi zona de confort</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces intento cosas nuevas</div>
+                    <div class="option" data-score="4">Frecuentemente - Regularmente busco nuevos desafíos</div>
+                    <div class="option" data-score="5">Siempre - Constantemente me empujo más allá de mis límites</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q5">
+                <h3>Pregunta 5 de 10</h3>
+                <p>¿Con qué frecuencia analizas tus errores y aprendes de ellos?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - No pienso en mis errores</div>
+                    <div class="option" data-score="2">Raramente - A veces me frustro con mis errores</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces analizo qué salió mal</div>
+                    <div class="option" data-score="4">Frecuentemente - Regularmente estudio mis errores</div>
+                    <div class="option" data-score="5">Siempre - Cada error es una oportunidad de aprendizaje</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q6">
+                <h3>Pregunta 6 de 10</h3>
+                <p>¿Con qué frecuencia practicas de manera consistente y regular?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Practico muy esporádicamente</div>
+                    <div class="option" data-score="2">Raramente - Solo cuando tengo tiempo libre</div>
+                    <div class="option" data-score="3">Ocasionalmente - Tengo algunas rutinas regulares</div>
+                    <div class="option" data-score="4">Frecuentemente - Practico de manera bastante consistente</div>
+                    <div class="option" data-score="5">Siempre - Tengo una rutina de práctica muy disciplinada</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q7">
+                <h3>Pregunta 7 de 10</h3>
+                <p>¿Con qué frecuencia buscas ayuda o mentores para mejorar?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Prefiero aprender solo</div>
+                    <div class="option" data-score="2">Raramente - Solo cuando estoy muy atascado</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces busco consejos</div>
+                    <div class="option" data-score="4">Frecuentemente - Regularmente busco mentores y expertos</div>
+                    <div class="option" data-score="5">Siempre - Tengo una red de mentores y coaches</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q8">
+                <h3>Pregunta 8 de 10</h3>
+                <p>¿Con qué frecuencia mides y registras tu progreso?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - No llevo ningún registro</div>
+                    <div class="option" data-score="2">Raramente - Solo tengo una idea general</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces registro mi progreso</div>
+                    <div class="option" data-score="4">Frecuentemente - Regularmente mido y registro</div>
+                    <div class="option" data-score="5">Siempre - Llevo un registro detallado de todo mi progreso</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q9">
+                <h3>Pregunta 9 de 10</h3>
+                <p>¿Con qué frecuencia adaptas tu práctica basándote en lo que aprendes?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Siempre hago lo mismo</div>
+                    <div class="option" data-score="2">Raramente - Cambio muy poco mi enfoque</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces ajusto mi práctica</div>
+                    <div class="option" data-score="4">Frecuentemente - Regularmente adapto mi enfoque</div>
+                    <div class="option" data-score="5">Siempre - Constantemente evoluciono mi práctica</div>
+                </div>
+            </div>
+            
+            <div class="question" id="q10">
+                <h3>Pregunta 10 de 10</h3>
+                <p>¿Con qué frecuencia te mantienes motivado a largo plazo?</p>
+                <div class="options">
+                    <div class="option" data-score="1">Nunca - Me desmotivo fácilmente</div>
+                    <div class="option" data-score="2">Raramente - Me cuesta mantener la motivación</div>
+                    <div class="option" data-score="3">Ocasionalmente - A veces mantengo la motivación</div>
+                    <div class="option" data-score="4">Frecuentemente - Generalmente me mantengo motivado</div>
+                    <div class="option" data-score="5">Siempre - Tengo una motivación muy fuerte y constante</div>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <h2>🎯 Resultados de tu Test</h2>
+                <div class="score-display" id="scoreDisplay"></div>
+                <div class="feedback" id="feedback"></div>
+                <div class="recommendations" id="recommendations"></div>
+                <button class="btn" onclick="restartQuiz()">Hacer el Test de Nuevo</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let totalQuestions = 10;
+        let scores = [];
+        
+        function updateProgress() {
+            const progress = (currentQuestion - 1) / totalQuestions * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function selectOption(element) {
+            // Remove previous selection
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            element.classList.add('selected');
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function nextQuestion() {
+            const currentQ = document.getElementById('q' + currentQuestion);
+            const selectedOption = currentQ.querySelector('.option.selected');
+            
+            if (!selectedOption) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            // Store score
+            scores.push(parseInt(selectedOption.dataset.score));
+            
+            // Hide current question
+            currentQ.classList.remove('active');
+            
+            // Show next question or results
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                document.getElementById('q' + currentQuestion).classList.add('active');
+                document.getElementById('nextBtn').disabled = true;
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+        
+        function showResults() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const totalScore = scores.reduce((a, b) => a + b, 0);
+            const maxScore = totalQuestions * 5;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            document.getElementById('scoreDisplay').textContent = totalScore + '/' + maxScore;
+            
+            let feedback = '';
+            let recommendations = '';
+            
+            if (percentage >= 80) {
+                feedback = '<h3>¡Excelente! 🏆</h3><p>Tienes un enfoque muy sofisticado de la práctica. Estás en el camino correcto hacia la excelencia.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Mantén tu disciplina actual</li><li>Busca mentores de nivel mundial</li><li>Considera enseñar a otros</li><li>Documenta tus métodos para compartirlos</li></ul>';
+            } else if (percentage >= 60) {
+                feedback = '<h3>Muy Bueno! 🌟</h3><p>Tienes una base sólida de práctica intencional. Con algunos ajustes, puedes alcanzar niveles excepcionales.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Establece objetivos más específicos</li><li>Busca feedback más frecuente</li><li>Desarrolla una rutina más consistente</li><li>Analiza más profundamente tus errores</li></ul>';
+            } else if (percentage >= 40) {
+                feedback = '<h3>Bueno 👍</h3><p>Tienes algunos elementos de práctica intencional, pero hay mucho espacio para mejorar.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Comienza estableciendo objetivos claros</li><li>Practica con mayor concentración</li><li>Busca un mentor o coach</li><li>Desarrolla una rutina regular</li><li>Mide tu progreso regularmente</li></ul>';
+            } else {
+                feedback = '<h3>Necesita Mejora 📈</h3><p>Actualmente estás practicando de manera ingenua. Con los cambios correctos, puedes mejorar dramáticamente.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Lee este libro completo</li><li>Comienza con objetivos muy específicos</li><li>Busca ayuda de un experto</li><li>Desarrolla una rutina diaria</li><li>Enfócate en una habilidad a la vez</li></ul>';
+            }
+            
+            document.getElementById('feedback').innerHTML = feedback;
+            document.getElementById('recommendations').innerHTML = recommendations;
+        }
+        
+        function restartQuiz() {
+            currentQuestion = 1;
+            scores = [];
+            
+            // Reset all questions
+            for (let i = 1; i <= totalQuestions; i++) {
+                const q = document.getElementById('q' + i);
+                q.classList.remove('active');
+                const options = q.querySelectorAll('.option');
+                options.forEach(opt => opt.classList.remove('selected'));
+            }
+            
+            // Show first question
+            document.getElementById('q1').classList.add('active');
+            document.querySelector('.quiz-container').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('results').style.display = 'none';
+            
+            updateProgress();
+        }
+        
+        // Add event listeners to options
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    selectOption(this);
+                });
+            });
+            
+            updateProgress();
+        });
+    </script>
+</body>
+</html> 

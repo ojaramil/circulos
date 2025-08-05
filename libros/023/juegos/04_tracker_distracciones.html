@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker de Distracciones - Céntrate (Deep Work)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3a5c;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .tracking-section {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .distraction-form {
+            background-color: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1e3a5c;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn-primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #f57c00;
+        }
+        .distraction-list {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .distraction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            transition: all 0.3s;
+        }
+        .distraction-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .distraction-info {
+            flex-grow: 1;
+        }
+        .distraction-time {
+            font-weight: bold;
+            color: #1e3a5c;
+            font-size: 14px;
+        }
+        .distraction-type {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .distraction-duration {
+            color: #f44336;
+            font-weight: bold;
+            margin: 0 15px;
+        }
+        .distraction-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .stat-card {
+            background-color: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card.warning {
+            background-color: #fff3e0;
+            border-color: #ff9800;
+        }
+        .stat-card.danger {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        .stat-card.warning .stat-value {
+            color: #ff9800;
+        }
+        .stat-card.danger .stat-value {
+            color: #f44336;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .chart-label {
+            width: 120px;
+            font-weight: bold;
+            color: #1e3a5c;
+        }
+        .chart-bar-container {
+            flex-grow: 1;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        .chart-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f44336, #ef5350);
+            transition: width 0.5s ease;
+        }
+        .chart-value {
+            width: 60px;
+            text-align: right;
+            font-weight: bold;
+            color: #1e3a5c;
+        }
+        .insights {
+            background-color: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        .insights h3 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .insight-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 3px solid #7b1fa2;
+        }
+        .quick-add {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .quick-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .quick-btn:hover {
+            border-color: #f44336;
+            background-color: #ffebee;
+            color: #f44336;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .distraction-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .distraction-actions {
+                justify-content: center;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .chart-label {
+                width: 80px;
+                font-size: 14px;
+            }
+            
+            .chart-value {
+                width: 40px;
+                font-size: 14px;
+            }
+            
+            .quick-add {
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .tracking-section {
+                padding: 15px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 10px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            .chart-label {
+                width: 60px;
+                font-size: 12px;
+            }
+            
+            .chart-value {
+                width: 30px;
+                font-size: 12px;
+            }
+            
+            input, select, textarea {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Tracker de Distracciones</h1>
+        
+        <div class="tracking-section">
+            <h3>🎯 Rastrea y Analiza tus Distracciones</h3>
+            <p>Identifica los patrones de distracción que afectan tu trabajo profundo y desarrolla estrategias para minimizarlas.</p>
+        </div>
+
+        <div class="distraction-form">
+            <h3>➕ Registrar Nueva Distracción</h3>
+            
+            <div class="form-group">
+                <label>Tipo de Distracción:</label>
+                <select id="distraction-type">
+                    <option value="phone">📱 Teléfono</option>
+                    <option value="social">🌐 Redes Sociales</option>
+                    <option value="email">📧 Correo Electrónico</option>
+                    <option value="noise">🔊 Ruido</option>
+                    <option value="people">👥 Personas</option>
+                    <option value="internet">🌍 Navegación Web</option>
+                    <option value="thoughts">💭 Pensamientos</option>
+                    <option value="other">🔧 Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Descripción:</label>
+                <textarea id="distraction-description" rows="2" placeholder="Describe qué te distrajo..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Duración (minutos):</label>
+                <input type="number" id="distraction-duration" min="1" max="120" value="5">
+            </div>
+
+            <div class="form-group">
+                <label>Impacto en el Trabajo:</label>
+                <select id="distraction-impact">
+                    <option value="low">Bajo - Fácil de recuperar</option>
+                    <option value="medium" selected>Medio - Requiere esfuerzo para volver</option>
+                    <option value="high">Alto - Perdí completamente el hilo</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="addDistraction()">➕ Agregar Distracción</button>
+        </div>
+
+        <div class="quick-add">
+            <h4>Agregar Rápidamente:</h4>
+            <button class="quick-btn" onclick="quickAdd('phone', 'Revisé el teléfono', 3)">📱 Teléfono (3min)</button>
+            <button class="quick-btn" onclick="quickAdd('social', 'Redes sociales', 5)">🌐 Redes (5min)</button>
+            <button class="quick-btn" onclick="quickAdd('email', 'Revisé correos', 4)">📧 Email (4min)</button>
+            <button class="quick-btn" onclick="quickAdd('noise', 'Ruido ambiental', 2)">🔊 Ruido (2min)</button>
+            <button class="quick-btn" onclick="quickAdd('people', 'Conversación', 6)">👥 Conversación (6min)</button>
+        </div>
+
+        <div id="distractions-container" style="display: none;">
+            <div class="tracking-section">
+                <h3>📋 Historial de Distracciones</h3>
+                <div id="distraction-list" class="distraction-list"></div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-distractions">0</div>
+                        <div class="stat-label">Total de Distracciones</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-time">0</div>
+                        <div class="stat-label">Tiempo Perdido (min)</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="avg-duration">0</div>
+                        <div class="stat-label">Duración Promedio</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-value" id="most-common">-</div>
+                        <div class="stat-label">Más Común</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>📈 Análisis por Tipo</h3>
+                    <div id="chart-container"></div>
+                </div>
+
+                <div class="insights">
+                    <h3>💡 Insights y Recomendaciones</h3>
+                    <div id="insights-container"></div>
+                </div>
+
+                <button class="btn btn-success" onclick="exportData()">📤 Exportar Datos</button>
+                <button class="btn btn-warning" onclick="clearData()">🗑️ Limpiar Datos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let distractions = [];
+
+        function addDistraction() {
+            const type = document.getElementById('distraction-type').value;
+            const description = document.getElementById('distraction-description').value;
+            const duration = parseInt(document.getElementById('distraction-duration').value);
+            const impact = document.getElementById('distraction-impact').value;
+
+            if (!description.trim()) {
+                alert('Por favor describe la distracción.');
+                return;
+            }
+
+            const distraction = {
+                id: Date.now(),
+                type: type,
+                description: description,
+                duration: duration,
+                impact: impact,
+                timestamp: new Date().toISOString(),
+                time: new Date().toLocaleTimeString()
+            };
+
+            distractions.push(distraction);
+            saveDistractions();
+            displayDistractions();
+            updateStats();
+            updateChart();
+            generateInsights();
+
+            // Limpiar formulario
+            document.getElementById('distraction-description').value = '';
+            document.getElementById('distraction-duration').value = '5';
+        }
+
+        function quickAdd(type, description, duration) {
+            document.getElementById('distraction-type').value = type;
+            document.getElementById('distraction-description').value = description;
+            document.getElementById('distraction-duration').value = duration;
+            addDistraction();
+        }
+
+        function displayDistractions() {
+            const list = document.getElementById('distraction-list');
+            list.innerHTML = '';
+
+            if (distractions.length === 0) {
+                list.innerHTML = '<p>No hay distracciones registradas aún.</p>';
+                return;
+            }
+
+            distractions.slice().reverse().forEach(distraction => {
+                const item = document.createElement('div');
+                item.className = 'distraction-item';
+                item.innerHTML = `
+                    <div class="distraction-info">
+                        <div class="distraction-time">${distraction.time}</div>
+                        <div class="distraction-type">${getTypeName(distraction.type)} - ${distraction.description}</div>
+                    </div>
+                    <div class="distraction-duration">${distraction.duration} min</div>
+                    <div class="distraction-actions">
+                        <button class="btn btn-danger btn-small" onclick="deleteDistraction(${distraction.id})">🗑️</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            document.getElementById('distractions-container').style.display = 'block';
+        }
+
+        function getTypeName(type) {
+            const types = {
+                'phone': '📱 Teléfono',
+                'social': '🌐 Redes Sociales',
+                'email': '📧 Correo',
+                'noise': '🔊 Ruido',
+                'people': '👥 Personas',
+                'internet': '🌍 Internet',
+                'thoughts': '💭 Pensamientos',
+                'other': '🔧 Otro'
+            };
+            return types[type] || '🔧 Otro';
+        }
+
+        function updateStats() {
+            const totalDistractions = distractions.length;
+            const totalTime = distractions.reduce((sum, d) => sum + d.duration, 0);
+            const avgDuration = totalDistractions > 0 ? Math.round(totalTime / totalDistractions) : 0;
+            
+            // Encontrar el tipo más común
+            const typeCounts = {};
+            distractions.forEach(d => {
+                typeCounts[d.type] = (typeCounts[d.type] || 0) + 1;
+            });
+            const mostCommon = Object.keys(typeCounts).length > 0 ? 
+                Object.keys(typeCounts).reduce((a, b) => typeCounts[a] > typeCounts[b] ? a : b) : '-';
+
+            document.getElementById('total-distractions').textContent = totalDistractions;
+            document.getElementById('total-time').textContent = totalTime;
+            document.getElementById('avg-duration').textContent = avgDuration;
+            document.getElementById('most-common').textContent = getTypeName(mostCommon).split(' ')[1] || '-';
+        }
+
+        function updateChart() {
+            const chartContainer = document.getElementById('chart-container');
+            chartContainer.innerHTML = '';
+
+            const typeCounts = {};
+            distractions.forEach(d => {
+                typeCounts[d.type] = (typeCounts[d.type] || 0) + 1;
+            });
+
+            const maxCount = Math.max(...Object.values(typeCounts), 1);
+
+            Object.entries(typeCounts).forEach(([type, count]) => {
+                const percentage = (count / maxCount) * 100;
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = `
+                    <div class="chart-label">${getTypeName(type)}</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="chart-value">${count}</div>
+                `;
+                chartContainer.appendChild(bar);
+            });
+        }
+
+        function generateInsights() {
+            const insightsContainer = document.getElementById('insights-container');
+            insightsContainer.innerHTML = '';
+
+            if (distractions.length === 0) return;
+
+            const insights = [];
+
+            // Análisis de tiempo total
+            const totalTime = distractions.reduce((sum, d) => sum + d.duration, 0);
+            if (totalTime > 60) {
+                insights.push(`⚠️ Has perdido más de 1 hora en distracciones. Considera implementar bloqueadores de distracciones.`);
+            }
+
+            // Análisis de tipo más común
+            const typeCounts = {};
+            distractions.forEach(d => {
+                typeCounts[d.type] = (typeCounts[d.type] || 0) + 1;
+            });
+            const mostCommon = Object.keys(typeCounts).reduce((a, b) => typeCounts[a] > typeCounts[b] ? a : b);
+            
+            const typeInsights = {
+                'phone': '📱 Tu teléfono es tu mayor distracción. Considera ponerlo en modo avión durante el trabajo profundo.',
+                'social': '🌐 Las redes sociales consumen mucho tiempo. Programa horarios específicos para revisarlas.',
+                'email': '📧 Revisar correos constantemente fragmenta tu atención. Programa horarios específicos.',
+                'noise': '🔊 El ruido ambiental te distrae. Considera usar auriculares con cancelación de ruido.',
+                'people': '👥 Las interrupciones de personas afectan tu concentración. Comunica tus horarios de trabajo profundo.',
+                'internet': '🌍 La navegación web te distrae. Usa aplicaciones de bloqueo de sitios.',
+                'thoughts': '💭 Los pensamientos intrusivos son normales. Practica técnicas de mindfulness.',
+                'other': '🔧 Identifica patrones en tus distracciones para desarrollar estrategias específicas.'
+            };
+
+            insights.push(typeInsights[mostCommon] || '🔧 Analiza los patrones de tus distracciones.');
+
+            // Análisis de impacto
+            const highImpact = distractions.filter(d => d.impact === 'high').length;
+            if (highImpact > 0) {
+                insights.push(`🚨 ${highImpact} distracción(es) tuvieron alto impacto. Trabaja en recuperar la concentración más rápidamente.`);
+            }
+
+            // Análisis de duración promedio
+            const avgDuration = Math.round(totalTime / distractions.length);
+            if (avgDuration > 10) {
+                insights.push(`⏰ Tus distracciones duran en promedio ${avgDuration} minutos. Trabaja en reducir este tiempo.`);
+            }
+
+            insights.forEach(insight => {
+                const insightElement = document.createElement('div');
+                insightElement.className = 'insight-item';
+                insightElement.textContent = insight;
+                insightsContainer.appendChild(insightElement);
+            });
+        }
+
+        function deleteDistraction(id) {
+            distractions = distractions.filter(d => d.id !== id);
+            saveDistractions();
+            displayDistractions();
+            updateStats();
+            updateChart();
+            generateInsights();
+        }
+
+        function saveDistractions() {
+            localStorage.setItem('distractions', JSON.stringify(distractions));
+        }
+
+        function loadDistractions() {
+            const saved = localStorage.getItem('distractions');
+            if (saved) {
+                distractions = JSON.parse(saved);
+                displayDistractions();
+                updateStats();
+                updateChart();
+                generateInsights();
+            }
+        }
+
+        function exportData() {
+            const data = {
+                distractions: distractions,
+                exportDate: new Date().toISOString(),
+                summary: {
+                    total: distractions.length,
+                    totalTime: distractions.reduce((sum, d) => sum + d.duration, 0),
+                    avgDuration: Math.round(distractions.reduce((sum, d) => sum + d.duration, 0) / distractions.length)
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `distractions-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearData() {
+            if (confirm('¿Estás seguro de que quieres eliminar todos los datos de distracciones?')) {
+                distractions = [];
+                saveDistractions();
+                displayDistractions();
+                updateStats();
+                updateChart();
+                generateInsights();
+            }
+        }
+
+        // Cargar datos al cargar la página
+        window.addEventListener('load', loadDistractions);
+    </script>
+</body>
+</html> 

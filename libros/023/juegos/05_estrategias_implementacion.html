@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategias de Implementación - Céntrate (Deep Work)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3a5c;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .strategy-section {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .assessment-section {
+            background-color: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .question-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .question {
+            font-weight: bold;
+            color: #1e3a5c;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        .option:hover {
+            border-color: #1976d2;
+            background-color: #e3f2fd;
+        }
+        .option.selected {
+            border-color: #4caf50;
+            background-color: #f1f8e9;
+        }
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn-primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #f57c00;
+        }
+        .plan-display {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .plan-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+        .plan-section h4 {
+            color: #1e3a5c;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .strategy-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #4caf50;
+        }
+        .strategy-item.completed {
+            background-color: #f1f8e9;
+            border-left-color: #4caf50;
+        }
+        .strategy-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .strategy-text {
+            flex-grow: 1;
+        }
+        .strategy-priority {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .priority-high {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        .priority-medium {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+        .priority-low {
+            background-color: #e8f5e8;
+            color: #4caf50;
+        }
+        .progress-section {
+            background-color: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+            transition: width 0.5s ease;
+        }
+        .progress-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        .tips {
+            background-color: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        .tips h3 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .tips ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .tips li {
+            margin: 8px 0;
+        }
+        .timeline {
+            background-color: #fff8e1;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 3px solid #ffc107;
+        }
+        .timeline-week {
+            font-weight: bold;
+            color: #1e3a5c;
+            min-width: 80px;
+        }
+        .timeline-task {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .options {
+                gap: 8px;
+            }
+            
+            .option {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .strategy-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .strategy-priority {
+                align-self: flex-start;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .timeline-week {
+                min-width: auto;
+            }
+            
+            .timeline-task {
+                margin-left: 0;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .strategy-section {
+                padding: 15px;
+            }
+            
+            .question-group {
+                padding: 15px;
+            }
+            
+            .question {
+                font-size: 14px;
+            }
+            
+            .option {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            .plan-section {
+                padding: 10px;
+            }
+            
+            .strategy-item {
+                padding: 8px;
+            }
+            
+            .progress-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Estrategias de Implementación</h1>
+        
+        <div class="strategy-section">
+            <h3>🚀 Crea tu Plan Personalizado de Deep Work</h3>
+            <p>Esta herramienta te ayudará a crear un plan específico y realista para implementar el trabajo profundo en tu vida, basado en tu situación actual y objetivos.</p>
+        </div>
+
+        <div class="assessment-section">
+            <h3>📋 Evaluación Inicial</h3>
+            <p>Responde estas preguntas para crear un plan personalizado:</p>
+
+            <div class="question-group">
+                <div class="question">1. ¿Cuál es tu situación laboral actual?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="work-situation" value="employee">
+                        <span>👔 Empleado con horario fijo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-situation" value="freelancer">
+                        <span>💼 Freelancer/Independiente</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-situation" value="entrepreneur">
+                        <span>🚀 Emprendedor/Dueño de negocio</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-situation" value="student">
+                        <span>🎓 Estudiante</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-situation" value="other">
+                        <span>🔧 Otro</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question">2. ¿Cuánto tiempo puedes dedicar al trabajo profundo diariamente?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="time-available" value="30min">
+                        <span>⏰ 30 minutos</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="time-available" value="1hour">
+                        <span>⏰ 1 hora</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="time-available" value="2hours">
+                        <span>⏰ 2 horas</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="time-available" value="3hours">
+                        <span>⏰ 3 horas</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="time-available" value="4plus">
+                        <span>⏰ 4+ horas</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question">3. ¿Cuál es tu mayor obstáculo para el trabajo profundo?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="main-obstacle" value="distractions">
+                        <span>📱 Distracciones digitales (teléfono, redes sociales)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="main-obstacle" value="interruptions">
+                        <span>👥 Interrupciones de personas</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="main-obstacle" value="environment">
+                        <span>🏠 Entorno de trabajo inadecuado</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="main-obstacle" value="time">
+                        <span>⏰ Falta de tiempo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="main-obstacle" value="motivation">
+                        <span>💪 Falta de motivación/energía</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question">4. ¿Qué tipo de trabajo profundo quieres realizar principalmente?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="work-type" value="creative">
+                        <span>🎨 Trabajo creativo (diseño, escritura, arte)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-type" value="analytical">
+                        <span>📊 Trabajo analítico (análisis, investigación)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-type" value="technical">
+                        <span>💻 Trabajo técnico (programación, ingeniería)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-type" value="learning">
+                        <span>📚 Aprendizaje/Estudio</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="work-type" value="planning">
+                        <span>📋 Planificación/Estrategia</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question">5. ¿Cuál es tu nivel de experiencia con el trabajo profundo?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="experience" value="beginner">
+                        <span>🌱 Principiante - Nunca lo he practicado</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="experience" value="intermediate">
+                        <span>🌿 Intermedio - Lo he intentado ocasionalmente</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="experience" value="advanced">
+                        <span>🌳 Avanzado - Lo practico regularmente</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="generatePlan()">🎯 Generar Plan Personalizado</button>
+        </div>
+
+        <div id="plan-container" style="display: none;">
+            <div class="strategy-section">
+                <h3>📋 Tu Plan de Implementación</h3>
+                <div id="plan-display" class="plan-display"></div>
+                
+                <div class="progress-section">
+                    <h4>📈 Progreso de Implementación</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">0% Completado</div>
+                </div>
+
+                <div class="timeline">
+                    <h4>📅 Cronograma de 4 Semanas</h4>
+                    <div id="timeline-container"></div>
+                </div>
+
+                <button class="btn btn-success" onclick="savePlan()">💾 Guardar Plan</button>
+                <button class="btn btn-warning" onclick="resetPlan()">🔄 Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h3>💡 Consejos para el Éxito</h3>
+            <ul>
+                <li><strong>Comienza pequeño:</strong> Es mejor implementar una estrategia bien que muchas mal</li>
+                <li><strong>Sé consistente:</strong> La regularidad es más importante que la intensidad</li>
+                <li><strong>Mide tu progreso:</strong> Usa las herramientas de tracking incluidas</li>
+                <li><strong>Ajusta según sea necesario:</strong> El plan debe adaptarse a tu realidad</li>
+                <li><strong>Celebra las victorias:</strong> Reconoce cada paso completado</li>
+                <li><strong>Ten paciencia:</strong> El trabajo profundo es una habilidad que se desarrolla con el tiempo</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentPlan = [];
+        let completedStrategies = [];
+
+        // Manejar selección de opciones
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                this.closest('.option').classList.add('selected');
+                // Remover selección de otras opciones en el mismo grupo
+                const name = this.name;
+                document.querySelectorAll(`input[name="${name}"]`).forEach(other => {
+                    if (other !== this) {
+                        other.closest('.option').classList.remove('selected');
+                    }
+                });
+            });
+        });
+
+        function generatePlan() {
+            const workSituation = document.querySelector('input[name="work-situation"]:checked')?.value;
+            const timeAvailable = document.querySelector('input[name="time-available"]:checked')?.value;
+            const mainObstacle = document.querySelector('input[name="main-obstacle"]:checked')?.value;
+            const workType = document.querySelector('input[name="work-type"]:checked')?.value;
+            const experience = document.querySelector('input[name="experience"]:checked')?.value;
+
+            if (!workSituation || !timeAvailable || !mainObstacle || !workType || !experience) {
+                alert('Por favor responde todas las preguntas para generar tu plan personalizado.');
+                return;
+            }
+
+            currentPlan = createPersonalizedPlan(workSituation, timeAvailable, mainObstacle, workType, experience);
+            displayPlan();
+            generateTimeline();
+            document.getElementById('plan-container').style.display = 'block';
+        }
+
+        function createPersonalizedPlan(situation, time, obstacle, type, experience) {
+            const plan = [];
+
+            // Estrategias base para todos
+            plan.push({
+                id: 'environment',
+                text: 'Crear un entorno de trabajo dedicado y libre de distracciones',
+                priority: 'high',
+                category: 'environment'
+            });
+
+            plan.push({
+                id: 'schedule',
+                text: 'Establecer horarios específicos para trabajo profundo',
+                priority: 'high',
+                category: 'schedule'
+            });
+
+            // Estrategias específicas por situación laboral
+            if (situation === 'employee') {
+                plan.push({
+                    id: 'communication',
+                    text: 'Comunicar a colegas tus horarios de trabajo profundo',
+                    priority: 'high',
+                    category: 'communication'
+                });
+                plan.push({
+                    id: 'early-morning',
+                    text: 'Usar las primeras horas de la mañana para trabajo profundo',
+                    priority: 'medium',
+                    category: 'schedule'
+                });
+            } else if (situation === 'freelancer') {
+                plan.push({
+                    id: 'client-boundaries',
+                    text: 'Establecer límites claros con clientes sobre disponibilidad',
+                    priority: 'high',
+                    category: 'communication'
+                });
+                plan.push({
+                    id: 'time-blocking',
+                    text: 'Implementar bloqueo de tiempo en tu calendario',
+                    priority: 'high',
+                    category: 'schedule'
+                });
+            }
+
+            // Estrategias por tiempo disponible
+            if (time === '30min') {
+                plan.push({
+                    id: 'micro-sessions',
+                    text: 'Dividir el tiempo en sesiones de 15-20 minutos',
+                    priority: 'medium',
+                    category: 'technique'
+                });
+            } else if (time === '2hours' || time === '3hours' || time === '4plus') {
+                plan.push({
+                    id: 'breaks',
+                    text: 'Incluir pausas de 5-10 minutos cada 90 minutos',
+                    priority: 'medium',
+                    category: 'technique'
+                });
+            }
+
+            // Estrategias por obstáculo principal
+            if (obstacle === 'distractions') {
+                plan.push({
+                    id: 'phone-off',
+                    text: 'Poner el teléfono en modo avión durante sesiones',
+                    priority: 'high',
+                    category: 'technology'
+                });
+                plan.push({
+                    id: 'website-blocker',
+                    text: 'Instalar bloqueadores de sitios web distractores',
+                    priority: 'medium',
+                    category: 'technology'
+                });
+            } else if (obstacle === 'interruptions') {
+                plan.push({
+                    id: 'do-not-disturb',
+                    text: 'Usar señal "No molestar" o cerrar la puerta',
+                    priority: 'high',
+                    category: 'environment'
+                });
+                plan.push({
+                    id: 'status-update',
+                    text: 'Actualizar estado en herramientas de comunicación',
+                    priority: 'medium',
+                    category: 'communication'
+                });
+            }
+
+            // Estrategias por tipo de trabajo
+            if (type === 'creative') {
+                plan.push({
+                    id: 'inspiration-time',
+                    text: 'Programar tiempo de inspiración antes del trabajo profundo',
+                    priority: 'medium',
+                    category: 'technique'
+                });
+            } else if (type === 'technical') {
+                plan.push({
+                    id: 'documentation',
+                    text: 'Mantener documentación actualizada para evitar interrupciones',
+                    priority: 'medium',
+                    category: 'technique'
+                });
+            }
+
+            // Estrategias por nivel de experiencia
+            if (experience === 'beginner') {
+                plan.push({
+                    id: 'start-small',
+                    text: 'Comenzar con sesiones de 20-30 minutos',
+                    priority: 'high',
+                    category: 'technique'
+                });
+                plan.push({
+                    id: 'tracking',
+                    text: 'Usar el tracker de distracciones para identificar patrones',
+                    priority: 'medium',
+                    category: 'tracking'
+                });
+            } else if (experience === 'advanced') {
+                plan.push({
+                    id: 'optimization',
+                    text: 'Optimizar y refinar tu rutina de trabajo profundo',
+                    priority: 'medium',
+                    category: 'technique'
+                });
+            }
+
+            return plan;
+        }
+
+        function displayPlan() {
+            const display = document.getElementById('plan-display');
+            display.innerHTML = '';
+
+            const categories = {
+                'environment': '🏠 Entorno',
+                'schedule': '⏰ Horarios',
+                'communication': '💬 Comunicación',
+                'technology': '💻 Tecnología',
+                'technique': '🎯 Técnicas',
+                'tracking': '📊 Seguimiento'
+            };
+
+            Object.entries(categories).forEach(([category, title]) => {
+                const categoryStrategies = currentPlan.filter(strategy => strategy.category === category);
+                if (categoryStrategies.length > 0) {
+                    const section = document.createElement('div');
+                    section.className = 'plan-section';
+                    section.innerHTML = `<h4>${title}</h4>`;
+                    
+                    categoryStrategies.forEach(strategy => {
+                        const item = document.createElement('div');
+                        item.className = 'strategy-item';
+                        item.innerHTML = `
+                            <input type="checkbox" class="strategy-checkbox" id="${strategy.id}" onchange="toggleStrategy('${strategy.id}')">
+                            <div class="strategy-text">${strategy.text}</div>
+                            <span class="strategy-priority priority-${strategy.priority}">${strategy.priority.toUpperCase()}</span>
+                        `;
+                        section.appendChild(item);
+                    });
+                    
+                    display.appendChild(section);
+                }
+            });
+        }
+
+        function toggleStrategy(id) {
+            const checkbox = document.getElementById(id);
+            const item = checkbox.closest('.strategy-item');
+            
+            if (checkbox.checked) {
+                item.classList.add('completed');
+                if (!completedStrategies.includes(id)) {
+                    completedStrategies.push(id);
+                }
+            } else {
+                item.classList.remove('completed');
+                completedStrategies = completedStrategies.filter(s => s !== id);
+            }
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = currentPlan.length > 0 ? Math.round((completedStrategies.length / currentPlan.length) * 100) : 0;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${progress}% Completado`;
+        }
+
+        function generateTimeline() {
+            const timeline = document.getElementById('timeline-container');
+            timeline.innerHTML = '';
+
+            const weeks = [
+                {
+                    week: 'Semana 1',
+                    tasks: ['Configurar entorno de trabajo', 'Establecer horarios básicos', 'Comunicar límites']
+                },
+                {
+                    week: 'Semana 2',
+                    tasks: ['Implementar bloqueadores de distracciones', 'Refinar horarios', 'Comenzar tracking']
+                },
+                {
+                    week: 'Semana 3',
+                    tasks: ['Optimizar rutina', 'Ajustar estrategias según resultados', 'Aumentar duración de sesiones']
+                },
+                {
+                    week: 'Semana 4',
+                    tasks: ['Consolidar hábitos', 'Evaluar progreso', 'Planificar siguiente fase']
+                }
+            ];
+
+            weeks.forEach(week => {
+                const weekElement = document.createElement('div');
+                weekElement.className = 'timeline-item';
+                weekElement.innerHTML = `
+                    <div class="timeline-week">${week.week}</div>
+                    <div class="timeline-task">${week.tasks.join(', ')}</div>
+                `;
+                timeline.appendChild(weekElement);
+            });
+        }
+
+        function savePlan() {
+            const planData = {
+                plan: currentPlan,
+                completed: completedStrategies,
+                progress: Math.round((completedStrategies.length / currentPlan.length) * 100),
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem('implementationPlan', JSON.stringify(planData));
+            alert('✅ Plan guardado exitosamente. Puedes acceder a él más tarde.');
+        }
+
+        function resetPlan() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el plan?')) {
+                currentPlan = [];
+                completedStrategies = [];
+                document.getElementById('plan-container').style.display = 'none';
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.option').classList.remove('selected');
+                });
+                updateProgress();
+            }
+        }
+
+        // Cargar plan guardado al cargar la página
+        window.addEventListener('load', function() {
+            const savedPlan = localStorage.getItem('implementationPlan');
+            if (savedPlan) {
+                const data = JSON.parse(savedPlan);
+                currentPlan = data.plan;
+                completedStrategies = data.completed;
+                if (currentPlan.length > 0) {
+                    displayPlan();
+                    generateTimeline();
+                    updateProgress();
+                    document.getElementById('plan-container').style.display = 'block';
+                    
+                    // Marcar estrategias completadas
+                    completedStrategies.forEach(id => {
+                        const checkbox = document.getElementById(id);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            checkbox.closest('.strategy-item').classList.add('completed');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

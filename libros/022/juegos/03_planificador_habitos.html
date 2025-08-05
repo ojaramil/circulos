@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Hábitos - Número Uno</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .habit-planner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .habit-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #005BAA;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: #005BAA;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background: #004085;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .habits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .habit-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #005BAA;
+        }
+        
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .habit-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .habit-category {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .habit-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .habit-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            font-size: 0.9em;
+        }
+        
+        .detail-label {
+            color: #999;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #005BAA, #82aaff);
+            transition: width 0.3s ease;
+        }
+        
+        .habit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #005BAA;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #005BAA;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .tips-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .tips-section h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .tips-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .tips-section li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Planificador de Hábitos</h1>
+        
+        <p>Diseña y rastrea hábitos que apoyen tu práctica deliberada. Los hábitos consistentes son la base del progreso a largo plazo.</p>
+        
+        <div class="habit-planner">
+            <div class="habit-form">
+                <h2>Crear Nuevo Hábito</h2>
+                <form id="habitForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="habitName">Nombre del Hábito</label>
+                            <input type="text" id="habitName" class="form-control" placeholder="Ej: Practicar piano 30 minutos" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="habitCategory">Categoría</label>
+                            <select id="habitCategory" class="form-control" required>
+                                <option value="">Seleccionar categoría</option>
+                                <option value="habilidad">Desarrollo de Habilidad</option>
+                                <option value="salud">Salud y Bienestar</option>
+                                <option value="productividad">Productividad</option>
+                                <option value="aprendizaje">Aprendizaje</option>
+                                <option value="creatividad">Creatividad</option>
+                                <option value="social">Social</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="habitDescription">Descripción</label>
+                        <textarea id="habitDescription" class="form-control" rows="3" placeholder="Describe tu hábito y por qué es importante para ti"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="habitFrequency">Frecuencia</label>
+                            <select id="habitFrequency" class="form-control" required>
+                                <option value="">Seleccionar frecuencia</option>
+                                <option value="daily">Diario</option>
+                                <option value="weekly">Semanal</option>
+                                <option value="monthly">Mensual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="habitTime">Mejor Momento del Día</label>
+                            <select id="habitTime" class="form-control" required>
+                                <option value="">Seleccionar momento</option>
+                                <option value="morning">Mañana (6-12h)</option>
+                                <option value="afternoon">Tarde (12-18h)</option>
+                                <option value="evening">Noche (18-24h)</option>
+                                <option value="flexible">Flexible</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="habitDuration">Duración Objetivo (minutos)</label>
+                            <input type="number" id="habitDuration" class="form-control" min="1" max="480" placeholder="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="habitGoal">Meta Semanal</label>
+                            <input type="number" id="habitGoal" class="form-control" min="1" max="7" placeholder="5" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="habitTrigger">Disparador (Opcional)</label>
+                        <input type="text" id="habitTrigger" class="form-control" placeholder="Ej: Después de desayunar, antes de dormir">
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button type="submit" class="btn">Crear Hábito</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpiar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalHabits">0</div>
+                    <div class="stat-label">Hábitos Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completedToday">0</div>
+                    <div class="stat-label">Completados Hoy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weeklyProgress">0%</div>
+                    <div class="stat-label">Progreso Semanal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="streakDays">0</div>
+                    <div class="stat-label">Días Consecutivos</div>
+                </div>
+            </div>
+            
+            <div id="habitsContainer">
+                <div class="empty-state">
+                    <h3>No hay hábitos creados</h3>
+                    <p>Crea tu primer hábito usando el formulario de arriba para comenzar tu viaje hacia la excelencia.</p>
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h4>💡 Consejos para Hábitos Efectivos</h4>
+                <ul>
+                    <li><strong>Comienza pequeño:</strong> Es mejor un hábito pequeño y consistente que uno grande e inconsistente</li>
+                    <li><strong>Vincula hábitos:</strong> Conecta tu nuevo hábito con uno existente (ej: después de desayunar)</li>
+                    <li><strong>Hazlo visible:</strong> Coloca recordatorios en lugares donde los verás</li>
+                    <li><strong>Celebra los éxitos:</strong> Recompénsate por mantener el hábito</li>
+                    <li><strong>No te rindas:</strong> Si fallas un día, continúa al siguiente</li>
+                    <li><strong>Rastrea tu progreso:</strong> Ver tu progreso te motiva a continuar</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let habits = JSON.parse(localStorage.getItem('habits')) || [];
+        let completedToday = JSON.parse(localStorage.getItem('completedToday')) || {};
+        
+        function saveHabits() {
+            localStorage.setItem('habits', JSON.stringify(habits));
+            localStorage.setItem('completedToday', JSON.stringify(completedToday));
+        }
+        
+        function resetForm() {
+            document.getElementById('habitForm').reset();
+        }
+        
+        function createHabit(event) {
+            event.preventDefault();
+            
+            const habit = {
+                id: Date.now(),
+                name: document.getElementById('habitName').value,
+                category: document.getElementById('habitCategory').value,
+                description: document.getElementById('habitDescription').value,
+                frequency: document.getElementById('habitFrequency').value,
+                time: document.getElementById('habitTime').value,
+                duration: parseInt(document.getElementById('habitDuration').value),
+                goal: parseInt(document.getElementById('habitGoal').value),
+                trigger: document.getElementById('habitTrigger').value,
+                createdAt: new Date().toISOString(),
+                completedDays: [],
+                streak: 0
+            };
+            
+            habits.push(habit);
+            saveHabits();
+            displayHabits();
+            updateStats();
+            resetForm();
+        }
+        
+        function displayHabits() {
+            const container = document.getElementById('habitsContainer');
+            
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No hay hábitos creados</h3>
+                        <p>Crea tu primer hábito usando el formulario de arriba para comenzar tu viaje hacia la excelencia.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <h2>Mis Hábitos</h2>
+                <div class="habits-grid">
+                    ${habits.map(habit => createHabitCard(habit)).join('')}
+                </div>
+            `;
+        }
+        
+        function createHabitCard(habit) {
+            const today = new Date().toDateString();
+            const isCompletedToday = completedToday[habit.id] === today;
+            const completedThisWeek = getCompletedThisWeek(habit);
+            const progress = Math.round((completedThisWeek / habit.goal) * 100);
+            
+            return `
+                <div class="habit-card">
+                    <div class="habit-header">
+                        <div class="habit-title">${habit.name}</div>
+                        <div class="habit-category">${getCategoryLabel(habit.category)}</div>
+                    </div>
+                    
+                    <div class="habit-description">${habit.description || 'Sin descripción'}</div>
+                    
+                    <div class="habit-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Frecuencia</div>
+                            <div class="detail-value">${getFrequencyLabel(habit.frequency)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duración</div>
+                            <div class="detail-value">${habit.duration} min</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Meta semanal</div>
+                            <div class="detail-value">${completedThisWeek}/${habit.goal}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Racha</div>
+                            <div class="detail-value">${habit.streak} días</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                    </div>
+                    <div style="text-align: center; font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                        ${progress}% completado esta semana
+                    </div>
+                    
+                    <div class="habit-actions">
+                        <button class="btn btn-small ${isCompletedToday ? 'btn-secondary' : 'btn-success'}" 
+                                onclick="toggleHabit(${habit.id})" 
+                                ${isCompletedToday ? 'disabled' : ''}>
+                            ${isCompletedToday ? '✓ Completado' : '✓ Marcar Completado'}
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="editHabit(${habit.id})">
+                            ✏️ Editar
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="deleteHabit(${habit.id})">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getCategoryLabel(category) {
+            const labels = {
+                'habilidad': 'Habilidad',
+                'salud': 'Salud',
+                'productividad': 'Productividad',
+                'aprendizaje': 'Aprendizaje',
+                'creatividad': 'Creatividad',
+                'social': 'Social',
+                'otro': 'Otro'
+            };
+            return labels[category] || category;
+        }
+        
+        function getFrequencyLabel(frequency) {
+            const labels = {
+                'daily': 'Diario',
+                'weekly': 'Semanal',
+                'monthly': 'Mensual'
+            };
+            return labels[frequency] || frequency;
+        }
+        
+        function getCompletedThisWeek(habit) {
+            const today = new Date();
+            const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+            const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+            
+            return habit.completedDays.filter(date => {
+                const completedDate = new Date(date);
+                return completedDate >= weekStart && completedDate <= weekEnd;
+            }).length;
+        }
+        
+        function toggleHabit(habitId) {
+            const today = new Date().toDateString();
+            const habit = habits.find(h => h.id === habitId);
+            
+            if (completedToday[habitId] === today) {
+                // Uncomplete
+                delete completedToday[habitId];
+                habit.completedDays = habit.completedDays.filter(date => date !== today);
+            } else {
+                // Complete
+                completedToday[habitId] = today;
+                habit.completedDays.push(today);
+                
+                // Update streak
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toDateString();
+                
+                if (habit.completedDays.includes(yesterdayStr)) {
+                    habit.streak++;
+                } else {
+                    habit.streak = 1;
+                }
+            }
+            
+            saveHabits();
+            displayHabits();
+            updateStats();
+        }
+        
+        function deleteHabit(habitId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este hábito?')) {
+                habits = habits.filter(h => h.id !== habitId);
+                delete completedToday[habitId];
+                saveHabits();
+                displayHabits();
+                updateStats();
+            }
+        }
+        
+        function editHabit(habitId) {
+            // Simple edit - in a real app, you'd have a more sophisticated edit form
+            const habit = habits.find(h => h.id === habitId);
+            if (habit) {
+                const newName = prompt('Nuevo nombre del hábito:', habit.name);
+                if (newName && newName.trim()) {
+                    habit.name = newName.trim();
+                    saveHabits();
+                    displayHabits();
+                }
+            }
+        }
+        
+        function updateStats() {
+            const today = new Date().toDateString();
+            
+            document.getElementById('totalHabits').textContent = habits.length;
+            document.getElementById('completedToday').textContent = Object.values(completedToday).filter(date => date === today).length;
+            
+            // Calculate weekly progress
+            let totalProgress = 0;
+            let totalGoals = 0;
+            
+            habits.forEach(habit => {
+                const completedThisWeek = getCompletedThisWeek(habit);
+                totalProgress += completedThisWeek;
+                totalGoals += habit.goal;
+            });
+            
+            const weeklyProgress = totalGoals > 0 ? Math.round((totalProgress / totalGoals) * 100) : 0;
+            document.getElementById('weeklyProgress').textContent = weeklyProgress + '%';
+            
+            // Calculate average streak
+            const totalStreak = habits.reduce((sum, habit) => sum + habit.streak, 0);
+            const avgStreak = habits.length > 0 ? Math.round(totalStreak / habits.length) : 0;
+            document.getElementById('streakDays').textContent = avgStreak;
+        }
+        
+        // Event listeners
+        document.getElementById('habitForm').addEventListener('submit', createHabit);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            displayHabits();
+            updateStats();
+        });
+    </script>
+</body>
+</html> 

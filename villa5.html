@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Villa Club 3D - CSS Grid 3D</title>
+    <style>
+        /* Variables CSS para el entorno 3D */
+        :root {
+            --cube-size: 400px;
+            --wall-size: 180px;
+            --zone-size: 80px;
+            --rotation-x: 0deg;
+            --rotation-y: 0deg;
+            --transition-speed: 0.8s;
+            --primary-color: #4ecdc4;
+            --secondary-color: #ff6b6b;
+            --accent-color: #feca57;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* Contenedor principal 3D */
+        .villa-3d-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        /* Cubo 3D principal */
+        .cube-3d {
+            position: relative;
+            width: var(--cube-size);
+            height: var(--cube-size);
+            transform-style: preserve-3d;
+            transform: rotateX(var(--rotation-x)) rotateY(var(--rotation-y));
+            transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cubeFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes cubeFloat {
+            0%, 100% { transform: rotateX(var(--rotation-x)) rotateY(var(--rotation-y)) translateY(0px); }
+            50% { transform: rotateX(var(--rotation-x)) rotateY(var(--rotation-y)) translateY(-20px); }
+        }
+
+        /* Paredes del cubo */
+        .cube-wall {
+            position: absolute;
+            width: var(--wall-size);
+            height: var(--wall-size);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            /* Prevenir sobreposición */
+            transform-origin: center center;
+            z-index: 1;
+        }
+
+        .cube-wall::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .cube-wall:hover {
+            transform: scale(1.1) translateZ(20px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 
+                0 0 30px rgba(78, 205, 196, 0.6),
+                0 0 60px rgba(78, 205, 196, 0.3);
+        }
+
+        .cube-wall:hover::before {
+            opacity: 1;
+        }
+
+        /* Posiciones de las paredes - AJUSTADAS para evitar sobreposición */
+        .wall-front {
+            transform: translateZ(90px);
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(69, 183, 170, 0.2));
+        }
+
+        .wall-back {
+            transform: translateZ(-90px);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 82, 82, 0.2));
+        }
+
+        .wall-left {
+            transform: translateX(-90px) rotateY(90deg);
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+        }
+
+        .wall-right {
+            transform: translateX(90px) rotateY(-90deg);
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(123, 31, 162, 0.2));
+        }
+
+        .wall-top {
+            transform: translateY(-90px) rotateX(90deg);
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(67, 160, 71, 0.2));
+        }
+
+        .wall-bottom {
+            transform: translateY(90px) rotateX(-90deg);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.2));
+        }
+
+        /* Contenido de las paredes */
+        .wall-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        .wall-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .wall-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Panel de control */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .control-panel h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--primary-color), #45b7aa);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--secondary-color), #e74c3c);
+            grid-column: 1 / -1;
+        }
+
+        .reset-btn:hover {
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Panel de información */
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .info-panel h3 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-panel p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .keyboard-controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .keyboard-controls span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        /* Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+            position: relative;
+            animation: modalSlideIn 0.4s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #e74c3c;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-body p {
+            margin-bottom: 15px;
+        }
+
+        .modal-links {
+            margin-top: 20px;
+        }
+
+        .modal-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .modal-link:hover {
+            background: #45b7aa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        /* Partículas de fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --cube-size: 300px;
+                --wall-size: 130px;
+                --zone-size: 60px;
+            }
+
+            .control-panel, .info-panel {
+                position: relative;
+                margin: 20px;
+                right: auto;
+                bottom: auto;
+            }
+
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+        }
+
+        /* Estados de rotación */
+        .cube-3d.rotating {
+            transition: transform 0.1s ease;
+        }
+
+        /* Indicador de zona activa */
+        .zone-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(78, 205, 196, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .zone-indicator.show {
+            opacity: 1;
+        }
+
+        /* Líneas guía para mostrar la estructura del cubo */
+        .cube-guides {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .cube-guide {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .guide-x {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .guide-y {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .guide-z {
+            width: 2px;
+            height: 2px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas de fondo -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Contenedor principal 3D -->
+    <div class="villa-3d-container">
+        <!-- Cubo 3D -->
+        <div class="cube-3d" id="cube3d">
+            <!-- Líneas guía para visualizar la estructura -->
+            <div class="cube-guides">
+                <div class="cube-guide guide-x"></div>
+                <div class="cube-guide guide-y"></div>
+                <div class="cube-guide guide-z"></div>
+            </div>
+            <!-- Pared frontal -->
+            <div class="cube-wall wall-front" data-zone="encuentros" data-modal="modal-encuentros">
+                <div class="wall-content">
+                    <span class="wall-icon">📅</span>
+                    <div class="wall-title">Encuentros</div>
+                </div>
+            </div>
+
+            <!-- Pared trasera -->
+            <div class="cube-wall wall-back" data-zone="comunicacion" data-modal="modal-comunicacion">
+                <div class="wall-content">
+                    <span class="wall-icon">💬</span>
+                    <div class="wall-title">Comunicación</div>
+                </div>
+            </div>
+
+            <!-- Pared izquierda -->
+            <div class="cube-wall wall-left" data-zone="herramientas" data-modal="modal-herramientas">
+                <div class="wall-content">
+                    <span class="wall-icon">🤖</span>
+                    <div class="wall-title">Herramientas</div>
+                </div>
+            </div>
+
+            <!-- Pared derecha -->
+            <div class="cube-wall wall-right" data-zone="educacion" data-modal="modal-educacion">
+                <div class="wall-content">
+                    <span class="wall-icon">📚</span>
+                    <div class="wall-title">Educación</div>
+                </div>
+            </div>
+
+            <!-- Pared superior -->
+            <div class="cube-wall wall-top" data-zone="contenido" data-modal="modal-contenido">
+                <div class="wall-content">
+                    <span class="wall-icon">🎵</span>
+                    <div class="wall-title">Contenido</div>
+                </div>
+            </div>
+
+            <!-- Pared inferior -->
+            <div class="cube-wall wall-bottom" data-zone="recursos" data-modal="modal-recursos">
+                <div class="wall-content">
+                    <span class="wall-icon">🔗</span>
+                    <div class="wall-title">Recursos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de control -->
+    <div class="control-panel">
+        <h3>🎮 Controles</h3>
+        <div class="control-buttons">
+            <button class="control-btn" onclick="rotateCube('left')">← Izquierda</button>
+            <button class="control-btn" onclick="rotateCube('right')">Derecha →</button>
+            <button class="control-btn" onclick="rotateCube('up')">↑ Arriba</button>
+            <button class="control-btn" onclick="rotateCube('down')">Abajo ↓</button>
+            <button class="control-btn reset-btn" onclick="resetCube()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- Panel de información -->
+    <div class="info-panel">
+        <h3>ℹ️ Información</h3>
+        <p>Haz clic en cualquier pared del cubo 3D para acceder a los recursos.</p>
+        <p>Usa los botones de control para rotar el cubo y explorar todas las zonas.</p>
+        <div class="keyboard-controls">
+            <strong>Teclado:</strong><br>
+            <span>←</span> <span>→</span> <span>↑</span> <span>↓</span> para rotar<br>
+            <span>R</span> para reset
+        </div>
+    </div>
+
+    <!-- Indicador de zona activa -->
+    <div class="zone-indicator" id="zoneIndicator"></div>
+
+    <!-- Modales -->
+    <!-- Modal Encuentros -->
+    <div id="modal-encuentros" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📅 Encuentros Semanales</h2>
+                <button class="close-btn" onclick="closeModal('modal-encuentros')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Participa en encuentros diseñados para socializar, aprender y conectar con otros miembros.</p>
+                <div class="modal-links">
+                    <a href="https://meet.google.com/qnc-zmyz-izg" class="modal-link" target="_blank">Martes 5:30 pm Bogotá</a>
+                    <a href="https://meet.google.com/qnc-zmyz-izg" class="modal-link" target="_blank">Jueves 3:00 pm Bogotá</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Comunicación -->
+    <div id="modal-comunicacion" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💬 Comunicación</h2>
+                <button class="close-btn" onclick="closeModal('modal-comunicacion')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Accede a espacios seguros para interactuar con otros miembros.</p>
+                <div class="modal-links">
+                    <a href="https://bit.ly/grupo-axa-adultos-jovenes" class="modal-link" target="_blank">Grupo WhatsApp</a>
+                    <a href="https://comunidad.aspergerparaasperger.org/" class="modal-link" target="_blank">Red Social</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Herramientas -->
+    <div id="modal-herramientas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🤖 Herramientas</h2>
+                <button class="close-btn" onclick="closeModal('modal-herramientas')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Obtén acceso a apps y recursos especializados para el desarrollo personal.</p>
+                <div class="modal-links">
+                    <a href="https://apps.apple.com/app/escudoseguro-co/id6448260837" class="modal-link" target="_blank">App iPhone</a>
+                    <a href="https://play.google.com/store/apps/details?id=org.aspergerparaasperger.apps.android62ffbf5135c14" class="modal-link" target="_blank">App Android</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Educación -->
+    <div id="modal-educacion" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📚 Educación</h2>
+                <button class="close-btn" onclick="closeModal('modal-educacion')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Accede a círculos de aprendizaje y recursos educativos especializados.</p>
+                <div class="modal-links">
+                    <a href="https://revista.aspergerparaasperger.org/" class="modal-link" target="_blank">Revista</a>
+                    <a href="https://club.aspergerparaasperger.org/" class="modal-link" target="_blank">Club</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Contenido -->
+    <div id="modal-contenido" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🎵 Contenido</h2>
+                <button class="close-btn" onclick="closeModal('modal-contenido')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Disfruta de música educativa, narraciones sociales y contenido multimedia.</p>
+                <p><strong>Nota:</strong> Se distribuyen 1-2 canciones e historias semanales por los diferentes canales.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Recursos -->
+    <div id="modal-recursos" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔗 Recursos Adicionales</h2>
+                <button class="close-btn" onclick="closeModal('modal-recursos')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Accede a recursos adicionales y herramientas de apoyo.</p>
+                <div class="modal-links">
+                    <a href="https://bit.ly/grupo-axa-adultos-jovenes" class="modal-link" target="_blank">Soporte WhatsApp</a>
+                    <a href="https://aspergerparaasperger.org/" class="modal-link" target="_blank">Sitio Web</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+        let isRotating = false;
+
+        // Función para rotar el cubo
+        function rotateCube(direction) {
+            if (isRotating) return;
+            
+            isRotating = true;
+            const cube = document.getElementById('cube3d');
+            
+            switch(direction) {
+                case 'left':
+                    currentRotationY -= 90;
+                    break;
+                case 'right':
+                    currentRotationY += 90;
+                    break;
+                case 'up':
+                    currentRotationX -= 90;
+                    break;
+                case 'down':
+                    currentRotationX += 90;
+                    break;
+            }
+            
+            // Aplicar rotación
+            cube.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+            
+            // Mostrar indicador de zona activa
+            showZoneIndicator(direction);
+            
+            setTimeout(() => {
+                isRotating = false;
+            }, 800);
+        }
+
+        // Función para resetear el cubo
+        function resetCube() {
+            if (isRotating) return;
+            
+            isRotating = true;
+            currentRotationX = 0;
+            currentRotationY = 0;
+            
+            const cube = document.getElementById('cube3d');
+            cube.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            
+            showZoneIndicator('reset');
+            
+            setTimeout(() => {
+                isRotating = false;
+            }, 800);
+        }
+
+        // Función para mostrar indicador de zona
+        function showZoneIndicator(action) {
+            const indicator = document.getElementById('zoneIndicator');
+            let message = '';
+            
+            switch(action) {
+                case 'left':
+                    message = 'ROTANDO IZQUIERDA - 90°';
+                    break;
+                case 'right':
+                    message = 'ROTANDO DERECHA - 90°';
+                    break;
+                case 'up':
+                    message = 'ROTANDO ARRIBA - 90°';
+                    break;
+                case 'down':
+                    message = 'ROTANDO ABAJO - 90°';
+                    break;
+                case 'reset':
+                    message = 'RESETEADO - POSICIÓN INICIAL';
+                    break;
+            }
+            
+            indicator.textContent = message;
+            indicator.classList.add('show');
+            
+            // Mostrar información de debug
+            console.log(`Rotación actual: X=${currentRotationX}°, Y=${currentRotationY}°`);
+            console.log('Paredes separadas por 90px en cada eje');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 1500);
+        }
+
+        // Función para cerrar modales
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
+
+        // Función para crear partículas
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Eventos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Villa Club 3D - CSS Grid iniciando...');
+            
+            // Crear partículas
+            createParticles();
+            
+            // Eventos de clic en las paredes
+            document.querySelectorAll('.cube-wall').forEach(wall => {
+                wall.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.style.display = 'block';
+                    }
+                });
+            });
+
+            // Cerrar modal al hacer clic fuera
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+
+            // Cerrar modal con Escape
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+
+            // Controles de teclado
+            document.addEventListener('keydown', function(event) {
+                switch(event.key) {
+                    case 'ArrowLeft':
+                        rotateCube('left');
+                        break;
+                    case 'ArrowRight':
+                        rotateCube('right');
+                        break;
+                    case 'ArrowUp':
+                        rotateCube('up');
+                        break;
+                    case 'ArrowDown':
+                        rotateCube('down');
+                        break;
+                    case 'r':
+                    case 'R':
+                        resetCube();
+                        break;
+                }
+            });
+
+            console.log('Villa Club 3D - CSS Grid inicializado correctamente');
+        });
+
+        // Funciones globales
+        window.rotateCube = rotateCube;
+        window.resetCube = resetCube;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

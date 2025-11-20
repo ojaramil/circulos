@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Emociones</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .emotion-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .emotion-tracker {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .emotion-tracker h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .emotion-wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            margin: 20px auto;
+            position: relative;
+            background: conic-gradient(
+                #ff6b6b 0deg 60deg,
+                #ffd93d 60deg 120deg,
+                #6bcf7f 120deg 180deg,
+                #4ecdc4 180deg 240deg,
+                #45b7d1 240deg 300deg,
+                #96ceb4 300deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .emotion-wheel::before {
+            content: '';
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+        .emotion-center {
+            position: relative;
+            z-index: 1;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .emotion-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .emotion-label {
+            position: absolute;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #333;
+        }
+        .emotion-label:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+        .emotion-label:nth-child(2) { top: 50%; right: 10px; transform: translateY(-50%); }
+        .emotion-label:nth-child(3) { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .emotion-label:nth-child(4) { top: 50%; left: 10px; transform: translateY(-50%); }
+        .emotion-label:nth-child(5) { top: 25%; right: 25%; }
+        .emotion-label:nth-child(6) { bottom: 25%; right: 25%; }
+        .emotion-label:nth-child(7) { bottom: 25%; left: 25%; }
+        .emotion-label:nth-child(8) { top: 25%; left: 25%; }
+        .emotion-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tool-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .tool-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .tool-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tool-card.active {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .tool-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .tool-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .tool-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .tool-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .emotion-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .emotion-btn:hover {
+            background: #5a6fd8;
+        }
+        .emotion-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .emotion-btn.active {
+            background: #28a745;
+        }
+        .emotion-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .emotion-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .emotion-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .emotion-exercise {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .emotion-exercise h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .exercise-timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-poor { background: #f8d7da; color: #721c24; }
+        .level-fair { background: #fff3cd; color: #856404; }
+        .level-good { background: #d4edda; color: #155724; }
+        .level-excellent { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>😊 Gestor de Emociones</h1>
+            <p>Regula y gestiona tus emociones de manera saludable</p>
+        </div>
+
+        <div class="emotion-area">
+            <div class="emotion-tracker">
+                <h3>🎭 Estado Emocional Actual</h3>
+                <div class="emotion-wheel">
+                    <div class="emotion-center" id="current-emotion">😊</div>
+                    <div class="emotion-labels">
+                        <div class="emotion-label">Alegría</div>
+                        <div class="emotion-label">Tristeza</div>
+                        <div class="emotion-label">Enojo</div>
+                        <div class="emotion-label">Miedo</div>
+                        <div class="emotion-label">Sorpresa</div>
+                        <div class="emotion-label">Disgusto</div>
+                        <div class="emotion-label">Confusión</div>
+                        <div class="emotion-label">Calma</div>
+                    </div>
+                </div>
+                <p id="emotion-status">Estado equilibrado - Continúa gestionando tus emociones</p>
+            </div>
+
+            <div class="emotion-tools" id="emotion-tools">
+                <div class="tool-card" onclick="selectTool('breathing')">
+                    <div class="tool-icon">🌬️</div>
+                    <div class="tool-title">Respiración Profunda</div>
+                    <div class="tool-description">Calma tu sistema nervioso</div>
+                    <div class="tool-duration">5 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('mindfulness')">
+                    <div class="tool-icon">🧘</div>
+                    <div class="tool-title">Atención Plena</div>
+                    <div class="tool-description">Observa sin juzgar</div>
+                    <div class="tool-duration">10 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('gratitude')">
+                    <div class="tool-icon">🙏</div>
+                    <div class="tool-title">Gratitud</div>
+                    <div class="tool-description">Cultiva sentimientos positivos</div>
+                    <div class="tool-duration">8 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('journaling')">
+                    <div class="tool-icon">📝</div>
+                    <div class="tool-title">Diario Emocional</div>
+                    <div class="tool-description">Reflexiona sobre tus emociones</div>
+                    <div class="tool-duration">15 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('movement')">
+                    <div class="tool-icon">🏃</div>
+                    <div class="tool-title">Movimiento</div>
+                    <div class="tool-description">Libera energía emocional</div>
+                    <div class="tool-duration">20 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('music')">
+                    <div class="tool-icon">🎵</div>
+                    <div class="tool-title">Música</div>
+                    <div class="tool-description">Regula tu estado emocional</div>
+                    <div class="tool-duration">12 minutos</div>
+                </div>
+            </div>
+
+            <div class="emotion-exercise" id="emotion-exercise" style="display: none;">
+                <h3>🎯 Ejercicio de Regulación Emocional</h3>
+                <div class="exercise-timer" id="exercise-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="exercise-progress" style="width: 0%"></div>
+                </div>
+                <p id="exercise-instruction">Sigue las instrucciones del ejercicio</p>
+            </div>
+
+            <div class="control-buttons">
+                <button class="emotion-btn" onclick="startTool()" id="startBtn">🚀 Iniciar Herramienta</button>
+                <button class="emotion-btn" onclick="pauseTool()" id="pauseBtn" disabled>⏸️ Pausar</button>
+                <button class="emotion-btn" onclick="stopTool()" id="stopBtn" disabled>⏹️ Detener</button>
+                <button class="emotion-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="emotion-stats" style="display: none;">
+                <div class="emotion-stats">
+                    <h3>📊 Estadísticas Emocionales</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-sessions">0</div>
+                            <div class="stat-label">Sesiones Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="emotional-balance">75</div>
+                            <div class="stat-label">Balance Emocional</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tools-used">0</div>
+                            <div class="stat-label">Herramientas Usadas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Bueno</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEmotion = {
+            state: 'calm',
+            tool: null,
+            isActive: false,
+            isPaused: false,
+            startTime: 0,
+            totalSessions: 0,
+            emotionalBalance: 75,
+            toolsUsed: 0
+        };
+
+        let emotionInterval;
+
+        const emotions = {
+            'joy': { emoji: '😊', name: 'Alegría', color: '#ffd93d' },
+            'sadness': { emoji: '😢', name: 'Tristeza', color: '#4ecdc4' },
+            'anger': { emoji: '😠', name: 'Enojo', color: '#ff6b6b' },
+            'fear': { emoji: '😨', name: 'Miedo', color: '#96ceb4' },
+            'surprise': { emoji: '😲', name: 'Sorpresa', color: '#45b7d1' },
+            'disgust': { emoji: '🤢', name: 'Disgusto', color: '#6bcf7f' },
+            'confusion': { emoji: '😕', name: 'Confusión', color: '#ff9ff3' },
+            'calm': { emoji: '😌', name: 'Calma', color: '#a8e6cf' }
+        };
+
+        const tools = {
+            'breathing': { 
+                duration: 5 * 60 * 1000, 
+                name: 'Respiración Profunda',
+                emotionalGain: 10,
+                description: 'Inhala profundamente por 4 segundos, mantén por 4 segundos, exhala por 4 segundos'
+            },
+            'mindfulness': { 
+                duration: 10 * 60 * 1000, 
+                name: 'Atención Plena',
+                emotionalGain: 15,
+                description: 'Observa tus pensamientos y emociones sin juzgar'
+            },
+            'gratitude': { 
+                duration: 8 * 60 * 1000, 
+                name: 'Gratitud',
+                emotionalGain: 12,
+                description: 'Reflexiona sobre 3 cosas por las que estás agradecido'
+            },
+            'journaling': { 
+                duration: 15 * 60 * 1000, 
+                name: 'Diario Emocional',
+                emotionalGain: 18,
+                description: 'Escribe sobre tus emociones y experiencias del día'
+            },
+            'movement': { 
+                duration: 20 * 60 * 1000, 
+                name: 'Movimiento',
+                emotionalGain: 20,
+                description: 'Haz ejercicio o movimiento para liberar energía emocional'
+            },
+            'music': { 
+                duration: 12 * 60 * 1000, 
+                name: 'Música',
+                emotionalGain: 14,
+                description: 'Escucha música que regule tu estado emocional'
+            }
+        };
+
+        function selectTool(toolType) {
+            currentEmotion.tool = toolType;
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.tool-card').classList.add('selected');
+            
+            // Mostrar ejercicio
+            document.getElementById('emotion-exercise').style.display = 'block';
+            document.getElementById('exercise-instruction').textContent = tools[toolType].description;
+        }
+
+        function startTool() {
+            if (!currentEmotion.tool || currentEmotion.isActive) return;
+            
+            currentEmotion.isActive = true;
+            currentEmotion.isPaused = false;
+            currentEmotion.startTime = Date.now();
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Iniciar temporizador
+            emotionInterval = setInterval(updateTimer, 1000);
+            
+            // Mostrar herramienta seleccionada como activa
+            document.querySelectorAll('.tool-card').forEach(card => {
+                if (card.classList.contains('selected')) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function pauseTool() {
+            if (!currentEmotion.isActive) return;
+            
+            currentEmotion.isPaused = !currentEmotion.isPaused;
+            
+            if (currentEmotion.isPaused) {
+                clearInterval(emotionInterval);
+                document.getElementById('pauseBtn').textContent = '▶️ Continuar';
+                document.getElementById('pauseBtn').classList.add('pause');
+            } else {
+                emotionInterval = setInterval(updateTimer, 1000);
+                document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+                document.getElementById('pauseBtn').classList.remove('pause');
+            }
+        }
+
+        function stopTool() {
+            if (!currentEmotion.isActive) return;
+            
+            currentEmotion.isActive = false;
+            currentEmotion.isPaused = false;
+            
+            clearInterval(emotionInterval);
+            
+            // Calcular tiempo transcurrido
+            const sessionTime = Math.floor((Date.now() - currentEmotion.startTime) / 1000);
+            const toolDuration = tools[currentEmotion.tool].duration / 1000;
+            
+            if (sessionTime >= toolDuration) {
+                const gain = tools[currentEmotion.tool].emotionalGain;
+                currentEmotion.emotionalBalance += gain;
+                currentEmotion.emotionalBalance = Math.min(100, currentEmotion.emotionalBalance);
+                currentEmotion.totalSessions++;
+                currentEmotion.toolsUsed++;
+                
+                // Mejorar estado emocional
+                updateEmotionalState();
+                
+                // Mostrar logro
+                showAchievement(gain);
+            }
+            
+            // Guardar en localStorage
+            saveStats();
+            
+            // Resetear controles
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+            document.getElementById('pauseBtn').classList.remove('pause');
+            
+            // Resetear visual
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('selected', 'active');
+            });
+            document.getElementById('exercise-timer').textContent = '00:00';
+            document.getElementById('exercise-progress').style.width = '0%';
+            
+            updateEmotionDisplay();
+        }
+
+        function updateTimer() {
+            if (currentEmotion.isPaused) return;
+            
+            const elapsed = Math.floor((Date.now() - currentEmotion.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('exercise-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Actualizar progreso
+            const toolDuration = tools[currentEmotion.tool].duration / 1000;
+            const progress = Math.min((elapsed / toolDuration) * 100, 100);
+            document.getElementById('exercise-progress').style.width = `${progress}%`;
+        }
+
+        function updateEmotionalState() {
+            const balance = currentEmotion.emotionalBalance;
+            
+            if (balance >= 80) {
+                currentEmotion.state = 'joy';
+            } else if (balance >= 60) {
+                currentEmotion.state = 'calm';
+            } else if (balance >= 40) {
+                currentEmotion.state = 'confusion';
+            } else {
+                currentEmotion.state = 'sadness';
+            }
+        }
+
+        function updateEmotionDisplay() {
+            const emotion = emotions[currentEmotion.state];
+            document.getElementById('current-emotion').textContent = emotion.emoji;
+            
+            let status, level, levelClass;
+            if (currentEmotion.emotionalBalance >= 80) {
+                status = 'Excelente - Tu bienestar emocional es óptimo';
+                level = 'Excelente';
+                levelClass = 'level-excellent';
+            } else if (currentEmotion.emotionalBalance >= 60) {
+                status = 'Bueno - Continúa gestionando tus emociones';
+                level = 'Bueno';
+                levelClass = 'level-good';
+            } else if (currentEmotion.emotionalBalance >= 40) {
+                status = 'Regular - Considera usar más herramientas de regulación';
+                level = 'Regular';
+                levelClass = 'level-fair';
+            } else {
+                status = 'Pobre - Es importante trabajar en tu bienestar emocional';
+                level = 'Pobre';
+                levelClass = 'level-poor';
+            }
+            
+            document.getElementById('emotion-status').textContent = status;
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement(gain) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '😊 ¡Bienestar mejorado! +' + gain + ' puntos';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('total-sessions').textContent = currentEmotion.totalSessions;
+            document.getElementById('emotional-balance').textContent = currentEmotion.emotionalBalance;
+            document.getElementById('tools-used').textContent = currentEmotion.toolsUsed;
+            
+            updateEmotionDisplay();
+            document.getElementById('emotion-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                state: currentEmotion.state,
+                totalSessions: currentEmotion.totalSessions,
+                emotionalBalance: currentEmotion.emotionalBalance,
+                toolsUsed: currentEmotion.toolsUsed
+            };
+            localStorage.setItem('emotionStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('emotionStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentEmotion.state = stats.state || 'calm';
+                currentEmotion.totalSessions = stats.totalSessions || 0;
+                currentEmotion.emotionalBalance = stats.emotionalBalance || 75;
+                currentEmotion.toolsUsed = stats.toolsUsed || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateEmotionDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Estrategias - David y Goliat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .scenario-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #00b894;
+        }
+        .scenario-selector h3 {
+            color: #00b894;
+            margin-top: 0;
+        }
+        .scenario-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .scenario-option {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .scenario-option:hover {
+            border-color: #00b894;
+            transform: translateY(-2px);
+        }
+        .scenario-option.selected {
+            border-color: #00b894;
+            background: #e8f5e8;
+        }
+        .scenario-option h4 {
+            margin: 0 0 10px 0;
+            color: #00b894;
+        }
+        .strategy-builder {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ff9800;
+            display: none;
+        }
+        .strategy-builder h3 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .strategy-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #ff9800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .strategy-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .strategy-card.selected {
+            background: #fff3e0;
+            border-color: #e65100;
+        }
+        .strategy-card h4 {
+            margin: 0 0 8px 0;
+            color: #e65100;
+        }
+        .strategy-card .icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+        .simulation-results {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+            display: none;
+        }
+        .simulation-results h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .battle-visualization {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .battle-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+            display: block;
+        }
+        .stat-box .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .outcome-analysis {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        .outcome-analysis h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .btn {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #00a085;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00a085);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Simulador de Estrategias</h1>
+        <p>"Pon a prueba las estrategias de David vs. Goliat"</p>
+    </div>
+
+    <div class="game-container">
+        <h2>¿Cómo Funciona el Simulador?</h2>
+        <p>Este simulador te permite experimentar con diferentes estrategias de David y Goliat en diversos escenarios. Selecciona un escenario, elige tus estrategias, y observa cómo se desarrolla la batalla. Aprende qué estrategias funcionan mejor en diferentes situaciones.</p>
+
+        <div class="scenario-selector">
+            <h3>🎭 Paso 1: Selecciona tu Escenario</h3>
+            <p>Elige uno de los siguientes escenarios para simular:</p>
+            
+            <div class="scenario-options">
+                <div class="scenario-option" data-scenario="basketball">
+                    <h4>🏀 Baloncesto Juvenil</h4>
+                    <p>Tu equipo pequeño enfrenta a un equipo más alto y fuerte. ¿Qué estrategias usarás?</p>
+                </div>
+                <div class="scenario-option" data-scenario="business">
+                    <h4>💼 Startup vs. Corporación</h4>
+                    <p>Tu empresa pequeña compite contra una corporación gigante. ¿Cómo te defenderás?</p>
+                </div>
+                <div class="scenario-option" data-scenario="education">
+                    <h4>🎓 Estudiante vs. Sistema</h4>
+                    <p>Eres un estudiante con dificultades enfrentando un sistema educativo rígido.</p>
+                </div>
+                <div class="scenario-option" data-scenario="art">
+                    <h4>🎨 Artista Independiente</h4>
+                    <p>Eres un artista que rechaza las convenciones del mercado del arte establecido.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="strategy-builder" id="strategyBuilder">
+            <h3>⚔️ Paso 2: Construye tu Estrategia de David</h3>
+            <p>Selecciona hasta 3 estrategias que usarás para enfrentar tu desafío:</p>
+            
+            <div class="strategy-grid">
+                <div class="strategy-card" data-strategy="change-rules">
+                    <div class="icon">🔄</div>
+                    <h4>Cambiar las Reglas</h4>
+                    <p>No juegues según las expectativas del oponente</p>
+                </div>
+                <div class="strategy-card" data-strategy="reject-conventions">
+                    <div class="icon">🚫</div>
+                    <h4>Rechazar Convenciones</h4>
+                    <p>Ignora las reglas tradicionales y crea las tuyas</p>
+                </div>
+                <div class="strategy-card" data-strategy="use-speed">
+                    <div class="icon">⚡</div>
+                    <h4>Usar Velocidad</h4>
+                    <p>Aprovecha tu agilidad y rapidez</p>
+                </div>
+                <div class="strategy-card" data-strategy="specialize">
+                    <div class="icon">🎯</div>
+                    <h4>Habilidades Especializadas</h4>
+                    <p>Desarrolla una fortaleza única</p>
+                </div>
+                <div class="strategy-card" data-strategy="non-linear">
+                    <div class="icon">🧠</div>
+                    <h4>Pensamiento No Lineal</h4>
+                    <p>Encuentra soluciones creativas e inesperadas</p>
+                </div>
+                <div class="strategy-card" data-strategy="leverage-context">
+                    <div class="icon">🌍</div>
+                    <h4>Aprovechar Contexto</h4>
+                    <p>Usa tu entorno a tu favor</p>
+                </div>
+                <div class="strategy-card" data-strategy="convert-weakness">
+                    <div class="icon">💪</div>
+                    <h4>Convertir Debilidades</h4>
+                    <p>Transforma tus limitaciones en ventajas</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" id="runSimulation" disabled>🚀 Ejecutar Simulación</button>
+                <button class="btn btn-secondary" id="resetStrategies">🔄 Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="simulation-results" id="simulationResults">
+            <h3>📊 Resultados de la Simulación</h3>
+            
+            <div class="battle-visualization">
+                <h4>⚔️ Batalla Simulada</h4>
+                <div id="battleAnimation">
+                    <p>Preparando la simulación...</p>
+                </div>
+            </div>
+            
+            <div class="battle-stats">
+                <div class="stat-box">
+                    <span class="number" id="davidScore">0</span>
+                    <span class="label">Puntuación David</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" id="goliatScore">0</span>
+                    <span class="label">Puntuación Goliat</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" id="strategyEffectiveness">0%</span>
+                    <span class="label">Efectividad</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" id="innovationBonus">0</span>
+                    <span class="label">Bonus Innovación</span>
+                </div>
+            </div>
+            
+            <div class="outcome-analysis">
+                <h4>📈 Análisis del Resultado</h4>
+                <div id="outcomeText">
+                    <p>Analizando los resultados de tu estrategia...</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" id="newSimulation">🔄 Nueva Simulación</button>
+                <button class="btn btn-secondary" id="showTips">💡 Ver Consejos</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="01_test_david_goliat.html" class="nav-btn">← Anterior</a>
+        <a href="03_planificador_desventajas.html" class="nav-btn">Siguiente →</a>
+    </div>
+
+    <script>
+        let selectedScenario = null;
+        let selectedStrategies = [];
+        let simulationRunning = false;
+
+        // Escenarios y sus características
+        const scenarios = {
+            basketball: {
+                name: "Baloncesto Juvenil",
+                description: "Tu equipo pequeño enfrenta a un equipo más alto y fuerte",
+                goliatStrengths: ["Altura", "Fuerza", "Experiencia"],
+                davidWeaknesses: ["Tamaño", "Fuerza física", "Experiencia"],
+                optimalStrategies: ["change-rules", "use-speed", "leverage-context"]
+            },
+            business: {
+                name: "Startup vs. Corporación",
+                description: "Tu empresa pequeña compite contra una corporación gigante",
+                goliatStrengths: ["Recursos", "Marca", "Red de distribución"],
+                davidWeaknesses: ["Capital", "Reconocimiento", "Infraestructura"],
+                optimalStrategies: ["change-rules", "use-speed", "specialize"]
+            },
+            education: {
+                name: "Estudiante vs. Sistema",
+                description: "Eres un estudiante con dificultades enfrentando un sistema educativo rígido",
+                goliatStrengths: ["Estructura", "Recursos", "Autoridad"],
+                davidWeaknesses: ["Conformidad", "Recursos limitados", "Poder"],
+                optimalStrategies: ["reject-conventions", "non-linear", "convert-weakness"]
+            },
+            art: {
+                name: "Artista Independiente",
+                description: "Eres un artista que rechaza las convenciones del mercado del arte establecido",
+                goliatStrengths: ["Mercado establecido", "Críticos", "Galerías"],
+                davidWeaknesses: ["Reconocimiento", "Acceso al mercado", "Recursos"],
+                optimalStrategies: ["reject-conventions", "change-rules", "leverage-context"]
+            }
+        };
+
+        // Estrategias y sus efectos
+        const strategies = {
+            "change-rules": {
+                name: "Cambiar las Reglas",
+                description: "No juegues según las expectativas del oponente",
+                effectiveness: 0.8,
+                innovationBonus: 15
+            },
+            "reject-conventions": {
+                name: "Rechazar Convenciones",
+                description: "Ignora las reglas tradicionales y crea las tuyas",
+                effectiveness: 0.7,
+                innovationBonus: 20
+            },
+            "use-speed": {
+                name: "Usar Velocidad",
+                description: "Aprovecha tu agilidad y rapidez",
+                effectiveness: 0.6,
+                innovationBonus: 10
+            },
+            "specialize": {
+                name: "Habilidades Especializadas",
+                description: "Desarrolla una fortaleza única",
+                effectiveness: 0.9,
+                innovationBonus: 25
+            },
+            "non-linear": {
+                name: "Pensamiento No Lineal",
+                description: "Encuentra soluciones creativas e inesperadas",
+                effectiveness: 0.75,
+                innovationBonus: 18
+            },
+            "leverage-context": {
+                name: "Aprovechar Contexto",
+                description: "Usa tu entorno a tu favor",
+                effectiveness: 0.65,
+                innovationBonus: 12
+            },
+            "convert-weakness": {
+                name: "Convertir Debilidades",
+                description: "Transforma tus limitaciones en ventajas",
+                effectiveness: 0.85,
+                innovationBonus: 22
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selección de escenarios
+            document.querySelectorAll('.scenario-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.scenario-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedScenario = this.dataset.scenario;
+                    document.getElementById('strategyBuilder').style.display = 'block';
+                    document.getElementById('runSimulation').disabled = true;
+                    selectedStrategies = [];
+                    updateStrategySelection();
+                });
+            });
+
+            // Selección de estrategias
+            document.querySelectorAll('.strategy-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const strategy = this.dataset.strategy;
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        selectedStrategies = selectedStrategies.filter(s => s !== strategy);
+                    } else if (selectedStrategies.length < 3) {
+                        this.classList.add('selected');
+                        selectedStrategies.push(strategy);
+                    }
+                    updateStrategySelection();
+                });
+            });
+
+            // Botones
+            document.getElementById('runSimulation').addEventListener('click', runSimulation);
+            document.getElementById('resetStrategies').addEventListener('click', resetStrategies);
+            document.getElementById('newSimulation').addEventListener('click', newSimulation);
+            document.getElementById('showTips').addEventListener('click', showTips);
+        });
+
+        function updateStrategySelection() {
+            const runButton = document.getElementById('runSimulation');
+            runButton.disabled = selectedStrategies.length === 0;
+            
+            if (selectedStrategies.length > 0) {
+                runButton.textContent = `🚀 Ejecutar Simulación (${selectedStrategies.length}/3)`;
+            } else {
+                runButton.textContent = '🚀 Ejecutar Simulación';
+            }
+        }
+
+        function resetStrategies() {
+            document.querySelectorAll('.strategy-card').forEach(card => card.classList.remove('selected'));
+            selectedStrategies = [];
+            updateStrategySelection();
+        }
+
+        function runSimulation() {
+            if (!selectedScenario || selectedStrategies.length === 0) return;
+            
+            simulationRunning = true;
+            document.getElementById('simulationResults').style.display = 'block';
+            
+            // Animación de batalla
+            const battleAnimation = document.getElementById('battleAnimation');
+            battleAnimation.innerHTML = '<p>⚔️ Iniciando batalla...</p>';
+            
+            setTimeout(() => {
+                battleAnimation.innerHTML = '<p>🎯 David prepara sus estrategias...</p>';
+            }, 1000);
+            
+            setTimeout(() => {
+                battleAnimation.innerHTML = '<p>🏃 David ejecuta sus movimientos...</p>';
+            }, 2000);
+            
+            setTimeout(() => {
+                battleAnimation.innerHTML = '<p>💥 ¡Impacto directo!</p>';
+                calculateResults();
+            }, 3000);
+        }
+
+        function calculateResults() {
+            const scenario = scenarios[selectedScenario];
+            
+            // Calcular efectividad base
+            let baseEffectiveness = 0;
+            let innovationBonus = 0;
+            
+            selectedStrategies.forEach(strategy => {
+                const strategyData = strategies[strategy];
+                baseEffectiveness += strategyData.effectiveness;
+                innovationBonus += strategyData.innovationBonus;
+            });
+            
+            baseEffectiveness /= selectedStrategies.length;
+            
+            // Bonus por estrategias óptimas
+            let optimalBonus = 0;
+            selectedStrategies.forEach(strategy => {
+                if (scenario.optimalStrategies.includes(strategy)) {
+                    optimalBonus += 0.2;
+                }
+            });
+            
+            // Calcular puntuaciones
+            const davidScore = Math.round((baseEffectiveness + optimalBonus) * 100);
+            const goliatScore = Math.round((1 - baseEffectiveness - optimalBonus) * 80);
+            const strategyEffectiveness = Math.round((baseEffectiveness + optimalBonus) * 100);
+            
+            // Mostrar resultados
+            document.getElementById('davidScore').textContent = davidScore;
+            document.getElementById('goliatScore').textContent = goliatScore;
+            document.getElementById('strategyEffectiveness').textContent = strategyEffectiveness + '%';
+            document.getElementById('innovationBonus').textContent = innovationBonus;
+            
+            // Análisis del resultado
+            let outcomeText = '';
+            if (davidScore > goliatScore) {
+                outcomeText = `
+                    <p><strong>🎉 ¡Victoria de David!</strong></p>
+                    <p>Tu estrategia fue exitosa. Has demostrado que las estrategias inteligentes pueden vencer a la fuerza bruta.</p>
+                    <p><strong>Factores clave de tu éxito:</strong></p>
+                    <ul>
+                        <li>Efectividad de estrategia: ${strategyEffectiveness}%</li>
+                        <li>Bonus de innovación: +${innovationBonus}</li>
+                        <li>Estrategias óptimas utilizadas: ${optimalBonus > 0 ? 'Sí' : 'No'}</li>
+                    </ul>
+                `;
+            } else if (davidScore === goliatScore) {
+                outcomeText = `
+                    <p><strong>🤝 ¡Empate!</strong></p>
+                    <p>Tu estrategia fue efectiva pero podría mejorarse. Considera ajustar tu enfoque.</p>
+                `;
+            } else {
+                outcomeText = `
+                    <p><strong>💥 Derrota de David</strong></p>
+                    <p>Tu estrategia no fue suficiente esta vez. Analiza qué podrías haber hecho diferente.</p>
+                    <p><strong>Áreas de mejora:</strong></p>
+                    <ul>
+                        <li>Considera usar estrategias más óptimas para este escenario</li>
+                        <li>Combina diferentes tipos de estrategias</li>
+                        <li>Analiza el contexto más cuidadosamente</li>
+                    </ul>
+                `;
+            }
+            
+            document.getElementById('outcomeText').innerHTML = outcomeText;
+            simulationRunning = false;
+        }
+
+        function newSimulation() {
+            document.getElementById('simulationResults').style.display = 'none';
+            document.getElementById('strategyBuilder').style.display = 'none';
+            document.querySelectorAll('.scenario-option').forEach(opt => opt.classList.remove('selected'));
+            resetStrategies();
+            selectedScenario = null;
+        }
+
+        function showTips() {
+            const scenario = scenarios[selectedScenario];
+            let tips = `
+                <h4>💡 Consejos para ${scenario.name}</h4>
+                <p><strong>Estrategias más efectivas para este escenario:</strong></p>
+                <ul>
+            `;
+            
+            scenario.optimalStrategies.forEach(strategy => {
+                const strategyData = strategies[strategy];
+                tips += `<li><strong>${strategyData.name}:</strong> ${strategyData.description}</li>`;
+            });
+            
+            tips += `
+                </ul>
+                <p><strong>Recuerda:</strong> Las mejores estrategias son aquellas que se adaptan al contexto específico del desafío.</p>
+            `;
+            
+            document.getElementById('outcomeText').innerHTML = tips;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador Mental</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .exercise {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .exercise h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .exercise p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .exercise-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: #e9ecef;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .memory-card:hover {
+            background: #dee2e6;
+        }
+
+        .memory-card.flipped {
+            background: #667eea;
+            color: white;
+        }
+
+        .memory-card.matched {
+            background: #28a745;
+            color: white;
+        }
+
+        .attention-exercise {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .attention-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .attention-text.highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ffc107;
+        }
+
+        .attention-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .question-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .question-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .question-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .question-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .question-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .score .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .achievements {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .achievements.show {
+            display: block;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .achievement .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .timer {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timer h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .timer .time-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .game-area {
+                padding: 20px;
+            }
+            
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .attention-questions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Entrenador Mental</h1>
+            <p>Ejercicios para mejorar tu memoria, atención y concentración</p>
+        </div>
+
+        <div class="game-area">
+            <div class="score">
+                <h3>Puntuación</h3>
+                <div class="score-value" id="score">0</div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div id="exercise-container">
+                <!-- Los ejercicios se cargarán dinámicamente -->
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="next-btn" onclick="nextExercise()" disabled>Siguiente</button>
+                <button class="btn" id="restart-btn" onclick="restartGame()">Reiniciar</button>
+            </div>
+
+            <div class="achievements" id="achievements">
+                <h3>🏆 Logros Desbloqueados</h3>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let score = 0;
+        let selectedOption = null;
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let exerciseStartTime = null;
+        let exerciseTimer = null;
+        let exercises = [
+            {
+                type: "memory",
+                title: "Juego de Memoria",
+                description: "Memoriza las posiciones de las cartas y encuentra las parejas",
+                cards: [
+                    { symbol: "🎯", id: 1 },
+                    { symbol: "🧠", id: 1 },
+                    { symbol: "⚡", id: 2 },
+                    { symbol: "⚡", id: 2 },
+                    { symbol: "🎨", id: 3 },
+                    { symbol: "🎨", id: 3 },
+                    { symbol: "🌟", id: 4 },
+                    { symbol: "🌟", id: 4 },
+                    { symbol: "🔥", id: 5 },
+                    { symbol: "🔥", id: 5 },
+                    { symbol: "💎", id: 6 },
+                    { symbol: "💎", id: 6 },
+                    { symbol: "🚀", id: 7 },
+                    { symbol: "🚀", id: 7 },
+                    { symbol: "🎪", id: 8 },
+                    { symbol: "🎪", id: 8 }
+                ],
+                maxScore: 100
+            },
+            {
+                type: "attention",
+                title: "Ejercicio de Atención",
+                description: "Lee el siguiente texto y responde las preguntas",
+                text: "En un laboratorio de investigación, los científicos trabajan en un proyecto innovador que podría revolucionar la medicina. El equipo está compuesto por 15 investigadores de diferentes especialidades: 5 biólogos, 4 químicos, 3 físicos y 3 matemáticos. Cada uno tiene una función específica en el proyecto. Los biólogos se encargan de los experimentos con células, los químicos analizan las reacciones, los físicos estudian las propiedades de los materiales, y los matemáticos desarrollan los algoritmos de análisis. El proyecto tiene un presupuesto de 2.5 millones de dólares y se espera que dure 3 años.",
+                questions: [
+                    {
+                        question: "¿Cuántos investigadores hay en total?",
+                        options: ["12", "15", "18", "20"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es el presupuesto del proyecto?",
+                        options: ["2.5 millones", "3 millones", "2 millones", "1.5 millones"],
+                        correct: 0
+                    },
+                    {
+                        question: "¿Cuántos biólogos hay en el equipo?",
+                        options: ["3", "4", "5", "6"],
+                        correct: 2
+                    }
+                ],
+                maxScore: 150
+            },
+            {
+                type: "concentration",
+                title: "Ejercicio de Concentración",
+                description: "Encuentra todos los números que sumen 10 en la siguiente secuencia",
+                sequence: "3, 7, 2, 8, 1, 9, 4, 6, 5, 3, 7, 2, 8, 1, 9, 4, 6, 5",
+                target: 10,
+                maxScore: 200
+            }
+        ];
+
+        function loadExercise() {
+            const exercise = exercises[currentExercise];
+            const container = document.getElementById('exercise-container');
+            
+            if (exercise.type === "memory") {
+                loadMemoryExercise(exercise, container);
+            } else if (exercise.type === "attention") {
+                loadAttentionExercise(exercise, container);
+            } else if (exercise.type === "concentration") {
+                loadConcentrationExercise(exercise, container);
+            }
+            
+            document.getElementById('next-btn').disabled = true;
+            selectedOption = null;
+            flippedCards = [];
+            matchedPairs = 0;
+        }
+
+        function loadMemoryExercise(exercise, container) {
+            container.innerHTML = `
+                <div class="exercise">
+                    <h3>${exercise.title}</h3>
+                    <p>${exercise.description}</p>
+                    <div class="memory-grid" id="memory-grid">
+                        ${exercise.cards.map((card, index) => `
+                            <div class="memory-card" onclick="flipCard(${index})" data-symbol="${card.symbol}" data-id="${card.id}">
+                                ?
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadAttentionExercise(exercise, container) {
+            container.innerHTML = `
+                <div class="exercise">
+                    <h3>${exercise.title}</h3>
+                    <p>${exercise.description}</p>
+                    <div class="exercise-content">
+                        <div class="attention-text">${exercise.text}</div>
+                        <div class="attention-questions">
+                            ${exercise.questions.map((question, qIndex) => `
+                                <div>
+                                    <h4>${question.question}</h4>
+                                    <div class="attention-questions">
+                                        ${question.options.map((option, oIndex) => `
+                                            <div class="question-option" onclick="selectQuestionOption(${qIndex}, ${oIndex})">
+                                                ${option}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadConcentrationExercise(exercise, container) {
+            container.innerHTML = `
+                <div class="exercise">
+                    <h3>${exercise.title}</h3>
+                    <p>${exercise.description}</p>
+                    <div class="exercise-content">
+                        <div class="attention-text highlight">
+                            ${exercise.sequence}
+                        </div>
+                        <p>Encuentra todas las combinaciones de números que sumen ${exercise.target}</p>
+                        <div class="timer">
+                            <h4>Tiempo</h4>
+                            <div class="time-value" id="timer">60</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            startTimer();
+        }
+
+        function flipCard(index) {
+            if (flippedCards.length >= 2) return;
+            
+            const card = document.querySelectorAll('.memory-card')[index];
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.symbol;
+            flippedCards.push({ index, card });
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.card.dataset.id === card2.card.dataset.id) {
+                card1.card.classList.add('matched');
+                card2.card.classList.add('matched');
+                matchedPairs++;
+                
+                if (matchedPairs === 8) {
+                    score += exercises[currentExercise].maxScore;
+                    document.getElementById('score').textContent = score;
+                    document.getElementById('next-btn').disabled = false;
+                }
+            } else {
+                card1.card.classList.remove('flipped');
+                card2.card.classList.remove('flipped');
+                card1.card.textContent = '?';
+                card2.card.textContent = '?';
+            }
+            
+            flippedCards = [];
+        }
+
+        function selectQuestionOption(questionIndex, optionIndex) {
+            const exercise = exercises[currentExercise];
+            const question = exercise.questions[questionIndex];
+            const options = document.querySelectorAll(`.question-option`);
+            
+            // Marcar la opción seleccionada
+            options.forEach(option => option.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            // Verificar si es correcta
+            if (optionIndex === question.correct) {
+                options[optionIndex].classList.add('correct');
+                score += 50;
+                document.getElementById('score').textContent = score;
+            } else {
+                options[optionIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+            }
+            
+            // Deshabilitar todas las opciones de esta pregunta
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function startTimer() {
+            let timeLeft = 60;
+            exerciseTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(exerciseTimer);
+                    score += exercises[currentExercise].maxScore;
+                    document.getElementById('score').textContent = score;
+                    document.getElementById('next-btn').disabled = false;
+                }
+            }, 1000);
+        }
+
+        function nextExercise() {
+            if (exerciseTimer) {
+                clearInterval(exerciseTimer);
+            }
+            
+            currentExercise++;
+            if (currentExercise < exercises.length) {
+                loadExercise();
+            } else {
+                finishGame();
+            }
+            
+            // Actualizar progreso
+            const progress = ((currentExercise) / exercises.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Verificar logros
+            checkAchievements();
+        }
+
+        function checkAchievements() {
+            const achievements = document.getElementById('achievements');
+            const achievementsList = document.getElementById('achievements-list');
+            let newAchievements = [];
+            
+            if (score >= 200 && !localStorage.getItem('achievement_200')) {
+                newAchievements.push('🧠 Memoria Aguda: Obtuviste 200 puntos');
+                localStorage.setItem('achievement_200', 'true');
+            }
+            
+            if (score >= 400 && !localStorage.getItem('achievement_400')) {
+                newAchievements.push('🎯 Concentración Total: Obtuviste 400 puntos');
+                localStorage.setItem('achievement_400', 'true');
+            }
+            
+            if (score >= 600 && !localStorage.getItem('achievement_600')) {
+                newAchievements.push('🏆 Maestro Mental: Obtuviste 600 puntos');
+                localStorage.setItem('achievement_600', 'true');
+            }
+            
+            if (newAchievements.length > 0) {
+                achievementsList.innerHTML = newAchievements.map(achievement => 
+                    `<div class="achievement">
+                        <span class="icon">${achievement.split(' ')[0]}</span>
+                        <span>${achievement}</span>
+                    </div>`
+                ).join('');
+                achievements.classList.add('show');
+            }
+        }
+
+        function finishGame() {
+            alert(`¡Ejercicios completados! Tu puntuación final es: ${score} puntos`);
+            restartGame();
+        }
+
+        function restartGame() {
+            currentExercise = 0;
+            score = 0;
+            selectedOption = null;
+            flippedCards = [];
+            matchedPairs = 0;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('next-btn').textContent = 'Siguiente';
+            document.getElementById('next-btn').onclick = nextExercise;
+            document.getElementById('achievements').classList.remove('show');
+            if (exerciseTimer) {
+                clearInterval(exerciseTimer);
+            }
+            loadExercise();
+        }
+
+        // Cargar el primer ejercicio
+        loadExercise();
+    </script>
+</body>
+</html>

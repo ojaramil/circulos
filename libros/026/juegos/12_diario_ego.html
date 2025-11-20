@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario del Ego - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .diary-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .diary-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .entry-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .entry-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .entry-card .date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .entry-card .content {
+            margin: 15px 0;
+        }
+        .entry-card .mood {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .mood-positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        .mood-neutral {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .mood-negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .entry-card .ego-level {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .ego-level-low {
+            background: #d4edda;
+            color: #155724;
+        }
+        .ego-level-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .ego-level-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .entry-card .actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        .entry-card .actions button {
+            margin-right: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .search-section h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .search-results {
+            margin-top: 20px;
+        }
+        .search-results .entry-card {
+            margin: 10px 0;
+        }
+        .filter-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .filter-section h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .export-section {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .export-section h4 {
+            color: #155724;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📔 Diario del Ego</h1>
+            <p>Reflexiona sobre tu ego y desarrolla la humildad día a día</p>
+        </div>
+
+        <div class="diary-section">
+            <h3>✍️ Nueva Entrada del Diario</h3>
+            <form id="diary-form">
+                <div class="form-group">
+                    <label for="entry-date">Fecha</label>
+                    <input type="date" id="entry-date" value="" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-mood">¿Cómo te sientes hoy?</label>
+                    <select id="entry-mood" required>
+                        <option value="">Selecciona tu estado de ánimo</option>
+                        <option value="positive">Positivo - Me siento bien y optimista</option>
+                        <option value="neutral">Neutral - Me siento equilibrado</option>
+                        <option value="negative">Negativo - Me siento frustrado o triste</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-ego-level">¿Qué tan presente estuvo tu ego hoy? (1-10)</label>
+                    <select id="entry-ego-level" required>
+                        <option value="">Selecciona el nivel de tu ego</option>
+                        <option value="1">1 - Muy bajo, casi imperceptible</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5 - Moderado, presente pero controlado</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10 - Muy alto, dominó mi comportamiento</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-situation">¿Qué situación despertó tu ego hoy?</label>
+                    <textarea id="entry-situation" placeholder="Describe la situación específica que activó tu ego..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-thoughts">¿Qué pensamientos tuviste?</label>
+                    <textarea id="entry-thoughts" placeholder="¿Qué pensamientos pasaron por tu mente? ¿Cómo reaccionó tu ego?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-emotions">¿Qué emociones experimentaste?</label>
+                    <textarea id="entry-emotions" placeholder="¿Qué emociones surgieron? ¿Cómo te sentiste?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-actions">¿Qué acciones tomaste?</label>
+                    <textarea id="entry-actions" placeholder="¿Cómo actuaste? ¿Qué decisiones tomaste?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-consequences">¿Cuáles fueron las consecuencias?</label>
+                    <textarea id="entry-consequences" placeholder="¿Qué pasó como resultado de tus acciones? ¿Cómo afectó a otros?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-learning">¿Qué aprendiste de esta experiencia?</label>
+                    <textarea id="entry-learning" placeholder="¿Qué lección puedes extraer? ¿Cómo podrías manejar esto mejor en el futuro?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-gratitude">¿Por qué puedes estar agradecido hoy?</label>
+                    <textarea id="entry-gratitude" placeholder="¿Qué cosas buenas pasaron? ¿Por qué puedes estar agradecido?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-tomorrow">¿Cómo quieres ser mañana?</label>
+                    <textarea id="entry-tomorrow" placeholder="¿Qué cambios quieres hacer? ¿Cómo quieres comportarte?"></textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn">💾 Guardar Entrada</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Limpiar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-section">
+            <h3>🔍 Buscar Entradas</h3>
+            <div class="form-group">
+                <label for="search-term">Buscar por palabra clave</label>
+                <input type="text" id="search-term" placeholder="Escribe una palabra clave...">
+            </div>
+            
+            <div class="filter-section">
+                <h4>Filtrar por</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-positive" value="positive">
+                        <label for="filter-positive">Estado Positivo</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-neutral" value="neutral">
+                        <label for="filter-neutral">Estado Neutral</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-negative" value="negative">
+                        <label for="filter-negative">Estado Negativo</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-low-ego" value="low">
+                        <label for="filter-low-ego">Ego Bajo (1-3)</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-medium-ego" value="medium">
+                        <label for="filter-medium-ego">Ego Medio (4-7)</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-high-ego" value="high">
+                        <label for="filter-high-ego">Ego Alto (8-10)</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="searchEntries()">🔍 Buscar</button>
+                <button class="btn btn-secondary" onclick="clearSearch()">🗑️ Limpiar</button>
+            </div>
+            
+            <div class="search-results" id="search-results" style="display: none;">
+                <h4>Resultados de la Búsqueda</h4>
+                <div id="search-results-content"></div>
+            </div>
+        </div>
+
+        <div class="diary-section">
+            <h3>📚 Entradas Recientes</h3>
+            <div id="recent-entries">
+                <p>No hay entradas aún. ¡Comienza escribiendo tu primera entrada!</p>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Total de Entradas</h4>
+                <div class="number" id="total-entries">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Promedio de Ego</h4>
+                <div class="number" id="avg-ego">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Días de Práctica</h4>
+                <div class="number" id="practice-days">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Actual</h4>
+                <div class="number" id="current-streak">0 días</div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <h4>📤 Exportar Diario</h4>
+            <p>Guarda una copia de tu diario para respaldo o análisis.</p>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn" onclick="exportDiary()">📥 Exportar como JSON</button>
+                <button class="btn btn-secondary" onclick="exportText()">📄 Exportar como Texto</button>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Consejo del Diario</h4>
+            <p>Escribir sobre tu ego te ayuda a observarlo sin juzgarlo. Esta práctica regular te permitirá desarrollar una mayor conciencia de ti mismo y cultivar la humildad.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()">📊 Ver Estadísticas</button>
+            <button class="btn btn-danger" onclick="resetDiary()">🔄 Reiniciar Diario</button>
+        </div>
+    </div>
+
+    <script>
+        let diaryEntries = JSON.parse(localStorage.getItem('egoDiary') || '[]');
+
+        // Establecer fecha actual por defecto
+        document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
+
+        // Manejar envío del formulario
+        document.getElementById('diary-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveEntry();
+        });
+
+        function saveEntry() {
+            const entry = {
+                id: Date.now(),
+                date: document.getElementById('entry-date').value,
+                mood: document.getElementById('entry-mood').value,
+                egoLevel: parseInt(document.getElementById('entry-ego-level').value),
+                situation: document.getElementById('entry-situation').value,
+                thoughts: document.getElementById('entry-thoughts').value,
+                emotions: document.getElementById('entry-emotions').value,
+                actions: document.getElementById('entry-actions').value,
+                consequences: document.getElementById('entry-consequences').value,
+                learning: document.getElementById('entry-learning').value,
+                gratitude: document.getElementById('entry-gratitude').value,
+                tomorrow: document.getElementById('entry-tomorrow').value,
+                timestamp: new Date().toISOString()
+            };
+
+            diaryEntries.push(entry);
+            localStorage.setItem('egoDiary', JSON.stringify(diaryEntries));
+
+            alert('¡Entrada guardada exitosamente!');
+            clearForm();
+            loadRecentEntries();
+        }
+
+        function clearForm() {
+            document.getElementById('diary-form').reset();
+            document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
+        }
+
+        function loadRecentEntries() {
+            const recentEntries = diaryEntries
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            if (recentEntries.length === 0) {
+                document.getElementById('recent-entries').innerHTML = 
+                    '<p>No hay entradas aún. ¡Comienza escribiendo tu primera entrada!</p>';
+                return;
+            }
+
+            const entriesHtml = recentEntries.map(entry => `
+                <div class="entry-card">
+                    <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                    <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="content">
+                        <p><strong>Situación:</strong> ${entry.situation || 'No especificada'}</p>
+                        <p><strong>Pensamientos:</strong> ${entry.thoughts || 'No especificados'}</p>
+                        <p><strong>Aprendizaje:</strong> ${entry.learning || 'No especificado'}</p>
+                    </div>
+                    <div class="mood mood-${entry.mood}">${getMoodText(entry.mood)}</div>
+                    <div class="ego-level ego-level-${getEgoLevelClass(entry.egoLevel)}">Ego: ${entry.egoLevel}/10</div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="viewEntry(${entry.id})">👁️ Ver</button>
+                        <button class="btn btn-danger" onclick="deleteEntry(${entry.id})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('recent-entries').innerHTML = entriesHtml;
+        }
+
+        function getMoodText(mood) {
+            const moods = {
+                'positive': 'Positivo',
+                'neutral': 'Neutral',
+                'negative': 'Negativo'
+            };
+            return moods[mood] || 'No especificado';
+        }
+
+        function getEgoLevelClass(level) {
+            if (level <= 3) return 'low';
+            if (level <= 7) return 'medium';
+            return 'high';
+        }
+
+        function viewEntry(id) {
+            const entry = diaryEntries.find(e => e.id === id);
+            if (!entry) return;
+
+            const entryHtml = `
+                <div class="entry-card">
+                    <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                    <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="content">
+                        <p><strong>Estado de ánimo:</strong> ${getMoodText(entry.mood)}</p>
+                        <p><strong>Nivel de ego:</strong> ${entry.egoLevel}/10</p>
+                        <p><strong>Situación:</strong> ${entry.situation || 'No especificada'}</p>
+                        <p><strong>Pensamientos:</strong> ${entry.thoughts || 'No especificados'}</p>
+                        <p><strong>Emociones:</strong> ${entry.emotions || 'No especificadas'}</p>
+                        <p><strong>Acciones:</strong> ${entry.actions || 'No especificadas'}</p>
+                        <p><strong>Consecuencias:</strong> ${entry.consequences || 'No especificadas'}</p>
+                        <p><strong>Aprendizaje:</strong> ${entry.learning || 'No especificado'}</p>
+                        <p><strong>Gratitud:</strong> ${entry.gratitude || 'No especificada'}</p>
+                        <p><strong>Para mañana:</strong> ${entry.tomorrow || 'No especificado'}</p>
+                    </div>
+                    <div class="mood mood-${entry.mood}">${getMoodText(entry.mood)}</div>
+                    <div class="ego-level ego-level-${getEgoLevelClass(entry.egoLevel)}">Ego: ${entry.egoLevel}/10</div>
+                </div>
+            `;
+
+            // Crear modal o mostrar en una nueva sección
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            modal.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; max-width: 80%; max-height: 80%; overflow-y: auto;">
+                    ${entryHtml}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="this.parentElement.parentElement.parentElement.remove()">Cerrar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function deleteEntry(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
+                diaryEntries = diaryEntries.filter(e => e.id !== id);
+                localStorage.setItem('egoDiary', JSON.stringify(diaryEntries));
+                loadRecentEntries();
+                alert('¡Entrada eliminada exitosamente!');
+            }
+        }
+
+        function searchEntries() {
+            const searchTerm = document.getElementById('search-term').value.toLowerCase();
+            const filters = {
+                positive: document.getElementById('filter-positive').checked,
+                neutral: document.getElementById('filter-neutral').checked,
+                negative: document.getElementById('filter-negative').checked,
+                low: document.getElementById('filter-low-ego').checked,
+                medium: document.getElementById('filter-medium-ego').checked,
+                high: document.getElementById('filter-high-ego').checked
+            };
+
+            let filteredEntries = diaryEntries;
+
+            // Filtrar por término de búsqueda
+            if (searchTerm) {
+                filteredEntries = filteredEntries.filter(entry => 
+                    entry.situation.toLowerCase().includes(searchTerm) ||
+                    entry.thoughts.toLowerCase().includes(searchTerm) ||
+                    entry.learning.toLowerCase().includes(searchTerm) ||
+                    entry.gratitude.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Filtrar por estado de ánimo
+            if (filters.positive || filters.neutral || filters.negative) {
+                const moodFilters = [];
+                if (filters.positive) moodFilters.push('positive');
+                if (filters.neutral) moodFilters.push('neutral');
+                if (filters.negative) moodFilters.push('negative');
+                filteredEntries = filteredEntries.filter(entry => moodFilters.includes(entry.mood));
+            }
+
+            // Filtrar por nivel de ego
+            if (filters.low || filters.medium || filters.high) {
+                filteredEntries = filteredEntries.filter(entry => {
+                    if (filters.low && entry.egoLevel <= 3) return true;
+                    if (filters.medium && entry.egoLevel >= 4 && entry.egoLevel <= 7) return true;
+                    if (filters.high && entry.egoLevel >= 8) return true;
+                    return false;
+                });
+            }
+
+            displaySearchResults(filteredEntries);
+        }
+
+        function displaySearchResults(entries) {
+            const resultsContainer = document.getElementById('search-results');
+            const resultsContent = document.getElementById('search-results-content');
+
+            if (entries.length === 0) {
+                resultsContent.innerHTML = '<p>No se encontraron entradas que coincidan con los criterios de búsqueda.</p>';
+            } else {
+                const entriesHtml = entries.map(entry => `
+                    <div class="entry-card">
+                        <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                        <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                        <div class="content">
+                            <p><strong>Situación:</strong> ${entry.situation || 'No especificada'}</p>
+                            <p><strong>Pensamientos:</strong> ${entry.thoughts || 'No especificados'}</p>
+                            <p><strong>Aprendizaje:</strong> ${entry.learning || 'No especificado'}</p>
+                        </div>
+                        <div class="mood mood-${entry.mood}">${getMoodText(entry.mood)}</div>
+                        <div class="ego-level ego-level-${getEgoLevelClass(entry.egoLevel)}">Ego: ${entry.egoLevel}/10</div>
+                        <div class="actions">
+                            <button class="btn btn-secondary" onclick="viewEntry(${entry.id})">👁️ Ver</button>
+                            <button class="btn btn-danger" onclick="deleteEntry(${entry.id})">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                resultsContent.innerHTML = entriesHtml;
+            }
+
+            resultsContainer.style.display = 'block';
+        }
+
+        function clearSearch() {
+            document.getElementById('search-term').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('search-results').style.display = 'none';
+        }
+
+        function viewStats() {
+            const totalEntries = diaryEntries.length;
+            const avgEgo = diaryEntries.length > 0 ? 
+                Math.round(diaryEntries.reduce((sum, entry) => sum + entry.egoLevel, 0) / diaryEntries.length) : 0;
+            const practiceDays = new Set(diaryEntries.map(entry => entry.date)).size;
+            
+            // Calcular racha
+            const today = new Date().toISOString().split('T')[0];
+            let currentStreak = 0;
+            const sortedEntries = diaryEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            for (let i = 0; i < sortedEntries.length; i++) {
+                const entryDate = sortedEntries[i].date;
+                if (entryDate <= today) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+
+            document.getElementById('total-entries').textContent = totalEntries;
+            document.getElementById('avg-ego').textContent = avgEgo;
+            document.getElementById('practice-days').textContent = practiceDays;
+            document.getElementById('current-streak').textContent = `${currentStreak} días`;
+
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function exportDiary() {
+            const data = {
+                entries: diaryEntries,
+                exportDate: new Date().toISOString(),
+                totalEntries: diaryEntries.length
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ego-diary-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportText() {
+            let text = 'DIARIO DEL EGO - EXPORTACIÓN\n';
+            text += '=====================================\n\n';
+
+            diaryEntries.forEach(entry => {
+                text += `ENTRADA DEL ${new Date(entry.date).toLocaleDateString()}\n`;
+                text += `Fecha: ${new Date(entry.timestamp).toLocaleString()}\n`;
+                text += `Estado de ánimo: ${getMoodText(entry.mood)}\n`;
+                text += `Nivel de ego: ${entry.egoLevel}/10\n\n`;
+                text += `SITUACIÓN:\n${entry.situation || 'No especificada'}\n\n`;
+                text += `PENSAMIENTOS:\n${entry.thoughts || 'No especificados'}\n\n`;
+                text += `EMOCIONES:\n${entry.emotions || 'No especificadas'}\n\n`;
+                text += `ACCIONES:\n${entry.actions || 'No especificadas'}\n\n`;
+                text += `CONSECUENCIAS:\n${entry.consequences || 'No especificadas'}\n\n`;
+                text += `APRENDIZAJE:\n${entry.learning || 'No especificado'}\n\n`;
+                text += `GRATITUD:\n${entry.gratitude || 'No especificada'}\n\n`;
+                text += `PARA MAÑANA:\n${entry.tomorrow || 'No especificado'}\n\n`;
+                text += '=====================================\n\n';
+            });
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ego-diary-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetDiary() {
+            if (confirm('¿Estás seguro de que quieres eliminar todas las entradas del diario? Esta acción no se puede deshacer.')) {
+                diaryEntries = [];
+                localStorage.removeItem('egoDiary');
+                loadRecentEntries();
+                alert('¡Diario reiniciado exitosamente!');
+            }
+        }
+
+        // Cargar entradas al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentEntries();
+        });
+    </script>
+</body>
+</html>

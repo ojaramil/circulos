@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purificador de Agua</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .water-system {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .water-source {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        .water-source:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .water-source.contaminated {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .water-source.clean {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .water-source.treating {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+        .purification-plant {
+            position: absolute;
+            width: 100px;
+            height: 60px;
+            background: #dee2e6;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .purification-plant:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .purification-plant.active {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .water-flow {
+            position: absolute;
+            height: 4px;
+            background: #007bff;
+            border-radius: 2px;
+            opacity: 0.7;
+            transform-origin: left center;
+        }
+        .water-flow.clean {
+            background: #28a745;
+        }
+        .water-flow.contaminated {
+            background: #dc3545;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .tech-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tech-card.unlocked {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Purificador de Agua</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Desarrolla y despliega tecnologías de purificación de agua para proporcionar acceso universal al agua potable. Usa diferentes tecnologías para purificar agua contaminada y distribuirla a comunidades que la necesitan.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="purificationScore">0</div>
+                <div class="stat-label">Puntuación de Purificación</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="waterPurified">0</div>
+                <div class="stat-label">Litros Purificados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="peopleServed">0</div>
+                <div class="stat-label">Personas Atendidas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="plantsBuilt">0</div>
+                <div class="stat-label">Plantas Construidas</div>
+            </div>
+        </div>
+
+        <div class="water-system">
+            <h3>🌍 Sistema de Purificación Global</h3>
+            <div id="waterSources">
+                <!-- Las fuentes de agua se generarán dinámicamente -->
+            </div>
+            <div id="purificationPlants">
+                <!-- Las plantas de purificación se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías de Purificación</h3>
+            <div class="tech-grid">
+                <div class="tech-card" onclick="selectTech('reverse_osmosis')">
+                    <div class="tech-icon">🔬</div>
+                    <div class="tech-title">Ósmosis Inversa</div>
+                    <div class="tech-description">Filtración a nivel molecular</div>
+                    <div class="tech-cost">Costo: 100</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('solar_desalination')">
+                    <div class="tech-icon">☀️</div>
+                    <div class="tech-title">Desalinización Solar</div>
+                    <div class="tech-description">Energía solar para desalinizar</div>
+                    <div class="tech-cost">Costo: 150</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('nanofiltration')">
+                    <div class="tech-icon">🔬</div>
+                    <div class="tech-title">Nanofiltración</div>
+                    <div class="tech-description">Filtros de nanomateriales</div>
+                    <div class="tech-cost">Costo: 200</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('uv_treatment')">
+                    <div class="tech-icon">💡</div>
+                    <div class="tech-title">Tratamiento UV</div>
+                    <div class="tech-description">Desinfección con luz ultravioleta</div>
+                    <div class="tech-cost">Costo: 80</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('biofiltration')">
+                    <div class="tech-icon">🌱</div>
+                    <div class="tech-title">Biofiltración</div>
+                    <div class="tech-description">Filtros biológicos naturales</div>
+                    <div class="tech-cost">Costo: 60</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('atmospheric_water')">
+                    <div class="tech-icon">💨</div>
+                    <div class="tech-title">Agua Atmosférica</div>
+                    <div class="tech-description">Extracción de humedad del aire</div>
+                    <div class="tech-cost">Costo: 120</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Purificación</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="buildPlant()">Construir Planta</button>
+                <button class="button" onclick="upgradePlant()">Mejorar Planta</button>
+                <button class="button" onclick="distributeWater()">Distribuir Agua</button>
+                <button class="button" onclick="researchTech()">Investigar Tecnología</button>
+                <button class="button" onclick="scaleUp()">Escalar Sistema</button>
+                <button class="button" onclick="optimize()">Optimizar</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Purifica agua para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            purificationScore: 0,
+            waterPurified: 0,
+            peopleServed: 0,
+            plantsBuilt: 0,
+            selectedTech: null,
+            resources: 1000,
+            technologies: {
+                reverse_osmosis: { unlocked: true, cost: 100, efficiency: 0.95 },
+                solar_desalination: { unlocked: false, cost: 150, efficiency: 0.90 },
+                nanofiltration: { unlocked: false, cost: 200, efficiency: 0.98 },
+                uv_treatment: { unlocked: true, cost: 80, efficiency: 0.85 },
+                biofiltration: { unlocked: true, cost: 60, efficiency: 0.80 },
+                atmospheric_water: { unlocked: false, cost: 120, efficiency: 0.75 }
+            },
+            waterSources: [],
+            purificationPlants: [],
+            achievements: []
+        };
+
+        function initializeWaterSystem() {
+            const sourcesContainer = document.getElementById('waterSources');
+            const plantsContainer = document.getElementById('purificationPlants');
+            
+            sourcesContainer.innerHTML = '';
+            plantsContainer.innerHTML = '';
+
+            // Crear fuentes de agua contaminada
+            for (let i = 0; i < 8; i++) {
+                const source = {
+                    id: i,
+                    x: Math.random() * 70 + 10,
+                    y: Math.random() * 50 + 20,
+                    contaminated: true,
+                    volume: Math.random() * 1000 + 500,
+                    purificationNeeded: Math.random() * 50 + 25
+                };
+
+                gameState.waterSources.push(source);
+
+                const sourceElement = document.createElement('div');
+                sourceElement.className = 'water-source contaminated';
+                sourceElement.style.left = source.x + '%';
+                sourceElement.style.top = source.y + '%';
+                sourceElement.innerHTML = '💧';
+                sourceElement.onclick = () => selectWaterSource(source.id);
+                sourceElement.dataset.sourceId = source.id;
+
+                sourcesContainer.appendChild(sourceElement);
+            }
+        }
+
+        function selectWaterSource(sourceId) {
+            const source = gameState.waterSources.find(s => s.id === sourceId);
+            if (!source) return;
+
+            if (source.contaminated && gameState.selectedTech) {
+                // Purificar agua
+                const tech = gameState.technologies[gameState.selectedTech];
+                if (gameState.resources >= tech.cost) {
+                    gameState.resources -= tech.cost;
+                    source.contaminated = false;
+                    source.volume *= tech.efficiency;
+                    
+                    gameState.waterPurified += source.volume;
+                    gameState.purificationScore += Math.round(source.volume * tech.efficiency);
+                    
+                    const sourceElement = document.querySelector(`[data-source-id="${sourceId}"]`);
+                    sourceElement.classList.remove('contaminated');
+                    sourceElement.classList.add('clean');
+                    
+                    showAchievement('💧 Agua Purificada', `Has purificado ${Math.round(source.volume)} litros de agua`);
+                    updateDisplay();
+                } else {
+                    alert('No tienes suficientes recursos para purificar esta fuente.');
+                }
+            }
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function buildPlant() {
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const tech = gameState.technologies[gameState.selectedTech];
+            if (!tech.unlocked) {
+                alert('Esta tecnología no está desbloqueada.');
+                return;
+            }
+
+            if (gameState.resources < tech.cost * 2) {
+                alert('No tienes suficientes recursos para construir una planta.');
+                return;
+            }
+
+            gameState.resources -= tech.cost * 2;
+            gameState.plantsBuilt++;
+
+            // Crear planta de purificación
+            const plant = {
+                id: gameState.purificationPlants.length,
+                x: Math.random() * 60 + 20,
+                y: Math.random() * 40 + 30,
+                tech: gameState.selectedTech,
+                efficiency: tech.efficiency,
+                capacity: 1000,
+                active: true
+            };
+
+            gameState.purificationPlants.push(plant);
+
+            const plantElement = document.createElement('div');
+            plantElement.className = 'purification-plant active';
+            plantElement.style.left = plant.x + '%';
+            plantElement.style.top = plant.y + '%';
+            plantElement.innerHTML = '🏭';
+            plantElement.onclick = () => selectPlant(plant.id);
+            plantElement.dataset.plantId = plant.id;
+
+            document.getElementById('purificationPlants').appendChild(plantElement);
+
+            showAchievement('🏭 Planta Construida', 'Has construido una nueva planta de purificación');
+            updateDisplay();
+        }
+
+        function selectPlant(plantId) {
+            const plant = gameState.purificationPlants.find(p => p.id === plantId);
+            if (!plant) return;
+
+            // Alternar estado de la planta
+            plant.active = !plant.active;
+            
+            const plantElement = document.querySelector(`[data-plant-id="${plantId}"]`);
+            if (plant.active) {
+                plantElement.classList.add('active');
+            } else {
+                plantElement.classList.remove('active');
+            }
+        }
+
+        function upgradePlant() {
+            if (gameState.purificationPlants.length === 0) {
+                alert('No tienes plantas para mejorar.');
+                return;
+            }
+
+            const plant = gameState.purificationPlants[Math.floor(Math.random() * gameState.purificationPlants.length)];
+            const upgradeCost = 50;
+
+            if (gameState.resources >= upgradeCost) {
+                gameState.resources -= upgradeCost;
+                plant.efficiency = Math.min(1.0, plant.efficiency + 0.05);
+                plant.capacity += 200;
+
+                gameState.purificationScore += 25;
+                showAchievement('⬆️ Planta Mejorada', 'Has mejorado la eficiencia de una planta');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para mejorar la planta.');
+            }
+        }
+
+        function distributeWater() {
+            const activePlants = gameState.purificationPlants.filter(p => p.active);
+            if (activePlants.length === 0) {
+                alert('No tienes plantas activas para distribuir agua.');
+                return;
+            }
+
+            let totalWater = 0;
+            activePlants.forEach(plant => {
+                totalWater += plant.capacity * plant.efficiency;
+            });
+
+            gameState.waterPurified += totalWater;
+            gameState.peopleServed += Math.round(totalWater / 50); // 50 litros por persona
+            gameState.purificationScore += Math.round(totalWater * 0.1);
+
+            showAchievement('🚚 Agua Distribuida', `Has distribuido ${Math.round(totalWater)} litros a ${Math.round(totalWater / 50)} personas`);
+            updateDisplay();
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 200;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function scaleUp() {
+            if (gameState.purificationPlants.length === 0) {
+                alert('No tienes plantas para escalar.');
+                return;
+            }
+
+            const scaleCost = 300;
+            if (gameState.resources >= scaleCost) {
+                gameState.resources -= scaleCost;
+                
+                // Escalar todas las plantas
+                gameState.purificationPlants.forEach(plant => {
+                    plant.capacity *= 1.5;
+                    plant.efficiency = Math.min(1.0, plant.efficiency + 0.02);
+                });
+
+                gameState.purificationScore += 50;
+                showAchievement('📈 Sistema Escalado', 'Has escalado todo el sistema de purificación');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para escalar.');
+            }
+        }
+
+        function optimize() {
+            if (gameState.purificationPlants.length === 0) {
+                alert('No tienes plantas para optimizar.');
+                return;
+            }
+
+            const optimizeCost = 100;
+            if (gameState.resources >= optimizeCost) {
+                gameState.resources -= optimizeCost;
+                
+                // Optimizar todas las plantas
+                gameState.purificationPlants.forEach(plant => {
+                    plant.efficiency = Math.min(1.0, plant.efficiency + 0.03);
+                });
+
+                gameState.purificationScore += 30;
+                showAchievement('⚡ Sistema Optimizado', 'Has optimizado la eficiencia del sistema');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para optimizar.');
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('purificationScore').textContent = gameState.purificationScore;
+            document.getElementById('waterPurified').textContent = Math.round(gameState.waterPurified);
+            document.getElementById('peopleServed').textContent = gameState.peopleServed;
+            document.getElementById('plantsBuilt').textContent = gameState.plantsBuilt;
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeWaterSystem();
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Emociones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .emotion-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .emotion-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .emotion-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .emotion-intensity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .intensity-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .intensity-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .techniques {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .technique {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4caf50;
+        }
+
+        .technique h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .progress-section {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .emotion-log {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .log-entry {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #9c27b0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>😊 Gestor de Emociones</h1>
+            <p>Aprende a identificar, procesar y transformar tus emociones</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este juego te ayudará a desarrollar habilidades de regulación emocional. Podrás identificar tus emociones, medir su intensidad y aprender técnicas para manejarlas de manera saludable.</p>
+            </div>
+
+            <div class="progress-section">
+                <h3>Progreso del Día</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="progress-text">0 emociones registradas</p>
+            </div>
+
+            <div class="emotion-card">
+                <h3>😊 Alegría</h3>
+                <div class="emotion-intensity">
+                    <span>Intensidad:</span>
+                    <input type="range" class="intensity-slider" min="0" max="10" value="5" id="joy-slider">
+                    <span id="joy-value">5</span>
+                </div>
+                <div class="intensity-labels">
+                    <span>Muy Baja</span>
+                    <span>Muy Alta</span>
+                </div>
+                <button class="btn" onclick="logEmotion('alegria', 'joy-slider')">Registrar Alegría</button>
+            </div>
+
+            <div class="emotion-card">
+                <h3>😢 Tristeza</h3>
+                <div class="emotion-intensity">
+                    <span>Intensidad:</span>
+                    <input type="range" class="intensity-slider" min="0" max="10" value="5" id="sadness-slider">
+                    <span id="sadness-value">5</span>
+                </div>
+                <div class="intensity-labels">
+                    <span>Muy Baja</span>
+                    <span>Muy Alta</span>
+                </div>
+                <button class="btn" onclick="logEmotion('tristeza', 'sadness-slider')">Registrar Tristeza</button>
+            </div>
+
+            <div class="emotion-card">
+                <h3>😠 Ira</h3>
+                <div class="emotion-intensity">
+                    <span>Intensidad:</span>
+                    <input type="range" class="intensity-slider" min="0" max="10" value="5" id="anger-slider">
+                    <span id="anger-value">5</span>
+                </div>
+                <div class="intensity-labels">
+                    <span>Muy Baja</span>
+                    <span>Muy Alta</span>
+                </div>
+                <button class="btn" onclick="logEmotion('ira', 'anger-slider')">Registrar Ira</button>
+            </div>
+
+            <div class="emotion-card">
+                <h3>😰 Ansiedad</h3>
+                <div class="emotion-intensity">
+                    <span>Intensidad:</span>
+                    <input type="range" class="intensity-slider" min="0" max="10" value="5" id="anxiety-slider">
+                    <span id="anxiety-value">5</span>
+                </div>
+                <div class="intensity-labels">
+                    <span>Muy Baja</span>
+                    <span>Muy Alta</span>
+                </div>
+                <button class="btn" onclick="logEmotion('ansiedad', 'anxiety-slider')">Registrar Ansiedad</button>
+            </div>
+
+            <div class="emotion-card">
+                <h3>😨 Miedo</h3>
+                <div class="emotion-intensity">
+                    <span>Intensidad:</span>
+                    <input type="range" class="intensity-slider" min="0" max="10" value="5" id="fear-slider">
+                    <span id="fear-value">5</span>
+                </div>
+                <div class="intensity-labels">
+                    <span>Muy Baja</span>
+                    <span>Muy Alta</span>
+                </div>
+                <button class="btn" onclick="logEmotion('miedo', 'fear-slider')">Registrar Miedo</button>
+            </div>
+
+            <div class="techniques">
+                <h3>🧘 Técnicas de Regulación Emocional</h3>
+                
+                <div class="technique">
+                    <h4>🌬️ Respiración Profunda</h4>
+                    <p>Inhala por 4 segundos, mantén por 4 segundos, exhala por 6 segundos. Repite 5 veces.</p>
+                    <button class="btn" onclick="startBreathingExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="technique">
+                    <h4>🧠 Mindfulness</h4>
+                    <p>Observa tus emociones sin juzgarlas. Reconoce que son temporales y pasarán.</p>
+                    <button class="btn" onclick="startMindfulnessExercise()">Iniciar Práctica</button>
+                </div>
+
+                <div class="technique">
+                    <h4>💝 Autocompasión</h4>
+                    <p>Trátate con la misma bondad que mostrarías a un amigo querido.</p>
+                    <button class="btn" onclick="startSelfCompassionExercise()">Iniciar Práctica</button>
+                </div>
+
+                <div class="technique">
+                    <h4>🎨 Expresión Creativa</h4>
+                    <p>Expresa tus emociones a través del arte, la escritura o la música.</p>
+                    <button class="btn" onclick="startCreativeExpression()">Iniciar Actividad</button>
+                </div>
+            </div>
+
+            <div class="emotion-log">
+                <h3>📝 Registro de Emociones</h3>
+                <div id="emotion-log-content">
+                    <p>No hay emociones registradas aún.</p>
+                </div>
+                <button class="btn" onclick="clearLog()">Limpiar Registro</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let emotionCount = 0;
+        let emotionLog = [];
+
+        // Initialize sliders
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliders = document.querySelectorAll('.intensity-slider');
+            sliders.forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const valueSpan = document.getElementById(this.id.replace('-slider', '-value'));
+                    valueSpan.textContent = this.value;
+                });
+            });
+        });
+
+        function logEmotion(emotion, sliderId) {
+            const slider = document.getElementById(sliderId);
+            const intensity = parseInt(slider.value);
+            const timestamp = new Date().toLocaleTimeString();
+            
+            emotionLog.push({
+                emotion: emotion,
+                intensity: intensity,
+                timestamp: timestamp
+            });
+            
+            emotionCount++;
+            updateProgress();
+            updateEmotionLog();
+            
+            // Show technique recommendation based on intensity
+            if (intensity >= 7) {
+                showHighIntensityTechnique(emotion);
+            }
+        }
+
+        function updateProgress() {
+            const progress = Math.min((emotionCount / 10) * 100, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${emotionCount} emociones registradas`;
+        }
+
+        function updateEmotionLog() {
+            const logContent = document.getElementById('emotion-log-content');
+            
+            if (emotionLog.length === 0) {
+                logContent.innerHTML = '<p>No hay emociones registradas aún.</p>';
+                return;
+            }
+            
+            let logHTML = '';
+            emotionLog.slice(-5).reverse().forEach(entry => {
+                const intensityColor = entry.intensity >= 7 ? '#f44336' : entry.intensity >= 4 ? '#ff9800' : '#4caf50';
+                logHTML += `
+                    <div class="log-entry">
+                        <strong>${entry.emotion.charAt(0).toUpperCase() + entry.emotion.slice(1)}</strong> 
+                        - Intensidad: <span style="color: ${intensityColor};">${entry.intensity}/10</span> 
+                        - ${entry.timestamp}
+                    </div>
+                `;
+            });
+            
+            logContent.innerHTML = logHTML;
+        }
+
+        function showHighIntensityTechnique(emotion) {
+            const techniques = {
+                'tristeza': 'Practica la autocompasión y busca apoyo social.',
+                'ira': 'Usa técnicas de respiración profunda y toma un descanso.',
+                'ansiedad': 'Practica mindfulness y ejercicios de respiración.',
+                'miedo': 'Recuerda que el miedo es temporal y practica la autocompasión.',
+                'alegria': '¡Celebra esta emoción positiva y compártela con otros!'
+            };
+            
+            alert(`💡 Recomendación para ${emotion}:\n\n${techniques[emotion] || 'Practica técnicas de regulación emocional.'}`);
+        }
+
+        function startBreathingExercise() {
+            alert('🌬️ Ejercicio de Respiración Profunda\n\n1. Inhala por 4 segundos\n2. Mantén la respiración por 4 segundos\n3. Exhala por 6 segundos\n4. Repite 5 veces\n\n¡Respira con calma y atención!');
+        }
+
+        function startMindfulnessExercise() {
+            alert('🧠 Práctica de Mindfulness\n\n1. Siéntate cómodamente\n2. Observa tus emociones sin juzgarlas\n3. Reconoce que son temporales\n4. Respira profundamente\n5. Mantén la atención en el presente\n\n¡Practica la observación sin juicio!');
+        }
+
+        function startSelfCompassionExercise() {
+            alert('💝 Práctica de Autocompasión\n\n1. Coloca tu mano en tu corazón\n2. Di: "Esto es difícil para mí"\n3. "Soy humano y es normal sentir esto"\n4. "Que pueda ser amable conmigo mismo"\n5. "Que pueda encontrar paz"\n\n¡Trátate con la misma bondad que mostrarías a un amigo!');
+        }
+
+        function startCreativeExpression() {
+            alert('🎨 Expresión Creativa\n\n1. Elige un medio: dibujo, escritura, música\n2. Expresa tu emoción actual\n3. No juzgues tu creación\n4. Permite que fluya naturalmente\n5. Observa cómo te sientes después\n\n¡Deja que tu creatividad fluya libremente!');
+        }
+
+        function clearLog() {
+            if (confirm('¿Estás seguro de que quieres limpiar el registro de emociones?')) {
+                emotionLog = [];
+                emotionCount = 0;
+                updateProgress();
+                updateEmotionLog();
+            }
+        }
+    </script>
+</body>
+</html>
+

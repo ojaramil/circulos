@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador 10-10-10</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background: #218838;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .entry-list {
+            margin-top: 20px;
+        }
+        .entry-item {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Simulador 10-10-10</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo</h2>
+            <p>Esta herramienta te ayudará a mejorar tu perseverancia y completar tus proyectos.</p>
+        </div>
+
+        <div class="input-group">
+            <label>Entrada:</label>
+            <textarea id="userInput" rows="4" placeholder="Escribe aquí..."></textarea>
+        </div>
+
+        <button class="button" onclick="saveEntry()">Guardar</button>
+        <button class="button" style="background: #6c757d;" onclick="clearEntries()">Limpiar</button>
+
+        <div class="entry-list" id="entryList"></div>
+    </div>
+
+    <script>
+        let entries = JSON.parse(localStorage.getItem('simulador_10_10_10_entries') || '[]');
+
+        function saveEntry() {
+            const input = document.getElementById('userInput').value;
+            if (!input) {
+                alert('Por favor escribe algo');
+                return;
+            }
+
+            entries.unshift({
+                text: input,
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now()
+            });
+
+            localStorage.setItem('simulador_10_10_10_entries', JSON.stringify(entries));
+            document.getElementById('userInput').value = '';
+            displayEntries();
+        }
+
+        function displayEntries() {
+            const list = document.getElementById('entryList');
+            list.innerHTML = '<h3>📊 Historial</h3>';
+            
+            entries.slice(0, 10).forEach((entry, index) => {
+                list.innerHTML += `
+                    <div class="entry-item">
+                        <strong>${entry.date}</strong>
+                        <p>${entry.text}</p>
+                        <button onclick="deleteEntry(${index})" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Eliminar</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteEntry(index) {
+            entries.splice(index, 1);
+            localStorage.setItem('simulador_10_10_10_entries', JSON.stringify(entries));
+            displayEntries();
+        }
+
+        function clearEntries() {
+            if (confirm('¿Borrar todo el historial?')) {
+                entries = [];
+                localStorage.setItem('simulador_10_10_10_entries', JSON.stringify(entries));
+                displayEntries();
+            }
+        }
+
+        displayEntries();
+    </script>
+</body>
+</html>

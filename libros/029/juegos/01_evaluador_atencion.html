@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Atención</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .game-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .attention-test {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .score-display {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .score-display h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .instructions h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .test-cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .test-cell:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .test-cell.selected {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
+        .test-cell.correct {
+            background: #28a745;
+            color: white;
+            border-color: #1e7e34;
+        }
+        .test-cell.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #c82333;
+        }
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .results {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .results h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-beginner { background: #d4edda; color: #155724; }
+        .level-intermediate { background: #fff3cd; color: #856404; }
+        .level-advanced { background: #f8d7da; color: #721c24; }
+        .level-expert { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Evaluador de Atención</h1>
+            <p>Pon a prueba tu capacidad de concentración y atención</p>
+        </div>
+
+        <div class="game-area">
+            <div class="instructions">
+                <h3>📋 Instrucciones</h3>
+                <p>Este juego evalúa tu capacidad de atención y concentración. Deberás:</p>
+                <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <li>Observar una secuencia de números o letras</li>
+                    <li>Recordar el orden correcto</li>
+                    <li>Reproducir la secuencia en el orden correcto</li>
+                    <li>La dificultad aumenta con cada nivel</li>
+                </ul>
+            </div>
+
+            <div id="game-controls">
+                <button class="test-button" onclick="startTest()">🚀 Iniciar Evaluación</button>
+                <button class="test-button" onclick="resetTest()" id="resetBtn" disabled>🔄 Reiniciar</button>
+            </div>
+
+            <div id="test-area" style="display: none;">
+                <div class="timer" id="timer">⏱️ Tiempo: 0s</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress" style="width: 0%"></div>
+                </div>
+                <div id="sequence-display" class="attention-test">
+                    <h3>Memoriza esta secuencia:</h3>
+                    <div id="sequence" style="font-size: 2em; font-weight: bold; color: #667eea;"></div>
+                </div>
+                <div id="input-area" style="display: none;">
+                    <h3>Ahora reproduce la secuencia:</h3>
+                    <div class="test-grid" id="test-grid"></div>
+                </div>
+            </div>
+
+            <div id="results" style="display: none;">
+                <div class="results">
+                    <h3>📊 Resultados de tu Evaluación</h3>
+                    <div class="score-display">
+                        <h3>Puntuación: <span id="final-score">0</span>/100</h3>
+                        <p>Nivel de Atención: <span id="attention-level" class="level-indicator">-</span></p>
+                        <p>Tiempo Promedio: <span id="avg-time">0</span> segundos</p>
+                        <p>Secuencias Completadas: <span id="completed-sequences">0</span></p>
+                    </div>
+                    <div id="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTest = {
+            level: 1,
+            sequence: [],
+            userInput: [],
+            startTime: 0,
+            scores: [],
+            completed: 0
+        };
+
+        const sequences = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8, 9],
+            [2, 4, 6, 8, 1, 3],
+            [9, 7, 5, 3, 1, 8, 6],
+            [1, 3, 5, 7, 9, 2, 4, 6],
+            [8, 6, 4, 2, 1, 3, 5, 7, 9],
+            [2, 4, 6, 8, 1, 3, 5, 7, 9, 2],
+            [9, 7, 5, 3, 1, 8, 6, 4, 2, 1, 3],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3],
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 9, 8, 7, 6]
+        ];
+
+        function startTest() {
+            currentTest = {
+                level: 1,
+                sequence: [],
+                userInput: [],
+                startTime: Date.now(),
+                scores: [],
+                completed: 0
+            };
+            
+            document.getElementById('game-controls').style.display = 'none';
+            document.getElementById('test-area').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('resetBtn').disabled = false;
+            
+            nextLevel();
+        }
+
+        function nextLevel() {
+            if (currentTest.level > sequences.length) {
+                endTest();
+                return;
+            }
+
+            currentTest.sequence = [...sequences[currentTest.level - 1]];
+            currentTest.userInput = [];
+            currentTest.startTime = Date.now();
+
+            // Mostrar secuencia
+            document.getElementById('sequence-display').style.display = 'block';
+            document.getElementById('input-area').style.display = 'none';
+            
+            displaySequence();
+            
+            // Después de 3 segundos, mostrar área de entrada
+            setTimeout(() => {
+                document.getElementById('sequence-display').style.display = 'none';
+                document.getElementById('input-area').style.display = 'block';
+                createInputGrid();
+                startTimer();
+            }, 3000);
+        }
+
+        function displaySequence() {
+            const sequenceDiv = document.getElementById('sequence');
+            sequenceDiv.innerHTML = '';
+            
+            currentTest.sequence.forEach((num, index) => {
+                const span = document.createElement('span');
+                span.textContent = num;
+                span.style.margin = '0 10px';
+                span.style.padding = '10px';
+                span.style.backgroundColor = '#e7f3ff';
+                span.style.borderRadius = '5px';
+                span.style.display = 'inline-block';
+                sequenceDiv.appendChild(span);
+            });
+        }
+
+        function createInputGrid() {
+            const grid = document.getElementById('test-grid');
+            grid.innerHTML = '';
+            
+            // Crear números del 1 al 9
+            for (let i = 1; i <= 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'test-cell';
+                cell.textContent = i;
+                cell.onclick = () => selectNumber(i);
+                grid.appendChild(cell);
+            }
+        }
+
+        function selectNumber(num) {
+            if (currentTest.userInput.length >= currentTest.sequence.length) return;
+            
+            currentTest.userInput.push(num);
+            
+            // Actualizar visualización
+            const cells = document.querySelectorAll('.test-cell');
+            cells.forEach(cell => {
+                if (parseInt(cell.textContent) === num) {
+                    cell.classList.add('selected');
+                }
+            });
+            
+            // Verificar si la secuencia está completa
+            if (currentTest.userInput.length === currentTest.sequence.length) {
+                checkSequence();
+            }
+        }
+
+        function checkSequence() {
+            const isCorrect = currentTest.userInput.every((num, index) => num === currentTest.sequence[index]);
+            const timeTaken = (Date.now() - currentTest.startTime) / 1000;
+            
+            // Calcular puntuación (máximo 100 por nivel)
+            let score = 0;
+            if (isCorrect) {
+                score = Math.max(0, 100 - Math.floor(timeTaken * 2));
+                currentTest.completed++;
+            }
+            
+            currentTest.scores.push(score);
+            
+            // Mostrar resultado visual
+            const cells = document.querySelectorAll('.test-cell');
+            cells.forEach((cell, index) => {
+                const num = parseInt(cell.textContent);
+                const userIndex = currentTest.userInput.indexOf(num);
+                const correctIndex = currentTest.sequence.indexOf(num);
+                
+                if (userIndex !== -1 && correctIndex !== -1) {
+                    if (userIndex === correctIndex) {
+                        cell.classList.add('correct');
+                    } else {
+                        cell.classList.add('incorrect');
+                    }
+                }
+            });
+            
+            // Actualizar progreso
+            updateProgress();
+            
+            // Continuar al siguiente nivel después de 2 segundos
+            setTimeout(() => {
+                currentTest.level++;
+                nextLevel();
+            }, 2000);
+        }
+
+        function startTimer() {
+            const timer = document.getElementById('timer');
+            const startTime = Date.now();
+            
+            const interval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                timer.textContent = `⏱️ Tiempo: ${elapsed.toFixed(1)}s`;
+            }, 100);
+            
+            // Guardar referencia para poder limpiarlo
+            currentTest.timerInterval = interval;
+        }
+
+        function updateProgress() {
+            const progress = (currentTest.level / sequences.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+        }
+
+        function endTest() {
+            clearInterval(currentTest.timerInterval);
+            
+            const totalScore = currentTest.scores.reduce((sum, score) => sum + score, 0);
+            const avgScore = totalScore / currentTest.scores.length;
+            const avgTime = currentTest.scores.length > 0 ? 
+                currentTest.scores.reduce((sum, score, index) => {
+                    const time = 100 - score; // Tiempo aproximado basado en la puntuación
+                    return sum + time;
+                }, 0) / currentTest.scores.length : 0;
+            
+            // Determinar nivel de atención
+            let level, levelClass, feedback;
+            if (avgScore >= 90) {
+                level = "Experto";
+                levelClass = "level-expert";
+                feedback = "¡Excelente! Tu capacidad de atención es excepcional. Mantén esta concentración en tus actividades diarias.";
+            } else if (avgScore >= 75) {
+                level = "Avanzado";
+                levelClass = "level-advanced";
+                feedback = "Muy bien. Tienes una buena capacidad de atención. Sigue practicando para mejorarla aún más.";
+            } else if (avgScore >= 50) {
+                level = "Intermedio";
+                levelClass = "level-intermediate";
+                feedback = "Tu atención está en un nivel intermedio. Con práctica regular puedes mejorarla significativamente.";
+            } else {
+                level = "Principiante";
+                levelClass = "level-beginner";
+                feedback = "Tu atención necesita fortalecerse. Practica ejercicios de concentración regularmente para mejorarla.";
+            }
+            
+            // Mostrar resultados
+            document.getElementById('final-score').textContent = Math.round(avgScore);
+            document.getElementById('attention-level').textContent = level;
+            document.getElementById('attention-level').className = `level-indicator ${levelClass}`;
+            document.getElementById('avg-time').textContent = avgTime.toFixed(1);
+            document.getElementById('completed-sequences').textContent = currentTest.completed;
+            document.getElementById('feedback').innerHTML = `<p><strong>💡 Recomendación:</strong> ${feedback}</p>`;
+            
+            document.getElementById('test-area').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function resetTest() {
+            document.getElementById('game-controls').style.display = 'block';
+            document.getElementById('test-area').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('resetBtn').disabled = true;
+            
+            // Limpiar intervalos
+            if (currentTest.timerInterval) {
+                clearInterval(currentTest.timerInterval);
+            }
+        }
+    </script>
+</body>
+</html>

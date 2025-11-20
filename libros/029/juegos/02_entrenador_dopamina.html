@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Dopamina</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .game-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .dopamine-tracker {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .dopamine-level {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .activity-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .activity-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        .activity-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .activity-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .activity-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .activity-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .dopamine-score {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .dopamine-score h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .instructions h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .control-btn:hover {
+            background: #5a6fd8;
+        }
+        .control-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .stats {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .stats h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-low { background: #f8d7da; color: #721c24; }
+        .level-medium { background: #fff3cd; color: #856404; }
+        .level-high { background: #d4edda; color: #155724; }
+        .level-optimal { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Entrenador de Dopamina</h1>
+            <p>Entrena tu sistema de recompensas de manera saludable</p>
+        </div>
+
+        <div class="game-area">
+            <div class="instructions">
+                <h3>📋 Instrucciones</h3>
+                <p>Este juego te ayuda a entrenar tu sistema de dopamina de manera saludable:</p>
+                <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <li>Selecciona actividades que te den satisfacción natural</li>
+                    <li>Evita actividades que generen dopamina excesiva</li>
+                    <li>Mantén un equilibrio saludable en tu sistema de recompensas</li>
+                    <li>Observa cómo tu nivel de dopamina se estabiliza</li>
+                </ul>
+            </div>
+
+            <div class="dopamine-tracker">
+                <h3>🧠 Nivel de Dopamina Actual</h3>
+                <div class="dopamine-level" id="dopamine-level">50%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="dopamine-progress" style="width: 50%"></div>
+                </div>
+                <p id="dopamine-status">Nivel equilibrado</p>
+            </div>
+
+            <div class="activity-grid" id="activity-grid">
+                <!-- Las actividades se generarán dinámicamente -->
+            </div>
+
+            <div class="control-buttons">
+                <button class="control-btn" onclick="startSession()">🚀 Iniciar Sesión</button>
+                <button class="control-btn" onclick="resetSession()" id="resetBtn" disabled>🔄 Reiniciar</button>
+                <button class="control-btn" onclick="showStats()" id="statsBtn">📊 Ver Estadísticas</button>
+            </div>
+
+            <div id="stats" style="display: none;">
+                <div class="stats">
+                    <h3>📊 Estadísticas de tu Entrenamiento</h3>
+                    <div class="stat-item">
+                        <span>Actividades Saludables:</span>
+                        <span id="healthy-activities">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Actividades Excesivas:</span>
+                        <span id="excessive-activities">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Nivel Promedio:</span>
+                        <span id="avg-level">50%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Equilibrio:</span>
+                        <span id="balance-status" class="level-indicator">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSession = {
+            dopamineLevel: 50,
+            activities: [],
+            healthyCount: 0,
+            excessiveCount: 0,
+            isActive: false
+        };
+
+        const activities = [
+            {
+                id: 'meditation',
+                title: 'Meditación',
+                icon: '🧘',
+                description: '10 minutos de meditación',
+                dopamineEffect: 5,
+                type: 'healthy'
+            },
+            {
+                id: 'exercise',
+                title: 'Ejercicio',
+                icon: '🏃',
+                description: '30 minutos de ejercicio',
+                dopamineEffect: 8,
+                type: 'healthy'
+            },
+            {
+                id: 'reading',
+                title: 'Lectura',
+                icon: '📚',
+                description: 'Leer un libro',
+                dopamineEffect: 6,
+                type: 'healthy'
+            },
+            {
+                id: 'nature',
+                title: 'Naturaleza',
+                icon: '🌳',
+                description: 'Caminar en la naturaleza',
+                dopamineEffect: 7,
+                type: 'healthy'
+            },
+            {
+                id: 'music',
+                title: 'Música',
+                icon: '🎵',
+                description: 'Escuchar música relajante',
+                dopamineEffect: 4,
+                type: 'healthy'
+            },
+            {
+                id: 'art',
+                title: 'Arte',
+                icon: '🎨',
+                description: 'Pintar o dibujar',
+                dopamineEffect: 6,
+                type: 'healthy'
+            },
+            {
+                id: 'social',
+                title: 'Social',
+                icon: '👥',
+                description: 'Conversar con amigos',
+                dopamineEffect: 5,
+                type: 'healthy'
+            },
+            {
+                id: 'cooking',
+                title: 'Cocinar',
+                icon: '👨‍🍳',
+                description: 'Preparar una comida saludable',
+                dopamineEffect: 4,
+                type: 'healthy'
+            },
+            {
+                id: 'social-media',
+                title: 'Redes Sociales',
+                icon: '📱',
+                description: 'Revisar redes sociales',
+                dopamineEffect: -10,
+                type: 'excessive'
+            },
+            {
+                id: 'gaming',
+                title: 'Videojuegos',
+                icon: '🎮',
+                description: 'Jugar videojuegos',
+                dopamineEffect: -8,
+                type: 'excessive'
+            },
+            {
+                id: 'shopping',
+                title: 'Compras',
+                icon: '🛒',
+                description: 'Compras impulsivas',
+                dopamineEffect: -6,
+                type: 'excessive'
+            },
+            {
+                id: 'junk-food',
+                title: 'Comida Chatarra',
+                icon: '🍔',
+                description: 'Comer comida procesada',
+                dopamineEffect: -5,
+                type: 'excessive'
+            }
+        ];
+
+        function startSession() {
+            currentSession = {
+                dopamineLevel: 50,
+                activities: [],
+                healthyCount: 0,
+                excessiveCount: 0,
+                isActive: true
+            };
+            
+            document.getElementById('resetBtn').disabled = false;
+            document.getElementById('stats').style.display = 'none';
+            
+            createActivityGrid();
+            updateDopamineDisplay();
+        }
+
+        function createActivityGrid() {
+            const grid = document.getElementById('activity-grid');
+            grid.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                card.onclick = () => selectActivity(activity);
+                
+                card.innerHTML = `
+                    <div class="activity-icon">${activity.icon}</div>
+                    <div class="activity-title">${activity.title}</div>
+                    <div class="activity-description">${activity.description}</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function selectActivity(activity) {
+            if (!currentSession.isActive) return;
+            
+            // Agregar efecto visual
+            const cards = document.querySelectorAll('.activity-card');
+            cards.forEach(card => {
+                if (card.textContent.includes(activity.title)) {
+                    card.classList.add('selected');
+                    setTimeout(() => card.classList.remove('selected'), 1000);
+                }
+            });
+            
+            // Actualizar nivel de dopamina
+            currentSession.dopamineLevel += activity.dopamineEffect;
+            currentSession.dopamineLevel = Math.max(0, Math.min(100, currentSession.dopamineLevel));
+            
+            // Registrar actividad
+            currentSession.activities.push({
+                ...activity,
+                timestamp: Date.now()
+            });
+            
+            if (activity.type === 'healthy') {
+                currentSession.healthyCount++;
+            } else {
+                currentSession.excessiveCount++;
+            }
+            
+            updateDopamineDisplay();
+        }
+
+        function updateDopamineDisplay() {
+            const level = currentSession.dopamineLevel;
+            const progress = document.getElementById('dopamine-progress');
+            const levelDisplay = document.getElementById('dopamine-level');
+            const status = document.getElementById('dopamine-status');
+            
+            progress.style.width = `${level}%`;
+            levelDisplay.textContent = `${level}%`;
+            
+            let statusText, statusClass;
+            if (level < 30) {
+                statusText = 'Nivel bajo - Necesitas más actividades saludables';
+                statusClass = 'level-low';
+            } else if (level < 50) {
+                statusText = 'Nivel medio-bajo - Continúa con actividades saludables';
+                statusClass = 'level-medium';
+            } else if (level < 70) {
+                statusText = 'Nivel equilibrado - ¡Excelente!';
+                statusClass = 'level-optimal';
+            } else if (level < 90) {
+                statusText = 'Nivel alto - Considera reducir actividades excesivas';
+                statusClass = 'level-high';
+            } else {
+                statusText = 'Nivel muy alto - Reduce actividades que generen dopamina excesiva';
+                statusClass = 'level-low';
+            }
+            
+            status.textContent = statusText;
+            status.className = statusClass;
+        }
+
+        function resetSession() {
+            currentSession.isActive = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('stats').style.display = 'none';
+            
+            // Resetear visual
+            const cards = document.querySelectorAll('.activity-card');
+            cards.forEach(card => card.classList.remove('selected'));
+        }
+
+        function showStats() {
+            if (currentSession.activities.length === 0) {
+                alert('No hay actividades registradas. Inicia una sesión primero.');
+                return;
+            }
+            
+            const avgLevel = currentSession.activities.reduce((sum, activity) => {
+                return sum + (50 + activity.dopamineEffect);
+            }, 0) / currentSession.activities.length;
+            
+            let balanceStatus, balanceClass;
+            if (currentSession.healthyCount > currentSession.excessiveCount * 2) {
+                balanceStatus = 'Excelente';
+                balanceClass = 'level-optimal';
+            } else if (currentSession.healthyCount > currentSession.excessiveCount) {
+                balanceStatus = 'Bueno';
+                balanceClass = 'level-high';
+            } else if (currentSession.healthyCount === currentSession.excessiveCount) {
+                balanceStatus = 'Equilibrado';
+                balanceClass = 'level-medium';
+            } else {
+                balanceStatus = 'Necesita Mejora';
+                balanceClass = 'level-low';
+            }
+            
+            document.getElementById('healthy-activities').textContent = currentSession.healthyCount;
+            document.getElementById('excessive-activities').textContent = currentSession.excessiveCount;
+            document.getElementById('avg-level').textContent = `${avgLevel.toFixed(1)}%`;
+            document.getElementById('balance-status').textContent = balanceStatus;
+            document.getElementById('balance-status').className = `level-indicator ${balanceClass}`;
+            
+            document.getElementById('stats').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

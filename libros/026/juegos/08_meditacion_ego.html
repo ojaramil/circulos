@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditación del Ego - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .meditation-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .meditation-timer {
+            font-size: 4em;
+            font-weight: bold;
+            color: #a8edea;
+            margin: 20px 0;
+        }
+        .meditation-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #a8edea;
+        }
+        .meditation-instructions h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .meditation-instructions p {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        .btn {
+            background: #a8edea;
+            color: #333;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #7dd3fc;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn.danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn.danger:hover {
+            background: #ff5252;
+        }
+        .meditation-steps {
+            display: none;
+            text-align: left;
+            margin: 20px 0;
+        }
+        .step {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .step h4 {
+            color: #333;
+            margin-top: 0;
+        }
+        .step-number {
+            background: #a8edea;
+            color: #333;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .breathing-guide {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #a8edea;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            transition: all 4s ease-in-out;
+        }
+        .breathing-circle.inhale {
+            transform: scale(1.2);
+            background: #7dd3fc;
+        }
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: #a8edea;
+        }
+        .meditation-quotes {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .meditation-quotes h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .quote {
+            font-style: italic;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #a8edea;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .meditation-complete {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .meditation-complete h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .meditation-complete p {
+            font-size: 1.1em;
+            margin: 15px 0;
+        }
+        .reflection-questions {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .reflection-questions h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .reflection-questions ul {
+            margin: 15px 0;
+        }
+        .reflection-questions li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧘 Meditación del Ego</h1>
+        <p>Una Práctica para Observar y Trascender el Ego</p>
+    </div>
+
+    <div class="content">
+        <div id="meditation-start" class="meditation-container">
+            <h2>Bienvenido a la Meditación del Ego</h2>
+            <p>Esta meditación te ayudará a observar tu ego sin juzgarlo, desarrollar autoconciencia y cultivar humildad.</p>
+            
+            <div class="meditation-instructions">
+                <h3>Instrucciones</h3>
+                <p>Esta meditación tiene 5 pasos que te guiarán a través de un proceso de observación y reflexión sobre tu ego. Cada paso está diseñado para ayudarte a desarrollar una relación más saludable con tu ego.</p>
+                <p><strong>Duración:</strong> Aproximadamente 15-20 minutos</p>
+                <p><strong>Ambiente:</strong> Busca un lugar tranquilo donde no te interrumpan</p>
+            </div>
+            
+            <button class="btn" onclick="startMeditation()">Comenzar Meditación</button>
+        </div>
+
+        <div id="meditation-steps" class="meditation-steps">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div id="step-1" class="step">
+                <h4><span class="step-number">1</span>Preparación y Respiración</h4>
+                <p>Siéntate cómodamente con la espalda recta. Cierra los ojos suavemente. Comienza a respirar profundamente.</p>
+                
+                <div class="breathing-guide">
+                    <h4>Guía de Respiración</h4>
+                    <div class="breathing-circle" id="breathing-circle">Inhala</div>
+                    <p>Respira profundamente durante 2 minutos. Inhala por 4 segundos, mantén por 4 segundos, exhala por 4 segundos.</p>
+                </div>
+                
+                <button class="btn" onclick="nextStep(1)">Continuar</button>
+            </div>
+
+            <div id="step-2" class="step" style="display: none;">
+                <h4><span class="step-number">2</span>Observación del Ego</h4>
+                <p>Ahora, sin juzgar, observa tu ego. ¿Qué pensamientos surgen? ¿Qué emociones? ¿Qué historias te cuentas sobre ti mismo?</p>
+                
+                <div class="meditation-quotes">
+                    <h3>Preguntas para Reflexionar</h3>
+                    <div class="quote">"¿Qué pensamientos sobre mí mismo están surgiendo ahora?"</div>
+                    <div class="quote">"¿Estoy juzgando o comparando?"</div>
+                    <div class="quote">"¿Qué historias me estoy contando sobre mi valor?"</div>
+                </div>
+                
+                <p>Observa estos pensamientos como si fueran nubes pasando por el cielo. No los juzgues, solo obsérvalos.</p>
+                
+                <button class="btn" onclick="nextStep(2)">Continuar</button>
+            </div>
+
+            <div id="step-3" class="step" style="display: none;">
+                <h4><span class="step-number">3</span>Reconocimiento de la Humildad</h4>
+                <p>Ahora, recuerda momentos en tu vida cuando fuiste verdaderamente humilde. ¿Cómo se sintió? ¿Qué pensamientos tuviste?</p>
+                
+                <div class="meditation-quotes">
+                    <h3>Reflexiona sobre la Humildad</h3>
+                    <div class="quote">"¿Cuándo me sentí más en paz conmigo mismo?"</div>
+                    <div class="quote">"¿Cuándo ayudé a otros sin esperar nada a cambio?"</div>
+                    <div class="quote">"¿Cuándo admití que no sabía algo?"</div>
+                </div>
+                
+                <p>Permite que estos sentimientos de humildad llenen tu corazón. Recuerda que la humildad es una fuerza, no una debilidad.</p>
+                
+                <button class="btn" onclick="nextStep(3)">Continuar</button>
+            </div>
+
+            <div id="step-4" class="step" style="display: none;">
+                <h4><span class="step-number">4</span>Compasión hacia el Ego</h4>
+                <p>Ahora, en lugar de luchar contra tu ego, envía compasión hacia él. Reconoce que tu ego está tratando de protegerte, aunque a veces lo haga de manera contraproducente.</p>
+                
+                <div class="meditation-quotes">
+                    <h3>Mensajes de Compasión</h3>
+                    <div class="quote">"Mi ego está tratando de protegerme, pero puedo elegir una respuesta más sabia."</div>
+                    <div class="quote">"No necesito luchar contra mi ego, solo observarlo con compasión."</div>
+                    <div class="quote">"Puedo ser amable conmigo mismo mientras elijo la humildad."</div>
+                </div>
+                
+                <p>Imagina abrazar tu ego con compasión, como abrazarías a un niño asustado. Luego, suavemente, elige la humildad.</p>
+                
+                <button class="btn" onclick="nextStep(4)">Continuar</button>
+            </div>
+
+            <div id="step-5" class="step" style="display: none;">
+                <h4><span class="step-number">5</span>Intención para el Futuro</h4>
+                <p>Finalmente, establece una intención clara para cómo quieres relacionarte con tu ego en el futuro.</p>
+                
+                <div class="meditation-quotes">
+                    <h3>Intenciones Positivas</h3>
+                    <div class="quote">"Elegiré la humildad sobre el orgullo."</div>
+                    <div class="quote">"Serviré a otros con amor y compasión."</div>
+                    <div class="quote">"Mantendré la mentalidad de estudiante."</div>
+                </div>
+                
+                <p>Repite mentalmente: "Hoy, elegiré la humildad. Hoy, serviré a otros. Hoy, mantendré la mente abierta."</p>
+                
+                <button class="btn" onclick="completeMeditation()">Completar Meditación</button>
+            </div>
+        </div>
+
+        <div id="meditation-complete" class="meditation-complete">
+            <h2>🎉 Meditación Completada</h2>
+            <p>Has completado la meditación del ego. Tómate un momento para sentir la paz y la claridad que has cultivado.</p>
+            
+            <div class="reflection-questions">
+                <h3>Preguntas de Reflexión</h3>
+                <p>Antes de continuar con tu día, considera estas preguntas:</p>
+                <ul>
+                    <li>¿Qué aprendiste sobre tu ego durante esta meditación?</li>
+                    <li>¿Cómo se siente la humildad en tu cuerpo y mente?</li>
+                    <li>¿Qué intención quieres llevar contigo hoy?</li>
+                    <li>¿Cómo puedes servir a otros hoy?</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="restartMeditation()">Hacer Otra Meditación</button>
+            <button class="btn" onclick="goToDiary()">Ir al Diario del Ego</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let breathingInterval;
+        let meditationStartTime;
+
+        function startMeditation() {
+            document.getElementById('meditation-start').style.display = 'none';
+            document.getElementById('meditation-steps').style.display = 'block';
+            meditationStartTime = new Date();
+            updateProgress();
+        }
+
+        function nextStep(stepNumber) {
+            // Hide current step
+            document.getElementById(`step-${stepNumber}`).style.display = 'none';
+            
+            // Show next step
+            if (stepNumber < 5) {
+                document.getElementById(`step-${stepNumber + 1}`).style.display = 'block';
+                currentStep = stepNumber;
+                updateProgress();
+            }
+        }
+
+        function completeMeditation() {
+            document.getElementById('meditation-steps').style.display = 'none';
+            document.getElementById('meditation-complete').style.display = 'block';
+            
+            // Save meditation session
+            const meditationSession = {
+                date: new Date().toISOString(),
+                duration: Math.round((new Date() - meditationStartTime) / 1000 / 60), // in minutes
+                type: 'ego_meditation'
+            };
+            
+            let sessions = JSON.parse(localStorage.getItem('meditationSessions')) || [];
+            sessions.push(meditationSession);
+            localStorage.setItem('meditationSessions', JSON.stringify(sessions));
+        }
+
+        function restartMeditation() {
+            document.getElementById('meditation-complete').style.display = 'none';
+            document.getElementById('meditation-start').style.display = 'block';
+            
+            // Reset all steps
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`step-${i}`).style.display = 'none';
+            }
+            document.getElementById('step-1').style.display = 'block';
+            currentStep = 0;
+            updateProgress();
+        }
+
+        function goToDiary() {
+            window.location.href = '03_diario_ego.html';
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / 5) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Breathing animation
+        function startBreathingAnimation() {
+            const circle = document.getElementById('breathing-circle');
+            let isInhaling = true;
+            
+            breathingInterval = setInterval(() => {
+                if (isInhaling) {
+                    circle.textContent = 'Inhala';
+                    circle.classList.add('inhale');
+                    circle.classList.remove('exhale');
+                } else {
+                    circle.textContent = 'Exhala';
+                    circle.classList.add('exhale');
+                    circle.classList.remove('inhale');
+                }
+                isInhaling = !isInhaling;
+            }, 4000);
+        }
+
+        function stopBreathingAnimation() {
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+            }
+        }
+
+        // Start breathing animation when step 1 is shown
+        document.addEventListener('DOMContentLoaded', function() {
+            // This will be called when the page loads
+        });
+
+        // Start breathing animation when step 1 becomes visible
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const step1 = document.getElementById('step-1');
+                    if (step1.style.display !== 'none') {
+                        startBreathingAnimation();
+                    } else {
+                        stopBreathingAnimation();
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('step-1'), {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    </script>
+</body>
+</html>

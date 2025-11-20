@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Transformación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .step-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .reflection-area {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 150px;
+            font-family: inherit;
+            font-size: 1em;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .reflection-area:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .guidance {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .guidance h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .guidance p {
+            margin-bottom: 15px;
+        }
+
+        .guidance ul {
+            margin-left: 20px;
+        }
+
+        .guidance li {
+            margin-bottom: 10px;
+        }
+
+        .action-plan {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .action-plan h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .action-plan p {
+            margin-bottom: 15px;
+        }
+
+        .action-plan ul {
+            margin-left: 20px;
+        }
+
+        .action-plan li {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦋 Guía de Transformación</h1>
+            <p>Descubre el poder de transformar tu vida desde adentro hacia afuera</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Esta guía te acompañará a través de un proceso de transformación personal. A través de reflexiones, ejercicios y planificación, podrás identificar áreas de cambio y desarrollar un plan para transformar tu vida de manera consciente y sostenible.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Transformación</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Pasos Completados</h4>
+                        <div class="stat-number" id="steps-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Reflexiones Escritas</h4>
+                        <div class="stat-number" id="reflections-written">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Acciones Planificadas</h4>
+                        <div class="stat-number" id="actions-planned">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-container">
+                <div class="step-card">
+                    <h3>🌟 Paso 1: Reconociendo la Necesidad de Cambio</h3>
+                    <p>El primer paso hacia la transformación es reconocer que hay algo en tu vida que necesita cambiar. Reflexiona sobre las áreas donde sientes insatisfacción o donde sabes que puedes crecer.</p>
+                    
+                    <div class="guidance">
+                        <h4>💡 Guía de Reflexión</h4>
+                        <p>Considera estas preguntas mientras reflexionas:</p>
+                        <ul>
+                            <li>¿Qué aspectos de tu vida te generan más insatisfacción?</li>
+                            <li>¿Dónde sientes que estás estancado o no estás creciendo?</li>
+                            <li>¿Qué patrones o hábitos te gustaría cambiar?</li>
+                            <li>¿Cómo te gustaría sentirte en un año?</li>
+                        </ul>
+                    </div>
+
+                    <textarea class="reflection-area" id="reflection-text" placeholder="Escribe tu reflexión sobre la necesidad de cambio aquí..."></textarea>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="save-btn" onclick="saveReflection()">Guardar Reflexión</button>
+                <button class="btn" onclick="nextStep()">Siguiente Paso</button>
+            </div>
+
+            <div id="guidance-container" style="display: none;">
+                <div class="guidance">
+                    <h4>🧭 Guía de Transformación</h4>
+                    <div id="guidance-content"></div>
+                </div>
+
+                <div class="action-plan">
+                    <h4>📋 Plan de Acción</h4>
+                    <div id="action-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let stepsCompleted = 0;
+        let reflectionsWritten = 0;
+        let actionsPlanned = 0;
+
+        const steps = [
+            {
+                title: "Reconociendo la Necesidad de Cambio",
+                description: "El primer paso hacia la transformación es reconocer que hay algo en tu vida que necesita cambiar. Reflexiona sobre las áreas donde sientes insatisfacción o donde sabes que puedes crecer.",
+                guidance: [
+                    "¿Qué aspectos de tu vida te generan más insatisfacción?",
+                    "¿Dónde sientes que estás estancado o no estás creciendo?",
+                    "¿Qué patrones o hábitos te gustaría cambiar?",
+                    "¿Cómo te gustaría sentirte en un año?"
+                ],
+                actionPlan: [
+                    "Identifica 3 áreas específicas donde quieres ver cambio",
+                    "Establece objetivos claros y medibles para cada área",
+                    "Crea un plan de acción con pasos concretos",
+                    "Establece fechas límite para cada objetivo"
+                ]
+            },
+            {
+                title: "Identificando Obstáculos Internos",
+                description: "Los obstáculos internos son las creencias, miedos y patrones que nos impiden cambiar. Identificar estos obstáculos es crucial para la transformación.",
+                guidance: [
+                    "¿Qué miedos te impiden cambiar?",
+                    "¿Qué creencias limitantes tienes sobre ti mismo?",
+                    "¿Qué patrones de autosabotaje reconoces?",
+                    "¿Cómo puedes comenzar a desafiar estos obstáculos?"
+                ],
+                actionPlan: [
+                    "Haz una lista de tus miedos más comunes",
+                    "Identifica 3 creencias limitantes que quieres cambiar",
+                    "Practica el diálogo interno positivo",
+                    "Busca apoyo para enfrentar estos obstáculos"
+                ]
+            },
+            {
+                title: "Desarrollando Autocompasión",
+                description: "La autocompasión es fundamental para la transformación. Aprende a tratarte con amabilidad y comprensión durante el proceso de cambio.",
+                guidance: [
+                    "¿Cómo te hablas a ti mismo cuando cometes errores?",
+                    "¿Qué le dirías a un amigo en tu situación?",
+                    "¿Cómo puedes ser más comprensivo contigo mismo?",
+                    "¿Qué prácticas de autocompasión puedes implementar?"
+                ],
+                actionPlan: [
+                    "Practica el diálogo interno compasivo diariamente",
+                    "Establece rituales de autocompasión",
+                    "Busca apoyo emocional cuando lo necesites",
+                    "Celebra tus pequeños logros y progresos"
+                ]
+            },
+            {
+                title: "Creando Nuevos Hábitos",
+                description: "Los hábitos son la base del cambio sostenible. Aprende a crear nuevos hábitos que apoyen tu transformación.",
+                guidance: [
+                    "¿Qué hábitos actuales te están limitando?",
+                    "¿Qué nuevos hábitos quieres desarrollar?",
+                    "¿Cómo puedes hacer que los nuevos hábitos sean más atractivos?",
+                    "¿Qué sistemas puedes crear para mantener estos hábitos?"
+                ],
+                actionPlan: [
+                    "Identifica 3 hábitos que quieres cambiar",
+                    "Establece 3 nuevos hábitos que quieres desarrollar",
+                    "Crea un sistema de recordatorios y recompensas",
+                    "Practica la consistencia, no la perfección"
+                ]
+            },
+            {
+                title: "Manteniendo el Momentum",
+                description: "Mantener el momentum del cambio es crucial para la transformación sostenible. Aprende estrategias para mantener tu motivación y progreso.",
+                guidance: [
+                    "¿Qué te motiva más en tu proceso de cambio?",
+                    "¿Cómo puedes mantener tu motivación a largo plazo?",
+                    "¿Qué estrategias puedes usar cuando te sientes desmotivado?",
+                    "¿Cómo puedes celebrar tu progreso de manera significativa?"
+                ],
+                actionPlan: [
+                    "Establece un sistema de seguimiento de progreso",
+                    "Crea rituales de celebración para tus logros",
+                    "Busca accountability y apoyo de otros",
+                    "Revisa y ajusta tu plan regularmente"
+                ]
+            }
+        ];
+
+        function saveReflection() {
+            const reflectionText = document.getElementById('reflection-text').value.trim();
+            
+            if (reflectionText.length === 0) {
+                alert('Por favor, escribe tu reflexión antes de guardar.');
+                return;
+            }
+
+            // Save to localStorage
+            const savedReflections = JSON.parse(localStorage.getItem('transformation_reflections') || '[]');
+            savedReflections.push({
+                step: steps[currentStep].title,
+                reflection: reflectionText,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('transformation_reflections', JSON.stringify(savedReflections));
+
+            // Update stats
+            reflectionsWritten++;
+            updateStats();
+
+            // Show guidance
+            showGuidance();
+        }
+
+        function showGuidance() {
+            const step = steps[currentStep];
+            
+            document.getElementById('guidance-content').innerHTML = `
+                <p><strong>Guía para este paso:</strong></p>
+                <ul>
+                    ${step.guidance.map(guidance => `<li>${guidance}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('action-content').innerHTML = `
+                <p><strong>Plan de acción para este paso:</strong></p>
+                <ul>
+                    ${step.actionPlan.map(action => `<li>${action}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('guidance-container').style.display = 'block';
+        }
+
+        function nextStep() {
+            currentStep = (currentStep + 1) % steps.length;
+            loadStep();
+        }
+
+        function loadStep() {
+            const step = steps[currentStep];
+            
+            document.querySelector('.step-card h3').textContent = `🌟 Paso ${currentStep + 1}: ${step.title}`;
+            document.querySelector('.step-card p').textContent = step.description;
+            
+            const guidanceList = document.querySelector('.guidance ul');
+            guidanceList.innerHTML = '';
+            step.guidance.forEach(guidance => {
+                const li = document.createElement('li');
+                li.textContent = guidance;
+                guidanceList.appendChild(li);
+            });
+            
+            // Clear reflection area
+            document.getElementById('reflection-text').value = '';
+            
+            // Hide guidance container
+            document.getElementById('guidance-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('steps-completed').textContent = stepsCompleted;
+            document.getElementById('reflections-written').textContent = reflectionsWritten;
+            document.getElementById('actions-planned').textContent = actionsPlanned;
+            
+            // Update progress bar
+            const progress = (stepsCompleted / steps.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first step
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStep();
+        });
+    </script>
+</body>
+</html>
+

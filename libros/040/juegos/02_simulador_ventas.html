@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Ventas</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <link rel="stylesheet" href="../juegos-style.css">
+    <style>
+        .scenario-box {
+            background: #142b47;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #005BAA;
+        }
+
+        .choice-btn {
+            background: #213a5a;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: #2a4464;
+            border-color: #005BAA;
+            transform: translateX(10px);
+        }
+
+        .feedback {
+            background: linear-gradient(135deg, #005BAA 0%, #0077CC 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .score-tracker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #142b47;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 2px solid #005BAA;
+        }
+
+        .progress-bar {
+            background: #213a5a;
+            height: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #005BAA 0%, #00FF00 100%);
+            height: 100%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Simulador de Ventas</h1>
+        <h2>Practica tus Habilidades en Escenarios Reales</h2>
+
+        <div class="score-tracker">
+            <h4 style="margin: 0 0 10px 0;">Puntuación</h4>
+            <div style="font-size: 2em; font-weight: bold; text-align: center;" id="score">0</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+            <p style="margin: 10px 0 0 0; font-size: 0.9em;">Escenario <span id="current">1</span>/5</p>
+        </div>
+
+        <div class="highlight">
+            <p>Este simulador te presenta situaciones reales de ventas. Elige la mejor respuesta en cada escenario para
+                maximizar tu puntuación y aprender las mejores prácticas.</p>
+        </div>
+
+        <div id="scenario-container"></div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="next-btn" onclick="nextScenario()"
+                style="display: none; background: #005BAA; color: white; padding: 15px 40px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer;">
+                Siguiente Escenario →
+            </button>
+        </div>
+
+        <div id="final-results" style="display: none;">
+            <div class="highlight"
+                style="background: linear-gradient(135deg, #005BAA 0%, #0077CC 100%); padding: 30px;">
+                <h2 style="text-align: center;">¡Simulación Completada!</h2>
+                <div style="font-size: 3em; text-align: center; margin: 20px 0;" id="final-score"></div>
+                <div id="final-feedback"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="location.reload()"
+                        style="background: white; color: #005BAA; padding: 15px 40px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer;">
+                        Reiniciar Simulación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Escenario 1: Primera Llamada en Frío",
+                description: "Llamas a un prospecto por primera vez. Después de presentarte, dice: 'No estoy interesado, estoy muy ocupado.' ¿Qué haces?",
+                choices: [
+                    { text: "A) Insistir: 'Solo tomará 2 minutos, déjeme explicarle...'", points: 1, feedback: "❌ Insistir cuando alguien está ocupado genera rechazo. Respeta su tiempo." },
+                    { text: "B) Rendirte: 'Está bien, que tenga buen día' y colgar", points: 2, feedback: "⚠️ Te rindes demasiado fácil. Hay una mejor manera de manejar esto." },
+                    { text: "C) Preguntar: '¿Cuándo sería un mejor momento para llamarle?'", points: 4, feedback: "✅ Buena respuesta. Respetas su tiempo y buscas una oportunidad futura." },
+                    { text: "D) Decir: 'Entiendo que está ocupado. Precisamente por eso llamo - ayudo a personas ocupadas como usted a ahorrar tiempo en [beneficio]. ¿Tendría 30 segundos para que le explique cómo?'", points: 5, feedback: "⭐ ¡Excelente! Reconoces su objeción, ofreces valor específico y pides muy poco tiempo." }
+                ]
+            },
+            {
+                title: "Escenario 2: Objeción de Precio",
+                description: "Después de una buena presentación, el cliente dice: 'Me gusta, pero es muy caro. Su competidor ofrece algo similar por menos.'",
+                choices: [
+                    { text: "A) Bajar el precio inmediatamente para cerrar la venta", points: 1, feedback: "❌ Bajar el precio sin explorar devalúa tu producto y reduce tus márgenes innecesariamente." },
+                    { text: "B) Defender agresivamente: 'Nuestro producto es mucho mejor que el de la competencia'", points: 2, feedback: "⚠️ Ponerse a la defensiva no ayuda. Necesitas un enfoque más consultivo." },
+                    { text: "C) Preguntar: '¿Qué es lo que más le preocupa del precio?'", points: 4, feedback: "✅ Buena pregunta. Ayuda a entender la verdadera objeción detrás del precio." },
+                    { text: "D) Decir: 'Entiendo su preocupación por la inversión. Permítame mostrarle el valor que obtendrá. ¿Cuál es el costo de NO resolver este problema? Cuando considera [beneficios específicos], el ROI es claro. ¿Puedo mostrarle los números?'", points: 5, feedback: "⭐ ¡Perfecto! Reenmarcas el precio como inversión, enfocas en valor y ROI, no en costo." }
+                ]
+            },
+            {
+                title: "Escenario 3: Cliente Indeciso",
+                description: "Has hecho una excelente presentación. El cliente dice: 'Me gusta, pero necesito pensarlo. Déjeme consultarlo con mi equipo.'",
+                choices: [
+                    { text: "A) Aceptar y esperar: 'Perfecto, le llamo la próxima semana'", points: 2, feedback: "⚠️ 'Pensarlo' generalmente significa 'nunca'. Necesitas más compromiso." },
+                    { text: "B) Presionar: 'Esta oferta solo está disponible hoy'", points: 1, feedback: "❌ La presión artificial genera desconfianza y puede arruinar la relación." },
+                    { text: "C) Preguntar: '¿Qué aspectos específicos necesita discutir con su equipo?'", points: 4, feedback: "✅ Buena pregunta. Te ayuda a identificar las verdaderas preocupaciones." },
+                    { text: "D) Decir: 'Por supuesto, es una decisión importante. ¿Puedo preguntarle qué aspecto específico le gustaría considerar más a fondo? Quizás pueda ayudarle a aclarar ese punto ahora mismo. Y si me dice cuándo hablará con su equipo, podría prepararle información adicional que les sea útil.'", points: 5, feedback: "⭐ ¡Excelente! Identificas objeciones ocultas, ofreces ayuda inmediata y estableces un próximo paso concreto." }
+                ]
+            },
+            {
+                title: "Escenario 4: Construcción de Rapport",
+                description: "Llegas a una reunión con un nuevo prospecto. Notas que tiene fotos de golf en su oficina. ¿Cómo comienzas?",
+                choices: [
+                    { text: "A) Ir directo al negocio: 'Gracias por recibirme, déjeme mostrarle nuestra propuesta'", points: 2, feedback: "⚠️ Pierdes una oportunidad valiosa de construir rapport antes de vender." },
+                    { text: "B) Fingir interés en golf aunque no sabes nada: 'Veo que juega golf, yo también'", points: 1, feedback: "❌ La falsedad se nota y destruye la confianza. Sé auténtico siempre." },
+                    { text: "C) Comentar genuinamente: 'Veo que le gusta el golf. ¿Juega regularmente?'", points: 4, feedback: "✅ Buena apertura. Muestras interés genuino y das oportunidad de conectar." },
+                    { text: "D) Decir: 'Veo que es golfista. Mi padre ama el golf, siempre dice que es donde se hacen los mejores negocios. ¿Cuál es su campo favorito?' [Escuchar activamente, luego] 'Me encantaría escuchar más, pero sé que su tiempo es valioso. ¿Le parece si primero vemos cómo podemos ayudarle y luego, si hay interés, podemos seguir conversando?'", points: 5, feedback: "⭐ ¡Perfecto! Construyes rapport genuinamente, escuchas, pero también respetas su tiempo y guías hacia el negocio." }
+                ]
+            },
+            {
+                title: "Escenario 5: Cierre de Venta",
+                description: "Has respondido todas las objeciones. El cliente parece satisfecho pero no ha dicho 'sí'. ¿Qué haces?",
+                choices: [
+                    { text: "A) Esperar a que el cliente tome la iniciativa", points: 1, feedback: "❌ Los clientes raramente toman la iniciativa. Debes pedir la orden." },
+                    { text: "B) Seguir vendiendo y explicando más beneficios", points: 2, feedback: "⚠️ Sobre-vender puede crear nuevas dudas. Es momento de cerrar." },
+                    { text: "C) Preguntar directamente: '¿Está listo para proceder?'", points: 4, feedback: "✅ Cierre directo. Funciona, pero hay una técnica aún más efectiva." },
+                    { text: "D) Usar cierre presuntivo: 'Excelente. Basado en lo que hemos discutido, veo que el paquete Premium es ideal para sus necesidades. ¿Prefiere comenzar la implementación esta semana o la próxima?'", points: 5, feedback: "⭐ ¡Perfecto! Cierre presuntivo que asume la venta y ofrece opciones, no un sí/no." }
+                ]
+            }
+        ];
+
+        let currentScenario = 0;
+        let totalScore = 0;
+
+        function displayScenario() {
+            if (currentScenario >= scenarios.length) {
+                showFinalResults();
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+
+            let html = `
+                <div class="scenario-box">
+                    <h3>${scenario.title}</h3>
+                    <p style="font-size: 1.1em; margin: 15px 0;">${scenario.description}</p>
+                    <div style="margin-top: 20px;">
+            `;
+
+            scenario.choices.forEach((choice, index) => {
+                html += `
+                    <div class="choice-btn" onclick="selectChoice(${index})">
+                        ${choice.text}
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            document.getElementById('current').textContent = currentScenario + 1;
+            document.getElementById('feedback').classList.remove('show');
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function selectChoice(choiceIndex) {
+            const scenario = scenarios[currentScenario];
+            const choice = scenario.choices[choiceIndex];
+
+            totalScore += choice.points;
+
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <h3>Retroalimentación</h3>
+                <p style="font-size: 1.2em; margin: 15px 0;">${choice.feedback}</p>
+                <p><strong>Puntos obtenidos:</strong> ${choice.points}/5</p>
+            `;
+            feedback.classList.add('show');
+
+            document.getElementById('score').textContent = totalScore;
+            const progress = ((currentScenario + 1) / scenarios.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
+            document.getElementById('next-btn').style.display = 'block';
+
+            // Disable choices
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.6';
+            });
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            displayScenario();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showFinalResults() {
+            document.getElementById('scenario-container').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+
+            const maxScore = scenarios.length * 5;
+            const percentage = (totalScore / maxScore) * 100;
+
+            let evaluation = '';
+            if (percentage >= 90) {
+                evaluation = `
+                    <h3 style="color: #00FF00;">🌟 ¡Vendedor Maestro!</h3>
+                    <p>¡Excelente trabajo! Dominas las técnicas de ventas profesionales. Tus respuestas demuestran experiencia y conocimiento profundo de la psicología de ventas.</p>
+                `;
+            } else if (percentage >= 75) {
+                evaluation = `
+                    <h3 style="color: #90EE90;">✅ Vendedor Competente</h3>
+                    <p>Muy bien. Tienes una sólida comprensión de las ventas profesionales. Con un poco más de práctica, alcanzarás el nivel maestro.</p>
+                `;
+            } else if (percentage >= 60) {
+                evaluation = `
+                    <h3 style="color: #FFD700;">📚 En Desarrollo</h3>
+                    <p>Buen comienzo. Entiendes los conceptos básicos pero necesitas más práctica. Revisa las lecciones y vuelve a intentarlo.</p>
+                `;
+            } else {
+                evaluation = `
+                    <h3 style="color: #FF6B6B;">📖 Necesitas Más Estudio</h3>
+                    <p>Hay mucho margen de mejora. Te recomendamos estudiar las lecciones sobre manejo de objeciones, cierre y construcción de rapport antes de volver a intentar.</p>
+                `;
+            }
+
+            document.getElementById('final-score').textContent = `${totalScore}/${maxScore} puntos (${Math.round(percentage)}%)`;
+            document.getElementById('final-feedback').innerHTML = evaluation;
+            document.getElementById('final-results').style.display = 'block';
+        }
+
+        // Initialize
+        displayScenario();
+    </script>
+</body>
+
+</html>

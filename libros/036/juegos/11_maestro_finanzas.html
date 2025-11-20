@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Finanzas - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .master-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .module-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .module-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .module-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .knowledge-area {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .skill-assessment {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .mastery-level {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .quiz-question {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .quiz-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .certificate {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(255,193,7,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Maestro de Finanzas</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Conviértete en un maestro de las finanzas personales completando módulos de aprendizaje, evaluaciones y certificaciones en diferentes áreas financieras.</p>
+        </div>
+
+        <div class="master-box">
+            <h3>📚 Módulos de Aprendizaje</h3>
+            <p>Selecciona los módulos que quieres completar para convertirte en un maestro de finanzas:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div class="module-card" onclick="selectModule('budgeting')">
+                    <h4>💰 Presupuesto y Ahorro</h4>
+                    <p>Fundamentos de presupuestación y estrategias de ahorro</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-budgeting" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="module-card" onclick="selectModule('investing')">
+                    <h4>📈 Inversiones</h4>
+                    <p>Mercados financieros, portafolios y estrategias de inversión</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-investing" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="module-card" onclick="selectModule('debt')">
+                    <h4>💳 Gestión de Deudas</h4>
+                    <p>Estrategias para reducir y eliminar deudas</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-debt" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="module-card" onclick="selectModule('retirement')">
+                    <h4>🏖️ Planificación de Jubilación</h4>
+                    <p>Cuentas de jubilación y estrategias de acumulación</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-retirement" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="module-card" onclick="selectModule('taxes')">
+                    <h4>📊 Optimización Fiscal</h4>
+                    <p>Estrategias legales para minimizar impuestos</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-taxes" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="module-card" onclick="selectModule('insurance')">
+                    <h4>🛡️ Seguros</h4>
+                    <p>Tipos de seguro y protección financiera</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-insurance" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module-content" style="display: none;">
+            <!-- El contenido del módulo se cargará dinámicamente -->
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>🎓 Tu Progreso como Maestro de Finanzas</h3>
+                <div id="masteryProgress"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Evaluación de Conocimientos</h3>
+                <div id="knowledgeAssessment"></div>
+            </div>
+            
+            <div class="skill-assessment">
+                <h3>🎯 Evaluación de Habilidades</h3>
+                <div id="skillAssessment"></div>
+            </div>
+            
+            <div class="mastery-level">
+                <h3>🏆 Nivel de Maestría</h3>
+                <div id="masteryLevel"></div>
+            </div>
+            
+            <div id="certificate-container" style="display: none;">
+                <div class="certificate">
+                    <h2>🏆 Certificado de Maestro de Finanzas</h2>
+                    <p>Se otorga este certificado a</p>
+                    <h3 id="student-name">[Tu Nombre]</h3>
+                    <p>por haber completado exitosamente todos los módulos de Maestro de Finanzas</p>
+                    <p><strong>Fecha de Certificación:</strong> <span id="certificate-date"></span></p>
+                    <p><strong>Nivel Alcanzado:</strong> <span id="certificate-level"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Áreas de Maestría Financiera</h2>
+            <ul>
+                <li><strong>Presupuestación:</strong> Control total de ingresos y gastos</li>
+                <li><strong>Inversiones:</strong> Construcción de portafolios diversificados</li>
+                <li><strong>Deudas:</strong> Estrategias de eliminación y prevención</li>
+                <li><strong>Jubilación:</strong> Planificación a largo plazo</li>
+                <li><strong>Impuestos:</strong> Optimización fiscal legal</li>
+                <li><strong>Seguros:</strong> Protección integral</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const modules = {
+            'budgeting': {
+                name: 'Presupuesto y Ahorro',
+                description: 'Fundamentos de presupuestación y estrategias de ahorro',
+                lessons: [
+                    'Crear un presupuesto efectivo',
+                    'Regla 50/30/20',
+                    'Estrategias de ahorro automático',
+                    'Control de gastos impulsivos'
+                ],
+                quiz: [
+                    {
+                        question: '¿Cuál es la regla 50/30/20?',
+                        options: [
+                            '50% necesidades, 30% deseos, 20% ahorros',
+                            '50% ahorros, 30% necesidades, 20% deseos',
+                            '50% deseos, 30% necesidades, 20% ahorros'
+                        ],
+                        correct: 0
+                    },
+                    {
+                        question: '¿Cuál es el primer paso para crear un presupuesto?',
+                        options: [
+                            'Establecer metas financieras',
+                            'Calcular ingresos netos',
+                            'Listar todos los gastos'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            'investing': {
+                name: 'Inversiones',
+                description: 'Mercados financieros, portafolios y estrategias de inversión',
+                lessons: [
+                    'Tipos de inversiones',
+                    'Diversificación de portafolio',
+                    'Análisis de riesgo vs retorno',
+                    'Estrategias de inversión a largo plazo'
+                ],
+                quiz: [
+                    {
+                        question: '¿Qué es la diversificación?',
+                        options: [
+                            'Invertir todo en una sola acción',
+                            'Distribuir inversiones en diferentes activos',
+                            'Comprar solo bonos gubernamentales'
+                        ],
+                        correct: 1
+                    },
+                    {
+                        question: '¿Cuál es el beneficio del interés compuesto?',
+                        options: [
+                            'Ganancias sobre ganancias',
+                            'Solo ganancias sobre el capital inicial',
+                            'Ganancias fijas anuales'
+                        ],
+                        correct: 0
+                    }
+                ]
+            },
+            'debt': {
+                name: 'Gestión de Deudas',
+                description: 'Estrategias para reducir y eliminar deudas',
+                lessons: [
+                    'Tipos de deudas',
+                    'Método bola de nieve',
+                    'Método avalancha',
+                    'Prevención de nuevas deudas'
+                ],
+                quiz: [
+                    {
+                        question: '¿Cuál es el método bola de nieve?',
+                        options: [
+                            'Pagar la deuda más grande primero',
+                            'Pagar la deuda más pequeña primero',
+                            'Pagar todas las deudas por igual'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            'retirement': {
+                name: 'Planificación de Jubilación',
+                description: 'Cuentas de jubilación y estrategias de acumulación',
+                lessons: [
+                    'Tipos de cuentas de jubilación',
+                    'Regla del 4%',
+                    'Contribuciones automáticas',
+                    'Planificación de ingresos en jubilación'
+                ],
+                quiz: [
+                    {
+                        question: '¿Qué es la regla del 4%?',
+                        options: [
+                            'Ahorrar 4% de tus ingresos',
+                            'Retirar máximo 4% anual en jubilación',
+                            'Invertir 4% en acciones'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            'taxes': {
+                name: 'Optimización Fiscal',
+                description: 'Estrategias legales para minimizar impuestos',
+                lessons: [
+                    'Tipos de cuentas fiscales',
+                    'Deducciones disponibles',
+                    'Timing de ingresos',
+                    'Planificación fiscal anual'
+                ],
+                quiz: [
+                    {
+                        question: '¿Cuál es el beneficio de las cuentas 401(k)?',
+                        options: [
+                            'Contribuciones post-impuestos',
+                            'Contribuciones pre-impuestos',
+                            'Sin límites de contribución'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            'insurance': {
+                name: 'Seguros',
+                description: 'Tipos de seguro y protección financiera',
+                lessons: [
+                    'Tipos de seguros esenciales',
+                    'Cálculo de necesidades de cobertura',
+                    'Comparación de pólizas',
+                    'Optimización de primas'
+                ],
+                quiz: [
+                    {
+                        question: '¿Cuál es el propósito principal del seguro de vida?',
+                        options: [
+                            'Protección médica',
+                            'Protección financiera para la familia',
+                            'Protección de propiedad'
+                        ],
+                        correct: 1
+                    }
+                ]
+            }
+        };
+
+        let selectedModule = null;
+        let moduleProgress = {};
+        let quizAnswers = {};
+        let currentQuizQuestion = 0;
+
+        function selectModule(moduleId) {
+            selectedModule = moduleId;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.module-card').forEach(card => card.classList.remove('selected'));
+            
+            // Seleccionar nueva tarjeta
+            event.target.closest('.module-card').classList.add('selected');
+            
+            loadModuleContent(moduleId);
+        }
+
+        function loadModuleContent(moduleId) {
+            const module = modules[moduleId];
+            const contentArea = document.getElementById('module-content');
+            
+            contentArea.innerHTML = `
+                <div class="master-box">
+                    <h3>📚 ${module.name}</h3>
+                    <p>${module.description}</p>
+                    
+                    <div class="knowledge-area">
+                        <h4>📖 Lecciones</h4>
+                        <ul>
+                            ${module.lessons.map(lesson => `<li>${lesson}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>🧩 Cuestionario de Evaluación</h4>
+                        <div id="quiz-container">
+                            <!-- Las preguntas se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <button class="btn btn-success" onclick="startQuiz('${moduleId}')">🧩 Iniciar Cuestionario</button>
+                    </div>
+                </div>
+            `;
+            
+            contentArea.style.display = 'block';
+        }
+
+        function startQuiz(moduleId) {
+            const module = modules[moduleId];
+            const quizContainer = document.getElementById('quiz-container');
+            currentQuizQuestion = 0;
+            quizAnswers[moduleId] = {};
+            
+            loadQuizQuestion(moduleId, 0);
+        }
+
+        function loadQuizQuestion(moduleId, questionIndex) {
+            const module = modules[moduleId];
+            const quizContainer = document.getElementById('quiz-container');
+            
+            if (questionIndex >= module.quiz.length) {
+                finishQuiz(moduleId);
+                return;
+            }
+            
+            const question = module.quiz[questionIndex];
+            
+            quizContainer.innerHTML = `
+                <h5>Pregunta ${questionIndex + 1} de ${module.quiz.length}</h5>
+                <p><strong>${question.question}</strong></p>
+                ${question.options.map((option, index) => `
+                    <div class="quiz-option" onclick="selectQuizAnswer('${moduleId}', ${questionIndex}, ${index})">
+                        ${option}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function selectQuizAnswer(moduleId, questionIndex, answerIndex) {
+            quizAnswers[moduleId][questionIndex] = answerIndex;
+            
+            // Remover selección anterior
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Seleccionar nueva opción
+            event.target.classList.add('selected');
+            
+            // Avanzar a la siguiente pregunta después de un breve delay
+            setTimeout(() => {
+                loadQuizQuestion(moduleId, questionIndex + 1);
+            }, 1000);
+        }
+
+        function finishQuiz(moduleId) {
+            const module = modules[moduleId];
+            const answers = quizAnswers[moduleId];
+            let correctAnswers = 0;
+            
+            module.quiz.forEach((question, index) => {
+                if (answers[index] === question.correct) {
+                    correctAnswers++;
+                }
+            });
+            
+            const score = (correctAnswers / module.quiz.length) * 100;
+            moduleProgress[moduleId] = score;
+            
+            // Actualizar barra de progreso
+            const progressBar = document.getElementById(`progress-${moduleId}`);
+            progressBar.style.width = score + '%';
+            progressBar.textContent = Math.round(score) + '%';
+            
+            // Mostrar resultado
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = `
+                <div class="result-box">
+                    <h4>🎯 Resultado del Cuestionario</h4>
+                    <p>Respondiste correctamente ${correctAnswers} de ${module.quiz.length} preguntas</p>
+                    <p><strong>Puntuación:</strong> ${Math.round(score)}%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${score}%;">
+                            ${Math.round(score)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Verificar si todos los módulos están completados
+            checkMasteryCompletion();
+        }
+
+        function checkMasteryCompletion() {
+            const completedModules = Object.keys(moduleProgress).length;
+            const totalModules = Object.keys(modules).length;
+            
+            if (completedModules >= totalModules) {
+                setTimeout(() => {
+                    showMasteryResults();
+                }, 2000);
+            }
+        }
+
+        function showMasteryResults() {
+            const totalScore = Object.values(moduleProgress).reduce((sum, score) => sum + score, 0);
+            const averageScore = totalScore / Object.keys(moduleProgress).length;
+            
+            // Mostrar resultados
+            displayMasteryResults(moduleProgress, averageScore);
+            document.getElementById('results').style.display = 'block';
+            
+            // Mostrar certificado si el promedio es >= 80%
+            if (averageScore >= 80) {
+                showCertificate(averageScore);
+            }
+        }
+
+        function displayMasteryResults(progress, averageScore) {
+            // Mostrar progreso general
+            document.getElementById('masteryProgress').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>📊 Puntuación Promedio</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">${Math.round(averageScore)}%</p>
+                    </div>
+                    <div>
+                        <h4>🎓 Módulos Completados</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">${Object.keys(progress).length}/${Object.keys(modules).length}</p>
+                    </div>
+                    <div>
+                        <h4>🏆 Nivel de Maestría</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">${getMasteryLevel(averageScore)}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar evaluación de conocimientos
+            displayKnowledgeAssessment(progress);
+            
+            // Mostrar evaluación de habilidades
+            displaySkillAssessment(progress);
+            
+            // Mostrar nivel de maestría
+            displayMasteryLevel(averageScore);
+        }
+
+        function displayKnowledgeAssessment(progress) {
+            const assessmentDiv = document.getElementById('knowledgeAssessment');
+            
+            assessmentDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.keys(progress).map(moduleId => {
+                        const module = modules[moduleId];
+                        const score = progress[moduleId];
+                        const level = score >= 80 ? 'Experto' : score >= 60 ? 'Intermedio' : 'Principiante';
+                        const color = score >= 80 ? '#28a745' : score >= 60 ? '#ffc107' : '#dc3545';
+                        
+                        return `
+                            <div style="margin: 15px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>${module.name}</strong></span>
+                                    <span style="color: ${color}; font-weight: bold;">${level}</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${score}%; background: ${color};">
+                                        ${Math.round(score)}%
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displaySkillAssessment(progress) {
+            const skillDiv = document.getElementById('skillAssessment');
+            
+            const skills = [
+                { name: 'Presupuestación', modules: ['budgeting'] },
+                { name: 'Inversiones', modules: ['investing'] },
+                { name: 'Gestión de Deudas', modules: ['debt'] },
+                { name: 'Planificación de Jubilación', modules: ['retirement'] },
+                { name: 'Optimización Fiscal', modules: ['taxes'] },
+                { name: 'Seguros', modules: ['insurance'] }
+            ];
+            
+            skillDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${skills.map(skill => {
+                        const skillScore = skill.modules.reduce((sum, moduleId) => {
+                            return sum + (progress[moduleId] || 0);
+                        }, 0) / skill.modules.length;
+                        
+                        const level = skillScore >= 80 ? 'Experto' : skillScore >= 60 ? 'Intermedio' : 'Principiante';
+                        const color = skillScore >= 80 ? '#28a745' : skillScore >= 60 ? '#ffc107' : '#dc3545';
+                        
+                        return `
+                            <div style="background: white; border: 2px solid ${color}; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4>${skill.name}</h4>
+                                        <p>Nivel: ${level}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="background: ${color}; color: white; padding: 5px 10px; border-radius: 15px;">
+                                            ${Math.round(skillScore)}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displayMasteryLevel(averageScore) {
+            const levelDiv = document.getElementById('masteryLevel');
+            const level = getMasteryLevel(averageScore);
+            const color = averageScore >= 90 ? '#28a745' : averageScore >= 80 ? '#ffc107' : '#dc3545';
+            
+            levelDiv.innerHTML = `
+                <div style="text-align: center; margin: 20px 0;">
+                    <h3 style="color: ${color};">${level}</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${averageScore}%; background: ${color};">
+                            ${Math.round(averageScore)}%
+                        </div>
+                    </div>
+                    <p>${getMasteryDescription(averageScore)}</p>
+                </div>
+            `;
+        }
+
+        function showCertificate(averageScore) {
+            const certificateContainer = document.getElementById('certificate-container');
+            const level = getMasteryLevel(averageScore);
+            
+            document.getElementById('certificate-level').textContent = level;
+            document.getElementById('certificate-date').textContent = new Date().toLocaleDateString();
+            
+            certificateContainer.style.display = 'block';
+        }
+
+        function getMasteryLevel(score) {
+            if (score >= 90) return 'Maestro Experto';
+            if (score >= 80) return 'Maestro Avanzado';
+            if (score >= 70) return 'Maestro Intermedio';
+            if (score >= 60) return 'Maestro Principiante';
+            return 'Aprendiz';
+        }
+
+        function getMasteryDescription(score) {
+            if (score >= 90) return '¡Felicitaciones! Has alcanzado el nivel más alto de maestría financiera.';
+            if (score >= 80) return 'Excelente trabajo. Tienes un conocimiento sólido de las finanzas personales.';
+            if (score >= 70) return 'Buen progreso. Continúa aprendiendo para mejorar tu maestría.';
+            if (score >= 60) return 'Estás en el camino correcto. Sigue practicando y estudiando.';
+            return 'Sigue aprendiendo y practicando para mejorar tu conocimiento financiero.';
+        }
+    </script>
+</body>
+</html>

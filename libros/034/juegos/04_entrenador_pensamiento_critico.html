@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Pensamiento Crítico - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .scenario-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .thinking-step {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .thinking-step:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .thinking-step.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .thinking-step.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .thinking-step.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Entrenador de Pensamiento Crítico</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar el pensamiento crítico analizando situaciones complejas y seleccionando los pasos de razonamiento más apropiados. Desarrolla tu capacidad de analizar, evaluar y formar juicios de manera objetiva.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Correctas: <span id="correct">0</span> | Incorrectas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada escenario y selecciona los pasos de pensamiento crítico que consideres más apropiados para analizar la situación.</p>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextScenario()" id="next-btn" style="display: none;">Siguiente Escenario</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedSteps = [];
+
+        const scenarios = [
+            {
+                title: "Decisión de Inversión",
+                description: "Una empresa está considerando invertir en una nueva tecnología que promete aumentar la productividad en un 30%, pero requiere una inversión inicial de $2 millones y no hay garantías de éxito.",
+                correctSteps: [
+                    "Identificar las fuentes de información sobre la tecnología",
+                    "Evaluar la credibilidad de los datos presentados",
+                    "Considerar alternativas de inversión",
+                    "Analizar los riesgos y beneficios a largo plazo"
+                ],
+                incorrectSteps: [
+                    "Tomar la decisión basándose solo en la opinión del CEO",
+                    "Ignorar los riesgos potenciales",
+                    "Decidir inmediatamente sin más investigación"
+                ],
+                explanation: "El pensamiento crítico requiere evaluar evidencia, considerar alternativas y analizar riesgos antes de tomar decisiones importantes."
+            },
+            {
+                title: "Evaluación de Noticias",
+                description: "Recibes una noticia viral en redes sociales que afirma que un nuevo estudio científico demuestra que un alimento común causa cáncer, pero la fuente no es clara y no hay enlaces al estudio original.",
+                correctSteps: [
+                    "Verificar la fuente original del estudio",
+                    "Buscar información de expertos en el tema",
+                    "Evaluar la metodología del estudio",
+                    "Considerar sesgos potenciales en la información"
+                ],
+                incorrectSteps: [
+                    "Compartir inmediatamente la noticia",
+                    "Aceptar la información sin verificar",
+                    "Ignorar la falta de fuentes"
+                ],
+                explanation: "El pensamiento crítico requiere verificar fuentes, buscar evidencia sólida y evaluar la credibilidad de la información antes de aceptarla."
+            },
+            {
+                title: "Resolución de Conflicto",
+                description: "Dos colegas tienen un conflicto sobre la asignación de recursos en un proyecto. Uno acusa al otro de favoritismo, mientras que el otro dice que está siguiendo las políticas de la empresa.",
+                correctSteps: [
+                    "Escuchar ambas perspectivas sin prejuicios",
+                    "Revisar las políticas y procedimientos relevantes",
+                    "Buscar evidencia objetiva del conflicto",
+                    "Considerar soluciones que beneficien a ambas partes"
+                ],
+                incorrectSteps: [
+                    "Tomar partido inmediatamente",
+                    "Ignorar una de las perspectivas",
+                    "Buscar culpables en lugar de soluciones"
+                ],
+                explanation: "El pensamiento crítico requiere escuchar múltiples perspectivas, buscar evidencia objetiva y buscar soluciones constructivas."
+            }
+        ];
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Escenario: ${scenario.title}</h3>
+                    <div class="scenario-box">
+                        <p><strong>Situación:</strong> ${scenario.description}</p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>🧠 ¿Qué pasos de pensamiento crítico aplicarías?</h3>
+                    <div id="steps-container">
+                        ${[...scenario.correctSteps, ...scenario.incorrectSteps]
+                            .sort(() => Math.random() - 0.5)
+                            .map((step, index) => `
+                                <div class="thinking-step" onclick="selectStep('${step}')" data-step="${step}">
+                                    ${step}
+                                </div>
+                            `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedSteps = [];
+        }
+
+        function selectStep(step) {
+            if (selectedSteps.includes(step)) {
+                selectedSteps = selectedSteps.filter(s => s !== step);
+                event.target.classList.remove('selected');
+            } else {
+                selectedSteps.push(step);
+                event.target.classList.add('selected');
+            }
+        }
+
+        function checkAnswer() {
+            if (selectedSteps.length === 0) {
+                alert('Por favor, selecciona al menos un paso de pensamiento crítico.');
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const correctSteps = scenario.correctSteps;
+            const selectedCorrect = selectedSteps.filter(step => correctSteps.includes(step));
+            const selectedIncorrect = selectedSteps.filter(step => !correctSteps.includes(step));
+            
+            const isCorrect = selectedCorrect.length === correctSteps.length && selectedIncorrect.length === 0;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.thinking-step').forEach(step => {
+                const stepText = step.dataset.step;
+                step.classList.remove('selected');
+                if (correctSteps.includes(stepText)) {
+                    step.classList.add('correct');
+                } else if (selectedSteps.includes(stepText) && !correctSteps.includes(stepText)) {
+                    step.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente pensamiento crítico!' : '❌ Revisa tu selección'}</h3>
+                <p><strong>Pasos seleccionados:</strong> ${selectedSteps.join(', ')}</p>
+                <p><strong>Pasos correctos:</strong> ${correctSteps.join(', ')}</p>
+                <p><strong>Explicación:</strong> ${scenario.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                loadScenario();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el entrenamiento.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentScenario = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadScenario();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadScenario();
+    </script>
+</body>
+</html>

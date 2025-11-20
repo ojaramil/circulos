@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Estrés</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .stress-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .stress-meter {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .stress-meter h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .stress-level {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .stress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        .stress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.3s;
+            border-radius: 15px;
+        }
+        .stress-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #333;
+        }
+        .stress-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tool-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .tool-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .tool-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tool-card.active {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .tool-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .tool-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .tool-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .tool-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .stress-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .stress-btn:hover {
+            background: #5a6fd8;
+        }
+        .stress-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .stress-btn.active {
+            background: #28a745;
+        }
+        .stress-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .stress-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .stress-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .breathing-exercise {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .breathing-exercise h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 4s ease-in-out;
+            background: linear-gradient(45deg, #e7f3ff, #f0f4ff);
+        }
+        .breathing-circle.inhale {
+            transform: scale(1.2);
+            background: linear-gradient(45deg, #d4edda, #e7f3ff);
+        }
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: linear-gradient(45deg, #fff3cd, #f0f4ff);
+        }
+        .breathing-circle.hold {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #d1ecf1, #e7f3ff);
+        }
+        .exercise-timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-low { background: #d4edda; color: #155724; }
+        .level-medium { background: #fff3cd; color: #856404; }
+        .level-high { background: #f8d7da; color: #721c24; }
+        .level-critical { background: #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>😌 Gestor de Estrés</h1>
+            <p>Maneja tu estrés con técnicas efectivas</p>
+        </div>
+
+        <div class="stress-area">
+            <div class="stress-meter">
+                <h3>📊 Nivel de Estrés Actual</h3>
+                <div class="stress-level" id="stress-level">50%</div>
+                <div class="stress-bar">
+                    <div class="stress-bar-fill" id="stress-bar-fill" style="width: 50%"></div>
+                    <div class="stress-bar-text" id="stress-bar-text">50%</div>
+                </div>
+                <p id="stress-status">Nivel moderado - Considera usar técnicas de relajación</p>
+            </div>
+
+            <div class="stress-tools" id="stress-tools">
+                <div class="tool-card" onclick="selectTool('breathing')">
+                    <div class="tool-icon">🌬️</div>
+                    <div class="tool-title">Respiración Profunda</div>
+                    <div class="tool-description">Técnica de respiración 4-4-4-4</div>
+                    <div class="tool-duration">5 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('meditation')">
+                    <div class="tool-icon">🧘</div>
+                    <div class="tool-title">Meditación</div>
+                    <div class="tool-description">Meditación de atención plena</div>
+                    <div class="tool-duration">10 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('progressive')">
+                    <div class="tool-icon">💪</div>
+                    <div class="tool-title">Relajación Muscular</div>
+                    <div class="tool-description">Tensión y relajación progresiva</div>
+                    <div class="tool-duration">15 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('visualization')">
+                    <div class="tool-icon">🌅</div>
+                    <div class="tool-title">Visualización</div>
+                    <div class="tool-description">Imagina un lugar tranquilo</div>
+                    <div class="tool-duration">8 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('mindfulness')">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-title">Atención Plena</div>
+                    <div class="tool-description">Observa el presente sin juzgar</div>
+                    <div class="tool-duration">12 minutos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('gratitude')">
+                    <div class="tool-icon">🙏</div>
+                    <div class="tool-title">Gratitud</div>
+                    <div class="tool-description">Reflexiona sobre lo que agradeces</div>
+                    <div class="tool-duration">6 minutos</div>
+                </div>
+            </div>
+
+            <div class="breathing-exercise" id="breathing-exercise" style="display: none;">
+                <h3>🌬️ Ejercicio de Respiración</h3>
+                <div class="breathing-circle" id="breathing-circle">
+                    <div id="breathing-text">Inhala</div>
+                </div>
+                <div class="exercise-timer" id="exercise-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="exercise-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="stress-btn" onclick="startTool()" id="startBtn">🚀 Iniciar Técnica</button>
+                <button class="stress-btn" onclick="pauseTool()" id="pauseBtn" disabled>⏸️ Pausar</button>
+                <button class="stress-btn" onclick="stopTool()" id="stopBtn" disabled>⏹️ Detener</button>
+                <button class="stress-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="stress-stats" style="display: none;">
+                <div class="stress-stats">
+                    <h3>📊 Estadísticas de Estrés</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-sessions">0</div>
+                            <div class="stat-label">Sesiones Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="avg-stress">50</div>
+                            <div class="stat-label">Estrés Promedio</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stress-reduction">0</div>
+                            <div class="stat-label">Reducción Total</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Moderado</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStress = {
+            level: 50,
+            tool: null,
+            isActive: false,
+            isPaused: false,
+            startTime: 0,
+            totalSessions: 0,
+            totalReduction: 0,
+            initialLevel: 50
+        };
+
+        let stressInterval;
+        let breathingInterval;
+
+        const tools = {
+            'breathing': { 
+                duration: 5 * 60 * 1000, 
+                name: 'Respiración Profunda',
+                stressReduction: 15,
+                description: 'Sigue el patrón de respiración 4-4-4-4'
+            },
+            'meditation': { 
+                duration: 10 * 60 * 1000, 
+                name: 'Meditación',
+                stressReduction: 20,
+                description: 'Medita enfocándote en tu respiración'
+            },
+            'progressive': { 
+                duration: 15 * 60 * 1000, 
+                name: 'Relajación Muscular',
+                stressReduction: 25,
+                description: 'Tensa y relaja cada grupo muscular'
+            },
+            'visualization': { 
+                duration: 8 * 60 * 1000, 
+                name: 'Visualización',
+                stressReduction: 18,
+                description: 'Imagina un lugar tranquilo y relajante'
+            },
+            'mindfulness': { 
+                duration: 12 * 60 * 1000, 
+                name: 'Atención Plena',
+                stressReduction: 22,
+                description: 'Observa el presente sin juzgar'
+            },
+            'gratitude': { 
+                duration: 6 * 60 * 1000, 
+                name: 'Gratitud',
+                stressReduction: 12,
+                description: 'Reflexiona sobre lo que agradeces'
+            }
+        };
+
+        function selectTool(toolType) {
+            currentStress.tool = toolType;
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.tool-card').classList.add('selected');
+            
+            // Mostrar ejercicio de respiración si es relevante
+            if (toolType === 'breathing') {
+                document.getElementById('breathing-exercise').style.display = 'block';
+            } else {
+                document.getElementById('breathing-exercise').style.display = 'none';
+            }
+        }
+
+        function startTool() {
+            if (!currentStress.tool || currentStress.isActive) return;
+            
+            currentStress.isActive = true;
+            currentStress.isPaused = false;
+            currentStress.startTime = Date.now();
+            currentStress.initialLevel = currentStress.level;
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Iniciar temporizador
+            stressInterval = setInterval(updateTimer, 1000);
+            
+            // Iniciar respiración si es necesario
+            if (currentStress.tool === 'breathing') {
+                startBreathing();
+            }
+            
+            // Mostrar herramienta seleccionada como activa
+            document.querySelectorAll('.tool-card').forEach(card => {
+                if (card.classList.contains('selected')) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function pauseTool() {
+            if (!currentStress.isActive) return;
+            
+            currentStress.isPaused = !currentStress.isPaused;
+            
+            if (currentStress.isPaused) {
+                clearInterval(stressInterval);
+                clearInterval(breathingInterval);
+                document.getElementById('pauseBtn').textContent = '▶️ Continuar';
+                document.getElementById('pauseBtn').classList.add('pause');
+            } else {
+                stressInterval = setInterval(updateTimer, 1000);
+                if (currentStress.tool === 'breathing') {
+                    startBreathing();
+                }
+                document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+                document.getElementById('pauseBtn').classList.remove('pause');
+            }
+        }
+
+        function stopTool() {
+            if (!currentStress.isActive) return;
+            
+            currentStress.isActive = false;
+            currentStress.isPaused = false;
+            
+            clearInterval(stressInterval);
+            clearInterval(breathingInterval);
+            
+            // Calcular reducción de estrés
+            const sessionTime = Math.floor((Date.now() - currentStress.startTime) / 1000);
+            const toolDuration = tools[currentStress.tool].duration / 1000;
+            
+            if (sessionTime >= toolDuration) {
+                const reduction = tools[currentStress.tool].stressReduction;
+                currentStress.level = Math.max(0, currentStress.level - reduction);
+                currentStress.totalReduction += reduction;
+                currentStress.totalSessions++;
+                
+                // Mostrar logro
+                showAchievement(reduction);
+            }
+            
+            // Guardar en localStorage
+            saveStats();
+            
+            // Resetear controles
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+            document.getElementById('pauseBtn').classList.remove('pause');
+            
+            // Resetear visual
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('selected', 'active');
+            });
+            document.getElementById('exercise-timer').textContent = '00:00';
+            document.getElementById('exercise-progress').style.width = '0%';
+            document.getElementById('breathing-circle').className = 'breathing-circle';
+            document.getElementById('breathing-text').textContent = 'Inhala';
+            
+            updateStressDisplay();
+        }
+
+        function updateTimer() {
+            if (currentStress.isPaused) return;
+            
+            const elapsed = Math.floor((Date.now() - currentStress.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('exercise-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Actualizar progreso
+            const toolDuration = tools[currentStress.tool].duration / 1000;
+            const progress = Math.min((elapsed / toolDuration) * 100, 100);
+            document.getElementById('exercise-progress').style.width = `${progress}%`;
+        }
+
+        function startBreathing() {
+            let phase = 0; // 0: inhala, 1: mantén, 2: exhala, 3: pausa
+            const phases = ['Inhala', 'Mantén', 'Exhala', 'Pausa'];
+            const durations = [4000, 4000, 4000, 4000];
+            
+            function nextPhase() {
+                const circle = document.getElementById('breathing-circle');
+                const text = document.getElementById('breathing-text');
+                
+                circle.className = 'breathing-circle';
+                text.textContent = phases[phase];
+                
+                if (phase === 0) {
+                    circle.classList.add('inhale');
+                } else if (phase === 1) {
+                    circle.classList.add('hold');
+                } else if (phase === 2) {
+                    circle.classList.add('exhale');
+                }
+                
+                phase = (phase + 1) % 4;
+            }
+            
+            nextPhase();
+            breathingInterval = setInterval(nextPhase, 4000);
+        }
+
+        function updateStressDisplay() {
+            const level = currentStress.level;
+            document.getElementById('stress-level').textContent = `${level}%`;
+            document.getElementById('stress-bar-fill').style.width = `${level}%`;
+            document.getElementById('stress-bar-text').textContent = `${level}%`;
+            
+            let status, levelClass;
+            if (level < 25) {
+                status = 'Nivel bajo - ¡Excelente! Mantén las técnicas de relajación';
+                levelClass = 'level-low';
+            } else if (level < 50) {
+                status = 'Nivel moderado - Considera usar técnicas de relajación';
+                levelClass = 'level-medium';
+            } else if (level < 75) {
+                status = 'Nivel alto - Usa técnicas de relajación para reducir el estrés';
+                levelClass = 'level-high';
+            } else {
+                status = 'Nivel crítico - Es importante usar técnicas de relajación ahora';
+                levelClass = 'level-critical';
+            }
+            
+            document.getElementById('stress-status').textContent = status;
+            document.getElementById('current-level').textContent = 
+                level < 25 ? 'Bajo' : level < 50 ? 'Moderado' : level < 75 ? 'Alto' : 'Crítico';
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement(reduction) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '😌 ¡Estrés reducido! -' + reduction + '%';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            const avgStress = currentStress.totalSessions > 0 ? 
+                Math.round((currentStress.initialLevel + currentStress.level) / 2) : 50;
+            
+            document.getElementById('total-sessions').textContent = currentStress.totalSessions;
+            document.getElementById('avg-stress').textContent = avgStress;
+            document.getElementById('stress-reduction').textContent = currentStress.totalReduction;
+            
+            updateStressDisplay();
+            document.getElementById('stress-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                level: currentStress.level,
+                totalSessions: currentStress.totalSessions,
+                totalReduction: currentStress.totalReduction
+            };
+            localStorage.setItem('stressStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('stressStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentStress.level = stats.level || 50;
+                currentStress.totalSessions = stats.totalSessions || 0;
+                currentStress.totalReduction = stats.totalReduction || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateStressDisplay();
+    </script>
+</body>
+</html>

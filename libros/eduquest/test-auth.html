@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sistema de Autenticación | EduQuest</title>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-header h1 {
+            margin: 0 0 10px 0;
+            color: #1f2937;
+        }
+        
+        .test-header p {
+            margin: 0;
+            color: #6b7280;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 18px;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .test-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .test-btn.primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .test-btn.primary:hover {
+            background: #2563eb;
+        }
+        
+        .test-btn.secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .test-btn.secondary:hover {
+            background: #4b5563;
+        }
+        
+        .test-btn.success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .test-btn.success:hover {
+            background: #059669;
+        }
+        
+        .test-btn.danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .test-btn.danger:hover {
+            background: #dc2626;
+        }
+        
+        .test-output {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.online {
+            background: #10b981;
+        }
+        
+        .status-indicator.offline {
+            background: #ef4444;
+        }
+        
+        .status-indicator.unknown {
+            background: #6b7280;
+        }
+        
+        .demo-users {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .demo-users h3 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        
+        .demo-user {
+            font-family: monospace;
+            font-size: 12px;
+            margin: 5px 0;
+            color: #78350f;
+        }
+        
+        .current-user {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .current-user h3 {
+            margin: 0 0 10px 0;
+            color: #1e40af;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🔐 Test - Sistema de Autenticación</h1>
+            <p>Prueba todas las funcionalidades del sistema de autenticación de EduQuest</p>
+        </div>
+        
+        <!-- System Status -->
+        <div class="test-section">
+            <h2>📊 Estado del Sistema</h2>
+            <div id="systemStatus">
+                <p><span class="status-indicator unknown"></span>Inicializando...</p>
+            </div>
+        </div>
+        
+        <!-- Current User -->
+        <div class="test-section">
+            <h2>👤 Usuario Actual</h2>
+            <div id="currentUserInfo">
+                <p>No hay usuario autenticado</p>
+            </div>
+        </div>
+        
+        <!-- Demo Users -->
+        <div class="test-section">
+            <h2>🎭 Usuarios de Demostración</h2>
+            <div class="demo-users">
+                <h3>Usuarios disponibles para pruebas:</h3>
+                <div class="demo-user">👨‍🎓 estudiante / 123456 (Estudiante)</div>
+                <div class="demo-user">👨‍🏫 profesor / 123456 (Profesor)</div>
+                <div class="demo-user">👨‍💼 admin / 123456 (Administrador)</div>
+            </div>
+            <div class="test-buttons">
+                <button class="test-btn success" onclick="testAutoLogin('estudiante')">Login Estudiante</button>
+                <button class="test-btn success" onclick="testAutoLogin('profesor')">Login Profesor</button>
+                <button class="test-btn success" onclick="testAutoLogin('admin')">Login Admin</button>
+                <button class="test-btn secondary" onclick="resetDemoUsers()">Reset Usuarios</button>
+            </div>
+        </div>
+        
+        <!-- Authentication Actions -->
+        <div class="test-section">
+            <h2>🔑 Acciones de Autenticación</h2>
+            <div class="test-buttons">
+                <button class="test-btn primary" onclick="showLoginModal()">Mostrar Login</button>
+                <button class="test-btn primary" onclick="showRegisterModal()">Mostrar Registro</button>
+                <button class="test-btn danger" onclick="testLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <!-- Data Management -->
+        <div class="test-section">
+            <h2>💾 Gestión de Datos</h2>
+            <div class="test-buttons">
+                <button class="test-btn secondary" onclick="testSaveData()">Guardar Datos de Prueba</button>
+                <button class="test-btn secondary" onclick="testLoadData()">Cargar Datos</button>
+                <button class="test-btn secondary" onclick="testExportData()">Exportar Datos</button>
+                <button class="test-btn danger" onclick="testClearData()">Limpiar Datos</button>
+            </div>
+        </div>
+        
+        <!-- Storage Info -->
+        <div class="test-section">
+            <h2>📦 Información de Almacenamiento</h2>
+            <div class="test-buttons">
+                <button class="test-btn secondary" onclick="showStorageStats()">Ver Estadísticas</button>
+                <button class="test-btn secondary" onclick="listStoredUsers()">Listar Usuarios</button>
+            </div>
+            <div id="storageInfo" class="test-output" style="display: none;"></div>
+        </div>
+        
+        <!-- Console Output -->
+        <div class="test-section">
+            <h2>📝 Salida de Consola</h2>
+            <div class="test-buttons">
+                <button class="test-btn secondary" onclick="clearConsole()">Limpiar</button>
+                <button class="test-btn secondary" onclick="toggleConsole()">Mostrar/Ocultar</button>
+            </div>
+            <div id="consoleOutput" class="test-output" style="display: none;"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="test-section">
+            <h2>🧭 Navegación</h2>
+            <div class="test-buttons">
+                <button class="test-btn primary" onclick="goToApp()">Ir a la Aplicación</button>
+                <button class="test-btn secondary" onclick="location.reload()">Recargar Página</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils/authSystem.js"></script>
+    <script src="js/utils/dataManager.js"></script>
+    <script src="js/utils/demoUsers.js"></script>
+    <script src="js/components/AuthModal.js"></script>
+    
+    <script>
+        // Console capture
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        let consoleMessages = [];
+        
+        function captureConsole(type, ...args) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            consoleMessages.push(`[${type.toUpperCase()}] ${new Date().toLocaleTimeString()}: ${message}`);
+            
+            // Keep only last 50 messages
+            if (consoleMessages.length > 50) {
+                consoleMessages = consoleMessages.slice(-50);
+            }
+            
+            updateConsoleOutput();
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            captureConsole('log', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            captureConsole('error', ...args);
+        };
+        
+        console.warn = (...args) => {
+            originalWarn(...args);
+            captureConsole('warn', ...args);
+        };
+        
+        function updateConsoleOutput() {
+            const output = document.getElementById('consoleOutput');
+            if (output && output.style.display !== 'none') {
+                output.textContent = consoleMessages.join('\n');
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+        
+        function clearConsole() {
+            consoleMessages = [];
+            updateConsoleOutput();
+        }
+        
+        function toggleConsole() {
+            const output = document.getElementById('consoleOutput');
+            if (output.style.display === 'none') {
+                output.style.display = 'block';
+                updateConsoleOutput();
+            } else {
+                output.style.display = 'none';
+            }
+        }
+        
+        // Test functions
+        function updateSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            const authAvailable = typeof window.authSystem !== 'undefined';
+            const dataAvailable = typeof window.dataManager !== 'undefined';
+            const modalAvailable = typeof window.authModal !== 'undefined';
+            
+            statusDiv.innerHTML = `
+                <p><span class="status-indicator ${authAvailable ? 'online' : 'offline'}"></span>Sistema de Autenticación: ${authAvailable ? 'Disponible' : 'No disponible'}</p>
+                <p><span class="status-indicator ${dataAvailable ? 'online' : 'offline'}"></span>Gestor de Datos: ${dataAvailable ? 'Disponible' : 'No disponible'}</p>
+                <p><span class="status-indicator ${modalAvailable ? 'online' : 'offline'}"></span>Modal de Autenticación: ${modalAvailable ? 'Disponible' : 'No disponible'}</p>
+            `;
+        }
+        
+        function updateCurrentUser() {
+            const userDiv = document.getElementById('currentUserInfo');
+            
+            if (window.authSystem && window.authSystem.isUserAuthenticated()) {
+                const user = window.authSystem.getCurrentUser();
+                userDiv.innerHTML = `
+                    <div class="current-user">
+                        <h3>✅ Usuario Autenticado</h3>
+                        <p><strong>ID:</strong> ${user.id}</p>
+                        <p><strong>Usuario:</strong> ${user.username}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Nombre:</strong> ${user.fullName}</p>
+                        <p><strong>Rol:</strong> ${user.role}</p>
+                        <p><strong>Creado:</strong> ${new Date(user.createdAt).toLocaleString()}</p>
+                        <p><strong>Último login:</strong> ${user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'Nunca'}</p>
+                    </div>
+                `;
+            } else {
+                userDiv.innerHTML = '<p>❌ No hay usuario autenticado</p>';
+            }
+        }
+        
+        async function testAutoLogin(username) {
+            console.log(`🔐 Intentando login automático con: ${username}`);
+            
+            if (!window.authSystem) {
+                console.error('❌ Sistema de autenticación no disponible');
+                return;
+            }
+            
+            const result = await window.authSystem.login(username, '123456', false);
+            
+            if (result.success) {
+                console.log('✅ Login exitoso');
+                updateCurrentUser();
+            } else {
+                console.error('❌ Login falló:', result.error);
+            }
+        }
+        
+        function testLogout() {
+            console.log('🚪 Cerrando sesión...');
+            
+            if (window.authSystem) {
+                window.authSystem.logout();
+                updateCurrentUser();
+            } else {
+                console.error('❌ Sistema de autenticación no disponible');
+            }
+        }
+        
+        function showLoginModal() {
+            if (window.authModal) {
+                window.authModal.show('login');
+            } else {
+                console.error('❌ Modal de autenticación no disponible');
+            }
+        }
+        
+        function showRegisterModal() {
+            if (window.authModal) {
+                window.authModal.show('register');
+            } else {
+                console.error('❌ Modal de autenticación no disponible');
+            }
+        }
+        
+        function resetDemoUsers() {
+            if (window.DemoUsers) {
+                window.DemoUsers.resetDemoUsers();
+            } else {
+                console.error('❌ DemoUsers no disponible');
+            }
+        }
+        
+        async function testSaveData() {
+            if (!window.dataManager || !window.authSystem) {
+                console.error('❌ Sistemas requeridos no disponibles');
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                console.error('❌ No hay usuario autenticado');
+                return;
+            }
+            
+            console.log('💾 Guardando datos de prueba...');
+            
+            // Save test progress
+            await window.dataManager.saveUserProgress(user.id, 'test-course', {
+                lessonsCompleted: ['lesson-1', 'lesson-2'],
+                totalPoints: 150,
+                completionPercentage: 50
+            });
+            
+            // Save test achievements
+            await window.dataManager.saveUserAchievements(user.id, ['first-lesson', 'quick-learner']);
+            
+            // Save test stats
+            await window.dataManager.saveUserStats(user.id, {
+                totalPoints: 500,
+                coursesCompleted: 2,
+                currentStreak: 7
+            });
+            
+            console.log('✅ Datos de prueba guardados');
+        }
+        
+        async function testLoadData() {
+            if (!window.dataManager || !window.authSystem) {
+                console.error('❌ Sistemas requeridos no disponibles');
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                console.error('❌ No hay usuario autenticado');
+                return;
+            }
+            
+            console.log('📊 Cargando datos del usuario...');
+            
+            const progress = await window.dataManager.loadUserProgress(user.id);
+            const achievements = await window.dataManager.loadUserAchievements(user.id);
+            const stats = await window.dataManager.loadUserStats(user.id);
+            
+            console.log('Progreso:', progress);
+            console.log('Logros:', achievements);
+            console.log('Estadísticas:', stats);
+        }
+        
+        async function testExportData() {
+            if (!window.dataManager || !window.authSystem) {
+                console.error('❌ Sistemas requeridos no disponibles');
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                console.error('❌ No hay usuario autenticado');
+                return;
+            }
+            
+            console.log('📤 Exportando datos del usuario...');
+            
+            const exportResult = await window.dataManager.exportUserData(user.id);
+            if (exportResult.success) {
+                console.log('✅ Datos exportados:', exportResult.data);
+            } else {
+                console.error('❌ Error exportando datos:', exportResult.error);
+            }
+        }
+        
+        async function testClearData() {
+            if (!window.dataManager || !window.authSystem) {
+                console.error('❌ Sistemas requeridos no disponibles');
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                console.error('❌ No hay usuario autenticado');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de que quieres limpiar todos los datos del usuario?')) {
+                console.log('🗑️ Limpiando datos del usuario...');
+                
+                const result = await window.dataManager.clearUserData(user.id);
+                if (result.success) {
+                    console.log(`✅ ${result.clearedCount} entradas de datos eliminadas`);
+                } else {
+                    console.error('❌ Error limpiando datos:', result.error);
+                }
+            }
+        }
+        
+        function showStorageStats() {
+            const infoDiv = document.getElementById('storageInfo');
+            
+            if (window.dataManager) {
+                const stats = window.dataManager.getStorageStats();
+                if (stats) {
+                    infoDiv.innerHTML = `
+Estadísticas de Almacenamiento:
+- Total de claves: ${stats.totalKeys}
+- Claves de EduQuest: ${stats.edquestKeys}
+- Tamaño total: ${(stats.totalSize / 1024).toFixed(2)} KB
+- Tamaño EduQuest: ${(stats.edquestSize / 1024).toFixed(2)} KB
+- Espacio disponible: ${(stats.availableSpace / 1024).toFixed(2)} KB
+                    `;
+                } else {
+                    infoDiv.textContent = 'Error obteniendo estadísticas de almacenamiento';
+                }
+            } else {
+                infoDiv.textContent = 'Gestor de datos no disponible';
+            }
+            
+            infoDiv.style.display = 'block';
+        }
+        
+        function listStoredUsers() {
+            const infoDiv = document.getElementById('storageInfo');
+            
+            if (window.authSystem) {
+                const users = window.authSystem.getStoredUsers();
+                infoDiv.innerHTML = `
+Usuarios almacenados (${users.length}):
+${users.map(user => `
+- ID: ${user.id}
+  Usuario: ${user.username}
+  Email: ${user.email}
+  Rol: ${user.role}
+  Creado: ${new Date(user.createdAt).toLocaleString()}
+`).join('\n')}
+                `;
+            } else {
+                infoDiv.textContent = 'Sistema de autenticación no disponible';
+            }
+            
+            infoDiv.style.display = 'block';
+        }
+        
+        function goToApp() {
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Página de pruebas de autenticación cargada');
+            
+            // Wait for systems to initialize
+            setTimeout(() => {
+                updateSystemStatus();
+                updateCurrentUser();
+                
+                // Setup auth event listeners
+                if (window.authSystem) {
+                    window.addEventListener('auth:login', () => {
+                        console.log('🎉 Evento de login recibido');
+                        updateCurrentUser();
+                    });
+                    
+                    window.addEventListener('auth:logout', () => {
+                        console.log('👋 Evento de logout recibido');
+                        updateCurrentUser();
+                    });
+                    
+                    window.addEventListener('auth:register', () => {
+                        console.log('📝 Evento de registro recibido');
+                        updateCurrentUser();
+                    });
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

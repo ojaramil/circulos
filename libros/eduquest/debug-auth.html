@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Sistema de Autenticación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .debug-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🔍 Debug - Sistema de Autenticación</h1>
+        
+        <h2>Registro de Usuario</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName">Nombre Completo:</label>
+                <input type="text" id="fullName" name="fullName" value="Usuario Prueba" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" value="testuser" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" value="123456" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" value="123456" required>
+            </div>
+            
+            <button type="submit">Registrar Usuario</button>
+            <button type="button" onclick="clearOutput()">Limpiar</button>
+        </form>
+        
+        <h2>Login de Usuario</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Usuario/Email:</label>
+                <input type="text" id="loginUsername" name="username" value="testuser" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Contraseña:</label>
+                <input type="password" id="loginPassword" name="password" value="123456" required>
+            </div>
+            
+            <button type="submit">Iniciar Sesión</button>
+            <button type="button" onclick="logout()">Cerrar Sesión</button>
+        </form>
+        
+        <h2>Estado del Sistema</h2>
+        <button onclick="checkSystemStatus()">Verificar Estado</button>
+        <button onclick="listUsers()">Listar Usuarios</button>
+        <button onclick="clearStorage()">Limpiar Storage</button>
+        
+        <div id="output" class="output">Esperando acciones...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils/authSystem.js"></script>
+    <script src="js/utils/dataManager.js"></script>
+    
+    <script>
+        let output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearOutput() {
+            output.innerHTML = 'Output limpiado...\n';
+        }
+        
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const userData = {
+                fullName: formData.get('fullName'),
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            
+            log('🔄 Intentando registrar usuario...');
+            log(`Datos: ${JSON.stringify(userData, null, 2)}`);
+            
+            if (!window.authSystem) {
+                log('❌ Sistema de autenticación no disponible', 'error');
+                return;
+            }
+            
+            try {
+                const result = await window.authSystem.register(userData);
+                
+                if (result.success) {
+                    log('✅ Usuario registrado exitosamente!', 'success');
+                    log(`Usuario creado: ${JSON.stringify(result.user, null, 2)}`);
+                } else {
+                    log(`❌ Error en registro: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Excepción durante registro: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`);
+            }
+        });
+        
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const username = formData.get('username');
+            const password = formData.get('password');
+            
+            log('🔄 Intentando iniciar sesión...');
+            log(`Usuario: ${username}, Contraseña: ${password}`);
+            
+            if (!window.authSystem) {
+                log('❌ Sistema de autenticación no disponible', 'error');
+                return;
+            }
+            
+            try {
+                const result = await window.authSystem.login(username, password, false);
+                
+                if (result.success) {
+                    log('✅ Login exitoso!', 'success');
+                    log(`Usuario: ${JSON.stringify(result.user, null, 2)}`);
+                } else {
+                    log(`❌ Error en login: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Excepción durante login: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`);
+            }
+        });
+        
+        function logout() {
+            if (!window.authSystem) {
+                log('❌ Sistema de autenticación no disponible', 'error');
+                return;
+            }
+            
+            log('🚪 Cerrando sesión...');
+            window.authSystem.logout();
+            log('✅ Sesión cerrada', 'success');
+        }
+        
+        function checkSystemStatus() {
+            log('📊 Verificando estado del sistema...');
+            
+            // Check auth system
+            if (window.authSystem) {
+                log('✅ AuthSystem: Disponible', 'success');
+                log(`   - Usuario autenticado: ${window.authSystem.isUserAuthenticated()}`);
+                
+                const currentUser = window.authSystem.getCurrentUser();
+                if (currentUser) {
+                    log(`   - Usuario actual: ${currentUser.username} (${currentUser.email})`);
+                }
+            } else {
+                log('❌ AuthSystem: No disponible', 'error');
+            }
+            
+            // Check data manager
+            if (window.dataManager) {
+                log('✅ DataManager: Disponible', 'success');
+            } else {
+                log('❌ DataManager: No disponible', 'error');
+            }
+            
+            // Check localStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                log('✅ LocalStorage: Disponible', 'success');
+            } catch (error) {
+                log('❌ LocalStorage: No disponible', 'error');
+            }
+        }
+        
+        function listUsers() {
+            if (!window.authSystem) {
+                log('❌ Sistema de autenticación no disponible', 'error');
+                return;
+            }
+            
+            log('👥 Listando usuarios almacenados...');
+            
+            try {
+                const users = window.authSystem.getStoredUsers();
+                log(`Total de usuarios: ${users.length}`);
+                
+                users.forEach((user, index) => {
+                    log(`${index + 1}. ${user.username} (${user.email}) - ${user.role}`);
+                    log(`   ID: ${user.id}`);
+                    log(`   Creado: ${new Date(user.createdAt).toLocaleString()}`);
+                });
+                
+                if (users.length === 0) {
+                    log('No hay usuarios registrados');
+                }
+            } catch (error) {
+                log(`❌ Error listando usuarios: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearStorage() {
+            if (confirm('¿Estás seguro de que quieres limpiar todo el almacenamiento?')) {
+                log('🗑️ Limpiando almacenamiento...');
+                
+                try {
+                    // Clear auth-related storage
+                    localStorage.removeItem('eduquest_users');
+                    localStorage.removeItem('eduquest_session');
+                    sessionStorage.removeItem('eduquest_session');
+                    
+                    // Clear other eduquest data
+                    const keys = Object.keys(localStorage);
+                    keys.forEach(key => {
+                        if (key.startsWith('eduquest_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    
+                    log('✅ Almacenamiento limpiado', 'success');
+                } catch (error) {
+                    log(`❌ Error limpiando almacenamiento: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Página de debug cargada');
+            
+            setTimeout(() => {
+                checkSystemStatus();
+            }, 1000);
+        });
+        
+        // Capture console messages
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            log(`[CONSOLE] ${args.join(' ')}`);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            log(`[ERROR] ${args.join(' ')}`, 'error');
+        };
+    </script>
+</body>
+</html>

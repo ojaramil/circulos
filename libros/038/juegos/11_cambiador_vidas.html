@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiador de Vidas - Mentalidad de Abundancia</title>
+    <link rel="stylesheet" href="../juegos-style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💝 Cambiador de Vidas</h1>
+            <p>Impacta Vidas, Cambia el Mundo</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 Sobre el Cambiador de Vidas</h3>
+                <p>Cuando cambias vidas, tu propia vida cambia. Este juego te ayuda a rastrear y celebrar el impacto que
+                    tienes en otros.</p>
+            </div>
+
+            <div class="impact-counter">
+                <h3>Vidas Impactadas</h3>
+                <div id="livesCount">0</div>
+            </div>
+
+            <div class="impact-ways" id="impactWays"></div>
+
+            <div class="actions">
+                <button class="btn" onclick="addImpact()">Registrar Impacto</button>
+                <button class="btn" onclick="viewReport()">Ver Reporte</button>
+            </div>
+
+            <div id="achievements"></div>
+        </div>
+    </div>
+
+    <script>
+        const impactWays = [
+            { id: 1, name: 'Ayuda Financiera', icon: '💰' },
+            { id: 2, name: 'Consejo y Mentoría', icon: '🎓' },
+            { id: 3, name: 'Oración', icon: '🙏' },
+            { id: 4, name: 'Servicio Práctico', icon: '🤝' },
+            { id: 5, name: 'Palabras de Ánimo', icon: '💬' }
+        ];
+
+        let livesImpacted = 0;
+        let impactLog = [];
+
+        function initGame() {
+            const container = document.getElementById('impactWays');
+            container.innerHTML = impactWays.map(way => `
+                <div class="impact-card" onclick="selectImpact('${way.name}')">
+                    <div class="impact-icon">${way.icon}</div>
+                    <div class="impact-name">${way.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectImpact(way) {
+            const name = prompt('¿A quién impactaste?');
+            if (name) {
+                livesImpacted++;
+                impactLog.push({ name, way, date: new Date().toLocaleDateString() });
+                updateDisplay();
+                showAchievement('✨ Vida Impactada', `Has impactado a ${name}`);
+            }
+        }
+
+        function addImpact() {
+            const name = prompt('¿A quién impactaste?');
+            const way = prompt('¿Cómo lo hiciste?');
+            if (name && way) {
+                livesImpacted++;
+                impactLog.push({ name, way, date: new Date().toLocaleDateString() });
+                updateDisplay();
+                showAchievement('💝 Impacto Registrado', 'Has cambiado una vida');
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('livesCount').textContent = livesImpacted;
+        }
+
+        function viewReport() {
+            const report = `Reporte de Impacto\n\nVidas Impactadas: ${livesImpacted}\n\n${impactLog.map(i => `• ${i.name} - ${i.way} (${i.date})`).join('\n')}`;
+            alert(report);
+        }
+
+        function showAchievement(title, desc) {
+            const div = document.createElement('div');
+            div.className = 'achievement';
+            div.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+            document.getElementById('achievements').appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

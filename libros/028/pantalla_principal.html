@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Teoría "Déjalos" - Interactivo</title>
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #f0f0f0;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    
+    .sidebar-left::-webkit-scrollbar,
+    .sidebar-right::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-track,
+    .sidebar-right::-webkit-scrollbar-track {
+      background: #142b47;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb,
+    .sidebar-right::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb:hover,
+    .sidebar-right::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      padding-bottom: 20px;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a:hover .icon-placeholder {
+      color: #9cc2ff;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-left: none;
+        border-right: none;
+        padding: 18px 10px 10px 10px;
+      }
+      .main-content-area { order: 1; padding: 10px; }
+      .sidebar-left { order: 2; }
+      .sidebar-right { order: 3; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">🔄</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Desarrollo Personal</span>
+        <span class="content-title">La Teoría "Déjalos" - Mel Robbins</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+    </nav>
+  </header>
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_introduccion.html" class="active-lesson"><span class="icon-placeholder">📄</span>Mi Historia</a></li>
+          <li><a href="#" data-src="lecciones/02_teoria_dejalos.html"><span class="icon-placeholder">🔄</span>La Teoría "Déjalos"</a></li>
+          <li><a href="#" data-src="lecciones/03_deja_de_gastar.html"><span class="icon-placeholder">🚫</span>Deja de Gastar tu Vida</a></li>
+          <li><a href="#" data-src="lecciones/04_empezando.html"><span class="icon-placeholder">🚀</span>Empezando: Déjalos + Déjame</a></li>
+          <li><a href="#" data-src="lecciones/05_la_vida_es_estresante.html"><span class="icon-placeholder">😰</span>La Vida es Estresante</a></li>
+          <li><a href="#" data-src="lecciones/06_dejalos_estresarte.html"><span class="icon-placeholder">💪</span>Déjalos Estresarte</a></li>
+          <li><a href="#" data-src="lecciones/07_pensamientos_malos.html"><span class="icon-placeholder">💭</span>Déjalos Pensar Mal</a></li>
+          <li><a href="#" data-src="lecciones/08_amar_personas_dificiles.html"><span class="icon-placeholder">❤️</span>Amar Personas Difíciles</a></li>
+          <li><a href="#" data-src="lecciones/09_adultos_berrinches.html"><span class="icon-placeholder">😤</span>Adultos con Berrinches</a></li>
+          <li><a href="#" data-src="lecciones/10_decision_correcta.html"><span class="icon-placeholder">✅</span>Decisión Correcta</a></li>
+          <li><a href="#" data-src="lecciones/11_la_vida_no_es_justa.html"><span class="icon-placeholder">⚖️</span>La Vida No es Justa</a></li>
+          <li><a href="#" data-src="lecciones/12_comparacion_maestra.html"><span class="icon-placeholder">📚</span>Comparación como Maestra</a></li>
+          <li><a href="#" data-src="lecciones/13_verdad_amistad.html"><span class="icon-placeholder">👥</span>Verdad sobre Amistad</a></li>
+          <li><a href="#" data-src="lecciones/14_amistades_desvanecen.html"><span class="icon-placeholder">🌅</span>Amistades que se Desvanecen</a></li>
+          <li><a href="#" data-src="lecciones/15_mejores_amistades.html"><span class="icon-placeholder">🌟</span>Mejores Amistades</a></li>
+          <li><a href="#" data-src="lecciones/16_cambio_cuando_quieren.html"><span class="icon-placeholder">🔄</span>Cambio Cuando Quieren</a></li>
+          <li><a href="#" data-src="lecciones/17_poder_influencia.html"><span class="icon-placeholder">💫</span>Poder de Influencia</a></li>
+          <li><a href="#" data-src="lecciones/18_mas_rescatas_mas_hunden.html"><span class="icon-placeholder">🆘</span>Más Rescatas, Más Hunden</a></li>
+          <li><a href="#" data-src="lecciones/19_apoyo_correcto.html"><span class="icon-placeholder">🤝</span>Apoyo Correcto</a></li>
+          <li><a href="#" data-src="lecciones/20_mostrar_quien_son.html"><span class="icon-placeholder">👁️</span>Mostrar Quién Son</a></li>
+          <li><a href="#" data-src="lecciones/21_siguiente_nivel.html"><span class="icon-placeholder">⬆️</span>Siguiente Nivel</a></li>
+          <li><a href="#" data-src="lecciones/22_final_hermoso.html"><span class="icon-placeholder">🌅</span>Final Hermoso</a></li>
+          <li><a href="#" data-src="lecciones/23_era_deme.html"><span class="icon-placeholder">🎉</span>Tu Era "Déjame"</a></li>
+        </ul>
+      </section>
+    </aside>
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_identificador_control.html"><span class="icon-placeholder">🎯</span>Identificador de Control</a></li>
+          <li><a href="#" data-src="juegos/02_practica_dejalos.html"><span class="icon-placeholder">🔄</span>Práctica "Déjalos"</a></li>
+          <li><a href="#" data-src="juegos/03_liberacion_emocional.html"><span class="icon-placeholder">💝</span>Liberación Emocional</a></li>
+          <li><a href="#" data-src="juegos/04_manejo_estres.html"><span class="icon-placeholder">🧘</span>Manejo del Estrés</a></li>
+          <li><a href="#" data-src="juegos/05_diario_deme.html"><span class="icon-placeholder">📔</span>Diario "Déjame"</a></li>
+          <li><a href="#" data-src="juegos/06_evaluacion_relaciones.html"><span class="icon-placeholder">📊</span>Evaluación de Relaciones</a></li>
+          <li><a href="#" data-src="juegos/07_plan_liberacion.html"><span class="icon-placeholder">📋</span>Plan de Liberación</a></li>
+          <li><a href="#" data-src="juegos/08_meditacion_deme.html"><span class="icon-placeholder">🧘</span>Meditación "Déjame"</a></li>
+          <li><a href="#" data-src="juegos/09_simulador_decisiones.html"><span class="icon-placeholder">🎮</span>Simulador de Decisiones</a></li>
+          <li><a href="#" data-src="juegos/10_entrenador_limites.html"><span class="icon-placeholder">🏋️</span>Entrenador de Límites</a></li>
+          <li><a href="#" data-src="juegos/11_guia_amistades.html"><span class="icon-placeholder">📖</span>Guía de Amistades</a></li>
+          <li><a href="#" data-src="juegos/12_transformador_vida.html"><span class="icon-placeholder">✨</span>Transformador de Vida</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Solo interceptar enlaces internos (con data-src)
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
+          frame.src = this.getAttribute('data-src');
+        }
+        // Los enlaces externos (sin data-src) funcionarán normalmente
+      });
+    });
+  </script>
+</body>
+</html>

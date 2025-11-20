@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Memoria</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .memory-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .memory-status {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .memory-status h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .memory-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .memory-exercises {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .exercise-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .exercise-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .exercise-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .exercise-card.active {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .exercise-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .exercise-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .exercise-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .exercise-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .memory-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .memory-btn:hover {
+            background: #5a6fd8;
+        }
+        .memory-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .memory-btn.active {
+            background: #28a745;
+        }
+        .memory-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .memory-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .memory-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .memory-game {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .memory-game h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .memory-card:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .memory-card.flipped {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
+        .memory-card.matched {
+            background: #28a745;
+            color: white;
+            border-color: #1e7e34;
+        }
+        .memory-card.mismatched {
+            background: #dc3545;
+            color: white;
+            border-color: #c82333;
+        }
+        .exercise-timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-beginner { background: #f8d7da; color: #721c24; }
+        .level-intermediate { background: #fff3cd; color: #856404; }
+        .level-advanced { background: #d4edda; color: #155724; }
+        .level-expert { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Entrenador de Memoria</h1>
+            <p>Fortalece tu memoria con ejercicios específicos</p>
+        </div>
+
+        <div class="memory-area">
+            <div class="memory-status">
+                <h3>🧠 Estado de tu Memoria</h3>
+                <div class="memory-score" id="memory-score">65</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="memory-progress" style="width: 65%"></div>
+                </div>
+                <p id="memory-status">Nivel intermedio - Continúa entrenando</p>
+            </div>
+
+            <div class="memory-exercises" id="memory-exercises">
+                <div class="exercise-card" onclick="selectExercise('numbers')">
+                    <div class="exercise-icon">🔢</div>
+                    <div class="exercise-title">Memoria de Números</div>
+                    <div class="exercise-description">Memoriza secuencias de números</div>
+                    <div class="exercise-duration">5 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('words')">
+                    <div class="exercise-icon">📝</div>
+                    <div class="exercise-title">Memoria de Palabras</div>
+                    <div class="exercise-description">Memoriza listas de palabras</div>
+                    <div class="exercise-duration">7 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('faces')">
+                    <div class="exercise-icon">👥</div>
+                    <div class="exercise-title">Memoria de Caras</div>
+                    <div class="exercise-description">Memoriza y reconoce caras</div>
+                    <div class="exercise-duration">10 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('spatial')">
+                    <div class="exercise-icon">🗺️</div>
+                    <div class="exercise-title">Memoria Espacial</div>
+                    <div class="exercise-description">Memoriza posiciones y ubicaciones</div>
+                    <div class="exercise-duration">8 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('visual')">
+                    <div class="exercise-icon">👁️</div>
+                    <div class="exercise-title">Memoria Visual</div>
+                    <div class="exercise-description">Memoriza patrones y formas</div>
+                    <div class="exercise-duration">6 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('auditory')">
+                    <div class="exercise-icon">👂</div>
+                    <div class="exercise-title">Memoria Auditiva</div>
+                    <div class="exercise-description">Memoriza sonidos y melodías</div>
+                    <div class="exercise-duration">9 minutos</div>
+                </div>
+            </div>
+
+            <div class="memory-game" id="memory-game" style="display: none;">
+                <h3>🎮 Juego de Memoria</h3>
+                <div class="memory-grid" id="memory-grid"></div>
+                <div class="exercise-timer" id="exercise-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="exercise-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="memory-btn" onclick="startExercise()" id="startBtn">🚀 Iniciar Ejercicio</button>
+                <button class="memory-btn" onclick="pauseExercise()" id="pauseBtn" disabled>⏸️ Pausar</button>
+                <button class="memory-btn" onclick="stopExercise()" id="stopBtn" disabled>⏹️ Detener</button>
+                <button class="memory-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="memory-stats" style="display: none;">
+                <div class="memory-stats">
+                    <h3>📊 Estadísticas de Memoria</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-time">0</div>
+                            <div class="stat-label">Minutos Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="exercises-completed">0</div>
+                            <div class="stat-label">Ejercicios Completados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="memory-strength">65</div>
+                            <div class="stat-label">Fuerza de Memoria</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Intermedio</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMemory = {
+            exercise: null,
+            isActive: false,
+            isPaused: false,
+            startTime: 0,
+            elapsedTime: 0,
+            totalTime: 0,
+            exercisesCompleted: 0,
+            memoryStrength: 65,
+            score: 0
+        };
+
+        let memoryInterval;
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        const exercises = {
+            'numbers': { 
+                duration: 5 * 60 * 1000, 
+                name: 'Memoria de Números',
+                memoryGain: 8,
+                description: 'Memoriza secuencias de números y reprodúcelas'
+            },
+            'words': { 
+                duration: 7 * 60 * 1000, 
+                name: 'Memoria de Palabras',
+                memoryGain: 10,
+                description: 'Memoriza listas de palabras y recítalas'
+            },
+            'faces': { 
+                duration: 10 * 60 * 1000, 
+                name: 'Memoria de Caras',
+                memoryGain: 12,
+                description: 'Memoriza caras y reconócelas después'
+            },
+            'spatial': { 
+                duration: 8 * 60 * 1000, 
+                name: 'Memoria Espacial',
+                memoryGain: 11,
+                description: 'Memoriza posiciones y ubicaciones'
+            },
+            'visual': { 
+                duration: 6 * 60 * 1000, 
+                name: 'Memoria Visual',
+                memoryGain: 9,
+                description: 'Memoriza patrones y formas visuales'
+            },
+            'auditory': { 
+                duration: 9 * 60 * 1000, 
+                name: 'Memoria Auditiva',
+                memoryGain: 10,
+                description: 'Memoriza sonidos y melodías'
+            }
+        };
+
+        function selectExercise(exerciseType) {
+            currentMemory.exercise = exerciseType;
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.exercise-card').classList.add('selected');
+            
+            // Mostrar juego de memoria
+            document.getElementById('memory-game').style.display = 'block';
+            createMemoryGame();
+        }
+
+        function createMemoryGame() {
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            
+            // Crear 16 cartas (8 pares)
+            const symbols = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+            const cards = [...symbols, ...symbols];
+            
+            // Mezclar cartas
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            
+            memoryCards = cards;
+            flippedCards = [];
+            matchedPairs = 0;
+            
+            cards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.textContent = '?';
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.onclick = () => flipCard(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.symbol;
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                currentMemory.score += 10;
+                
+                if (matchedPairs === 8) {
+                    // Juego completado
+                    currentMemory.exercisesCompleted++;
+                    currentMemory.memoryStrength += exercises[currentMemory.exercise].memoryGain;
+                    currentMemory.memoryStrength = Math.min(100, currentMemory.memoryStrength);
+                    showAchievement();
+                }
+            } else {
+                card1.classList.add('mismatched');
+                card2.classList.add('mismatched');
+                
+                setTimeout(() => {
+                    card1.classList.remove('flipped', 'mismatched');
+                    card2.classList.remove('flipped', 'mismatched');
+                    card1.textContent = '?';
+                    card2.textContent = '?';
+                }, 1000);
+            }
+            
+            flippedCards = [];
+        }
+
+        function startExercise() {
+            if (!currentMemory.exercise || currentMemory.isActive) return;
+            
+            currentMemory.isActive = true;
+            currentMemory.isPaused = false;
+            currentMemory.startTime = Date.now();
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Iniciar temporizador
+            memoryInterval = setInterval(updateTimer, 1000);
+            
+            // Mostrar ejercicio seleccionado como activo
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                if (card.classList.contains('selected')) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function pauseExercise() {
+            if (!currentMemory.isActive) return;
+            
+            currentMemory.isPaused = !currentMemory.isPaused;
+            
+            if (currentMemory.isPaused) {
+                clearInterval(memoryInterval);
+                document.getElementById('pauseBtn').textContent = '▶️ Continuar';
+                document.getElementById('pauseBtn').classList.add('pause');
+            } else {
+                memoryInterval = setInterval(updateTimer, 1000);
+                document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+                document.getElementById('pauseBtn').classList.remove('pause');
+            }
+        }
+
+        function stopExercise() {
+            if (!currentMemory.isActive) return;
+            
+            currentMemory.isActive = false;
+            currentMemory.isPaused = false;
+            
+            clearInterval(memoryInterval);
+            
+            // Calcular tiempo transcurrido
+            const sessionTime = Math.floor((Date.now() - currentMemory.startTime) / 1000);
+            currentMemory.totalTime += sessionTime;
+            
+            // Guardar en localStorage
+            saveStats();
+            
+            // Resetear controles
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+            document.getElementById('pauseBtn').classList.remove('pause');
+            
+            // Resetear visual
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.classList.remove('selected', 'active');
+            });
+            document.getElementById('exercise-timer').textContent = '00:00';
+            document.getElementById('exercise-progress').style.width = '0%';
+            
+            updateMemoryDisplay();
+        }
+
+        function updateTimer() {
+            if (currentMemory.isPaused) return;
+            
+            const elapsed = Math.floor((Date.now() - currentMemory.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('exercise-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Actualizar progreso
+            const exerciseDuration = exercises[currentMemory.exercise].duration / 1000;
+            const progress = Math.min((elapsed / exerciseDuration) * 100, 100);
+            document.getElementById('exercise-progress').style.width = `${progress}%`;
+        }
+
+        function updateMemoryDisplay() {
+            const strength = currentMemory.memoryStrength;
+            document.getElementById('memory-score').textContent = strength;
+            document.getElementById('memory-progress').style.width = `${strength}%`;
+            
+            let status, level, levelClass;
+            if (strength < 40) {
+                status = 'Nivel bajo - Necesitas más entrenamiento';
+                level = 'Principiante';
+                levelClass = 'level-beginner';
+            } else if (strength < 60) {
+                status = 'Nivel medio-bajo - Continúa entrenando';
+                level = 'Principiante';
+                levelClass = 'level-beginner';
+            } else if (strength < 80) {
+                status = 'Nivel intermedio - ¡Buen trabajo!';
+                level = 'Intermedio';
+                levelClass = 'level-intermediate';
+            } else if (strength < 95) {
+                status = 'Nivel avanzado - ¡Excelente!';
+                level = 'Avanzado';
+                levelClass = 'level-advanced';
+            } else {
+                status = 'Nivel experto - ¡Eres un maestro de la memoria!';
+                level = 'Experto';
+                levelClass = 'level-expert';
+            }
+            
+            document.getElementById('memory-status').textContent = status;
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement() {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '🧠 ¡Memoria mejorada! +' + exercises[currentMemory.exercise].memoryGain + ' puntos';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('total-time').textContent = Math.floor(currentMemory.totalTime / 60);
+            document.getElementById('exercises-completed').textContent = currentMemory.exercisesCompleted;
+            document.getElementById('memory-strength').textContent = currentMemory.memoryStrength;
+            
+            updateMemoryDisplay();
+            document.getElementById('memory-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                totalTime: currentMemory.totalTime,
+                exercisesCompleted: currentMemory.exercisesCompleted,
+                memoryStrength: currentMemory.memoryStrength,
+                score: currentMemory.score
+            };
+            localStorage.setItem('memoryStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('memoryStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentMemory.totalTime = stats.totalTime || 0;
+                currentMemory.exercisesCompleted = stats.exercisesCompleted || 0;
+                currentMemory.memoryStrength = stats.memoryStrength || 65;
+                currentMemory.score = stats.score || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateMemoryDisplay();
+    </script>
+</body>
+</html>

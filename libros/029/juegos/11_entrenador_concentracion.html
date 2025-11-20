@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Concentración</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .concentration-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .concentration-meter {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .concentration-meter h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .concentration-level {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .concentration-exercises {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .exercise-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .exercise-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .exercise-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .exercise-card.active {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .exercise-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .exercise-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .exercise-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .exercise-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .concentration-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .concentration-btn:hover {
+            background: #5a6fd8;
+        }
+        .concentration-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .concentration-btn.active {
+            background: #28a745;
+        }
+        .concentration-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .concentration-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .concentration-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .concentration-game {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .concentration-game h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .focus-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s;
+            background: linear-gradient(45deg, #e7f3ff, #f0f4ff);
+        }
+        .focus-circle.focused {
+            background: linear-gradient(45deg, #d4edda, #e7f3ff);
+            border-color: #28a745;
+        }
+        .focus-circle.distracted {
+            background: linear-gradient(45deg, #f8d7da, #e7f3ff);
+            border-color: #dc3545;
+        }
+        .exercise-timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-beginner { background: #f8d7da; color: #721c24; }
+        .level-intermediate { background: #fff3cd; color: #856404; }
+        .level-advanced { background: #d4edda; color: #155724; }
+        .level-expert { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Entrenador de Concentración</h1>
+            <p>Mejora tu capacidad de concentración y enfoque</p>
+        </div>
+
+        <div class="concentration-area">
+            <div class="concentration-meter">
+                <h3>🎯 Nivel de Concentración</h3>
+                <div class="concentration-level" id="concentration-level">60%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="concentration-progress" style="width: 60%"></div>
+                </div>
+                <p id="concentration-status">Nivel medio - Continúa entrenando tu concentración</p>
+            </div>
+
+            <div class="concentration-exercises" id="concentration-exercises">
+                <div class="exercise-card" onclick="selectExercise('breathing')">
+                    <div class="exercise-icon">🌬️</div>
+                    <div class="exercise-title">Respiración Enfocada</div>
+                    <div class="exercise-description">Mantén el foco en tu respiración</div>
+                    <div class="exercise-duration">5 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('counting')">
+                    <div class="exercise-icon">🔢</div>
+                    <div class="exercise-title">Conteo Mental</div>
+                    <div class="exercise-description">Cuenta del 1 al 100 sin distraerte</div>
+                    <div class="exercise-duration">3 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('visualization')">
+                    <div class="exercise-icon">👁️</div>
+                    <div class="exercise-title">Visualización</div>
+                    <div class="exercise-description">Mantén una imagen mental específica</div>
+                    <div class="exercise-duration">7 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('body-scan')">
+                    <div class="exercise-icon">🧍</div>
+                    <div class="exercise-title">Escaneo Corporal</div>
+                    <div class="exercise-description">Observa cada parte de tu cuerpo</div>
+                    <div class="exercise-duration">10 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('mantra')">
+                    <div class="exercise-icon">🗣️</div>
+                    <div class="exercise-title">Mantra</div>
+                    <div class="exercise-description">Repite una frase o palabra</div>
+                    <div class="exercise-duration">8 minutos</div>
+                </div>
+                <div class="exercise-card" onclick="selectExercise('object-focus')">
+                    <div class="exercise-icon">🔍</div>
+                    <div class="exercise-title">Enfoque en Objeto</div>
+                    <div class="exercise-description">Observa un objeto sin distraerte</div>
+                    <div class="exercise-duration">6 minutos</div>
+                </div>
+            </div>
+
+            <div class="concentration-game" id="concentration-game" style="display: none;">
+                <h3>🎮 Ejercicio de Concentración</h3>
+                <div class="focus-circle" id="focus-circle">
+                    <div id="focus-text">Mantén el foco</div>
+                </div>
+                <div class="exercise-timer" id="exercise-timer">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="exercise-progress" style="width: 0%"></div>
+                </div>
+                <p id="exercise-instruction">Sigue las instrucciones del ejercicio</p>
+            </div>
+
+            <div class="control-buttons">
+                <button class="concentration-btn" onclick="startExercise()" id="startBtn">🚀 Iniciar Ejercicio</button>
+                <button class="concentration-btn" onclick="pauseExercise()" id="pauseBtn" disabled>⏸️ Pausar</button>
+                <button class="concentration-btn" onclick="stopExercise()" id="stopBtn" disabled>⏹️ Detener</button>
+                <button class="concentration-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="concentration-stats" style="display: none;">
+                <div class="concentration-stats">
+                    <h3>📊 Estadísticas de Concentración</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-time">0</div>
+                            <div class="stat-label">Minutos Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="exercises-completed">0</div>
+                            <div class="stat-label">Ejercicios Completados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="concentration-strength">60</div>
+                            <div class="stat-label">Fuerza de Concentración</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Intermedio</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentConcentration = {
+            exercise: null,
+            isActive: false,
+            isPaused: false,
+            startTime: 0,
+            elapsedTime: 0,
+            totalTime: 0,
+            exercisesCompleted: 0,
+            concentrationStrength: 60,
+            score: 0,
+            distractions: 0
+        };
+
+        let concentrationInterval;
+        let focusInterval;
+
+        const exercises = {
+            'breathing': { 
+                duration: 5 * 60 * 1000, 
+                name: 'Respiración Enfocada',
+                concentrationGain: 8,
+                description: 'Mantén el foco en tu respiración. Cuando tu mente divague, regresa suavemente al foco.'
+            },
+            'counting': { 
+                duration: 3 * 60 * 1000, 
+                name: 'Conteo Mental',
+                concentrationGain: 6,
+                description: 'Cuenta del 1 al 100 mentalmente. Si te distraes, vuelve a empezar.'
+            },
+            'visualization': { 
+                duration: 7 * 60 * 1000, 
+                name: 'Visualización',
+                concentrationGain: 10,
+                description: 'Mantén una imagen mental específica. Si se desvanece, vuelve a crearla.'
+            },
+            'body-scan': { 
+                duration: 10 * 60 * 1000, 
+                name: 'Escaneo Corporal',
+                concentrationGain: 12,
+                description: 'Observa cada parte de tu cuerpo desde la cabeza hasta los pies.'
+            },
+            'mantra': { 
+                duration: 8 * 60 * 1000, 
+                name: 'Mantra',
+                concentrationGain: 9,
+                description: 'Repite una frase o palabra mentalmente. Mantén el foco en el sonido.'
+            },
+            'object-focus': { 
+                duration: 6 * 60 * 1000, 
+                name: 'Enfoque en Objeto',
+                concentrationGain: 7,
+                description: 'Observa un objeto sin distraerte. Nota todos sus detalles.'
+            }
+        };
+
+        function selectExercise(exerciseType) {
+            currentConcentration.exercise = exerciseType;
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.exercise-card').classList.add('selected');
+            
+            // Mostrar juego de concentración
+            document.getElementById('concentration-game').style.display = 'block';
+            document.getElementById('exercise-instruction').textContent = exercises[exerciseType].description;
+        }
+
+        function startExercise() {
+            if (!currentConcentration.exercise || currentConcentration.isActive) return;
+            
+            currentConcentration.isActive = true;
+            currentConcentration.isPaused = false;
+            currentConcentration.startTime = Date.now();
+            currentConcentration.distractions = 0;
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Iniciar temporizador
+            concentrationInterval = setInterval(updateTimer, 1000);
+            
+            // Iniciar ejercicio específico
+            startFocusExercise();
+            
+            // Mostrar ejercicio seleccionado como activo
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                if (card.classList.contains('selected')) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function startFocusExercise() {
+            const circle = document.getElementById('focus-circle');
+            const text = document.getElementById('focus-text');
+            
+            // Simular distracciones ocasionales
+            focusInterval = setInterval(() => {
+                if (Math.random() < 0.1) { // 10% de probabilidad de distracción
+                    circle.classList.add('distracted');
+                    text.textContent = '¡Distracción!';
+                    currentConcentration.distractions++;
+                    
+                    setTimeout(() => {
+                        circle.classList.remove('distracted');
+                        text.textContent = 'Mantén el foco';
+                    }, 2000);
+                } else {
+                    circle.classList.add('focused');
+                    text.textContent = 'Enfocado';
+                    
+                    setTimeout(() => {
+                        circle.classList.remove('focused');
+                        text.textContent = 'Mantén el foco';
+                    }, 1000);
+                }
+            }, 3000);
+        }
+
+        function pauseExercise() {
+            if (!currentConcentration.isActive) return;
+            
+            currentConcentration.isPaused = !currentConcentration.isPaused;
+            
+            if (currentConcentration.isPaused) {
+                clearInterval(concentrationInterval);
+                clearInterval(focusInterval);
+                document.getElementById('pauseBtn').textContent = '▶️ Continuar';
+                document.getElementById('pauseBtn').classList.add('pause');
+            } else {
+                concentrationInterval = setInterval(updateTimer, 1000);
+                startFocusExercise();
+                document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+                document.getElementById('pauseBtn').classList.remove('pause');
+            }
+        }
+
+        function stopExercise() {
+            if (!currentConcentration.isActive) return;
+            
+            currentConcentration.isActive = false;
+            currentConcentration.isPaused = false;
+            
+            clearInterval(concentrationInterval);
+            clearInterval(focusInterval);
+            
+            // Calcular tiempo transcurrido
+            const sessionTime = Math.floor((Date.now() - currentConcentration.startTime) / 1000);
+            currentConcentration.totalTime += sessionTime;
+            
+            // Verificar si se completó el ejercicio
+            const exerciseDuration = exercises[currentConcentration.exercise].duration / 1000;
+            if (sessionTime >= exerciseDuration) {
+                const gain = exercises[currentConcentration.exercise].concentrationGain;
+                // Reducir ganancia por distracciones
+                const finalGain = Math.max(0, gain - currentConcentration.distractions);
+                currentConcentration.concentrationStrength += finalGain;
+                currentConcentration.concentrationStrength = Math.min(100, currentConcentration.concentrationStrength);
+                currentConcentration.exercisesCompleted++;
+                
+                // Mostrar logro
+                showAchievement(finalGain);
+            }
+            
+            // Guardar en localStorage
+            saveStats();
+            
+            // Resetear controles
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+            document.getElementById('pauseBtn').classList.remove('pause');
+            
+            // Resetear visual
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.classList.remove('selected', 'active');
+            });
+            document.getElementById('exercise-timer').textContent = '00:00';
+            document.getElementById('exercise-progress').style.width = '0%';
+            document.getElementById('focus-circle').className = 'focus-circle';
+            document.getElementById('focus-text').textContent = 'Mantén el foco';
+            
+            updateConcentrationDisplay();
+        }
+
+        function updateTimer() {
+            if (currentConcentration.isPaused) return;
+            
+            const elapsed = Math.floor((Date.now() - currentConcentration.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('exercise-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Actualizar progreso
+            const exerciseDuration = exercises[currentConcentration.exercise].duration / 1000;
+            const progress = Math.min((elapsed / exerciseDuration) * 100, 100);
+            document.getElementById('exercise-progress').style.width = `${progress}%`;
+        }
+
+        function updateConcentrationDisplay() {
+            const strength = currentConcentration.concentrationStrength;
+            document.getElementById('concentration-level').textContent = `${strength}%`;
+            document.getElementById('concentration-progress').style.width = `${strength}%`;
+            
+            let status, level, levelClass;
+            if (strength < 40) {
+                status = 'Nivel bajo - Necesitas más entrenamiento de concentración';
+                level = 'Principiante';
+                levelClass = 'level-beginner';
+            } else if (strength < 60) {
+                status = 'Nivel medio-bajo - Continúa entrenando tu concentración';
+                level = 'Principiante';
+                levelClass = 'level-beginner';
+            } else if (strength < 80) {
+                status = 'Nivel intermedio - ¡Buen trabajo!';
+                level = 'Intermedio';
+                levelClass = 'level-intermediate';
+            } else if (strength < 95) {
+                status = 'Nivel avanzado - ¡Excelente concentración!';
+                level = 'Avanzado';
+                levelClass = 'level-advanced';
+            } else {
+                status = 'Nivel experto - ¡Eres un maestro de la concentración!';
+                level = 'Experto';
+                levelClass = 'level-expert';
+            }
+            
+            document.getElementById('concentration-status').textContent = status;
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement(gain) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '🎯 ¡Concentración mejorada! +' + gain + ' puntos';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('total-time').textContent = Math.floor(currentConcentration.totalTime / 60);
+            document.getElementById('exercises-completed').textContent = currentConcentration.exercisesCompleted;
+            document.getElementById('concentration-strength').textContent = currentConcentration.concentrationStrength;
+            
+            updateConcentrationDisplay();
+            document.getElementById('concentration-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                totalTime: currentConcentration.totalTime,
+                exercisesCompleted: currentConcentration.exercisesCompleted,
+                concentrationStrength: currentConcentration.concentrationStrength,
+                score: currentConcentration.score
+            };
+            localStorage.setItem('concentrationStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('concentrationStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentConcentration.totalTime = stats.totalTime || 0;
+                currentConcentration.exercisesCompleted = stats.exercisesCompleted || 0;
+                currentConcentration.concentrationStrength = stats.concentrationStrength || 60;
+                currentConcentration.score = stats.score || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateConcentrationDisplay();
+    </script>
+</body>
+</html>

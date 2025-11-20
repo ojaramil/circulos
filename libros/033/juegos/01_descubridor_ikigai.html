@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubridor de Ikigai - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .question {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .option:hover {
+            border-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .option.selected {
+            border-color: #e74c3c;
+            background: #ffe6e6;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .result {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+            display: none;
+        }
+        .score-display {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .ikigai-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid #e74c3c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffe6e6 0%, #f0f8ff 100%);
+            position: relative;
+        }
+        .circle-center {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+        }
+        .circle-quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .quadrant-1 { top: 0; left: 0; }
+        .quadrant-2 { top: 0; right: 0; }
+        .quadrant-3 { bottom: 0; left: 0; }
+        .quadrant-4 { bottom: 0; right: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Descubridor de Ikigai</h1>
+        
+        <div class="game-section">
+            <h2>🎯 ¿Qué es tu Ikigai?</h2>
+            <p>Este juego te ayudará a descubrir tu Ikigai a través de una serie de preguntas reflexivas. Tu Ikigai es la intersección entre lo que amas, en lo que eres bueno, lo que el mundo necesita y por lo que te pueden pagar.</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Pregunta 1 de 12</p>
+        </div>
+
+        <div id="questionContainer">
+            <div class="question" id="question1">
+                <h3>¿Qué actividades te hacen perder la noción del tiempo?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'creatividad')">🎨 Actividades creativas (pintar, escribir, diseñar)</div>
+                    <div class="option" onclick="selectOption(this, 'ayuda')">🤝 Ayudar a otros (voluntariado, enseñanza, consejería)</div>
+                    <div class="option" onclick="selectOption(this, 'analisis')">🔍 Analizar datos y resolver problemas complejos</div>
+                    <div class="option" onclick="selectOption(this, 'deporte')">🏃 Actividades físicas y deportes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="result" id="result">
+            <h2>🎉 ¡Tu Ikigai ha sido descubierto!</h2>
+            <div class="ikigai-circle">
+                <div class="circle">
+                    <div class="circle-center">TU IKIGAI</div>
+                    <div class="circle-quadrant quadrant-1">PASIÓN</div>
+                    <div class="circle-quadrant quadrant-2">MISIÓN</div>
+                    <div class="circle-quadrant quadrant-3">PROFESIÓN</div>
+                    <div class="circle-quadrant quadrant-4">VOCACIÓN</div>
+                </div>
+            </div>
+            <div id="ikigaiResult"></div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay" style="display: none;">
+            <h3>📊 Tu Perfil Ikigai</h3>
+            <div id="scoreDetails"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+            <button class="btn" id="restartBtn" onclick="restartGame()" style="display: none;">🔄 Reiniciar Juego</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let totalQuestions = 12;
+        let answers = {};
+        let scores = {
+            pasion: 0,
+            mision: 0,
+            profesion: 0,
+            vocacion: 0
+        };
+
+        const questions = [
+            {
+                question: "¿Qué actividades te hacen perder la noción del tiempo?",
+                options: [
+                    { text: "🎨 Actividades creativas (pintar, escribir, diseñar)", category: "pasion" },
+                    { text: "🤝 Ayudar a otros (voluntariado, enseñanza, consejería)", category: "mision" },
+                    { text: "🔍 Analizar datos y resolver problemas complejos", category: "vocacion" },
+                    { text: "🏃 Actividades físicas y deportes", category: "pasion" }
+                ]
+            },
+            {
+                question: "¿En qué área te consideras más hábil?",
+                options: [
+                    { text: "💡 Generar ideas innovadoras", category: "pasion" },
+                    { text: "🎯 Liderar y motivar equipos", category: "mision" },
+                    { text: "📊 Analizar y organizar información", category: "vocacion" },
+                    { text: "💰 Gestionar proyectos y recursos", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué problema del mundo te gustaría resolver?",
+                options: [
+                    { text: "🌍 Problemas ambientales y sostenibilidad", category: "mision" },
+                    { text: "💻 Mejorar la tecnología y la innovación", category: "vocacion" },
+                    { text: "❤️ Ayudar a personas en situaciones difíciles", category: "mision" },
+                    { text: "📚 Educar y compartir conocimiento", category: "mision" }
+                ]
+            },
+            {
+                question: "¿Qué tipo de trabajo te pagarían bien?",
+                options: [
+                    { text: "🎨 Trabajos creativos y artísticos", category: "profesion" },
+                    { text: "💼 Puestos de liderazgo y gestión", category: "profesion" },
+                    { text: "🔬 Investigación y desarrollo", category: "vocacion" },
+                    { text: "🤝 Trabajos de servicio y ayuda", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué te motiva más en la vida?",
+                options: [
+                    { text: "🌟 Expresar tu creatividad y arte", category: "pasion" },
+                    { text: "🌍 Hacer una diferencia en el mundo", category: "mision" },
+                    { text: "📈 Aprender y dominar nuevas habilidades", category: "vocacion" },
+                    { text: "💰 Lograr estabilidad financiera", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué harías si tuvieras todo el tiempo del mundo?",
+                options: [
+                    { text: "🎨 Crear arte y proyectos personales", category: "pasion" },
+                    { text: "🌍 Viajar y explorar el mundo", category: "pasion" },
+                    { text: "📚 Estudiar y aprender constantemente", category: "vocacion" },
+                    { text: "🤝 Ayudar a otros y hacer voluntariado", category: "mision" }
+                ]
+            },
+            {
+                question: "¿Qué valoras más en un trabajo?",
+                options: [
+                    { text: "🎯 Autonomía y libertad creativa", category: "pasion" },
+                    { text: "🌍 Impacto positivo en la sociedad", category: "mision" },
+                    { text: "📊 Desafíos intelectuales y técnicos", category: "vocacion" },
+                    { text: "💰 Estabilidad y beneficios económicos", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué te hace sentir más realizado?",
+                options: [
+                    { text: "🎨 Completar un proyecto creativo", category: "pasion" },
+                    { text: "🤝 Ver cómo ayudas a otros a crecer", category: "mision" },
+                    { text: "🏆 Dominar una nueva habilidad", category: "vocacion" },
+                    { text: "💰 Alcanzar metas financieras", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué tipo de problemas disfrutas resolviendo?",
+                options: [
+                    { text: "🎨 Problemas de diseño y estética", category: "pasion" },
+                    { text: "🤝 Problemas humanos y sociales", category: "mision" },
+                    { text: "🔬 Problemas técnicos y científicos", category: "vocacion" },
+                    { text: "💰 Problemas de negocio y estrategia", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué te inspira más?",
+                options: [
+                    { text: "🎨 La belleza y el arte", category: "pasion" },
+                    { text: "🌍 La justicia social y la igualdad", category: "mision" },
+                    { text: "🔬 El conocimiento y la innovación", category: "vocacion" },
+                    { text: "💰 El éxito y el reconocimiento", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué harías si no tuvieras limitaciones económicas?",
+                options: [
+                    { text: "🎨 Dedicarte completamente al arte", category: "pasion" },
+                    { text: "🌍 Crear una fundación para ayudar", category: "mision" },
+                    { text: "📚 Investigar y descubrir cosas nuevas", category: "vocacion" },
+                    { text: "💼 Crear una empresa exitosa", category: "profesion" }
+                ]
+            },
+            {
+                question: "¿Qué legado te gustaría dejar?",
+                options: [
+                    { text: "🎨 Obras de arte que inspiren", category: "pasion" },
+                    { text: "🌍 Un mundo más justo y equitativo", category: "mision" },
+                    { text: "🔬 Avances científicos importantes", category: "vocacion" },
+                    { text: "💰 Una empresa que genere empleos", category: "profesion" }
+                ]
+            }
+        ];
+
+        function selectOption(element, category) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to current option
+            element.classList.add('selected');
+            
+            // Store answer
+            answers[currentQuestion] = category;
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                updateProgress();
+                showQuestion();
+            } else {
+                calculateResults();
+            }
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion - 1];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>${question.question}</h3>
+                    <div class="options">
+                        ${question.options.map(option => 
+                            `<div class="option" onclick="selectOption(this, '${option.category}')">${option.text}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Pregunta ${currentQuestion} de ${totalQuestions}`;
+        }
+
+        function calculateResults() {
+            // Calculate scores
+            Object.values(answers).forEach(answer => {
+                scores[answer]++;
+            });
+
+            // Find dominant category
+            const maxScore = Math.max(...Object.values(scores));
+            const dominantCategory = Object.keys(scores).find(key => scores[key] === maxScore);
+
+            // Show results
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('scoreDisplay').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+
+            // Display results
+            const ikigaiResults = {
+                pasion: {
+                    title: "🎨 Tu Ikigai está en la CREATIVIDAD",
+                    description: "Tu propósito de vida se centra en la expresión artística y creativa. Eres alguien que encuentra significado en crear, innovar y expresar tu visión única del mundo.",
+                    advice: "Busca carreras en arte, diseño, escritura, música o cualquier campo que te permita expresar tu creatividad. Tu Ikigai se nutre cuando puedes crear algo que refleje tu visión interior."
+                },
+                mision: {
+                    title: "🌍 Tu Ikigai está en el SERVICIO",
+                    description: "Tu propósito de vida se centra en ayudar a otros y contribuir al bienestar de la sociedad. Eres alguien que encuentra significado en hacer una diferencia positiva en el mundo.",
+                    advice: "Busca carreras en educación, salud, trabajo social, ONGs o cualquier campo que te permita servir a otros. Tu Ikigai se nutre cuando puedes ver el impacto positivo de tu trabajo en la vida de otros."
+                },
+                vocacion: {
+                    title: "🔬 Tu Ikigai está en el CONOCIMIENTO",
+                    description: "Tu propósito de vida se centra en el aprendizaje, la investigación y el dominio de habilidades. Eres alguien que encuentra significado en entender el mundo y desarrollar expertise.",
+                    advice: "Busca carreras en investigación, academia, tecnología, ciencia o cualquier campo que te permita aprender y desarrollar habilidades especializadas. Tu Ikigai se nutre cuando puedes profundizar en tu área de conocimiento."
+                },
+                profesion: {
+                    title: "💼 Tu Ikigai está en el LIDERAZGO",
+                    description: "Tu propósito de vida se centra en dirigir, gestionar y crear estructuras que funcionen. Eres alguien que encuentra significado en organizar, liderar y lograr resultados.",
+                    advice: "Busca carreras en gestión, emprendimiento, consultoría, finanzas o cualquier campo que te permita liderar y crear sistemas exitosos. Tu Ikigai se nutre cuando puedes dirigir proyectos y equipos hacia el éxito."
+                }
+            };
+
+            const result = ikigaiResults[dominantCategory];
+            document.getElementById('ikigaiResult').innerHTML = `
+                <h3>${result.title}</h3>
+                <p><strong>Descripción:</strong> ${result.description}</p>
+                <p><strong>Consejo:</strong> ${result.advice}</p>
+            `;
+
+            // Display score details
+            document.getElementById('scoreDetails').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                    <div style="background: #ffe6e6; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🎨 Pasión</h4>
+                        <div style="font-size: 2em; color: #e74c3c;">${scores.pasion}</div>
+                    </div>
+                    <div style="background: #e6f7ff; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🌍 Misión</h4>
+                        <div style="font-size: 2em; color: #1890ff;">${scores.mision}</div>
+                    </div>
+                    <div style="background: #f6ffed; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🔬 Vocación</h4>
+                        <div style="font-size: 2em; color: #52c41a;">${scores.vocacion}</div>
+                    </div>
+                    <div style="background: #fff7e6; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>💼 Profesión</h4>
+                        <div style="font-size: 2em; color: #fa8c16;">${scores.profesion}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            currentQuestion = 1;
+            answers = {};
+            scores = { pasion: 0, mision: 0, profesion: 0, vocacion: 0 };
+            
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('scoreDisplay').style.display = 'none';
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('restartBtn').style.display = 'none';
+            
+            updateProgress();
+            showQuestion();
+        }
+
+        // Initialize game
+        showQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Riesgo - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .analyzer-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .question-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .question-card.active {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .risk-meter {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .risk-level {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px;
+        }
+        .risk-conservative { background: #28a745; }
+        .risk-moderate { background: #ffc107; color: #333; }
+        .risk-aggressive { background: #dc3545; }
+        .risk-very-aggressive { background: #6f42c1; }
+        .recommendation-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Analizador de Riesgo</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Descubre tu perfil de riesgo financiero respondiendo preguntas sobre tu situación financiera, objetivos y tolerancia al riesgo para recibir recomendaciones personalizadas.</p>
+        </div>
+
+        <div class="analyzer-box">
+            <h3>📊 Cuestionario de Perfil de Riesgo</h3>
+            <p>Responde las siguientes preguntas para determinar tu tolerancia al riesgo y recibir recomendaciones de inversión personalizadas.</p>
+        </div>
+
+        <div id="questions-container">
+            <!-- Las preguntas se generarán dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="analyzeRisk()" id="analyze-btn" style="display: none;">🔍 Analizar mi Perfil de Riesgo</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Tu Perfil de Riesgo</h3>
+                <div id="riskProfile"></div>
+            </div>
+            
+            <div class="risk-meter">
+                <h3>🎯 Nivel de Riesgo</h3>
+                <div id="riskLevel"></div>
+            </div>
+            
+            <div class="recommendation-box">
+                <h3>💡 Recomendaciones de Inversión</h3>
+                <div id="recommendations"></div>
+            </div>
+            
+            <div class="analyzer-box">
+                <h3>📊 Distribución de Portafolio Recomendada</h3>
+                <div id="portfolioAllocation"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Factores que Afectan tu Tolerancia al Riesgo</h2>
+            <ul>
+                <li><strong>Horizonte temporal:</strong> Más tiempo = mayor tolerancia al riesgo</li>
+                <li><strong>Objetivos financieros:</strong> Metas específicas influyen en el riesgo</li>
+                <li><strong>Situación financiera:</strong> Estabilidad económica personal</li>
+                <li><strong>Experiencia:</strong> Conocimiento sobre inversiones</li>
+                <li><strong>Personalidad:</strong> Cómo manejas la incertidumbre</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "¿Cuál es tu horizonte de inversión principal?",
+                options: [
+                    { text: "Menos de 2 años", score: 1 },
+                    { text: "2-5 años", score: 2 },
+                    { text: "5-10 años", score: 3 },
+                    { text: "Más de 10 años", score: 4 }
+                ]
+            },
+            {
+                id: 2,
+                question: "¿Cómo reaccionarías si tus inversiones perdieran 20% en un año?",
+                options: [
+                    { text: "Vendería todo inmediatamente", score: 1 },
+                    { text: "Vendería parte de mis inversiones", score: 2 },
+                    { text: "Mantendría mis inversiones", score: 3 },
+                    { text: "Compraría más aprovechando la caída", score: 4 }
+                ]
+            },
+            {
+                id: 3,
+                question: "¿Cuál es tu objetivo principal de inversión?",
+                options: [
+                    { text: "Preservar el capital", score: 1 },
+                    { text: "Ingresos regulares", score: 2 },
+                    { text: "Crecimiento moderado", score: 3 },
+                    { text: "Máximo crecimiento", score: 4 }
+                ]
+            },
+            {
+                id: 4,
+                question: "¿Qué porcentaje de tus ingresos puedes permitirte perder sin afectar tu estilo de vida?",
+                options: [
+                    { text: "Menos del 5%", score: 1 },
+                    { text: "5-10%", score: 2 },
+                    { text: "10-20%", score: 3 },
+                    { text: "Más del 20%", score: 4 }
+                ]
+            },
+            {
+                id: 5,
+                question: "¿Cuál es tu situación financiera actual?",
+                options: [
+                    { text: "Tengo deudas significativas", score: 1 },
+                    { text: "Tengo algunas deudas menores", score: 2 },
+                    { text: "Estoy libre de deudas", score: 3 },
+                    { text: "Tengo ahorros sustanciales", score: 4 }
+                ]
+            },
+            {
+                id: 6,
+                question: "¿Cuánta experiencia tienes con inversiones?",
+                options: [
+                    { text: "Ninguna experiencia", score: 1 },
+                    { text: "Poca experiencia", score: 2 },
+                    { text: "Experiencia moderada", score: 3 },
+                    { text: "Mucha experiencia", score: 4 }
+                ]
+            },
+            {
+                id: 7,
+                question: "¿Qué tipo de inversión prefieres?",
+                options: [
+                    { text: "Solo cuentas de ahorro", score: 1 },
+                    { text: "Bonos y certificados", score: 2 },
+                    { text: "Mix de bonos y acciones", score: 3 },
+                    { text: "Principalmente acciones", score: 4 }
+                ]
+            },
+            {
+                id: 8,
+                question: "¿Con qué frecuencia revisas tus inversiones?",
+                options: [
+                    { text: "Diariamente", score: 1 },
+                    { text: "Semanalmente", score: 2 },
+                    { text: "Mensualmente", score: 3 },
+                    { text: "Anualmente", score: 4 }
+                ]
+            }
+        ];
+
+        let answers = {};
+        let currentQuestion = 0;
+
+        function initializeQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.id = `question-${q.id}`;
+                
+                questionDiv.innerHTML = `
+                    <h4>Pregunta ${q.id}: ${q.question}</h4>
+                    <div class="options-container">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" onclick="selectOption(${q.id}, ${optIndex}, ${option.score})">
+                                ${option.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionId, optionIndex, score) {
+            // Remover selección anterior
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            questionDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Seleccionar nueva opción
+            questionDiv.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            questionDiv.classList.add('active');
+            
+            // Guardar respuesta
+            answers[questionId] = score;
+            
+            // Verificar si todas las preguntas están respondidas
+            if (Object.keys(answers).length === questions.length) {
+                document.getElementById('analyze-btn').style.display = 'inline-block';
+            }
+        }
+
+        function analyzeRisk() {
+            const totalScore = Object.values(answers).reduce((sum, score) => sum + score, 0);
+            const averageScore = totalScore / questions.length;
+            
+            let riskLevel, riskClass, riskDescription;
+            
+            if (averageScore <= 1.5) {
+                riskLevel = 'Conservador';
+                riskClass = 'risk-conservative';
+                riskDescription = 'Prefieres inversiones seguras con bajo riesgo';
+            } else if (averageScore <= 2.5) {
+                riskLevel = 'Moderado';
+                riskClass = 'risk-moderate';
+                riskDescription = 'Buscas un balance entre seguridad y crecimiento';
+            } else if (averageScore <= 3.5) {
+                riskLevel = 'Agresivo';
+                riskClass = 'risk-aggressive';
+                riskDescription = 'Estás dispuesto a asumir más riesgo por mayor crecimiento';
+            } else {
+                riskLevel = 'Muy Agresivo';
+                riskClass = 'risk-very-aggressive';
+                riskDescription = 'Buscas máximo crecimiento asumiendo alto riesgo';
+            }
+            
+            displayResults(riskLevel, riskClass, riskDescription, averageScore);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function displayResults(riskLevel, riskClass, riskDescription, score) {
+            // Mostrar perfil de riesgo
+            document.getElementById('riskProfile').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>🎯 Perfil</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">${riskLevel}</p>
+                    </div>
+                    <div>
+                        <h4>📊 Puntuación</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">${score.toFixed(1)}/4.0</p>
+                    </div>
+                    <div>
+                        <h4>📝 Descripción</h4>
+                        <p style="color: #6c757d;">${riskDescription}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar nivel de riesgo
+            document.getElementById('riskLevel').innerHTML = `
+                <div class="risk-level ${riskClass}">${riskLevel}</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(score / 4) * 100}%;">
+                        ${Math.round((score / 4) * 100)}%
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar recomendaciones
+            const recommendations = getRecommendations(riskLevel);
+            document.getElementById('recommendations').innerHTML = recommendations.map(rec => `
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
+                    <h4>${rec.title}</h4>
+                    <p>${rec.description}</p>
+                </div>
+            `).join('');
+            
+            // Mostrar distribución de portafolio
+            const allocation = getAllocation(riskLevel);
+            document.getElementById('portfolioAllocation').innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${allocation.map(item => `
+                        <div style="margin: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>${item.asset}</strong></span>
+                                <span>${item.percentage}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${item.percentage}%; background: ${item.color};">
+                                    ${item.percentage}%
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getRecommendations(riskLevel) {
+            const recommendations = {
+                'Conservador': [
+                    {
+                        title: '🛡️ Enfoque en Preservación',
+                        description: 'Mantén la mayoría de tus inversiones en bonos gubernamentales y cuentas de ahorro de alto rendimiento.'
+                    },
+                    {
+                        title: '📈 Crecimiento Gradual',
+                        description: 'Considera agregar gradualmente algunas acciones de dividendos para crecimiento a largo plazo.'
+                    },
+                    {
+                        title: '💰 Diversificación Básica',
+                        description: 'Diversifica entre diferentes tipos de bonos y certificados de depósito.'
+                    }
+                ],
+                'Moderado': [
+                    {
+                        title: '⚖️ Balance Seguridad-Crecimiento',
+                        description: 'Mantén un balance 60/40 entre acciones y bonos para crecimiento moderado.'
+                    },
+                    {
+                        title: '🏢 Inversiones Estables',
+                        description: 'Enfócate en empresas grandes y estables con historial de dividendos consistentes.'
+                    },
+                    {
+                        title: '📊 Rebalanceo Regular',
+                        description: 'Revisa y ajusta tu portafolio trimestralmente para mantener el balance deseado.'
+                    }
+                ],
+                'Agresivo': [
+                    {
+                        title: '🚀 Enfoque en Crecimiento',
+                        description: 'Asigna 70-80% de tu portafolio a acciones para máximo crecimiento potencial.'
+                    },
+                    {
+                        title: '🌍 Diversificación Global',
+                        description: 'Incluye inversiones internacionales y sectores de alto crecimiento.'
+                    },
+                    {
+                        title: '⏰ Horizonte Largo',
+                        description: 'Mantén un horizonte de inversión de 10+ años para aprovechar el crecimiento.'
+                    }
+                ],
+                'Muy Agresivo': [
+                    {
+                        title: '🎯 Máximo Crecimiento',
+                        description: 'Asigna 80-90% a acciones, incluyendo pequeñas empresas y mercados emergentes.'
+                    },
+                    {
+                        title: '💎 Inversiones Alternativas',
+                        description: 'Considera REITs, commodities y otras inversiones alternativas.'
+                    },
+                    {
+                        title: '📈 Tolerancia a Volatilidad',
+                        description: 'Prepárate para fluctuaciones significativas en el corto plazo.'
+                    }
+                ]
+            };
+            
+            return recommendations[riskLevel] || recommendations['Moderado'];
+        }
+
+        function getAllocation(riskLevel) {
+            const allocations = {
+                'Conservador': [
+                    { asset: 'Bonos Gubernamentales', percentage: 60, color: '#28a745' },
+                    { asset: 'Bonos Corporativos', percentage: 25, color: '#20c997' },
+                    { asset: 'Acciones de Dividendos', percentage: 10, color: '#17a2b8' },
+                    { asset: 'Efectivo/CDs', percentage: 5, color: '#6c757d' }
+                ],
+                'Moderado': [
+                    { asset: 'Acciones Grandes', percentage: 50, color: '#007bff' },
+                    { asset: 'Bonos', percentage: 30, color: '#28a745' },
+                    { asset: 'Acciones Internacionales', percentage: 15, color: '#6f42c1' },
+                    { asset: 'Efectivo', percentage: 5, color: '#6c757d' }
+                ],
+                'Agresivo': [
+                    { asset: 'Acciones Grandes', percentage: 40, color: '#007bff' },
+                    { asset: 'Acciones Pequeñas', percentage: 25, color: '#fd7e14' },
+                    { asset: 'Acciones Internacionales', percentage: 20, color: '#6f42c1' },
+                    { asset: 'Bonos', percentage: 15, color: '#28a745' }
+                ],
+                'Muy Agresivo': [
+                    { asset: 'Acciones Pequeñas', percentage: 35, color: '#fd7e14' },
+                    { asset: 'Acciones Grandes', percentage: 30, color: '#007bff' },
+                    { asset: 'Mercados Emergentes', percentage: 20, color: '#dc3545' },
+                    { asset: 'Inversiones Alternativas', percentage: 15, color: '#6f42c1' }
+                ]
+            };
+            
+            return allocations[riskLevel] || allocations['Moderado'];
+        }
+
+        // Inicializar el cuestionario
+        initializeQuestions();
+    </script>
+</body>
+</html>

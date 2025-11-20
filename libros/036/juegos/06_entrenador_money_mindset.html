@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Money Mindset - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .trainer-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .mindset-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .mindset-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .mindset-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .exercise-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .quiz-question {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .quiz-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Entrenador de Money Mindset</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Transforma tu mentalidad financiera a través de ejercicios prácticos, cuestionarios y desafíos que te ayuden a desarrollar una relación saludable con el dinero.</p>
+        </div>
+
+        <div class="trainer-box">
+            <h3>🎮 Selecciona tu Modo de Entrenamiento</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div class="mindset-card" onclick="selectMode('assessment')">
+                    <h4>📊 Evaluación Inicial</h4>
+                    <p>Descubre tu mentalidad financiera actual</p>
+                </div>
+                <div class="mindset-card" onclick="selectMode('exercises')">
+                    <h4>💪 Ejercicios Prácticos</h4>
+                    <p>Desarrolla hábitos financieros saludables</p>
+                </div>
+                <div class="mindset-card" onclick="selectMode('quiz')">
+                    <h4>🧩 Cuestionario</h4>
+                    <p>Pon a prueba tu conocimiento financiero</p>
+                </div>
+                <div class="mindset-card" onclick="selectMode('challenges')">
+                    <h4>🏆 Desafíos</h4>
+                    <p>Supera retos para mejorar tu mindset</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-area">
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Principios del Money Mindset</h2>
+            <ul>
+                <li><strong>El dinero es energía:</strong> Fluye hacia donde se le da valor</li>
+                <li><strong>Abundancia vs Escasez:</strong> Cambia tu perspectiva sobre la riqueza</li>
+                <li><strong>Inversión en ti mismo:</strong> Tu mayor activo es tu conocimiento</li>
+                <li><strong>Paciencia y disciplina:</strong> La riqueza se construye con el tiempo</li>
+                <li><strong>Servicio a otros:</strong> El dinero viene de crear valor</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let selectedMode = null;
+        let currentScore = 0;
+        let totalQuestions = 0;
+
+        function selectMode(mode) {
+            selectedMode = mode;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.mindset-card').forEach(card => card.classList.remove('selected'));
+            
+            // Seleccionar nueva tarjeta
+            event.target.closest('.mindset-card').classList.add('selected');
+            
+            loadContent(mode);
+        }
+
+        function loadContent(mode) {
+            const contentArea = document.getElementById('content-area');
+            
+            switch(mode) {
+                case 'assessment':
+                    loadAssessment();
+                    break;
+                case 'exercises':
+                    loadExercises();
+                    break;
+                case 'quiz':
+                    loadQuiz();
+                    break;
+                case 'challenges':
+                    loadChallenges();
+                    break;
+            }
+        }
+
+        function loadAssessment() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="trainer-box">
+                    <h3>📊 Evaluación de tu Mentalidad Financiera</h3>
+                    <p>Responde estas preguntas para entender tu relación actual con el dinero.</p>
+                    
+                    <div id="assessment-questions">
+                        <div class="quiz-question">
+                            <h4>1. ¿Cómo te sientes cuando gastas dinero?</h4>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'anxious', 1)">Ansioso y preocupado</div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'neutral', 2)">Neutral, es parte de la vida</div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'excited', 3)">Emocionado por lo que obtengo</div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'confident', 4)">Confianza en mi decisión</div>
+                        </div>
+                        
+                        <div class="quiz-question">
+                            <h4>2. ¿Qué piensas sobre la inversión?</h4>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'risky', 1)">Es muy arriesgado</div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'complex', 2)">Es demasiado complejo</div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'interesting', 3)">Es interesante pero no sé por dónde empezar</div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'necessary', 4)">Es necesario para mi futuro</div>
+                        </div>
+                        
+                        <div class="quiz-question">
+                            <h4>3. ¿Cómo ves tu futuro financiero?</h4>
+                            <div class="quiz-option" onclick="selectAnswer(3, 'worried', 1)">Preocupado por la incertidumbre</div>
+                            <div class="quiz-option" onclick="selectAnswer(3, 'hopeful', 2)">Esperanzado pero sin plan claro</div>
+                            <div class="quiz-option" onclick="selectAnswer(3, 'optimistic', 3)">Optimista con algunos planes</div>
+                            <div class="quiz-option" onclick="selectAnswer(3, 'confident', 4)">Confianza total en mi plan</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <button class="btn btn-success" onclick="calculateAssessment()">📊 Calcular Resultado</button>
+                    </div>
+                    
+                    <div id="assessment-result" style="display: none;"></div>
+                </div>
+            `;
+        }
+
+        function loadExercises() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="trainer-box">
+                    <h3>💪 Ejercicios Prácticos de Money Mindset</h3>
+                    
+                    <div class="exercise-box">
+                        <h4>🎯 Ejercicio 1: Visualización de Abundancia</h4>
+                        <p>Imagina tu vida financiera ideal en 5 años. Describe específicamente:</p>
+                        <textarea id="visualization" placeholder="Describe tu situación financiera ideal..." style="width: 100%; height: 100px; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px;"></textarea>
+                        <button class="btn" onclick="saveVisualization()">💾 Guardar Visualización</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h4>📝 Ejercicio 2: Diario de Gastos Conscientes</h4>
+                        <p>Registra tus gastos del día y reflexiona sobre cada uno:</p>
+                        <div id="expense-tracker">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" placeholder="Descripción" id="expense-desc">
+                                <input type="number" placeholder="Cantidad" id="expense-amount">
+                                <select id="expense-category">
+                                    <option value="needs">Necesidades</option>
+                                    <option value="wants">Deseos</option>
+                                    <option value="savings">Ahorros</option>
+                                </select>
+                                <button class="btn" onclick="addExpense()">➕</button>
+                            </div>
+                            <div id="expense-list"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h4>🎯 Ejercicio 3: Establece tu "Por Qué" Financiero</h4>
+                        <p>Define las razones profundas por las que quieres mejorar tu situación financiera:</p>
+                        <textarea id="financial-why" placeholder="¿Por qué es importante para ti la libertad financiera?" style="width: 100%; height: 100px; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px;"></textarea>
+                        <button class="btn" onclick="saveFinancialWhy()">💾 Guardar Mi "Por Qué"</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadQuiz() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="trainer-box">
+                    <h3>🧩 Cuestionario de Conocimiento Financiero</h3>
+                    <p>Pon a prueba tu comprensión de conceptos financieros clave.</p>
+                    
+                    <div id="quiz-questions">
+                        <div class="quiz-question">
+                            <h4>1. ¿Qué es el interés compuesto?</h4>
+                            <div class="quiz-option" onclick="selectQuizAnswer(1, 'wrong')">El interés que pagas en préstamos</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(1, 'wrong')">El interés simple multiplicado por dos</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(1, 'correct')">El interés ganado sobre el capital más los intereses acumulados</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(1, 'wrong')">Una tasa de interés fija</div>
+                        </div>
+                        
+                        <div class="quiz-question">
+                            <h4>2. ¿Cuál es la regla del 4% en jubilación?</h4>
+                            <div class="quiz-option" onclick="selectQuizAnswer(2, 'correct')">Retirar máximo 4% anual de tus ahorros de jubilación</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(2, 'wrong')">Ahorrar 4% de tus ingresos mensualmente</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(2, 'wrong')">Invertir 4% en acciones de alto riesgo</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(2, 'wrong')">Tener 4 fuentes de ingresos diferentes</div>
+                        </div>
+                        
+                        <div class="quiz-question">
+                            <h4>3. ¿Qué significa diversificar tu portafolio?</h4>
+                            <div class="quiz-option" onclick="selectQuizAnswer(3, 'wrong')">Invertir solo en una empresa</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(3, 'correct')">Distribuir inversiones en diferentes activos</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(3, 'wrong')">Comprar acciones todos los días</div>
+                            <div class="quiz-option" onclick="selectQuizAnswer(3, 'wrong')">Vender todas tus inversiones</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <button class="btn btn-success" onclick="calculateQuizScore()">📊 Ver Puntuación</button>
+                    </div>
+                    
+                    <div id="quiz-result" style="display: none;"></div>
+                </div>
+            `;
+        }
+
+        function loadChallenges() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="trainer-box">
+                    <h3>🏆 Desafíos de Money Mindset</h3>
+                    <p>Supera estos desafíos para fortalecer tu mentalidad financiera.</p>
+                    
+                    <div class="exercise-box">
+                        <h4>🎯 Desafío 1: Semana Sin Gastos Impulsivos</h4>
+                        <p>Durante 7 días, antes de cada compra no esencial, espera 24 horas.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="challenge1-progress" style="width: 0%;">0/7 días</div>
+                        </div>
+                        <button class="btn" onclick="updateChallenge(1)">✅ Completar Día</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h4>📚 Desafío 2: Educación Financiera Diaria</h4>
+                        <p>Lee o estudia sobre finanzas durante 15 minutos cada día por una semana.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="challenge2-progress" style="width: 0%;">0/7 días</div>
+                        </div>
+                        <button class="btn" onclick="updateChallenge(2)">✅ Completar Día</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h4>💰 Desafío 3: Ahorro Incremental</h4>
+                        <p>Ahorra $1 el día 1, $2 el día 2, $3 el día 3... hasta el día 30.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="challenge3-progress" style="width: 0%;">Día 0/30</div>
+                        </div>
+                        <button class="btn" onclick="updateChallenge(3)">✅ Completar Día</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h4>🎯 Desafío 4: Tracking de Metas</h4>
+                        <p>Establece una meta financiera específica y haz seguimiento diario.</p>
+                        <input type="text" id="goal-input" placeholder="Mi meta financiera es..." style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px; margin-bottom: 10px;">
+                        <button class="btn" onclick="setGoal()">🎯 Establecer Meta</button>
+                        <div id="goal-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="goal-progress-bar" style="width: 0%;">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let assessmentAnswers = {};
+        let quizAnswers = {};
+        let challengeProgress = {1: 0, 2: 0, 3: 0};
+
+        function selectAnswer(questionId, answer, score) {
+            assessmentAnswers[questionId] = {answer, score};
+            
+            // Remover selección anterior
+            const questionDiv = document.querySelector(`#assessment-questions .quiz-question:nth-child(${questionId})`);
+            questionDiv.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Seleccionar nueva opción
+            event.target.classList.add('selected');
+        }
+
+        function selectQuizAnswer(questionId, result) {
+            quizAnswers[questionId] = result;
+            
+            // Remover selección anterior
+            const questionDiv = document.querySelector(`#quiz-questions .quiz-question:nth-child(${questionId})`);
+            questionDiv.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Seleccionar nueva opción
+            event.target.classList.add('selected');
+        }
+
+        function calculateAssessment() {
+            const totalScore = Object.values(assessmentAnswers).reduce((sum, answer) => sum + answer.score, 0);
+            const maxScore = Object.keys(assessmentAnswers).length * 4;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            let mindset, description, color;
+            if (percentage >= 75) {
+                mindset = 'Mentalidad de Abundancia';
+                description = 'Tienes una relación saludable con el dinero y confianza en tu futuro financiero.';
+                color = '#28a745';
+            } else if (percentage >= 50) {
+                mindset = 'Mentalidad en Desarrollo';
+                description = 'Estás trabajando en mejorar tu relación con el dinero. Continúa aprendiendo.';
+                color = '#ffc107';
+            } else {
+                mindset = 'Mentalidad de Escasez';
+                description = 'Tienes miedos y limitaciones sobre el dinero. Es hora de transformar tu mindset.';
+                color = '#dc3545';
+            }
+            
+            document.getElementById('assessment-result').innerHTML = `
+                <div class="result-box">
+                    <h3>📊 Resultado de tu Evaluación</h3>
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: ${color};">${mindset}</h4>
+                        <p>${description}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%; background: ${color};">
+                                ${percentage.toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('assessment-result').style.display = 'block';
+        }
+
+        function calculateQuizScore() {
+            const correctAnswers = Object.values(quizAnswers).filter(answer => answer === 'correct').length;
+            const totalQuestions = Object.keys(quizAnswers).length;
+            const percentage = (correctAnswers / totalQuestions) * 100;
+            
+            let level, color;
+            if (percentage >= 80) {
+                level = 'Experto';
+                color = '#28a745';
+            } else if (percentage >= 60) {
+                level = 'Intermedio';
+                color = '#ffc107';
+            } else {
+                level = 'Principiante';
+                color = '#dc3545';
+            }
+            
+            document.getElementById('quiz-result').innerHTML = `
+                <div class="result-box">
+                    <h3>🧩 Resultado del Cuestionario</h3>
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: ${color};">Nivel: ${level}</h4>
+                        <p>Respondiste correctamente ${correctAnswers} de ${totalQuestions} preguntas</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%; background: ${color};">
+                                ${percentage.toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('quiz-result').style.display = 'block';
+        }
+
+        function updateChallenge(challengeId) {
+            challengeProgress[challengeId]++;
+            const progress = challengeProgress[challengeId];
+            const maxDays = challengeId === 3 ? 30 : 7;
+            const percentage = (progress / maxDays) * 100;
+            
+            const progressBar = document.getElementById(`challenge${challengeId}-progress`);
+            progressBar.style.width = percentage + '%';
+            
+            if (challengeId === 3) {
+                progressBar.textContent = `Día ${progress}/30`;
+            } else {
+                progressBar.textContent = `${progress}/7 días`;
+            }
+            
+            if (progress >= maxDays) {
+                alert(`¡Felicitaciones! Completaste el Desafío ${challengeId}! 🎉`);
+            }
+        }
+
+        function saveVisualization() {
+            const text = document.getElementById('visualization').value;
+            if (text.trim()) {
+                localStorage.setItem('financialVisualization', text);
+                alert('✅ Visualización guardada exitosamente!');
+            }
+        }
+
+        function saveFinancialWhy() {
+            const text = document.getElementById('financial-why').value;
+            if (text.trim()) {
+                localStorage.setItem('financialWhy', text);
+                alert('✅ Tu "Por Qué" financiero guardado exitosamente!');
+            }
+        }
+
+        function addExpense() {
+            const desc = document.getElementById('expense-desc').value;
+            const amount = document.getElementById('expense-amount').value;
+            const category = document.getElementById('expense-category').value;
+            
+            if (desc && amount) {
+                const expenseList = document.getElementById('expense-list');
+                const expenseDiv = document.createElement('div');
+                expenseDiv.style.cssText = 'background: white; border: 1px solid #e9ecef; border-radius: 5px; padding: 10px; margin: 5px 0;';
+                expenseDiv.innerHTML = `
+                    <strong>${desc}</strong> - $${amount} (${category})
+                `;
+                expenseList.appendChild(expenseDiv);
+                
+                // Limpiar inputs
+                document.getElementById('expense-desc').value = '';
+                document.getElementById('expense-amount').value = '';
+            }
+        }
+
+        function setGoal() {
+            const goal = document.getElementById('goal-input').value;
+            if (goal.trim()) {
+                localStorage.setItem('financialGoal', goal);
+                document.getElementById('goal-progress').style.display = 'block';
+                alert('✅ Meta financiera establecida!');
+            }
+        }
+
+        // Cargar contenido inicial
+        loadAssessment();
+    </script>
+</body>
+</html>

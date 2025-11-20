@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario del Ego - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .journal-entry {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .journal-entry h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .rating-scale label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .rating-scale label:hover {
+            background-color: #f0f0f0;
+        }
+        .rating-scale input[type="radio"] {
+            width: auto;
+            margin: 5px 0;
+        }
+        .rating-scale span {
+            font-size: 12px;
+            text-align: center;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .entries-list {
+            margin-top: 30px;
+        }
+        .entry-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .entry-date {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .entry-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .entry-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        .entry-content {
+            margin: 10px 0;
+        }
+        .entry-rating {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .rating-stars {
+            color: #ffc107;
+            margin-right: 10px;
+        }
+        .rating-text {
+            font-size: 14px;
+            color: #666;
+        }
+        .insights {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .insights h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state h3 {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📔 Diario del Ego</h1>
+        <p>Rastrea tu relación con el ego día a día</p>
+    </div>
+
+    <div class="content">
+        <div id="journal-form">
+            <h2>Nueva Entrada del Diario</h2>
+            
+            <form id="ego-journal-form">
+                <div class="journal-entry">
+                    <h3>📅 Información Básica</h3>
+                    
+                    <div class="form-group">
+                        <label for="date">Fecha:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mood">Estado de Ánimo General:</label>
+                        <select id="mood" name="mood" required>
+                            <option value="">Selecciona tu estado de ánimo</option>
+                            <option value="excelente">😊 Excelente</option>
+                            <option value="bueno">😌 Bueno</option>
+                            <option value="neutral">😐 Neutral</option>
+                            <option value="malo">😔 Malo</option>
+                            <option value="terrible">😢 Terrible</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="journal-entry">
+                    <h3>🎭 Interacciones con el Ego</h3>
+                    
+                    <div class="form-group">
+                        <label>¿Cómo manejaste el reconocimiento hoy?</label>
+                        <div class="rating-scale">
+                            <label>
+                                <input type="radio" name="recognition" value="1">
+                                <span>Muy mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recognition" value="2">
+                                <span>Mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recognition" value="3">
+                                <span>Regular</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recognition" value="4">
+                                <span>Bien</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="recognition" value="5">
+                                <span>Excelente</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>¿Cómo manejaste las críticas o feedback?</label>
+                        <div class="rating-scale">
+                            <label>
+                                <input type="radio" name="criticism" value="1">
+                                <span>Muy mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="criticism" value="2">
+                                <span>Mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="criticism" value="3">
+                                <span>Regular</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="criticism" value="4">
+                                <span>Bien</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="criticism" value="5">
+                                <span>Excelente</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>¿Cómo manejaste el éxito de otros?</label>
+                        <div class="rating-scale">
+                            <label>
+                                <input type="radio" name="others_success" value="1">
+                                <span>Muy mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="others_success" value="2">
+                                <span>Mal</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="others_success" value="3">
+                                <span>Regular</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="others_success" value="4">
+                                <span>Bien</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="others_success" value="5">
+                                <span>Excelente</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journal-entry">
+                    <h3>💭 Reflexiones</h3>
+                    
+                    <div class="form-group">
+                        <label for="ego_moments">Describe momentos específicos donde notaste tu ego en acción:</label>
+                        <textarea id="ego_moments" name="ego_moments" placeholder="Ej: Me sentí molesto cuando mi colega recibió elogios por un proyecto en el que también trabajé..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="humble_moments">Describe momentos donde practicaste la humildad:</label>
+                        <textarea id="humble_moments" name="humble_moments" placeholder="Ej: Agradecí el feedback de mi jefe y pedí más detalles sobre cómo mejorar..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lessons_learned">¿Qué aprendiste sobre ti mismo hoy?</label>
+                        <textarea id="lessons_learned" name="lessons_learned" placeholder="Ej: Me di cuenta de que me siento inseguro cuando otros tienen éxito, necesito trabajar en eso..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tomorrow_intention">¿Cuál es tu intención para mañana?</label>
+                        <textarea id="tomorrow_intention" name="tomorrow_intention" placeholder="Ej: Mañana me enfocaré en escuchar más y hablar menos en las reuniones..."></textarea>
+                    </div>
+                </div>
+
+                <div class="journal-entry">
+                    <h3>📊 Autoevaluación General</h3>
+                    
+                    <div class="form-group">
+                        <label>Nivel general de humildad hoy (1-10):</label>
+                        <div class="rating-scale">
+                            <label><input type="radio" name="humility_level" value="1"><span>1</span></label>
+                            <label><input type="radio" name="humility_level" value="2"><span>2</span></label>
+                            <label><input type="radio" name="humility_level" value="3"><span>3</span></label>
+                            <label><input type="radio" name="humility_level" value="4"><span>4</span></label>
+                            <label><input type="radio" name="humility_level" value="5"><span>5</span></label>
+                            <label><input type="radio" name="humility_level" value="6"><span>6</span></label>
+                            <label><input type="radio" name="humility_level" value="7"><span>7</span></label>
+                            <label><input type="radio" name="humility_level" value="8"><span>8</span></label>
+                            <label><input type="radio" name="humility_level" value="9"><span>9</span></label>
+                            <label><input type="radio" name="humility_level" value="10"><span>10</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Guardar Entrada</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Limpiar Formulario</button>
+            </form>
+        </div>
+
+        <div id="entries-section" class="entries-list" style="display: none;">
+            <h2>📚 Entradas del Diario</h2>
+            <div id="entries-container"></div>
+        </div>
+
+        <div id="insights-section" class="insights" style="display: none;">
+            <h3>📈 Insights y Estadísticas</h3>
+            <div class="stats" id="stats-container"></div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+            <h3>📝 Comienza tu Diario del Ego</h3>
+            <p>No tienes entradas aún. Completa el formulario de arriba para comenzar a rastrear tu relación con el ego.</p>
+        </div>
+    </div>
+
+    <script>
+        let entries = JSON.parse(localStorage.getItem('egoJournalEntries')) || [];
+        let editingIndex = -1;
+
+        // Set today's date as default
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        document.getElementById('ego-journal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const entry = {
+                id: Date.now(),
+                date: formData.get('date'),
+                mood: formData.get('mood'),
+                recognition: formData.get('recognition'),
+                criticism: formData.get('criticism'),
+                others_success: formData.get('others_success'),
+                ego_moments: formData.get('ego_moments'),
+                humble_moments: formData.get('humble_moments'),
+                lessons_learned: formData.get('lessons_learned'),
+                tomorrow_intention: formData.get('tomorrow_intention'),
+                humility_level: formData.get('humility_level'),
+                timestamp: new Date().toISOString()
+            };
+
+            if (editingIndex >= 0) {
+                entries[editingIndex] = entry;
+                editingIndex = -1;
+            } else {
+                entries.unshift(entry);
+            }
+
+            localStorage.setItem('egoJournalEntries', JSON.stringify(entries));
+            displayEntries();
+            displayInsights();
+            this.reset();
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        });
+
+        function displayEntries() {
+            const container = document.getElementById('entries-container');
+            const entriesSection = document.getElementById('entries-section');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (entries.length === 0) {
+                entriesSection.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            entriesSection.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = '';
+            
+            entries.forEach((entry, index) => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'entry-item';
+                
+                const avgRating = calculateAverageRating(entry);
+                const stars = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+                
+                entryDiv.innerHTML = `
+                    <div class="entry-header">
+                        <div class="entry-date">${new Date(entry.date).toLocaleDateString()}</div>
+                        <div class="entry-actions">
+                            <button class="edit-btn" onclick="editEntry(${index})">Editar</button>
+                            <button class="delete-btn" onclick="deleteEntry(${index})">Eliminar</button>
+                        </div>
+                    </div>
+                    <div class="entry-content">
+                        <p><strong>Estado de ánimo:</strong> ${getMoodEmoji(entry.mood)} ${entry.mood}</p>
+                        <div class="entry-rating">
+                            <span class="rating-stars">${stars}</span>
+                            <span class="rating-text">Nivel de humildad: ${entry.humility_level}/10</span>
+                        </div>
+                        ${entry.ego_moments ? `<p><strong>Momentos de ego:</strong> ${entry.ego_moments}</p>` : ''}
+                        ${entry.humble_moments ? `<p><strong>Momentos de humildad:</strong> ${entry.humble_moments}</p>` : ''}
+                        ${entry.lessons_learned ? `<p><strong>Lecciones aprendidas:</strong> ${entry.lessons_learned}</p>` : ''}
+                        ${entry.tomorrow_intention ? `<p><strong>Intención para mañana:</strong> ${entry.tomorrow_intention}</p>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(entryDiv);
+            });
+        }
+
+        function calculateAverageRating(entry) {
+            const ratings = [
+                parseInt(entry.recognition) || 0,
+                parseInt(entry.criticism) || 0,
+                parseInt(entry.others_success) || 0
+            ].filter(r => r > 0);
+            
+            if (ratings.length === 0) return 0;
+            return ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
+        }
+
+        function getMoodEmoji(mood) {
+            const moodEmojis = {
+                'excelente': '😊',
+                'bueno': '😌',
+                'neutral': '😐',
+                'malo': '😔',
+                'terrible': '😢'
+            };
+            return moodEmojis[mood] || '😐';
+        }
+
+        function editEntry(index) {
+            const entry = entries[index];
+            editingIndex = index;
+            
+            // Fill form with entry data
+            document.getElementById('date').value = entry.date;
+            document.getElementById('mood').value = entry.mood;
+            
+            // Set radio buttons
+            ['recognition', 'criticism', 'others_success', 'humility_level'].forEach(field => {
+                if (entry[field]) {
+                    document.querySelector(`input[name="${field}"][value="${entry[field]}"]`).checked = true;
+                }
+            });
+            
+            // Set textareas
+            ['ego_moments', 'humble_moments', 'lessons_learned', 'tomorrow_intention'].forEach(field => {
+                document.getElementById(field).value = entry[field] || '';
+            });
+            
+            // Scroll to form
+            document.getElementById('journal-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteEntry(index) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
+                entries.splice(index, 1);
+                localStorage.setItem('egoJournalEntries', JSON.stringify(entries));
+                displayEntries();
+                displayInsights();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('ego-journal-form').reset();
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            editingIndex = -1;
+        }
+
+        function displayInsights() {
+            if (entries.length === 0) {
+                document.getElementById('insights-section').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('insights-section').style.display = 'block';
+            
+            // Calculate insights
+            const totalEntries = entries.length;
+            const avgHumility = entries.reduce((sum, entry) => sum + (parseInt(entry.humility_level) || 0), 0) / totalEntries;
+            
+            const moodCounts = entries.reduce((counts, entry) => {
+                counts[entry.mood] = (counts[entry.mood] || 0) + 1;
+                return counts;
+            }, {});
+            
+            const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => moodCounts[a] > moodCounts[b] ? a : b);
+            
+            const recentEntries = entries.slice(0, 7);
+            const recentAvgHumility = recentEntries.reduce((sum, entry) => sum + (parseInt(entry.humility_level) || 0), 0) / recentEntries.length;
+            
+            const statsContainer = document.getElementById('stats-container');
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalEntries}</div>
+                    <div class="stat-label">Entradas Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgHumility.toFixed(1)}</div>
+                    <div class="stat-label">Humildad Promedio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${getMoodEmoji(mostCommonMood)}</div>
+                    <div class="stat-label">Estado Más Común</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${recentAvgHumility.toFixed(1)}</div>
+                    <div class="stat-label">Últimos 7 Días</div>
+                </div>
+            `;
+        }
+
+        // Initialize display
+        displayEntries();
+        displayInsights();
+    </script>
+</body>
+</html>

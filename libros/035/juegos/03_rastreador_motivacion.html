@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreador de Motivación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .motivation-level {
+            background: #e8f5e9;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .level-bar {
+            width: 100%;
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px 5px;
+        }
+
+        .button:hover {
+            background: #218838;
+        }
+
+        .button.secondary {
+            background: #6c757d;
+        }
+
+        .button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .entry-list {
+            margin-top: 30px;
+        }
+
+        .entry-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💪 Rastreador de Motivación</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEntries">0</div>
+                <div class="stat-label">Entradas Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgMotivation">0</div>
+                <div class="stat-label">Motivación Promedio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="streak">0</div>
+                <div class="stat-label">Racha de Días</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="highestLevel">0</div>
+                <div class="stat-label">Nivel Más Alto</div>
+            </div>
+        </div>
+
+        <div class="motivation-level">
+            <h3>Nivel de Motivación Actual</h3>
+            <div class="level-bar">
+                <div class="level-fill" id="levelBar" style="width: 50%;">50%</div>
+            </div>
+            <p id="levelDescription">Motivación Moderada</p>
+        </div>
+
+        <h2>📝 Registrar Motivación Diaria</h2>
+
+        <div class="input-group">
+            <label>¿Cómo te sientes hoy? (1-10)</label>
+            <input type="range" id="motivationLevel" min="1" max="10" value="5" oninput="updateLevelDisplay()">
+            <div style="text-align: center; font-size: 2em; color: #28a745; margin: 10px 0;" id="levelValue">5</div>
+        </div>
+
+        <div class="input-group">
+            <label>¿Qué te motiva hoy?</label>
+            <textarea id="motivationSource" rows="3" placeholder="Describe qué te impulsa..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Incentivo Principal:</label>
+            <select id="incentiveType">
+                <option value="interno">Incentivo Interno</option>
+                <option value="externo">Incentivo Externo</option>
+                <option value="mixto">Mixto</option>
+            </select>
+        </div>
+
+        <button class="button" onclick="saveEntry()">Guardar Entrada</button>
+        <button class="button secondary" onclick="resetData()">Reiniciar Datos</button>
+
+        <div class="entry-list" id="entryList">
+            <h3>📊 Historial de Motivación</h3>
+        </div>
+    </div>
+
+    <script>
+        let entries = JSON.parse(localStorage.getItem('motivationEntries') || '[]');
+
+        function updateLevelDisplay() {
+            const level = document.getElementById('motivationLevel').value;
+            document.getElementById('levelValue').textContent = level;
+
+            const bar = document.getElementById('levelBar');
+            const width = level * 10;
+            bar.style.width = width + '%';
+            bar.textContent = width + '%';
+
+            const descriptions = [
+                '', 'Muy Bajo', 'Bajo', 'Bajo-Moderado', 'Moderado',
+                'Moderado', 'Moderado-Alto', 'Alto', 'Muy Alto', 'Excelente', 'Máximo'
+            ];
+            document.getElementById('levelDescription').textContent = descriptions[level];
+        }
+
+        function saveEntry() {
+            const level = parseInt(document.getElementById('motivationLevel').value);
+            const source = document.getElementById('motivationSource').value;
+            const type = document.getElementById('incentiveType').value;
+
+            if (!source) {
+                alert('Por favor describe qué te motiva');
+                return;
+            }
+
+            const entry = {
+                date: new Date().toLocaleDateString(),
+                level: level,
+                source: source,
+                type: type,
+                timestamp: Date.now()
+            };
+
+            entries.unshift(entry);
+            localStorage.setItem('motivationEntries', JSON.stringify(entries));
+
+            document.getElementById('motivationSource').value = '';
+            document.getElementById('motivationLevel').value = 5;
+            updateLevelDisplay();
+
+            updateStats();
+            displayEntries();
+        }
+
+        function updateStats() {
+            document.getElementById('totalEntries').textContent = entries.length;
+
+            if (entries.length > 0) {
+                const avg = entries.reduce((sum, e) => sum + e.level, 0) / entries.length;
+                document.getElementById('avgMotivation').textContent = avg.toFixed(1);
+
+                const highest = Math.max(...entries.map(e => e.level));
+                document.getElementById('highestLevel').textContent = highest;
+
+                // Calculate streak
+                let streak = 0;
+                const today = new Date().toDateString();
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+                for (let i = 0; i < entries.length; i++) {
+                    const entryDate = new Date(entries[i].timestamp).toDateString();
+                    if (entryDate === today || entryDate === yesterday) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+                document.getElementById('streak').textContent = streak;
+            }
+        }
+
+        function displayEntries() {
+            const list = document.getElementById('entryList');
+            let html = '<h3>📊 Historial de Motivación</h3>';
+
+            entries.slice(0, 10).forEach(entry => {
+                html += `
+                    <div class="entry-item">
+                        <strong>${entry.date}</strong> - Nivel: ${entry.level}/10 (${entry.type})
+                        <p>${entry.source}</p>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function resetData() {
+            if (confirm('¿Estás seguro de que quieres borrar todos los datos?')) {
+                entries = [];
+                localStorage.setItem('motivationEntries', JSON.stringify(entries));
+                updateStats();
+                displayEntries();
+            }
+        }
+
+        updateStats();
+        displayEntries();
+        updateLevelDisplay();
+    </script>
+</body>
+
+</html>

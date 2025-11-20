@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimista Informado</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .news-item {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .news-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .news-item.negative {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .news-item.positive {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .news-item.neutral {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        .news-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .news-content {
+            margin-bottom: 15px;
+        }
+        .news-meta {
+            font-size: 0.9em;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+        .perspective-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .trend-chart {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 200px;
+            position: relative;
+        }
+        .chart-line {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 150px;
+            border-left: 2px solid #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .chart-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #007bff;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>😊 Optimista Informado</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Practica el optimismo informado analizando noticias y datos. Aprende a identificar tendencias positivas ocultas, desafiar sesgos cognitivos y mantener una perspectiva equilibrada sobre el progreso global. Desarrolla la habilidad de ver el bosque a través de los árboles.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="optimismScore">0</div>
+                <div class="stat-label">Puntuación de Optimismo</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="accuracy">0%</div>
+                <div class="stat-label">Precisión</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="biasDetected">0</div>
+                <div class="stat-label">Sesgos Detectados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="trendsIdentified">0</div>
+                <div class="stat-label">Tendencias Identificadas</div>
+            </div>
+        </div>
+
+        <div class="perspective-panel">
+            <h3>📊 Perspectiva Histórica</h3>
+            <div class="trend-chart">
+                <div class="chart-line" id="trendLine"></div>
+                <div style="position: absolute; top: 10px; left: 20px; font-weight: bold;">Progreso Global</div>
+                <div style="position: absolute; bottom: 5px; left: 20px; font-size: 0.8em;">1900</div>
+                <div style="position: absolute; bottom: 5px; right: 20px; font-size: 0.8em;">2024</div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>📰 Análisis de Noticias</h3>
+            <p>Analiza estas noticias y determina si representan una tendencia positiva, negativa o neutral a largo plazo:</p>
+            
+            <div id="newsContainer">
+                <!-- Las noticias se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Herramientas de Análisis</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="analyzeTrend()">Analizar Tendencias</button>
+                <button class="button" onclick="detectBias()">Detectar Sesgos</button>
+                <button class="button" onclick="historicalContext()">Contexto Histórico</button>
+                <button class="button" onclick="dataVerification()">Verificar Datos</button>
+                <button class="button" onclick="globalPerspective()">Perspectiva Global</button>
+                <button class="button" onclick="longTermView()">Vista a Largo Plazo</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Desarrolla tu capacidad de análisis para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            optimismScore: 0,
+            accuracy: 0,
+            biasDetected: 0,
+            trendsIdentified: 0,
+            totalAnalyzed: 0,
+            correctAnalysis: 0,
+            achievements: []
+        };
+
+        const newsItems = [
+            {
+                title: "Pobreza extrema aumenta en África",
+                content: "Un nuevo informe muestra que la pobreza extrema ha aumentado en varios países africanos durante el último año debido a conflictos y sequías.",
+                type: "negative",
+                trend: "positive", // A largo plazo, la pobreza global está disminuyendo
+                explanation: "Aunque hay retrocesos temporales, la tendencia global de pobreza extrema es descendente desde 1990."
+            },
+            {
+                title: "Nuevas tecnologías de purificación de agua",
+                content: "Científicos han desarrollado una nueva tecnología que puede purificar agua contaminada a bajo costo usando energía solar.",
+                type: "positive",
+                trend: "positive",
+                explanation: "Las tecnologías de purificación están mejorando constantemente y reduciendo costos."
+            },
+            {
+                title: "Desempleo aumenta en países desarrollados",
+                content: "Las tasas de desempleo han aumentado en varios países desarrollados debido a la automatización y cambios económicos.",
+                type: "negative",
+                trend: "neutral", // La automatización puede ser positiva a largo plazo
+                explanation: "La automatización puede causar disrupción temporal pero mejora la productividad y crea nuevos trabajos."
+            },
+            {
+                title: "Alfabetización global alcanza nuevo récord",
+                content: "La UNESCO reporta que la tasa de alfabetización global ha alcanzado el 86%, el nivel más alto en la historia.",
+                type: "positive",
+                trend: "positive",
+                explanation: "La educación global ha mejorado consistentemente durante décadas."
+            },
+            {
+                title: "Crisis climática empeora",
+                content: "Los científicos advierten que los efectos del cambio climático están acelerándose más rápido de lo previsto.",
+                type: "negative",
+                trend: "neutral", // Depende de las acciones tomadas
+                explanation: "El problema es real, pero las tecnologías de energía limpia están avanzando rápidamente."
+            },
+            {
+                title: "Inteligencia artificial mejora diagnóstico médico",
+                content: "Un nuevo sistema de IA puede detectar cáncer con mayor precisión que los médicos humanos.",
+                type: "positive",
+                trend: "positive",
+                explanation: "La IA está revolucionando la medicina y mejorando los resultados de salud."
+            },
+            {
+                title: "Desigualdad económica aumenta",
+                content: "La brecha entre ricos y pobres continúa ampliándose en muchas economías desarrolladas.",
+                type: "negative",
+                trend: "neutral", // Complejo, depende de políticas
+                explanation: "La desigualdad es un problema real, pero el acceso a tecnología está democratizándose."
+            },
+            {
+                title: "Energías renovables más baratas que fósiles",
+                content: "Por primera vez en la historia, las energías renovables son más baratas que los combustibles fósiles.",
+                type: "positive",
+                trend: "positive",
+                explanation: "Esta es una tendencia que continuará acelerándose."
+            }
+        ];
+
+        let currentNewsIndex = 0;
+
+        function generateNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            newsContainer.innerHTML = '';
+
+            // Mostrar 3 noticias aleatorias
+            const shuffledNews = [...newsItems].sort(() => Math.random() - 0.5);
+            const selectedNews = shuffledNews.slice(0, 3);
+
+            selectedNews.forEach((news, index) => {
+                const newsElement = document.createElement('div');
+                newsElement.className = `news-item ${news.type}`;
+                newsElement.innerHTML = `
+                    <div class="news-title">${news.title}</div>
+                    <div class="news-content">${news.content}</div>
+                    <div class="news-meta">
+                        <span>Tipo: ${news.type}</span>
+                        <span>Análisis requerido</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="button" onclick="analyzeNews(${index}, 'positive')">Tendencia Positiva</button>
+                        <button class="button" onclick="analyzeNews(${index}, 'negative')">Tendencia Negativa</button>
+                        <button class="button" onclick="analyzeNews(${index}, 'neutral')">Tendencia Neutral</button>
+                    </div>
+                `;
+                newsElement.dataset.newsIndex = index;
+                newsElement.dataset.correctTrend = news.trend;
+                newsElement.dataset.explanation = news.explanation;
+                newsContainer.appendChild(newsElement);
+            });
+        }
+
+        function analyzeNews(newsIndex, selectedTrend) {
+            const newsElement = document.querySelector(`[data-news-index="${newsIndex}"]`);
+            const correctTrend = newsElement.dataset.correctTrend;
+            const explanation = newsElement.dataset.explanation;
+
+            gameState.totalAnalyzed++;
+
+            if (selectedTrend === correctTrend) {
+                gameState.correctAnalysis++;
+                gameState.optimismScore += 10;
+                newsElement.style.borderColor = '#28a745';
+                newsElement.style.background = '#d4edda';
+                showAchievement('✅ Análisis Correcto', explanation);
+            } else {
+                newsElement.style.borderColor = '#dc3545';
+                newsElement.style.background = '#f8d7da';
+                showAchievement('❌ Análisis Incorrecto', `La tendencia correcta es: ${correctTrend}. ${explanation}`);
+            }
+
+            updateDisplay();
+            
+            // Deshabilitar botones después del análisis
+            const buttons = newsElement.querySelectorAll('button');
+            buttons.forEach(button => button.disabled = true);
+        }
+
+        function analyzeTrend() {
+            gameState.trendsIdentified++;
+            gameState.optimismScore += 5;
+            showAchievement('📈 Análisis de Tendencias', 'Has identificado patrones a largo plazo');
+            updateDisplay();
+        }
+
+        function detectBias() {
+            gameState.biasDetected++;
+            gameState.optimismScore += 8;
+            showAchievement('🔍 Sesgo Detectado', 'Has identificado un sesgo cognitivo en la información');
+            updateDisplay();
+        }
+
+        function historicalContext() {
+            gameState.optimismScore += 6;
+            showAchievement('📚 Contexto Histórico', 'Has aplicado perspectiva histórica al análisis');
+            updateDisplay();
+        }
+
+        function dataVerification() {
+            gameState.optimismScore += 7;
+            showAchievement('🔬 Verificación de Datos', 'Has verificado la información con fuentes confiables');
+            updateDisplay();
+        }
+
+        function globalPerspective() {
+            gameState.optimismScore += 9;
+            showAchievement('🌍 Perspectiva Global', 'Has considerado el contexto global en tu análisis');
+            updateDisplay();
+        }
+
+        function longTermView() {
+            gameState.optimismScore += 10;
+            showAchievement('⏰ Vista a Largo Plazo', 'Has analizado las implicaciones a largo plazo');
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('optimismScore').textContent = gameState.optimismScore;
+            
+            if (gameState.totalAnalyzed > 0) {
+                const accuracy = Math.round((gameState.correctAnalysis / gameState.totalAnalyzed) * 100);
+                document.getElementById('accuracy').textContent = accuracy + '%';
+            }
+            
+            document.getElementById('biasDetected').textContent = gameState.biasDetected;
+            document.getElementById('trendsIdentified').textContent = gameState.trendsIdentified;
+
+            // Actualizar gráfico de tendencias
+            updateTrendChart();
+        }
+
+        function updateTrendChart() {
+            const chartLine = document.getElementById('trendLine');
+            const points = [
+                { x: 0, y: 20 },   // 1900
+                { x: 25, y: 30 },  // 1950
+                { x: 50, y: 45 },  // 1980
+                { x: 75, y: 70 },  // 2000
+                { x: 100, y: 85 }  // 2024
+            ];
+
+            // Crear puntos en el gráfico
+            chartLine.innerHTML = '';
+            points.forEach(point => {
+                const pointElement = document.createElement('div');
+                pointElement.className = 'chart-point';
+                pointElement.style.left = point.x + '%';
+                pointElement.style.bottom = point.y + '%';
+                chartLine.appendChild(pointElement);
+            });
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        generateNews();
+        updateDisplay();
+    </script>
+</body>
+</html>

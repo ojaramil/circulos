@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Decisiones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .scenario-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .scenario-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .consequence {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .consequence h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .analysis {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .analysis h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Simulador de Decisiones</h1>
+            <p>Practica la toma de decisiones conscientes y reflexivas</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este simulador te presenta diferentes escenarios de decisión. Analiza cada opción, considera las consecuencias y practica la toma de decisiones conscientes. Aprende a evaluar pros y contras antes de decidir.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Estadísticas de Decisiones</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Decisiones Tomadas</h4>
+                        <div class="stat-number" id="decisions-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Puntuación Promedio</h4>
+                        <div class="stat-number" id="average-score">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Mejor Decisión</h4>
+                        <div class="stat-number" id="best-score">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scenario-container">
+                <div class="scenario-card">
+                    <h3>🎭 Escenario 1: Conflicto en el Trabajo</h3>
+                    <p>Tu compañero de trabajo ha estado tomando crédito por tus ideas en las reuniones. Esto ha sucedido varias veces y está afectando tu reputación. Tienes una reunión importante mañana donde presentarás una propuesta que has estado desarrollando durante semanas.</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'confrontar')">
+                            <h4>Confrontar Directamente</h4>
+                            <p>Hablar directamente con tu compañero sobre el problema antes de la reunión.</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'documentar')">
+                            <h4>Documentar y Reportar</h4>
+                            <p>Documentar el problema y reportarlo a tu supervisor.</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'ignorar')">
+                            <h4>Ignorar por Ahora</h4>
+                            <p>Enfocarte en la reunión y abordar el problema después.</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'colaborar')">
+                            <h4>Buscar Colaboración</h4>
+                            <p>Proponer trabajar juntos en la propuesta para evitar conflictos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzeDecision()" disabled>Analizar Decisión</button>
+                <button class="btn" onclick="nextScenario()">Siguiente Escenario</button>
+            </div>
+
+            <div id="analysis-container" style="display: none;">
+                <div class="consequence">
+                    <h4>🎯 Consecuencias de tu Decisión</h4>
+                    <div id="consequence-content"></div>
+                </div>
+
+                <div class="analysis">
+                    <h4>🧠 Análisis de la Decisión</h4>
+                    <div id="analysis-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let selectedOption = null;
+        let decisionsCount = 0;
+        let totalScore = 0;
+        let bestScore = 0;
+
+        const scenarios = [
+            {
+                title: "Conflicto en el Trabajo",
+                description: "Tu compañero de trabajo ha estado tomando crédito por tus ideas en las reuniones. Esto ha sucedido varias veces y está afectando tu reputación. Tienes una reunión importante mañana donde presentarás una propuesta que has estado desarrollando durante semanas.",
+                options: [
+                    {
+                        id: 'confrontar',
+                        title: 'Confrontar Directamente',
+                        description: 'Hablar directamente con tu compañero sobre el problema antes de la reunión.',
+                        consequences: 'Puede resolver el problema inmediatamente, pero podría crear tensión. Requiere habilidades de comunicación efectiva.',
+                        score: 7
+                    },
+                    {
+                        id: 'documentar',
+                        title: 'Documentar y Reportar',
+                        description: 'Documentar el problema y reportarlo a tu supervisor.',
+                        consequences: 'Mantiene un registro formal del problema, pero podría escalar el conflicto y afectar las relaciones.',
+                        score: 6
+                    },
+                    {
+                        id: 'ignorar',
+                        title: 'Ignorar por Ahora',
+                        description: 'Enfocarte en la reunión y abordar el problema después.',
+                        consequences: 'Evita el conflicto inmediato, pero permite que el problema continúe y podría empeorar.',
+                        score: 3
+                    },
+                    {
+                        id: 'colaborar',
+                        title: 'Buscar Colaboración',
+                        description: 'Proponer trabajar juntos en la propuesta para evitar conflictos.',
+                        consequences: 'Fomenta la colaboración y puede resolver el problema de manera constructiva.',
+                        score: 8
+                    }
+                ]
+            },
+            {
+                title: "Decisión de Carrera",
+                description: "Tienes la oportunidad de cambiar a un trabajo que te apasiona más, pero con un salario 20% menor. Tu situación financiera actual es estable, pero no tienes muchos ahorros.",
+                options: [
+                    {
+                        id: 'aceptar',
+                        title: 'Aceptar el Nuevo Trabajo',
+                        description: 'Seguir tu pasión a pesar de la reducción salarial.',
+                        consequences: 'Mayor satisfacción personal, pero requiere ajustes financieros y planificación.',
+                        score: 7
+                    },
+                    {
+                        id: 'negociar',
+                        title: 'Negociar Mejores Condiciones',
+                        description: 'Intentar negociar un salario más alto o beneficios adicionales.',
+                        consequences: 'Podría resultar en mejores condiciones, pero no hay garantía de éxito.',
+                        score: 6
+                    },
+                    {
+                        id: 'esperar',
+                        title: 'Esperar una Mejor Oportunidad',
+                        description: 'Mantener tu trabajo actual y esperar una oportunidad mejor.',
+                        consequences: 'Mantiene la estabilidad financiera, pero podrías perder la oportunidad.',
+                        score: 4
+                    },
+                    {
+                        id: 'preparar',
+                        title: 'Prepararse Financieramente',
+                        description: 'Ahorrar más dinero antes de hacer el cambio.',
+                        consequences: 'Reduce el riesgo financiero, pero podría tomar tiempo y la oportunidad podría no estar disponible.',
+                        score: 5
+                    }
+                ]
+            },
+            {
+                title: "Relación Personal",
+                description: "Tu mejor amigo ha estado cancelando planes contigo repetidamente en las últimas semanas. Cuando le preguntas, dice que está muy ocupado, pero ves que pasa tiempo con otras personas en redes sociales.",
+                options: [
+                    {
+                        id: 'hablar',
+                        title: 'Hablar Directamente',
+                        description: 'Expresar tus sentimientos y preguntar qué está pasando.',
+                        consequences: 'Puede resolver el problema y fortalecer la amistad, pero requiere vulnerabilidad.',
+                        score: 8
+                    },
+                    {
+                        id: 'distancia',
+                        title: 'Tomar Distancia',
+                        description: 'Reducir el contacto y esperar a que él se acerque.',
+                        consequences: 'Evita el conflicto, pero podría dañar la amistad a largo plazo.',
+                        score: 4
+                    },
+                    {
+                        id: 'confrontar',
+                        title: 'Confrontar sobre las Redes Sociales',
+                        description: 'Mencionar que has notado que pasa tiempo con otros.',
+                        consequences: 'Podría crear tensión, pero también podría llevar a una conversación honesta.',
+                        score: 5
+                    },
+                    {
+                        id: 'entender',
+                        title: 'Tratar de Entender',
+                        description: 'Preguntar si hay algo que puedas hacer para ayudar.',
+                        consequences: 'Muestra empatía y podría abrir la comunicación, pero no aborda directamente el problema.',
+                        score: 6
+                    }
+                ]
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Remove previous selection
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            selectedOption = optionId;
+            
+            // Enable analyze button
+            document.getElementById('analyze-btn').disabled = false;
+        }
+
+        function analyzeDecision() {
+            if (!selectedOption) return;
+
+            const scenario = scenarios[currentScenario];
+            const option = scenario.options.find(opt => opt.id === selectedOption);
+            
+            if (!option) return;
+
+            // Update stats
+            decisionsCount++;
+            totalScore += option.score;
+            if (option.score > bestScore) {
+                bestScore = option.score;
+            }
+
+            // Show consequences
+            document.getElementById('consequence-content').innerHTML = `
+                <p><strong>Opción elegida:</strong> ${option.title}</p>
+                <p><strong>Consecuencias:</strong> ${option.consequences}</p>
+                <p><strong>Puntuación:</strong> ${option.score}/10</p>
+            `;
+
+            // Show analysis
+            document.getElementById('analysis-content').innerHTML = `
+                <p><strong>Análisis de la decisión:</strong></p>
+                <ul>
+                    <li>Esta decisión muestra ${getDecisionStyle(option.score)}</li>
+                    <li>Considera las consecuencias a largo plazo</li>
+                    <li>Reflexiona sobre cómo esta decisión se alinea con tus valores</li>
+                    <li>Evalúa si hay alternativas que no consideraste</li>
+                </ul>
+            `;
+
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'block';
+            
+            // Update stats display
+            updateStats();
+        }
+
+        function getDecisionStyle(score) {
+            if (score >= 8) return "una excelente capacidad de toma de decisiones";
+            if (score >= 6) return "buenas habilidades de toma de decisiones";
+            if (score >= 4) return "decisiones moderadas con margen de mejora";
+            return "oportunidades para mejorar la toma de decisiones";
+        }
+
+        function nextScenario() {
+            currentScenario = (currentScenario + 1) % scenarios.length;
+            loadScenario();
+        }
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            
+            document.querySelector('.scenario-card h3').textContent = `🎭 Escenario ${currentScenario + 1}: ${scenario.title}`;
+            document.querySelector('.scenario-card p').textContent = scenario.description;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            scenario.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedOption = null;
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('decisions-count').textContent = decisionsCount;
+            document.getElementById('average-score').textContent = Math.round(totalScore / decisionsCount);
+            document.getElementById('best-score').textContent = bestScore;
+        }
+
+        // Initialize first scenario
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScenario();
+        });
+    </script>
+</body>
+</html>
+

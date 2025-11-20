@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Microhábitos - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .habit-builder {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .habit-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .habit-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+        .habit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .habit-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .habit-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .habit-progress {
+            background: #f8f9fa;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .habit-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71);
+            transition: width 0.3s ease;
+        }
+        .habit-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .habit-streak {
+            background: #e8f5e8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .habit-frequency {
+            background: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #856404;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn.success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        .btn.danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        .btn.small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .habit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .streak-display {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .streak-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .streak-label {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .achievement {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            margin: 15px 0;
+            display: none;
+        }
+        .achievement.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .habit-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .category-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .category-card.selected {
+            border-color: #e74c3c;
+            background: #ffe6e6;
+        }
+        .category-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .category-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .category-description {
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Constructor de Microhábitos</h1>
+        
+        <div class="game-section">
+            <h2>🎯 ¿Qué son los Microhábitos?</h2>
+            <p>Los microhábitos son pequeñas acciones que realizas de manera consistente para construir hábitos más grandes. Son tan pequeños que es casi imposible fallar, pero con el tiempo crean un impacto significativo en tu vida.</p>
+        </div>
+
+        <div class="streak-display">
+            <div class="streak-number" id="totalStreak">0</div>
+            <div class="streak-label">Días de Racha Total</div>
+        </div>
+
+        <div class="achievement" id="achievement">
+            <h4>🏆 ¡Logro Desbloqueado!</h4>
+            <p id="achievementText"></p>
+        </div>
+
+        <div class="habit-builder">
+            <h3>🔨 Construir Nuevo Microhábito</h3>
+            <div class="habit-form">
+                <div class="form-group">
+                    <label for="habitName">Nombre del Hábito:</label>
+                    <input type="text" id="habitName" placeholder="Ej: Beber un vaso de agua">
+                </div>
+                
+                <div class="form-group">
+                    <label for="habitCategory">Categoría:</label>
+                    <select id="habitCategory">
+                        <option value="salud">🏥 Salud</option>
+                        <option value="productividad">⚡ Productividad</option>
+                        <option value="aprendizaje">📚 Aprendizaje</option>
+                        <option value="relaciones">🤝 Relaciones</option>
+                        <option value="creatividad">🎨 Creatividad</option>
+                        <option value="bienestar">🧘 Bienestar</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="habitFrequency">Frecuencia:</label>
+                    <select id="habitFrequency">
+                        <option value="daily">Diario</option>
+                        <option value="weekly">Semanal</option>
+                        <option value="monthly">Mensual</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="habitDescription">Descripción:</label>
+                    <textarea id="habitDescription" rows="3" placeholder="Describe tu microhábito..."></textarea>
+                </div>
+                
+                <button class="btn" onclick="createHabit()">➕ Crear Microhábito</button>
+            </div>
+        </div>
+
+        <div class="habit-categories">
+            <div class="category-card" onclick="filterHabits('all')">
+                <div class="category-icon">📋</div>
+                <div class="category-title">Todos</div>
+                <div class="category-description">Ver todos los hábitos</div>
+            </div>
+            <div class="category-card" onclick="filterHabits('salud')">
+                <div class="category-icon">🏥</div>
+                <div class="category-title">Salud</div>
+                <div class="category-description">Hábitos de salud</div>
+            </div>
+            <div class="category-card" onclick="filterHabits('productividad')">
+                <div class="category-icon">⚡</div>
+                <div class="category-title">Productividad</div>
+                <div class="category-description">Hábitos de productividad</div>
+            </div>
+            <div class="category-card" onclick="filterHabits('aprendizaje')">
+                <div class="category-icon">📚</div>
+                <div class="category-title">Aprendizaje</div>
+                <div class="category-description">Hábitos de aprendizaje</div>
+            </div>
+        </div>
+
+        <div class="habit-grid" id="habitsContainer">
+            <!-- Los hábitos se generarán dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="showStats()">📊 Ver Estadísticas</button>
+            <button class="btn" onclick="exportHabits()">💾 Exportar Hábitos</button>
+        </div>
+    </div>
+
+    <script>
+        let habits = JSON.parse(localStorage.getItem('microhabits')) || [];
+        let currentFilter = 'all';
+        let totalStreak = 0;
+
+        const habitCategories = {
+            salud: { icon: '🏥', name: 'Salud' },
+            productividad: { icon: '⚡', name: 'Productividad' },
+            aprendizaje: { icon: '📚', name: 'Aprendizaje' },
+            relaciones: { icon: '🤝', name: 'Relaciones' },
+            creatividad: { icon: '🎨', name: 'Creatividad' },
+            bienestar: { icon: '🧘', name: 'Bienestar' }
+        };
+
+        function createHabit() {
+            const name = document.getElementById('habitName').value;
+            const category = document.getElementById('habitCategory').value;
+            const frequency = document.getElementById('habitFrequency').value;
+            const description = document.getElementById('habitDescription').value;
+
+            if (!name.trim()) {
+                alert('Por favor, ingresa un nombre para tu hábito');
+                return;
+            }
+
+            const habit = {
+                id: Date.now(),
+                name: name,
+                category: category,
+                frequency: frequency,
+                description: description,
+                streak: 0,
+                totalDays: 0,
+                lastCompleted: null,
+                createdAt: new Date().toISOString()
+            };
+
+            habits.push(habit);
+            saveHabits();
+            renderHabits();
+            clearForm();
+
+            showAchievement('🎉 ¡Nuevo microhábito creado!', 'Has agregado "' + name + '" a tu lista de hábitos.');
+        }
+
+        function clearForm() {
+            document.getElementById('habitName').value = '';
+            document.getElementById('habitDescription').value = '';
+        }
+
+        function completeHabit(habitId) {
+            const habit = habits.find(h => h.id === habitId);
+            if (!habit) return;
+
+            const today = new Date().toDateString();
+            const lastCompleted = habit.lastCompleted ? new Date(habit.lastCompleted).toDateString() : null;
+
+            // Check if already completed today
+            if (lastCompleted === today) {
+                alert('Ya completaste este hábito hoy');
+                return;
+            }
+
+            // Update habit
+            habit.totalDays++;
+            habit.lastCompleted = new Date().toISOString();
+
+            // Update streak
+            if (lastCompleted === new Date(Date.now() - 24 * 60 * 60 * 1000).toDateString()) {
+                habit.streak++;
+            } else if (lastCompleted !== today) {
+                habit.streak = 1;
+            }
+
+            saveHabits();
+            renderHabits();
+            updateTotalStreak();
+
+            showAchievement('🎯 ¡Hábito completado!', 'Has mantenido tu racha de ' + habit.streak + ' días.');
+        }
+
+        function deleteHabit(habitId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este hábito?')) {
+                habits = habits.filter(h => h.id !== habitId);
+                saveHabits();
+                renderHabits();
+                updateTotalStreak();
+            }
+        }
+
+        function filterHabits(category) {
+            currentFilter = category;
+            document.querySelectorAll('.category-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.category-card').classList.add('selected');
+            renderHabits();
+        }
+
+        function renderHabits() {
+            const container = document.getElementById('habitsContainer');
+            const filteredHabits = currentFilter === 'all' ? habits : habits.filter(h => h.category === currentFilter);
+
+            if (filteredHabits.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <h3>📝 No hay hábitos en esta categoría</h3>
+                        <p>Crea tu primer microhábito para comenzar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredHabits.map(habit => {
+                const category = habitCategories[habit.category];
+                const progress = Math.min((habit.streak / 30) * 100, 100);
+                const lastCompleted = habit.lastCompleted ? new Date(habit.lastCompleted).toLocaleDateString() : 'Nunca';
+
+                return `
+                    <div class="habit-card">
+                        <div class="habit-title">${category.icon} ${habit.name}</div>
+                        <div class="habit-description">${habit.description}</div>
+                        
+                        <div class="habit-progress">
+                            <div class="habit-progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        
+                        <div class="habit-stats">
+                            <div class="habit-streak">🔥 ${habit.streak} días</div>
+                            <div class="habit-frequency">📅 ${habit.frequency}</div>
+                        </div>
+                        
+                        <div style="font-size: 0.8em; color: #666; margin: 10px 0;">
+                            <strong>Último completado:</strong> ${lastCompleted}<br>
+                            <strong>Total de días:</strong> ${habit.totalDays}
+                        </div>
+                        
+                        <div class="habit-actions">
+                            <button class="btn success small" onclick="completeHabit(${habit.id})">
+                                ✅ Completar
+                            </button>
+                            <button class="btn danger small" onclick="deleteHabit(${habit.id})">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTotalStreak() {
+            totalStreak = habits.reduce((sum, habit) => sum + habit.streak, 0);
+            document.getElementById('totalStreak').textContent = totalStreak;
+        }
+
+        function showAchievement(title, text) {
+            const achievement = document.getElementById('achievement');
+            const achievementText = document.getElementById('achievementText');
+            
+            achievementText.innerHTML = `<strong>${title}</strong><br>${text}`;
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+        }
+
+        function showStats() {
+            const stats = habits.reduce((acc, habit) => {
+                acc.totalHabits++;
+                acc.totalStreak += habit.streak;
+                acc.totalDays += habit.totalDays;
+                acc.categories[habit.category] = (acc.categories[habit.category] || 0) + 1;
+                return acc;
+            }, { totalHabits: 0, totalStreak: 0, totalDays: 0, categories: {} });
+
+            let statsHTML = `
+                <h3>📊 Estadísticas de tus Microhábitos</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                    <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>📝 Total de Hábitos</h4>
+                        <div style="font-size: 2em; color: #27ae60;">${stats.totalHabits}</div>
+                    </div>
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>🔥 Racha Total</h4>
+                        <div style="font-size: 2em; color: #f39c12;">${stats.totalStreak}</div>
+                    </div>
+                    <div style="background: #e6f7ff; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>📅 Días Completados</h4>
+                        <div style="font-size: 2em; color: #1890ff;">${stats.totalDays}</div>
+                    </div>
+                </div>
+            `;
+
+            if (Object.keys(stats.categories).length > 0) {
+                statsHTML += '<h4>📊 Hábitos por Categoría:</h4><ul>';
+                Object.entries(stats.categories).forEach(([category, count]) => {
+                    const cat = habitCategories[category];
+                    statsHTML += `<li>${cat.icon} ${cat.name}: ${count} hábitos</li>`;
+                });
+                statsHTML += '</ul>';
+            }
+
+            alert(statsHTML);
+        }
+
+        function exportHabits() {
+            const data = {
+                habits: habits,
+                exportDate: new Date().toISOString(),
+                totalStreak: totalStreak
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'microhabits_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveHabits() {
+            localStorage.setItem('microhabits', JSON.stringify(habits));
+        }
+
+        // Initialize
+        updateTotalStreak();
+        renderHabits();
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Escucha Activa - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .conversation-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .speaker {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .listening-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .listening-option {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .listening-option:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .listening-option.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .listening-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .listening-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .listening-principles {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👂 Guía de Escucha Activa</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar la escucha activa en diferentes conversaciones. Aprende a escuchar con atención, mostrar empatía, hacer preguntas clarificadoras y responder de manera que demuestre que has entendido al otro.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Respuestas de Escucha Activa: <span id="correct">0</span> | Respuestas Pasivas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada conversación y selecciona la respuesta que demuestre escucha activa. La escucha activa incluye atención plena, empatía, preguntas clarificadoras y respuestas que muestren comprensión.</p>
+        </div>
+
+        <div class="listening-principles">
+            <h3>📋 Principios de Escucha Activa:</h3>
+            <ul>
+                <li>Prestar atención completa al hablante</li>
+                <li>Mostrar empatía y comprensión</li>
+                <li>Hacer preguntas clarificadoras</li>
+                <li>Reflejar lo que has entendido</li>
+                <li>Evitar interrumpir o juzgar prematuramente</li>
+            </ul>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextConversation()" id="next-btn" style="display: none;">Siguiente Conversación</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentConversation = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedResponse = null;
+
+        const conversations = [
+            {
+                title: "Problema en el Trabajo",
+                dialogue: [
+                    {
+                        speaker: "Colega",
+                        message: "Estoy muy frustrado con este proyecto. Siento que no estoy siendo escuchado y mis ideas no se están considerando. Me siento invisible en el equipo."
+                    }
+                ],
+                responses: [
+                    {
+                        text: "Entiendo que te sientes frustrado y que no te sientes valorado en el equipo. ¿Podrías contarme más sobre qué ideas específicas sientes que no se han considerado?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al reconocer las emociones del hablante, mostrar empatía y hacer una pregunta clarificadora."
+                    },
+                    {
+                        text: "Bueno, todos tenemos problemas. Tienes que ser más positivo.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta minimiza los sentimientos del hablante y no demuestra escucha activa."
+                    },
+                    {
+                        text: "Me parece que estás exagerando. Probablemente no es tan malo como lo describes.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta invalida los sentimientos del hablante y no muestra empatía."
+                    },
+                    {
+                        text: "Entiendo tu frustración. ¿Cómo te gustaría que el equipo respondiera a tus ideas para que te sientas más incluido?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al validar los sentimientos y buscar soluciones colaborativas."
+                    }
+                ]
+            },
+            {
+                title: "Conflicto Familiar",
+                dialogue: [
+                    {
+                        speaker: "Familiar",
+                        message: "Siempre siento que no me entiendes. Cuando hablo contigo, parece que no estás realmente escuchando. Me siento solo en esta familia."
+                    }
+                ],
+                responses: [
+                    {
+                        text: "Me duele saber que te sientes así. ¿Podrías ayudarme a entender qué específicamente te hace sentir que no te estoy escuchando?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al reconocer el dolor del hablante y buscar entender mejor la situación."
+                    },
+                    {
+                        text: "Eso no es cierto. Siempre te escucho.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es defensiva y no demuestra escucha activa."
+                    },
+                    {
+                        text: "Entiendo que te sientes solo y que no sientes que te escucho. ¿Qué puedo hacer diferente para que te sientas más escuchado?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al validar los sentimientos y buscar maneras de mejorar la comunicación."
+                    },
+                    {
+                        text: "Probablemente estás siendo demasiado sensible.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta invalida los sentimientos del hablante y no demuestra escucha activa."
+                    }
+                ]
+            },
+            {
+                title: "Preocupación Personal",
+                dialogue: [
+                    {
+                        speaker: "Amigo",
+                        message: "He estado muy ansioso últimamente. No puedo dormir bien y me siento abrumado por todo. No sé qué hacer."
+                    }
+                ],
+                responses: [
+                    {
+                        text: "Me preocupa saber que estás pasando por esto. ¿Podrías contarme más sobre qué específicamente te está causando ansiedad?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al mostrar preocupación genuina y hacer una pregunta clarificadora."
+                    },
+                    {
+                        text: "Todos tenemos ansiedad. Es normal.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta minimiza la experiencia del hablante y no demuestra escucha activa."
+                    },
+                    {
+                        text: "Entiendo que te sientes abrumado. ¿Hay algo específico que te gustaría que haga para apoyarte durante este tiempo?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra escucha activa al validar los sentimientos y ofrecer apoyo específico."
+                    },
+                    {
+                        text: "Deberías hacer ejercicio. Eso ayuda con la ansiedad.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta da consejos no solicitados en lugar de escuchar activamente."
+                    }
+                ]
+            }
+        ];
+
+        function loadConversation() {
+            const conversation = conversations[currentConversation];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Conversación: ${conversation.title}</h3>
+                    <div class="conversation-box">
+                        ${conversation.dialogue.map(dialogue => `
+                            <div class="speaker">${dialogue.speaker}:</div>
+                            <p>"${dialogue.message}"</p>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>👂 ¿Cómo responderías para demostrar escucha activa?</h3>
+                    <div class="listening-options">
+                        ${conversation.responses.map((response, index) => `
+                            <div class="listening-option" onclick="selectResponse(${index})" data-index="${index}">
+                                ${response.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedResponse = null;
+        }
+
+        function selectResponse(index) {
+            selectedResponse = index;
+            document.querySelectorAll('.listening-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function checkAnswer() {
+            if (selectedResponse === null) {
+                alert('Por favor, selecciona una respuesta antes de verificar.');
+                return;
+            }
+
+            const conversation = conversations[currentConversation];
+            const response = conversation.responses[selectedResponse];
+            const isCorrect = response.isCorrect;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.listening-option').forEach((option, index) => {
+                option.classList.remove('selected');
+                if (conversation.responses[index].isCorrect) {
+                    option.classList.add('correct');
+                } else if (index === selectedResponse && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente escucha activa!' : '❌ Revisa tu respuesta'}</h3>
+                <p><strong>Tu respuesta:</strong> ${response.text}</p>
+                <p><strong>Explicación:</strong> ${response.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextConversation() {
+            currentConversation++;
+            if (currentConversation < conversations.length) {
+                loadConversation();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado la guía de escucha activa.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentConversation = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadConversation();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadConversation();
+    </script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Hábitos Saludables</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .habits-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .habits-tracker {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .habits-tracker h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .habits-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .habits-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .category-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .category-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .category-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .category-card.active {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .category-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .category-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .category-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .category-progress {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .habits-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .habits-btn:hover {
+            background: #5a6fd8;
+        }
+        .habits-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .habits-btn.active {
+            background: #28a745;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .habits-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .habits-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .habits-guide {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .habits-guide h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .habit-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .habit-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        .habit-text {
+            flex: 1;
+        }
+        .habit-checkbox {
+            margin-left: 10px;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-poor { background: #f8d7da; color: #721c24; }
+        .level-fair { background: #fff3cd; color: #856404; }
+        .level-good { background: #d4edda; color: #155724; }
+        .level-excellent { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Guía de Hábitos Saludables</h1>
+            <p>Desarrolla hábitos que mejoren tu bienestar mental y físico</p>
+        </div>
+
+        <div class="habits-area">
+            <div class="habits-tracker">
+                <h3>📊 Puntuación de Hábitos Saludables</h3>
+                <div class="habits-score" id="habits-score">65</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="habits-progress" style="width: 65%"></div>
+                </div>
+                <p id="habits-status">Nivel bueno - Continúa desarrollando hábitos saludables</p>
+            </div>
+
+            <div class="habits-categories" id="habits-categories">
+                <div class="category-card" onclick="selectCategory('sleep')">
+                    <div class="category-icon">😴</div>
+                    <div class="category-title">Sueño</div>
+                    <div class="category-description">Hábitos de descanso y sueño</div>
+                    <div class="category-progress">0/5 completados</div>
+                </div>
+                <div class="category-card" onclick="selectCategory('nutrition')">
+                    <div class="category-icon">🥗</div>
+                    <div class="category-title">Nutrición</div>
+                    <div class="category-description">Alimentación saludable</div>
+                    <div class="category-progress">0/6 completados</div>
+                </div>
+                <div class="category-card" onclick="selectCategory('exercise')">
+                    <div class="category-icon">🏃</div>
+                    <div class="category-title">Ejercicio</div>
+                    <div class="category-description">Actividad física regular</div>
+                    <div class="category-progress">0/4 completados</div>
+                </div>
+                <div class="category-card" onclick="selectCategory('mindfulness')">
+                    <div class="category-icon">🧘</div>
+                    <div class="category-title">Mindfulness</div>
+                    <div class="category-description">Atención plena y meditación</div>
+                    <div class="category-progress">0/5 completados</div>
+                </div>
+                <div class="category-card" onclick="selectCategory('social')">
+                    <div class="category-icon">👥</div>
+                    <div class="category-title">Social</div>
+                    <div class="category-description">Conexiones sociales saludables</div>
+                    <div class="category-progress">0/4 completados</div>
+                </div>
+                <div class="category-card" onclick="selectCategory('learning')">
+                    <div class="category-icon">📚</div>
+                    <div class="category-title">Aprendizaje</div>
+                    <div class="category-description">Desarrollo personal y mental</div>
+                    <div class="category-progress">0/5 completados</div>
+                </div>
+            </div>
+
+            <div class="habits-guide" id="habits-guide" style="display: none;">
+                <h3>📋 Guía de Hábitos</h3>
+                <div id="habits-list"></div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="habits-btn" onclick="startHabits()" id="startBtn">🚀 Iniciar Plan</button>
+                <button class="habits-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="habits-stats" style="display: none;">
+                <div class="habits-stats">
+                    <h3>📊 Estadísticas de Hábitos</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-habits">0</div>
+                            <div class="stat-label">Hábitos Completados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="habits-streak">0</div>
+                            <div class="stat-label">Racha (días)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="categories-completed">0</div>
+                            <div class="stat-label">Categorías Completadas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Bueno</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentHabits = {
+            score: 65,
+            categories: {},
+            totalHabits: 0,
+            habitsStreak: 0,
+            categoriesCompleted: 0
+        };
+
+        const habitsData = {
+            'sleep': {
+                name: 'Sueño',
+                habits: [
+                    { name: 'Dormir 7-9 horas por noche', points: 10 },
+                    { name: 'Ir a dormir a la misma hora', points: 8 },
+                    { name: 'Evitar pantallas 1 hora antes', points: 12 },
+                    { name: 'Crear ambiente oscuro y fresco', points: 6 },
+                    { name: 'Evitar cafeína después de las 2 PM', points: 8 }
+                ]
+            },
+            'nutrition': {
+                name: 'Nutrición',
+                habits: [
+                    { name: 'Beber 8 vasos de agua al día', points: 8 },
+                    { name: 'Comer 5 porciones de frutas/verduras', points: 12 },
+                    { name: 'Evitar comida procesada', points: 10 },
+                    { name: 'Comer proteína en cada comida', points: 6 },
+                    { name: 'Limitar azúcar refinado', points: 8 },
+                    { name: 'Comer pescado 2 veces por semana', points: 10 }
+                ]
+            },
+            'exercise': {
+                name: 'Ejercicio',
+                habits: [
+                    { name: 'Hacer ejercicio 30 min al día', points: 15 },
+                    { name: 'Caminar 10,000 pasos', points: 10 },
+                    { name: 'Hacer estiramientos diarios', points: 6 },
+                    { name: 'Subir escaleras en lugar de ascensor', points: 4 }
+                ]
+            },
+            'mindfulness': {
+                name: 'Mindfulness',
+                habits: [
+                    { name: 'Meditar 10 minutos al día', points: 12 },
+                    { name: 'Practicar respiración profunda', points: 8 },
+                    { name: 'Hacer gratitud diaria', points: 6 },
+                    { name: 'Pasar tiempo en la naturaleza', points: 10 },
+                    { name: 'Practicar atención plena', points: 8 }
+                ]
+            },
+            'social': {
+                name: 'Social',
+                habits: [
+                    { name: 'Conectar con amigos/familia', points: 8 },
+                    { name: 'Expresar gratitud a otros', points: 6 },
+                    { name: 'Ayudar a alguien cada día', points: 10 },
+                    { name: 'Participar en actividades sociales', points: 8 }
+                ]
+            },
+            'learning': {
+                name: 'Aprendizaje',
+                habits: [
+                    { name: 'Leer 30 minutos al día', points: 10 },
+                    { name: 'Aprender algo nuevo', points: 8 },
+                    { name: 'Practicar un hobby', points: 6 },
+                    { name: 'Reflexionar sobre el día', points: 5 },
+                    { name: 'Establecer metas diarias', points: 7 }
+                ]
+            }
+        };
+
+        function selectCategory(categoryType) {
+            // Actualizar selección visual
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.category-card').classList.add('selected');
+            
+            // Mostrar guía de hábitos
+            document.getElementById('habits-guide').style.display = 'block';
+            showHabitsList(categoryType);
+        }
+
+        function showHabitsList(categoryType) {
+            const habitsList = document.getElementById('habits-list');
+            const category = habitsData[categoryType];
+            
+            habitsList.innerHTML = `<h4>${category.name}</h4>`;
+            
+            category.habits.forEach((habit, index) => {
+                const habitItem = document.createElement('div');
+                habitItem.className = 'habit-item';
+                habitItem.innerHTML = `
+                    <div class="habit-icon">${getHabitIcon(categoryType, index)}</div>
+                    <div class="habit-text">${habit.name}</div>
+                    <input type="checkbox" class="habit-checkbox" onchange="toggleHabit('${categoryType}', ${index})">
+                `;
+                habitsList.appendChild(habitItem);
+            });
+        }
+
+        function getHabitIcon(categoryType, index) {
+            const icons = {
+                'sleep': ['😴', '🕘', '📱', '🌙', '☕'],
+                'nutrition': ['💧', '🥗', '🚫', '🥩', '🍭', '🐟'],
+                'exercise': ['🏃', '👟', '🤸', '🪜'],
+                'mindfulness': ['🧘', '🌬️', '🙏', '🌳', '👁️'],
+                'social': ['👥', '💝', '🤝', '🎉'],
+                'learning': ['📚', '🧠', '🎨', '🤔', '🎯']
+            };
+            return icons[categoryType][index] || '✅';
+        }
+
+        function toggleHabit(categoryType, habitIndex) {
+            const habit = habitsData[categoryType].habits[habitIndex];
+            const checkbox = event.target;
+            
+            if (checkbox.checked) {
+                currentHabits.score += habit.points;
+                currentHabits.totalHabits++;
+                
+                // Verificar si se completó la categoría
+                if (!currentHabits.categories[categoryType]) {
+                    currentHabits.categories[categoryType] = 0;
+                }
+                currentHabits.categories[categoryType]++;
+                
+                if (currentHabits.categories[categoryType] === habitsData[categoryType].habits.length) {
+                    currentHabits.categoriesCompleted++;
+                    showAchievement(categoryType);
+                }
+            } else {
+                currentHabits.score -= habit.points;
+                currentHabits.totalHabits--;
+                currentHabits.categories[categoryType]--;
+            }
+            
+            currentHabits.score = Math.max(0, Math.min(100, currentHabits.score));
+            updateHabitsDisplay();
+            saveStats();
+        }
+
+        function startHabits() {
+            // Simular inicio de plan de hábitos
+            const categories = Object.keys(habitsData);
+            let completed = 0;
+            
+            const interval = setInterval(() => {
+                if (completed >= 3) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+                const category = habitsData[randomCategory];
+                const randomHabit = Math.floor(Math.random() * category.habits.length);
+                
+                // Simular completar hábito
+                const habit = category.habits[randomHabit];
+                currentHabits.score += habit.points;
+                currentHabits.totalHabits++;
+                
+                if (!currentHabits.categories[randomCategory]) {
+                    currentHabits.categories[randomCategory] = 0;
+                }
+                currentHabits.categories[randomCategory]++;
+                
+                updateHabitsDisplay();
+                showAchievement(randomCategory);
+                completed++;
+            }, 2000);
+        }
+
+        function updateHabitsDisplay() {
+            const score = currentHabits.score;
+            document.getElementById('habits-score').textContent = score;
+            document.getElementById('habits-progress').style.width = `${score}%`;
+            
+            let status, level, levelClass;
+            if (score >= 80) {
+                status = 'Excelente - ¡Tus hábitos son muy saludables!';
+                level = 'Excelente';
+                levelClass = 'level-excellent';
+            } else if (score >= 60) {
+                status = 'Bueno - Continúa desarrollando hábitos saludables';
+                level = 'Bueno';
+                levelClass = 'level-good';
+            } else if (score >= 40) {
+                status = 'Regular - Considera implementar más hábitos saludables';
+                level = 'Regular';
+                levelClass = 'level-fair';
+            } else {
+                status = 'Pobre - Es importante desarrollar hábitos más saludables';
+                level = 'Pobre';
+                levelClass = 'level-poor';
+            }
+            
+            document.getElementById('habits-status').textContent = status;
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+            
+            // Actualizar progreso de categorías
+            Object.keys(habitsData).forEach(categoryType => {
+                const category = habitsData[categoryType];
+                const completed = currentHabits.categories[categoryType] || 0;
+                const total = category.habits.length;
+                
+                const card = document.querySelector(`[onclick="selectCategory('${categoryType}')"]`);
+                if (card) {
+                    const progress = card.querySelector('.category-progress');
+                    progress.textContent = `${completed}/${total} completados`;
+                }
+            });
+        }
+
+        function showAchievement(categoryType) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '🌱 ¡Categoría completada! ' + habitsData[categoryType].name;
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('total-habits').textContent = currentHabits.totalHabits;
+            document.getElementById('habits-streak').textContent = currentHabits.habitsStreak;
+            document.getElementById('categories-completed').textContent = currentHabits.categoriesCompleted;
+            
+            updateHabitsDisplay();
+            document.getElementById('habits-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                score: currentHabits.score,
+                categories: currentHabits.categories,
+                totalHabits: currentHabits.totalHabits,
+                habitsStreak: currentHabits.habitsStreak,
+                categoriesCompleted: currentHabits.categoriesCompleted
+            };
+            localStorage.setItem('habitsStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('habitsStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentHabits.score = stats.score || 65;
+                currentHabits.categories = stats.categories || {};
+                currentHabits.totalHabits = stats.totalHabits || 0;
+                currentHabits.habitsStreak = stats.habitsStreak || 0;
+                currentHabits.categoriesCompleted = stats.categoriesCompleted || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateHabitsDisplay();
+    </script>
+</body>
+</html>

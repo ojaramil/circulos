@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registro - EduQuest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Registro</h1>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="fullName">Nombre Completo:</label>
+                <input type="text" id="fullName" name="fullName" value="Usuario de Prueba" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" value="testuser123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" value="123456" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" value="123456" required>
+            </div>
+            
+            <button type="submit">Registrar Usuario</button>
+        </form>
+        
+        <div id="result"></div>
+        
+        <hr style="margin: 30px 0;">
+        
+        <h2>🔍 Debug Info</h2>
+        <button onclick="showDebugInfo()">Mostrar Info del Sistema</button>
+        <button onclick="clearStorage()">Limpiar Storage</button>
+        <button onclick="listUsers()">Listar Usuarios</button>
+        
+        <div id="debug"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils/authSystem.js"></script>
+    
+    <script>
+        const resultDiv = document.getElementById('result');
+        const debugDiv = document.getElementById('debug');
+        
+        function showResult(message, isSuccess = true) {
+            resultDiv.className = `result ${isSuccess ? 'success' : 'error'}`;
+            resultDiv.textContent = message;
+        }
+        
+        function showDebug(message) {
+            debugDiv.className = 'result';
+            debugDiv.textContent = message;
+        }
+        
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const userData = {
+                fullName: formData.get('fullName'),
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            
+            console.log('📝 Intentando registrar usuario:', userData);
+            
+            try {
+                // Check if AuthSystem is available
+                if (typeof AuthSystem === 'undefined') {
+                    showResult('❌ AuthSystem no está disponible', false);
+                    return;
+                }
+                
+                // Validate passwords match
+                if (userData.password !== userData.confirmPassword) {
+                    showResult('❌ Las contraseñas no coinciden', false);
+                    return;
+                }
+                
+                // Call register method
+                const result = await AuthSystem.register(userData);
+                
+                console.log('📋 Resultado del registro:', result);
+                
+                if (result.success) {
+                    showResult(`✅ Usuario registrado exitosamente!\n\nDatos del usuario:\n${JSON.stringify(result.user, null, 2)}`);
+                } else {
+                    showResult(`❌ Error en el registro: ${result.error}`, false);
+                }
+                
+            } catch (error) {
+                console.error('💥 Excepción durante el registro:', error);
+                showResult(`❌ Excepción: ${error.message}\n\nStack: ${error.stack}`, false);
+            }
+        });
+        
+        function showDebugInfo() {
+            let info = '🔍 Información del Sistema:\n\n';
+            
+            // Check AuthSystem
+            info += `AuthSystem disponible: ${typeof AuthSystem !== 'undefined'}\n`;
+            
+            if (typeof AuthSystem !== 'undefined') {
+                try {
+                    const users = AuthSystem.getAllUsers();
+                    info += `Usuarios en storage: ${users.length}\n`;
+                    
+                    const currentUser = AuthSystem.getCurrentUser();
+                    info += `Usuario actual: ${currentUser ? currentUser.username : 'Ninguno'}\n`;
+                } catch (error) {
+                    info += `Error accediendo a AuthSystem: ${error.message}\n`;
+                }
+            }
+            
+            // Check localStorage
+            info += `LocalStorage disponible: ${typeof Storage !== 'undefined'}\n`;
+            
+            if (typeof Storage !== 'undefined') {
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('eduquest_'));
+                info += `Claves de EduQuest en localStorage: ${keys.length}\n`;
+                keys.forEach(key => {
+                    info += `  - ${key}\n`;
+                });
+            }
+            
+            showDebug(info);
+        }
+        
+        function clearStorage() {
+            if (confirm('¿Limpiar todo el almacenamiento de EduQuest?')) {
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('eduquest_'));
+                keys.forEach(key => localStorage.removeItem(key));
+                showDebug('✅ Storage limpiado');
+            }
+        }
+        
+        function listUsers() {
+            if (typeof AuthSystem === 'undefined') {
+                showDebug('❌ AuthSystem no disponible');
+                return;
+            }
+            
+            try {
+                const users = AuthSystem.getAllUsers();
+                let info = `👥 Usuarios registrados (${users.length}):\n\n`;
+                
+                users.forEach((user, index) => {
+                    info += `${index + 1}. ${user.username} (${user.email})\n`;
+                    info += `   ID: ${user.id}\n`;
+                    info += `   Creado: ${new Date(user.createdAt).toLocaleString()}\n`;
+                    info += `   Activo: ${user.isActive}\n\n`;
+                });
+                
+                if (users.length === 0) {
+                    info += 'No hay usuarios registrados';
+                }
+                
+                showDebug(info);
+            } catch (error) {
+                showDebug(`❌ Error listando usuarios: ${error.message}`);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Página de test cargada');
+            
+            // Auto-show debug info
+            setTimeout(showDebugInfo, 500);
+        });
+    </script>
+</body>
+</html>

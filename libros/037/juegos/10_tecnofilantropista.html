@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecnofilantropista</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #6f42c1;
+        }
+        .philanthropy-map {
+            background: #e9ecef;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .region {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background: #dee2e6;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            padding: 5px;
+        }
+        .region:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+        }
+        .region.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .region.impacted {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        .region.transformed {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .project {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .project:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .project.active {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .project.completed {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .project-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .project-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .project-card:hover {
+            border-color: #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .project-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .project-card.unlocked {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .project-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .project-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .project-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .project-impact {
+            font-size: 0.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .tech-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .tech-card.unlocked {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #2196f3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5a2d91;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.info {
+            background: #17a2b8;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6f42c1, #28a745);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Tecnofilantropista</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Usa tecnología avanzada para crear impacto social positivo en comunidades alrededor del mundo. Desarrolla proyectos filantrópicos que combinen innovación tecnológica con beneficio social para transformar vidas y comunidades.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="projectsLaunched">0</div>
+                <div class="stat-label">Proyectos Lanzados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="peopleImpacted">0</div>
+                <div class="stat-label">Personas Impactadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="regionsTransformed">0</div>
+                <div class="stat-label">Regiones Transformadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="socialImpact">0</div>
+                <div class="stat-label">Impacto Social</div>
+            </div>
+        </div>
+
+        <div class="project-panel">
+            <h3>🚀 Proyectos Filantrópicos</h3>
+            <div class="project-grid">
+                <div class="project-card unlocked" onclick="selectProject('education_tech')">
+                    <div class="project-icon">📚</div>
+                    <div class="project-title">Tecnología Educativa</div>
+                    <div class="project-description">Lleva educación de calidad a comunidades remotas</div>
+                    <div class="project-impact">Impacto: Alto | Beneficiarios: 10,000</div>
+                </div>
+                <div class="project-card unlocked" onclick="selectProject('healthcare_ai')">
+                    <div class="project-icon">🏥</div>
+                    <div class="project-title">IA para Salud</div>
+                    <div class="project-description">Diagnóstico médico accesible con IA</div>
+                    <div class="project-impact">Impacto: Alto | Beneficiarios: 5,000</div>
+                </div>
+                <div class="project-card unlocked" onclick="selectProject('clean_energy')">
+                    <div class="project-icon">⚡</div>
+                    <div class="project-title">Energía Limpia</div>
+                    <div class="project-description">Acceso a energía renovable</div>
+                    <div class="project-impact">Impacto: Medio | Beneficiarios: 15,000</div>
+                </div>
+                <div class="project-card unlocked" onclick="selectProject('digital_inclusion')">
+                    <div class="project-icon">🌐</div>
+                    <div class="project-title">Inclusión Digital</div>
+                    <div class="project-description">Conectividad y alfabetización digital</div>
+                    <div class="project-impact">Impacto: Alto | Beneficiarios: 20,000</div>
+                </div>
+                <div class="project-card" onclick="selectProject('sustainable_agriculture')">
+                    <div class="project-icon">🌱</div>
+                    <div class="project-title">Agricultura Sostenible</div>
+                    <div class="project-description">Tecnología para agricultura inteligente</div>
+                    <div class="project-impact">Impacto: Medio | Beneficiarios: 8,000</div>
+                </div>
+                <div class="project-card" onclick="selectProject('disaster_response')">
+                    <div class="project-icon">🚨</div>
+                    <div class="project-title">Respuesta a Desastres</div>
+                    <div class="project-description">Tecnología para emergencias</div>
+                    <div class="project-impact">Impacto: Alto | Beneficiarios: 50,000</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="philanthropy-map" id="philanthropyMap">
+            <h3>🌍 Mapa de Impacto Global</h3>
+            <div id="regions">
+                <!-- Las regiones se generarán dinámicamente -->
+            </div>
+            <div id="projects">
+                <!-- Los proyectos se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías de Impacto</h3>
+            <div class="tech-grid">
+                <div class="tech-card unlocked" onclick="selectTech('mobile_apps')">
+                    <div class="tech-icon">📱</div>
+                    <div class="tech-title">Aplicaciones Móviles</div>
+                    <div class="tech-description">Soluciones accesibles en smartphones</div>
+                    <div class="tech-cost">Costo: 100</div>
+                </div>
+                <div class="tech-card unlocked" onclick="selectTech('cloud_computing')">
+                    <div class="tech-icon">☁️</div>
+                    <div class="tech-title">Computación en la Nube</div>
+                    <div class="tech-description">Infraestructura escalable</div>
+                    <div class="tech-cost">Costo: 200</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('blockchain')">
+                    <div class="tech-icon">⛓️</div>
+                    <div class="tech-title">Blockchain</div>
+                    <div class="tech-description">Transparencia y confianza</div>
+                    <div class="tech-cost">Costo: 300</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('iot_sensors')">
+                    <div class="tech-icon">📡</div>
+                    <div class="tech-title">Sensores IoT</div>
+                    <div class="tech-description">Monitoreo inteligente</div>
+                    <div class="tech-cost">Costo: 250</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('machine_learning')">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">Aprendizaje Automático</div>
+                    <div class="tech-description">Análisis predictivo</div>
+                    <div class="tech-cost">Costo: 400</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('virtual_reality')">
+                    <div class="tech-icon">🥽</div>
+                    <div class="tech-title">Realidad Virtual</div>
+                    <div class="tech-description">Experiencias inmersivas</div>
+                    <div class="tech-cost">Costo: 350</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Impacto</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="launchProject()">Lanzar Proyecto</button>
+                <button class="button" onclick="scaleProject()">Escalar Proyecto</button>
+                <button class="button" onclick="researchTech()">Investigar</button>
+                <button class="button" onclick="optimizeImpact()">Optimizar Impacto</button>
+                <button class="button" onclick="expandRegion()">Expandir Región</button>
+                <button class="button" onclick="measureImpact()">Medir Impacto</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Crea impacto social para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            projectsLaunched: 0,
+            peopleImpacted: 0,
+            regionsTransformed: 0,
+            socialImpact: 0,
+            selectedProject: null,
+            selectedTech: null,
+            resources: 1000,
+            projects: {
+                education_tech: { unlocked: true, impact: 1000, beneficiaries: 10000, cost: 200 },
+                healthcare_ai: { unlocked: true, impact: 1200, beneficiaries: 5000, cost: 300 },
+                clean_energy: { unlocked: true, impact: 800, beneficiaries: 15000, cost: 250 },
+                digital_inclusion: { unlocked: true, impact: 1500, beneficiaries: 20000, cost: 180 },
+                sustainable_agriculture: { unlocked: false, impact: 900, beneficiaries: 8000, cost: 350 },
+                disaster_response: { unlocked: false, impact: 2000, beneficiaries: 50000, cost: 500 }
+            },
+            technologies: {
+                mobile_apps: { unlocked: true, cost: 100, efficiency: 0.2 },
+                cloud_computing: { unlocked: true, cost: 200, efficiency: 0.25 },
+                blockchain: { unlocked: false, cost: 300, efficiency: 0.3 },
+                iot_sensors: { unlocked: false, cost: 250, efficiency: 0.28 },
+                machine_learning: { unlocked: false, cost: 400, efficiency: 0.35 },
+                virtual_reality: { unlocked: false, cost: 350, efficiency: 0.32 }
+            },
+            regions: [],
+            achievements: []
+        };
+
+        function initializePhilanthropyMap() {
+            const regionsContainer = document.getElementById('regions');
+            const projectsContainer = document.getElementById('projects');
+            
+            regionsContainer.innerHTML = '';
+            projectsContainer.innerHTML = '';
+
+            // Crear regiones
+            const regionTypes = [
+                { name: 'África Subsahariana', x: 20, y: 30, status: 'needs_help' },
+                { name: 'Sudeste Asiático', x: 60, y: 25, status: 'needs_help' },
+                { name: 'América Latina', x: 15, y: 60, status: 'needs_help' },
+                { name: 'Oriente Medio', x: 45, y: 20, status: 'needs_help' },
+                { name: 'Europa del Este', x: 50, y: 15, status: 'needs_help' },
+                { name: 'Oceanía', x: 75, y: 70, status: 'needs_help' }
+            ];
+
+            regionTypes.forEach((region, index) => {
+                const regionElement = document.createElement('div');
+                regionElement.className = 'region';
+                regionElement.style.left = region.x + '%';
+                regionElement.style.top = region.y + '%';
+                regionElement.innerHTML = region.name;
+                regionElement.onclick = () => selectRegion(index);
+                regionElement.dataset.regionId = index;
+
+                regionsContainer.appendChild(regionElement);
+
+                gameState.regions.push({
+                    id: index,
+                    name: region.name,
+                    status: region.status,
+                    projects: [],
+                    impact: 0
+                });
+            });
+        }
+
+        function selectRegion(regionId) {
+            const region = gameState.regions[regionId];
+            if (!region) return;
+
+            // Deseleccionar todas las regiones
+            document.querySelectorAll('.region').forEach(region => {
+                region.classList.remove('selected');
+            });
+            
+            // Seleccionar la región actual
+            const regionElement = document.querySelector(`[data-region-id="${regionId}"]`);
+            regionElement.classList.add('selected');
+        }
+
+        function selectProject(project) {
+            // Deseleccionar todos los proyectos
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar el proyecto actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedProject = project;
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function launchProject() {
+            if (!gameState.selectedProject) {
+                alert('Selecciona un proyecto primero.');
+                return;
+            }
+
+            const project = gameState.projects[gameState.selectedProject];
+            if (!project.unlocked) {
+                alert('Este proyecto no está desbloqueado.');
+                return;
+            }
+
+            if (gameState.resources < project.cost) {
+                alert('No tienes suficientes recursos para lanzar este proyecto.');
+                return;
+            }
+
+            gameState.resources -= project.cost;
+            gameState.projectsLaunched++;
+            gameState.peopleImpacted += project.beneficiaries;
+            gameState.socialImpact += project.impact;
+
+            // Crear proyecto en el mapa
+            const projectElement = document.createElement('div');
+            projectElement.className = 'project active';
+            projectElement.style.left = (Math.random() * 70 + 15) + '%';
+            projectElement.style.top = (Math.random() * 60 + 20) + '%';
+            projectElement.innerHTML = getProjectIcon(gameState.selectedProject);
+            projectElement.onclick = () => selectProject(gameState.selectedProject);
+
+            document.getElementById('projects').appendChild(projectElement);
+
+            showAchievement('🚀 Proyecto Lanzado', `Has lanzado ${gameState.selectedProject}`);
+            updateDisplay();
+        }
+
+        function scaleProject() {
+            if (gameState.projectsLaunched === 0) {
+                alert('No tienes proyectos para escalar.');
+                return;
+            }
+
+            const scaleCost = 200;
+            if (gameState.resources >= scaleCost) {
+                gameState.resources -= scaleCost;
+                gameState.peopleImpacted *= 1.5;
+                gameState.socialImpact *= 1.3;
+
+                showAchievement('📈 Proyecto Escalado', 'Has escalado un proyecto existente');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para escalar.');
+            }
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 300;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function optimizeImpact() {
+            const optimizeCost = 250;
+            if (gameState.resources >= optimizeCost) {
+                gameState.resources -= optimizeCost;
+                
+                // Optimizar todos los proyectos
+                Object.keys(gameState.projects).forEach(project => {
+                    if (gameState.projects[project].unlocked) {
+                        gameState.projects[project].impact *= 1.1;
+                    }
+                });
+
+                gameState.socialImpact += 100;
+                showAchievement('⚡ Impacto Optimizado', 'Has optimizado el impacto social');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para optimizar.');
+            }
+        }
+
+        function expandRegion() {
+            const expandCost = 400;
+            if (gameState.resources >= expandCost) {
+                gameState.resources -= expandCost;
+                
+                // Transformar una región
+                const randomRegion = gameState.regions[Math.floor(Math.random() * gameState.regions.length)];
+                randomRegion.status = 'transformed';
+                randomRegion.impact += 500;
+
+                const regionElement = document.querySelector(`[data-region-id="${randomRegion.id}"]`);
+                regionElement.classList.add('transformed');
+
+                gameState.regionsTransformed++;
+                showAchievement('🌍 Región Transformada', `Has transformado ${randomRegion.name}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para expandir.');
+            }
+        }
+
+        function measureImpact() {
+            const measureCost = 150;
+            if (gameState.resources >= measureCost) {
+                gameState.resources -= measureCost;
+                
+                // Medir impacto
+                const totalImpact = gameState.peopleImpacted + gameState.socialImpact;
+                gameState.socialImpact += Math.round(totalImpact * 0.1);
+
+                showAchievement('📊 Impacto Medido', `Impacto total: ${totalImpact}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para medir.');
+            }
+        }
+
+        function getProjectIcon(project) {
+            const icons = {
+                education_tech: '📚',
+                healthcare_ai: '🏥',
+                clean_energy: '⚡',
+                digital_inclusion: '🌐',
+                sustainable_agriculture: '🌱',
+                disaster_response: '🚨'
+            };
+            return icons[project] || '🚀';
+        }
+
+        function updateDisplay() {
+            document.getElementById('projectsLaunched').textContent = gameState.projectsLaunched;
+            document.getElementById('peopleImpacted').textContent = gameState.peopleImpacted;
+            document.getElementById('regionsTransformed').textContent = gameState.regionsTransformed;
+            document.getElementById('socialImpact').textContent = gameState.socialImpact;
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializePhilanthropyMap();
+        updateDisplay();
+    </script>
+</body>
+</html>

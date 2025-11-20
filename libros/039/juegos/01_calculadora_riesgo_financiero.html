@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Riesgo Financiero</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .calculator-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5568d3;
+        }
+        .result {
+            background: #e8f4f8;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .result-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FF6B35;
+            margin: 15px 0;
+        }
+        .risk-meter {
+            background: #f9f9f9;
+            height: 40px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .risk-level {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.5s;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Calculadora de Riesgo Financiero</h1>
+        
+        <p style="text-align: center; font-size: 1.2em; color: #666; margin-bottom: 30px;">
+            Evalúa tu capacidad para afrontar una compra inmobiliaria calculando tu nivel de riesgo financiero
+        </p>
+
+        <div class="calculator-grid">
+            <div class="calculator-section">
+                <h3>📊 Ingresos</h3>
+                <div class="input-group">
+                    <label>Ingreso Mensual Bruto ($)</label>
+                    <input type="number" id="monthlyIncome" value="5000" placeholder="5000">
+                </div>
+                <div class="input-group">
+                    <label>Ingreso de Cónyuge/Pareja ($)</label>
+                    <input type="number" id="spouseIncome" value="0" placeholder="0">
+                </div>
+            </div>
+
+            <div class="calculator-section">
+                <h3>💸 Gastos Mensuales</h3>
+                <div class="input-group">
+                    <label>Gastos Mensuales Total ($)</label>
+                    <input type="number" id="monthlyExpenses" value="3000" placeholder="3000">
+                </div>
+                <div class="input-group">
+                    <label>Deudas Mensuales (Tarjetas, Préstamos) ($)</label>
+                    <input type="number" id="monthlyDebts" value="500" placeholder="500">
+                </div>
+            </div>
+
+            <div class="calculator-section">
+                <h3>💰 Ahorros</h3>
+                <div class="input-group">
+                    <label>Ahorros Totales ($)</label>
+                    <input type="number" id="totalSavings" value="25000" placeholder="25000">
+                </div>
+                <div class="input-group">
+                    <label>Reserva para Emergencias ($)</label>
+                    <input type="number" id="emergencyFund" value="10000" placeholder="10000">
+                </div>
+            </div>
+        </div>
+
+        <button class="button" onclick="calculateRisk()">Calcular Riesgo Financiero</button>
+
+        <div id="results" style="display: none;">
+            <div class="result">
+                <h3>📈 Resultado de Tu Análisis</h3>
+                <div class="result-value" id="riskScore">0%</div>
+                <p>Nivel de Riesgo: <span id="riskLevel"></span></p>
+                
+                <div style="margin: 20px 0;">
+                    <label>Nivel de Riesgo:</label>
+                    <div class="risk-meter">
+                        <div class="risk-level" id="riskMeter"></div>
+                    </div>
+                </div>
+
+                <h3>💡 Recomendaciones</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateRisk() {
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const spouseIncome = parseFloat(document.getElementById('spouseIncome').value) || 0;
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const monthlyDebts = parseFloat(document.getElementById('monthlyDebts').value) || 0;
+            const totalSavings = parseFloat(document.getElementById('totalSavings').value) || 0;
+            const emergencyFund = parseFloat(document.getElementById('emergencyFund').value) || 0;
+
+            const totalIncome = monthlyIncome + spouseIncome;
+            const totalMonthlyObligations = monthlyExpenses + monthlyDebts;
+            const netMonthlyIncome = totalIncome - totalMonthlyObligations;
+            
+            const monthlyDebtRatio = totalIncome > 0 ? (totalMonthlyObligations / totalIncome) * 100 : 0;
+            const savingsRatio = totalIncome > 0 ? (totalSavings / (totalIncome * 12)) * 100 : 0;
+            
+            const idealEmergency = totalIncome * 3; // 3 meses de ingresos
+            const emergencyRatio = (emergencyFund / idealEmergency) * 100;
+
+            let riskScore = 100;
+            let riskDescription = "";
+            let recommendations = [];
+
+            if (monthlyDebtRatio > 50) {
+                riskScore -= 40;
+                riskDescription = "Alto Riesgo - Muchas deudas";
+                recommendations.push("Reduce tus deudas antes de comprar una casa");
+            } else if (monthlyDebtRatio > 35) {
+                riskScore -= 20;
+                riskDescription = "Riesgo Moderado - Considera reducir deudas";
+                recommendations.push("Considera reducir tus deudas mensuales");
+            }
+
+            if (savingsRatio < 10) {
+                riskScore -= 30;
+                recommendations.push("Aumenta tus ahorros antes de comprar");
+            }
+
+            if (emergencyRatio < 50) {
+                riskScore -= 20;
+                recommendations.push("Construye un fondo de emergencia de 3 meses de gastos");
+            }
+
+            if (netMonthlyIncome < 1000) {
+                riskScore -= 15;
+                recommendations.push("Aumenta tus ingresos o reduce gastos para tener más margen");
+            } else {
+                recommendations.push("Tienes buen flujo de caja disponible para comprar");
+            }
+
+            if (recommendations.length === 0) {
+                recommendations.push("¡Estás en buena forma financiera para comprar una casa!");
+            }
+
+            document.getElementById('riskScore').textContent = Math.max(0, riskScore) + '%';
+            document.getElementById('riskLevel').textContent = getRiskLevel(riskScore);
+            document.getElementById('riskMeter').style.width = riskScore + '%';
+            document.getElementById('recommendations').innerHTML = '<ul>' + 
+                recommendations.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+            
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function getRiskLevel(score) {
+            if (score >= 70) return "Bajo Riesgo ✅";
+            if (score >= 50) return "Riesgo Moderado ⚠️";
+            if (score >= 30) return "Alto Riesgo ⚠️";
+            return "Riesgo Muy Alto ❌";
+        }
+    </script>
+</body>
+</html>
+

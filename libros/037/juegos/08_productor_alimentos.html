@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productor de Alimentos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+        .farm-grid {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            height: 400px;
+        }
+        .farm-plot {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            position: relative;
+        }
+        .farm-plot:hover {
+            background: #c3e6cb;
+            transform: scale(1.05);
+        }
+        .farm-plot.planted {
+            background: #28a745;
+            color: white;
+        }
+        .farm-plot.harvest-ready {
+            background: #ffc107;
+            color: #333;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .crop-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .crop-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .crop-card:hover {
+            border-color: #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .crop-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .crop-card.unlocked {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .crop-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .crop-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .crop-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .crop-stats {
+            font-size: 0.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .tech-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .tech-card.unlocked {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #2196f3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #218838;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.info {
+            background: #17a2b8;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Productor de Alimentos</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Desarrolla un sistema agrícola sostenible y eficiente para alimentar a una población creciente. Usa tecnologías avanzadas y cultivos diversos para maximizar la producción de alimentos mientras mantienes la sostenibilidad ambiental.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="foodProduction">0</div>
+                <div class="stat-label">Alimentos Producidos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="peopleFed">0</div>
+                <div class="stat-label">Personas Alimentadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="cropsHarvested">0</div>
+                <div class="stat-label">Cultivos Cosechados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="efficiency">0%</div>
+                <div class="stat-label">Eficiencia</div>
+            </div>
+        </div>
+
+        <div class="crop-panel">
+            <h3>🌱 Cultivos Disponibles</h3>
+            <div class="crop-grid">
+                <div class="crop-card unlocked" onclick="selectCrop('wheat')">
+                    <div class="crop-icon">🌾</div>
+                    <div class="crop-title">Trigo</div>
+                    <div class="crop-description">Cultivo básico de alto rendimiento</div>
+                    <div class="crop-stats">Crecimiento: 3 días | Rendimiento: 100</div>
+                </div>
+                <div class="crop-card unlocked" onclick="selectCrop('rice')">
+                    <div class="crop-icon">🌾</div>
+                    <div class="crop-title">Arroz</div>
+                    <div class="crop-description">Alimento básico para muchas culturas</div>
+                    <div class="crop-stats">Crecimiento: 4 días | Rendimiento: 120</div>
+                </div>
+                <div class="crop-card unlocked" onclick="selectCrop('corn')">
+                    <div class="crop-icon">🌽</div>
+                    <div class="crop-title">Maíz</div>
+                    <div class="crop-description">Cultivo versátil y nutritivo</div>
+                    <div class="crop-stats">Crecimiento: 5 días | Rendimiento: 150</div>
+                </div>
+                <div class="crop-card unlocked" onclick="selectCrop('potato')">
+                    <div class="crop-icon">🥔</div>
+                    <div class="crop-title">Papa</div>
+                    <div class="crop-description">Tubérculo nutritivo y resistente</div>
+                    <div class="crop-stats">Crecimiento: 3 días | Rendimiento: 80</div>
+                </div>
+                <div class="crop-card" onclick="selectCrop('soybean')">
+                    <div class="crop-icon">🫘</div>
+                    <div class="crop-title">Soja</div>
+                    <div class="crop-description">Proteína vegetal de alta calidad</div>
+                    <div class="crop-stats">Crecimiento: 6 días | Rendimiento: 200</div>
+                </div>
+                <div class="crop-card" onclick="selectCrop('quinoa')">
+                    <div class="crop-icon">🌾</div>
+                    <div class="crop-title">Quinoa</div>
+                    <div class="crop-description">Superalimento nutritivo</div>
+                    <div class="crop-stats">Crecimiento: 7 días | Rendimiento: 180</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="farm-grid" id="farmGrid">
+            <!-- Las parcelas se generarán dinámicamente -->
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías Agrícolas</h3>
+            <div class="tech-grid">
+                <div class="tech-card unlocked" onclick="selectTech('irrigation')">
+                    <div class="tech-icon">💧</div>
+                    <div class="tech-title">Sistema de Riego</div>
+                    <div class="tech-description">Riego eficiente y automatizado</div>
+                    <div class="tech-cost">Costo: 100</div>
+                </div>
+                <div class="tech-card unlocked" onclick="selectTech('fertilizer')">
+                    <div class="tech-icon">🧪</div>
+                    <div class="tech-title">Fertilizantes</div>
+                    <div class="tech-description">Nutrientes para mejor crecimiento</div>
+                    <div class="tech-cost">Costo: 80</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('greenhouse')">
+                    <div class="tech-icon">🏠</div>
+                    <div class="tech-title">Invernaderos</div>
+                    <div class="tech-description">Control climático para cultivos</div>
+                    <div class="tech-cost">Costo: 200</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('hydroponics')">
+                    <div class="tech-icon">🌊</div>
+                    <div class="tech-title">Hidroponía</div>
+                    <div class="tech-description">Cultivo sin suelo</div>
+                    <div class="tech-cost">Costo: 300</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('vertical_farming')">
+                    <div class="tech-icon">🏢</div>
+                    <div class="tech-title">Agricultura Vertical</div>
+                    <div class="tech-description">Cultivo en múltiples niveles</div>
+                    <div class="tech-cost">Costo: 400</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('ai_monitoring')">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">Monitoreo IA</div>
+                    <div class="tech-description">Inteligencia artificial para optimización</div>
+                    <div class="tech-cost">Costo: 500</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Producción</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="plantCrop()">Plantar Cultivo</button>
+                <button class="button" onclick="harvestCrop()">Cosechar</button>
+                <button class="button" onclick="applyTech()">Aplicar Tecnología</button>
+                <button class="button" onclick="researchTech()">Investigar</button>
+                <button class="button" onclick="optimizeFarm()">Optimizar Granja</button>
+                <button class="button" onclick="expandFarm()">Expandir Granja</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Produce alimentos para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            foodProduction: 0,
+            peopleFed: 0,
+            cropsHarvested: 0,
+            efficiency: 0,
+            selectedCrop: null,
+            selectedTech: null,
+            resources: 1000,
+            crops: {
+                wheat: { unlocked: true, growthTime: 3, yield: 100, cost: 10 },
+                rice: { unlocked: true, growthTime: 4, yield: 120, cost: 12 },
+                corn: { unlocked: true, growthTime: 5, yield: 150, cost: 15 },
+                potato: { unlocked: true, growthTime: 3, yield: 80, cost: 8 },
+                soybean: { unlocked: false, growthTime: 6, yield: 200, cost: 20 },
+                quinoa: { unlocked: false, growthTime: 7, yield: 180, cost: 18 }
+            },
+            technologies: {
+                irrigation: { unlocked: true, cost: 100, efficiency: 0.1 },
+                fertilizer: { unlocked: true, cost: 80, efficiency: 0.15 },
+                greenhouse: { unlocked: false, cost: 200, efficiency: 0.25 },
+                hydroponics: { unlocked: false, cost: 300, efficiency: 0.35 },
+                vertical_farming: { unlocked: false, cost: 400, efficiency: 0.45 },
+                ai_monitoring: { unlocked: false, cost: 500, efficiency: 0.55 }
+            },
+            farmPlots: [],
+            achievements: []
+        };
+
+        function initializeFarm() {
+            const farmGrid = document.getElementById('farmGrid');
+            farmGrid.innerHTML = '';
+
+            for (let i = 0; i < 64; i++) {
+                const plot = {
+                    id: i,
+                    crop: null,
+                    planted: false,
+                    growthTime: 0,
+                    harvestReady: false,
+                    techApplied: []
+                };
+
+                gameState.farmPlots.push(plot);
+
+                const plotElement = document.createElement('div');
+                plotElement.className = 'farm-plot';
+                plotElement.dataset.plotId = i;
+                plotElement.onclick = () => selectPlot(i);
+                plotElement.innerHTML = '🌱';
+
+                farmGrid.appendChild(plotElement);
+            }
+        }
+
+        function selectPlot(plotId) {
+            const plot = gameState.farmPlots[plotId];
+            if (!plot) return;
+
+            if (plot.harvestReady) {
+                // Cosechar
+                harvestPlot(plotId);
+            } else if (!plot.planted && gameState.selectedCrop) {
+                // Plantar
+                plantPlot(plotId);
+            } else if (plot.planted && gameState.selectedTech) {
+                // Aplicar tecnología
+                applyTechToPlot(plotId);
+            }
+        }
+
+        function plantPlot(plotId) {
+            const plot = gameState.farmPlots[plotId];
+            const crop = gameState.crops[gameState.selectedCrop];
+
+            if (!crop.unlocked) {
+                alert('Este cultivo no está desbloqueado.');
+                return;
+            }
+
+            if (gameState.resources < crop.cost) {
+                alert('No tienes suficientes recursos para plantar este cultivo.');
+                return;
+            }
+
+            gameState.resources -= crop.cost;
+            plot.crop = gameState.selectedCrop;
+            plot.planted = true;
+            plot.growthTime = crop.growthTime;
+            plot.harvestReady = false;
+
+            const plotElement = document.querySelector(`[data-plot-id="${plotId}"]`);
+            plotElement.classList.add('planted');
+            plotElement.innerHTML = getCropIcon(gameState.selectedCrop);
+
+            // Simular crecimiento
+            setTimeout(() => {
+                if (plot.planted && !plot.harvestReady) {
+                    plot.harvestReady = true;
+                    plotElement.classList.remove('planted');
+                    plotElement.classList.add('harvest-ready');
+                }
+            }, crop.growthTime * 1000);
+
+            updateDisplay();
+        }
+
+        function harvestPlot(plotId) {
+            const plot = gameState.farmPlots[plotId];
+            if (!plot.harvestReady) return;
+
+            const crop = gameState.crops[plot.crop];
+            let yield = crop.yield;
+
+            // Aplicar bonificaciones de tecnología
+            plot.techApplied.forEach(tech => {
+                yield *= (1 + gameState.technologies[tech].efficiency);
+            });
+
+            gameState.foodProduction += yield;
+            gameState.peopleFed += Math.round(yield / 10); // 10 unidades de comida por persona
+            gameState.cropsHarvested++;
+
+            // Resetear parcela
+            plot.crop = null;
+            plot.planted = false;
+            plot.growthTime = 0;
+            plot.harvestReady = false;
+            plot.techApplied = [];
+
+            const plotElement = document.querySelector(`[data-plot-id="${plotId}"]`);
+            plotElement.classList.remove('harvest-ready');
+            plotElement.innerHTML = '🌱';
+
+            showAchievement('🌾 Cosecha Exitosa', `Has cosechado ${Math.round(yield)} unidades de ${plot.crop}`);
+            updateDisplay();
+        }
+
+        function applyTechToPlot(plotId) {
+            const plot = gameState.farmPlots[plotId];
+            const tech = gameState.technologies[gameState.selectedTech];
+
+            if (!tech.unlocked) {
+                alert('Esta tecnología no está desbloqueada.');
+                return;
+            }
+
+            if (gameState.resources < tech.cost) {
+                alert('No tienes suficientes recursos para aplicar esta tecnología.');
+                return;
+            }
+
+            if (plot.techApplied.includes(gameState.selectedTech)) {
+                alert('Esta tecnología ya está aplicada en esta parcela.');
+                return;
+            }
+
+            gameState.resources -= tech.cost;
+            plot.techApplied.push(gameState.selectedTech);
+
+            showAchievement('🔬 Tecnología Aplicada', `Has aplicado ${gameState.selectedTech} a una parcela`);
+            updateDisplay();
+        }
+
+        function selectCrop(crop) {
+            // Deseleccionar todos los cultivos
+            document.querySelectorAll('.crop-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar el cultivo actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedCrop = crop;
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function plantCrop() {
+            if (!gameState.selectedCrop) {
+                alert('Selecciona un cultivo primero.');
+                return;
+            }
+
+            const availablePlots = gameState.farmPlots.filter(plot => !plot.planted);
+            if (availablePlots.length === 0) {
+                alert('No hay parcelas disponibles para plantar.');
+                return;
+            }
+
+            const randomPlot = availablePlots[Math.floor(Math.random() * availablePlots.length)];
+            plantPlot(randomPlot.id);
+        }
+
+        function harvestCrop() {
+            const readyPlots = gameState.farmPlots.filter(plot => plot.harvestReady);
+            if (readyPlots.length === 0) {
+                alert('No hay cultivos listos para cosechar.');
+                return;
+            }
+
+            readyPlots.forEach(plot => {
+                harvestPlot(plot.id);
+            });
+        }
+
+        function applyTech() {
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const plantedPlots = gameState.farmPlots.filter(plot => plot.planted && !plot.harvestReady);
+            if (plantedPlots.length === 0) {
+                alert('No hay cultivos plantados para aplicar tecnología.');
+                return;
+            }
+
+            const randomPlot = plantedPlots[Math.floor(Math.random() * plantedPlots.length)];
+            applyTechToPlot(randomPlot.id);
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 300;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function optimizeFarm() {
+            const plantedPlots = gameState.farmPlots.filter(plot => plot.planted);
+            if (plantedPlots.length === 0) {
+                alert('No hay cultivos para optimizar.');
+                return;
+            }
+
+            const optimizeCost = 200;
+            if (gameState.resources >= optimizeCost) {
+                gameState.resources -= optimizeCost;
+                
+                // Optimizar todos los cultivos
+                plantedPlots.forEach(plot => {
+                    if (plot.growthTime > 0) {
+                        plot.growthTime = Math.max(1, plot.growthTime - 1);
+                    }
+                });
+
+                gameState.efficiency += 5;
+                showAchievement('⚡ Granja Optimizada', 'Has optimizado todos los cultivos');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para optimizar.');
+            }
+        }
+
+        function expandFarm() {
+            const expandCost = 500;
+            if (gameState.resources >= expandCost) {
+                gameState.resources -= expandCost;
+                
+                // Agregar nuevas parcelas
+                for (let i = 0; i < 16; i++) {
+                    const plot = {
+                        id: gameState.farmPlots.length,
+                        crop: null,
+                        planted: false,
+                        growthTime: 0,
+                        harvestReady: false,
+                        techApplied: []
+                    };
+
+                    gameState.farmPlots.push(plot);
+
+                    const plotElement = document.createElement('div');
+                    plotElement.className = 'farm-plot';
+                    plotElement.dataset.plotId = plot.id;
+                    plotElement.onclick = () => selectPlot(plot.id);
+                    plotElement.innerHTML = '🌱';
+
+                    document.getElementById('farmGrid').appendChild(plotElement);
+                }
+
+                showAchievement('📈 Granja Expandida', 'Has agregado 16 nuevas parcelas');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para expandir.');
+            }
+        }
+
+        function getCropIcon(crop) {
+            const icons = {
+                wheat: '🌾',
+                rice: '🌾',
+                corn: '🌽',
+                potato: '🥔',
+                soybean: '🫘',
+                quinoa: '🌾'
+            };
+            return icons[crop] || '🌱';
+        }
+
+        function updateDisplay() {
+            document.getElementById('foodProduction').textContent = Math.round(gameState.foodProduction);
+            document.getElementById('peopleFed').textContent = gameState.peopleFed;
+            document.getElementById('cropsHarvested').textContent = gameState.cropsHarvested;
+            document.getElementById('efficiency').textContent = gameState.efficiency + '%';
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeFarm();
+        updateDisplay();
+    </script>
+</body>
+</html>

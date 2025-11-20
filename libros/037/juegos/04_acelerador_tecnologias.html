@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acelerador de Tecnologías Exponenciales</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tech-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tech-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .tech-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .tech-progress {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .tech-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            transition: width 0.5s ease;
+        }
+        .tech-level {
+            text-align: center;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .acceleration-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .acceleration-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .control-button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .control-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .control-button.success {
+            background: #28a745;
+        }
+        .control-button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .control-button.danger {
+            background: #dc3545;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .exponential-chart {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 300px;
+            position: relative;
+        }
+        .chart-line {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 250px;
+            border-left: 2px solid #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .chart-point {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #007bff;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Acelerador de Tecnologías Exponenciales</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Domina el poder de las tecnologías exponenciales acelerando su desarrollo y aplicándolas para resolver problemas globales. Aprende cómo las tecnologías crecen exponencialmente y cómo puedes aprovechar este crecimiento para crear abundancia.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="accelerationScore">0</div>
+                <div class="stat-label">Puntuación de Aceleración</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="techLevel">0</div>
+                <div class="stat-label">Nivel Tecnológico</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="exponentialGrowth">1x</div>
+                <div class="stat-label">Crecimiento Exponencial</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="problemsSolved">0</div>
+                <div class="stat-label">Problemas Resueltos</div>
+            </div>
+        </div>
+
+        <div class="acceleration-panel">
+            <h3>⚡ Panel de Aceleración</h3>
+            <div class="acceleration-controls">
+                <button class="control-button" onclick="accelerateTech()">Acelerar Tecnología</button>
+                <button class="control-button" onclick="investInR&D()">Invertir en I+D</button>
+                <button class="control-button" onclick="collaborate()">Colaborar</button>
+                <button class="control-button" onclick="scaleUp()">Escalar</button>
+                <button class="control-button" onclick="optimize()">Optimizar</button>
+                <button class="control-button" onclick="innovate()">Innovar</button>
+            </div>
+        </div>
+
+        <div class="tech-grid">
+            <div class="tech-card" onclick="selectTech('ai')">
+                <div class="tech-icon">🤖</div>
+                <div class="tech-title">Inteligencia Artificial</div>
+                <div class="tech-description">Machine Learning, Deep Learning, AGI</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="aiProgress" style="width: 45%;"></div>
+                </div>
+                <div class="tech-level" id="aiLevel">Nivel 45</div>
+            </div>
+
+            <div class="tech-card" onclick="selectTech('biotech')">
+                <div class="tech-icon">🧬</div>
+                <div class="tech-title">Biotecnología</div>
+                <div class="tech-description">CRISPR, Síntesis de ADN, Medicina personalizada</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="biotechProgress" style="width: 35%;"></div>
+                </div>
+                <div class="tech-level" id="biotechLevel">Nivel 35</div>
+            </div>
+
+            <div class="tech-card" onclick="selectTech('energy')">
+                <div class="tech-icon">⚡</div>
+                <div class="tech-title">Energía Limpia</div>
+                <div class="tech-description">Solar, Eólica, Fusión, Almacenamiento</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="energyProgress" style="width: 60%;"></div>
+                </div>
+                <div class="tech-level" id="energyLevel">Nivel 60</div>
+            </div>
+
+            <div class="tech-card" onclick="selectTech('connectivity')">
+                <div class="tech-icon">🌐</div>
+                <div class="tech-title">Conectividad</div>
+                <div class="tech-description">5G, IoT, Satélites, Internet global</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="connectivityProgress" style="width: 80%;"></div>
+                </div>
+                <div class="tech-level" id="connectivityLevel">Nivel 80</div>
+            </div>
+
+            <div class="tech-card" onclick="selectTech('robotics')">
+                <div class="tech-icon">🤖</div>
+                <div class="tech-title">Robótica</div>
+                <div class="tech-description">Automatización, Robots humanoides, Drones</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="roboticsProgress" style="width: 50%;"></div>
+                </div>
+                <div class="tech-level" id="roboticsLevel">Nivel 50</div>
+            </div>
+
+            <div class="tech-card" onclick="selectTech('nanotech')">
+                <div class="tech-icon">🔬</div>
+                <div class="tech-title">Nanotecnología</div>
+                <div class="tech-description">Materiales avanzados, Nanorobots, Filtros</div>
+                <div class="tech-progress">
+                    <div class="tech-progress-fill" id="nanotechProgress" style="width: 30%;"></div>
+                </div>
+                <div class="tech-level" id="nanotechLevel">Nivel 30</div>
+            </div>
+        </div>
+
+        <div class="exponential-chart">
+            <h3>📈 Crecimiento Exponencial</h3>
+            <div class="chart-line" id="exponentialChart"></div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Aplicaciones de Tecnología</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="control-button" onclick="applyToWater()">Aplicar a Agua</button>
+                <button class="control-button" onclick="applyToFood()">Aplicar a Alimentos</button>
+                <button class="control-button" onclick="applyToHealth()">Aplicar a Salud</button>
+                <button class="control-button" onclick="applyToEducation()">Aplicar a Educación</button>
+                <button class="control-button" onclick="applyToEnergy()">Aplicar a Energía</button>
+                <button class="control-button" onclick="applyToFreedom()">Aplicar a Libertad</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Desarrolla tecnologías exponenciales para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            accelerationScore: 0,
+            techLevel: 0,
+            exponentialGrowth: 1,
+            problemsSolved: 0,
+            selectedTech: null,
+            technologies: {
+                ai: { level: 45, progress: 45 },
+                biotech: { level: 35, progress: 35 },
+                energy: { level: 60, progress: 60 },
+                connectivity: { level: 80, progress: 80 },
+                robotics: { level: 50, progress: 50 },
+                nanotech: { level: 30, progress: 30 }
+            },
+            achievements: []
+        };
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function accelerateTech() {
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const tech = gameState.technologies[gameState.selectedTech];
+            tech.progress += Math.random() * 10 + 5;
+            tech.level = Math.min(100, Math.floor(tech.progress));
+            
+            gameState.accelerationScore += 10;
+            gameState.techLevel = Math.round(Object.values(gameState.technologies).reduce((sum, t) => sum + t.level, 0) / 6);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function investInR&D() {
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const tech = gameState.technologies[gameState.selectedTech];
+            tech.progress += Math.random() * 15 + 10;
+            tech.level = Math.min(100, Math.floor(tech.progress));
+            
+            gameState.accelerationScore += 15;
+            gameState.exponentialGrowth = Math.min(10, gameState.exponentialGrowth + 0.1);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function collaborate() {
+            // Colaboración mejora todas las tecnologías ligeramente
+            Object.keys(gameState.technologies).forEach(tech => {
+                gameState.technologies[tech].progress += Math.random() * 5 + 2;
+                gameState.technologies[tech].level = Math.min(100, Math.floor(gameState.technologies[tech].progress));
+            });
+            
+            gameState.accelerationScore += 20;
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function scaleUp() {
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const tech = gameState.technologies[gameState.selectedTech];
+            tech.progress += Math.random() * 20 + 15;
+            tech.level = Math.min(100, Math.floor(tech.progress));
+            
+            gameState.accelerationScore += 25;
+            gameState.exponentialGrowth = Math.min(10, gameState.exponentialGrowth + 0.2);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function optimize() {
+            // Optimización mejora la eficiencia de todas las tecnologías
+            Object.keys(gameState.technologies).forEach(tech => {
+                gameState.technologies[tech].progress += Math.random() * 8 + 5;
+                gameState.technologies[tech].level = Math.min(100, Math.floor(gameState.technologies[tech].progress));
+            });
+            
+            gameState.accelerationScore += 18;
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function innovate() {
+            // Innovación da un gran impulso a la tecnología seleccionada
+            if (!gameState.selectedTech) {
+                alert('Selecciona una tecnología primero.');
+                return;
+            }
+
+            const tech = gameState.technologies[gameState.selectedTech];
+            tech.progress += Math.random() * 25 + 20;
+            tech.level = Math.min(100, Math.floor(tech.progress));
+            
+            gameState.accelerationScore += 30;
+            gameState.exponentialGrowth = Math.min(10, gameState.exponentialGrowth + 0.3);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function applyToWater() {
+            if (gameState.technologies.ai.level >= 50 || gameState.technologies.nanotech.level >= 40) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('💧 Problema del Agua Resuelto', 'Has aplicado tecnología para purificar agua a bajo costo');
+            } else {
+                alert('Necesitas IA nivel 50+ o Nanotecnología nivel 40+ para resolver el problema del agua.');
+            }
+            updateDisplay();
+        }
+
+        function applyToFood() {
+            if (gameState.technologies.biotech.level >= 60 || gameState.technologies.ai.level >= 55) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('🍎 Problema de Alimentos Resuelto', 'Has aplicado tecnología para producir alimentos de manera sostenible');
+            } else {
+                alert('Necesitas Biotecnología nivel 60+ o IA nivel 55+ para resolver el problema de alimentos.');
+            }
+            updateDisplay();
+        }
+
+        function applyToHealth() {
+            if (gameState.technologies.biotech.level >= 70 || gameState.technologies.ai.level >= 60) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('🏥 Problema de Salud Resuelto', 'Has aplicado tecnología para mejorar la atención médica');
+            } else {
+                alert('Necesitas Biotecnología nivel 70+ o IA nivel 60+ para resolver el problema de salud.');
+            }
+            updateDisplay();
+        }
+
+        function applyToEducation() {
+            if (gameState.technologies.ai.level >= 65 || gameState.technologies.connectivity.level >= 90) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('🎓 Problema de Educación Resuelto', 'Has aplicado tecnología para democratizar la educación');
+            } else {
+                alert('Necesitas IA nivel 65+ o Conectividad nivel 90+ para resolver el problema de educación.');
+            }
+            updateDisplay();
+        }
+
+        function applyToEnergy() {
+            if (gameState.technologies.energy.level >= 80 || gameState.technologies.nanotech.level >= 50) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('⚡ Problema de Energía Resuelto', 'Has aplicado tecnología para crear energía limpia e ilimitada');
+            } else {
+                alert('Necesitas Energía nivel 80+ o Nanotecnología nivel 50+ para resolver el problema de energía.');
+            }
+            updateDisplay();
+        }
+
+        function applyToFreedom() {
+            if (gameState.technologies.connectivity.level >= 95 || gameState.technologies.ai.level >= 70) {
+                gameState.problemsSolved++;
+                gameState.accelerationScore += 50;
+                showAchievement('🕊️ Problema de Libertad Resuelto', 'Has aplicado tecnología para democratizar la libertad');
+            } else {
+                alert('Necesitas Conectividad nivel 95+ o IA nivel 70+ para resolver el problema de libertad.');
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Actualizar estadísticas
+            document.getElementById('accelerationScore').textContent = gameState.accelerationScore;
+            document.getElementById('techLevel').textContent = gameState.techLevel;
+            document.getElementById('exponentialGrowth').textContent = gameState.exponentialGrowth.toFixed(1) + 'x';
+            document.getElementById('problemsSolved').textContent = gameState.problemsSolved;
+
+            // Actualizar tecnologías
+            Object.keys(gameState.technologies).forEach(tech => {
+                const techData = gameState.technologies[tech];
+                document.getElementById(tech + 'Progress').style.width = techData.progress + '%';
+                document.getElementById(tech + 'Level').textContent = 'Nivel ' + techData.level;
+            });
+
+            // Actualizar gráfico exponencial
+            updateExponentialChart();
+        }
+
+        function updateExponentialChart() {
+            const chart = document.getElementById('exponentialChart');
+            chart.innerHTML = '';
+
+            // Crear puntos para mostrar crecimiento exponencial
+            const points = [];
+            for (let i = 0; i <= 10; i++) {
+                const x = (i / 10) * 100;
+                const y = Math.pow(gameState.exponentialGrowth, i) * 10;
+                points.push({ x, y: Math.min(90, y) });
+            }
+
+            points.forEach(point => {
+                const pointElement = document.createElement('div');
+                pointElement.className = 'chart-point';
+                pointElement.style.left = point.x + '%';
+                pointElement.style.bottom = point.y + '%';
+                chart.appendChild(pointElement);
+            });
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+
+            if (gameState.technologies.ai.level >= 80 && !gameState.achievements.includes('ai_master')) {
+                newAchievements.push({name: '🤖 Maestro de IA', description: 'Has desarrollado IA avanzada'});
+                gameState.achievements.push('ai_master');
+            }
+
+            if (gameState.technologies.biotech.level >= 70 && !gameState.achievements.includes('biotech_master')) {
+                newAchievements.push({name: '🧬 Maestro de Biotecnología', description: 'Has dominado la biotecnología'});
+                gameState.achievements.push('biotech_master');
+            }
+
+            if (gameState.problemsSolved >= 3 && !gameState.achievements.includes('problem_solver')) {
+                newAchievements.push({name: '🔧 Solucionador de Problemas', description: 'Has resuelto múltiples problemas globales'});
+                gameState.achievements.push('problem_solver');
+            }
+
+            if (gameState.exponentialGrowth >= 5 && !gameState.achievements.includes('exponential_master')) {
+                newAchievements.push({name: '📈 Maestro Exponencial', description: 'Has alcanzado crecimiento exponencial'});
+                gameState.achievements.push('exponential_master');
+            }
+
+            if (newAchievements.length > 0) {
+                showAchievement(newAchievements[0].name, newAchievements[0].description);
+            }
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        updateDisplay();
+    </script>
+</body>
+</html>

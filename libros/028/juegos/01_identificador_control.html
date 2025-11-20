@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificador de Control</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .content {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        .game-box {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #0056b3;
+            text-align: center;
+        }
+        .game-box h3 {
+            color: #0056b3;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .game-box p {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin: 15px 0;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        .section h2 {
+            color: #667eea;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .control-box {
+            background: #f8d7da;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .control-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .no-control-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .no-control-box h4 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .quote {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+            font-style: italic;
+            text-align: center;
+        }
+        .quote p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #495057;
+        }
+        .quote .author {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #6c757d;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .can-control, .cannot-control {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .can-control {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .cannot-control {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .can-control h4 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .cannot-control h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .steps {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .steps h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .step {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 3px solid #0056b3;
+        }
+        .step h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .example-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .example-box h4 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .benefits {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .benefits h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .benefits ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .benefits li {
+            margin: 8px 0;
+        }
+        .action-box {
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #ffc107;
+            text-align: center;
+        }
+        .action-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .wisdom-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .wisdom-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Identificador de Control</h1>
+            <p>Descubre qué puedes y qué no puedes controlar</p>
+        </div>
+
+        <div class="content">
+            <div class="game-box">
+                <h3>🎮 Juego Interactivo</h3>
+                <p><strong>Identifica qué está dentro y fuera de tu control para aplicar la Teoría "Déjalos"</strong></p>
+            </div>
+
+            <div class="section">
+                <h2>🎯 ¿Qué es el Identificador de Control?</h2>
+                <p>El Identificador de Control es una herramienta práctica que te ayuda a distinguir entre lo que puedes controlar y lo que no, aplicando los principios de la Teoría "Déjalos".</p>
+                
+                <div class="quote">
+                    <p>"La clave de la felicidad es saber qué puedes controlar y qué no."</p>
+                    <div class="author">- Mel Robbins</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Lo Que SÍ Puedes Controlar</h2>
+                <div class="can-control">
+                    <h4>🎯 Tu Círculo de Control</h4>
+                    <ul>
+                        <li><strong>Tus pensamientos:</strong> Lo que piensas sobre las situaciones</li>
+                        <li><strong>Tus emociones:</strong> Cómo manejas tus sentimientos</li>
+                        <li><strong>Tus acciones:</strong> Lo que haces en respuesta a las situaciones</li>
+                        <li><strong>Tus decisiones:</strong> Las elecciones que tomas</li>
+                        <li><strong>Tus límites:</strong> Lo que permites y lo que no</li>
+                        <li><strong>Tus objetivos:</strong> Lo que te propones lograr</li>
+                        <li><strong>Tu actitud:</strong> Cómo eliges responder</li>
+                        <li><strong>Tu crecimiento:</strong> Tu desarrollo personal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>❌ Lo Que NO Puedes Controlar</h2>
+                <div class="cannot-control">
+                    <h4>🚫 Fuera de Tu Control</h4>
+                    <ul>
+                        <li><strong>Las acciones de otros:</strong> Lo que hacen los demás</li>
+                        <li><strong>Las opiniones de otros:</strong> Lo que piensan sobre ti</li>
+                        <li><strong>Las decisiones de otros:</strong> Las elecciones que hacen</li>
+                        <li><strong>Las emociones de otros:</strong> Cómo se sienten</li>
+                        <li><strong>Las situaciones externas:</strong> Eventos fuera de tu control</li>
+                        <li><strong>El pasado:</strong> Lo que ya sucedió</li>
+                        <li><strong>El futuro:</strong> Lo que va a pasar</li>
+                        <li><strong>Los resultados:</strong> Los resultados de tus acciones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔄 Cómo Usar el Identificador</h2>
+                <div class="steps">
+                    <h3>📋 Pasos para Identificar el Control</h3>
+                    
+                    <div class="step">
+                        <h4>1. Haz la Pregunta Clave</h4>
+                        <p>Pregúntate: "¿Puedo controlar esto directamente?"</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>2. Evalúa tu Influencia</h4>
+                        <p>Determina si tienes influencia real sobre la situación.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>3. Acepta la Realidad</h4>
+                        <p>Acepta lo que no puedes controlar y enfócate en lo que sí puedes.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>4. Toma Acción</h4>
+                        <p>Actúa sobre lo que está dentro de tu control.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💡 Ejemplos Prácticos</h2>
+                
+                <div class="example-box">
+                    <h4>💼 Ejemplo 1: En el Trabajo</h4>
+                    <p><strong>Situación:</strong> Tu jefe está de mal humor.</p>
+                    <p><strong>No puedes controlar:</strong> Su estado de ánimo, sus decisiones, sus reacciones.</p>
+                    <p><strong>Sí puedes controlar:</strong> Tu actitud, tu trabajo, tu comunicación, tu respuesta.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>👥 Ejemplo 2: En las Relaciones</h4>
+                    <p><strong>Situación:</strong> Un amigo no te responde los mensajes.</p>
+                    <p><strong>No puedes controlar:</strong> Su disponibilidad, su interés, su respuesta.</p>
+                    <p><strong>Sí puedes controlar:</strong> Tu comprensión, tu paciencia, tu enfoque en otras relaciones.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>👨‍👩‍👧‍👦 Ejemplo 3: En la Familia</h4>
+                    <p><strong>Situación:</strong> Un familiar hace comentarios que te molestan.</p>
+                    <p><strong>No puedes controlar:</strong> Sus opiniones, sus comentarios, su comportamiento.</p>
+                    <p><strong>Sí puedes controlar:</strong> Tu reacción, tus límites, tu comunicación.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧠 El Poder de la Identificación</h2>
+                <p>Cuando identificas correctamente qué puedes y qué no puedes controlar:</p>
+                
+                <div class="wisdom-box">
+                    <h4>💪 Lo Que Desarrollas</h4>
+                    <ul>
+                        <li><strong>Claridad mental:</strong> Entiendes mejor las situaciones</li>
+                        <li><strong>Paz interior:</strong> Te liberas de la frustración</li>
+                        <li><strong>Enfoque:</strong> Te concentras en lo importante</li>
+                        <li><strong>Empoderamiento:</strong> Tomas control de tu vida</li>
+                        <li><strong>Resiliencia:</strong> Te adaptas mejor a los cambios</li>
+                        <li><strong>Sabiduría:</strong> Desarrollas una perspectiva más madura</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🌟 Los Beneficios del Identificador</h2>
+                <div class="benefits">
+                    <h3>✨ Lo Que Obtienes</h3>
+                    <ul>
+                        <li><strong>Claridad Mental:</strong> Entiendes mejor las situaciones</li>
+                        <li><strong>Paz Interior:</strong> Te liberas de la frustración</li>
+                        <li><strong>Enfoque:</strong> Te concentras en lo importante</li>
+                        <li><strong>Empoderamiento:</strong> Tomas control de tu vida</li>
+                        <li><strong>Resiliencia:</strong> Te adaptas mejor a los cambios</li>
+                        <li><strong>Sabiduría:</strong> Desarrollas una perspectiva más madura</li>
+                        <li><strong>Liberación:</strong> Te liberas de la necesidad de controlar lo incontrolable</li>
+                        <li><strong>Felicidad:</strong> Vives en paz y armonía con la vida</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Cómo Empezar Hoy</h2>
+                <p>Para comenzar a usar el Identificador de Control:</p>
+                
+                <div class="steps">
+                    <h3>📋 Pasos Inmediatos</h3>
+                    
+                    <div class="step">
+                        <h4>1. Haz la Pregunta Clave</h4>
+                        <p>Pregúntate: "¿Puedo controlar esto directamente?"</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>2. Evalúa tu Influencia</h4>
+                        <p>Determina si tienes influencia real sobre la situación.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>3. Acepta la Realidad</h4>
+                        <p>Acepta lo que no puedes controlar y enfócate en lo que sí puedes.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>4. Toma Acción</h4>
+                        <p>Actúa sobre lo que está dentro de tu control.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-box">
+                <h3>🎯 Tu Desafío Personal</h3>
+                <p>Esta semana, cada vez que te sientas frustrado, pregúntate:</p>
+                <p><strong>"¿Puedo controlar esto, o debo enfocarme en lo que SÍ puedo controlar?"</strong></p>
+                <p>Luego aplica la Teoría "Déjalos" y enfócate en tu propio crecimiento.</p>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Conclusión</h2>
+                <p>El Identificador de Control es una herramienta poderosa que te ayuda a distinguir entre lo que puedes y no puedes controlar. Al usarlo consistentemente, no solo te liberas de la frustración, sino que también desarrollas la sabiduría para vivir en paz y armonía con la vida.</p>
+                <p>Recuerda: <strong>La clave de la felicidad es saber qué puedes controlar y qué no. Déjalos ser quienes son, y tú enfócate en ser la mejor versión de ti mismo.</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

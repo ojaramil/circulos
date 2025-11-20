@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Patrimonio - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .builder-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .asset-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .asset-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .asset-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .wealth-strategy {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .asset-allocation {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .wealth-milestone {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Constructor de Patrimonio</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Construye tu patrimonio paso a paso utilizando diferentes estrategias de acumulación de riqueza y activos.</p>
+        </div>
+
+        <div class="builder-box">
+            <h3>💰 Situación Financiera Actual</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="currentAge">Edad Actual:</label>
+                    <input type="number" id="currentAge" value="30" min="18" max="80">
+                </div>
+                <div class="input-group">
+                    <label for="annualIncome">Ingresos Anuales:</label>
+                    <input type="number" id="annualIncome" value="75000" min="10000" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="currentSavings">Ahorros Actuales:</label>
+                    <input type="number" id="currentSavings" value="25000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="monthlyExpenses">Gastos Mensuales:</label>
+                    <input type="number" id="monthlyExpenses" value="4000" min="500" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="debt">Deudas Totales:</label>
+                    <input type="number" id="debt" value="50000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="riskTolerance">Tolerancia al Riesgo:</label>
+                    <select id="riskTolerance">
+                        <option value="conservative">Conservador</option>
+                        <option value="moderate" selected>Moderado</option>
+                        <option value="aggressive">Agresivo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="builder-box">
+            <h3>🎯 Estrategias de Construcción de Patrimonio</h3>
+            <p>Selecciona las estrategias que quieres implementar:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div class="asset-card" onclick="toggleStrategy('investing')">
+                    <h4>📈 Inversiones en Mercados</h4>
+                    <p>Acciones, bonos, ETFs y fondos mutuos</p>
+                </div>
+                <div class="asset-card" onclick="toggleStrategy('real_estate')">
+                    <h4>🏠 Bienes Raíces</h4>
+                    <p>Propiedades de inversión y REITs</p>
+                </div>
+                <div class="asset-card" onclick="toggleStrategy('business')">
+                    <h4>💼 Negocio Propio</h4>
+                    <p>Emprendimiento y empresas</p>
+                </div>
+                <div class="asset-card" onclick="toggleStrategy('retirement')">
+                    <h4>🏖️ Cuentas de Jubilación</h4>
+                    <p>401(k), IRA, y planes de pensiones</p>
+                </div>
+                <div class="asset-card" onclick="toggleStrategy('education')">
+                    <h4>🎓 Inversión en Educación</h4>
+                    <p>Desarrollo de habilidades y certificaciones</p>
+                </div>
+                <div class="asset-card" onclick="toggleStrategy('commodities')">
+                    <h4>🥇 Commodities</h4>
+                    <p>Oro, plata y otros metales preciosos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="builder-box">
+            <h3>📊 Configuración de Estrategias</h3>
+            <p>Ajusta los parámetros para cada estrategia seleccionada:</p>
+            
+            <div id="strategy-configs">
+                <!-- Las configuraciones se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="buildWealth()">🏗️ Construir Patrimonio</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Proyección de Patrimonio</h3>
+                <div id="wealthProjection"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Distribución de Activos</h3>
+                <div id="assetDistribution"></div>
+            </div>
+            
+            <div class="wealth-strategy">
+                <h3>🎯 Estrategias Implementadas</h3>
+                <div id="implementedStrategies"></div>
+            </div>
+            
+            <div class="asset-allocation">
+                <h3>💰 Asignación de Recursos</h3>
+                <div id="resourceAllocation"></div>
+            </div>
+            
+            <div class="wealth-milestone">
+                <h3>🏆 Hitos de Riqueza</h3>
+                <div id="wealthMilestones"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Principios de Construcción de Patrimonio</h2>
+            <ul>
+                <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                <li><strong>Consistencia:</strong> Contribuciones regulares superan timing perfecto</li>
+                <li><strong>Reinversión:</strong> Reinvierte ganancias para crecimiento compuesto</li>
+                <li><strong>Educación continua:</strong> Invierte en tu conocimiento financiero</li>
+                <li><strong>Paciencia:</strong> La riqueza se construye con el tiempo</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const strategies = {
+            'investing': {
+                name: 'Inversiones en Mercados',
+                description: 'Acciones, bonos, ETFs y fondos mutuos',
+                defaultAllocation: 40,
+                riskLevel: 'medium',
+                expectedReturn: 7
+            },
+            'real_estate': {
+                name: 'Bienes Raíces',
+                description: 'Propiedades de inversión y REITs',
+                defaultAllocation: 25,
+                riskLevel: 'medium',
+                expectedReturn: 8
+            },
+            'business': {
+                name: 'Negocio Propio',
+                description: 'Emprendimiento y empresas',
+                defaultAllocation: 20,
+                riskLevel: 'high',
+                expectedReturn: 12
+            },
+            'retirement': {
+                name: 'Cuentas de Jubilación',
+                description: '401(k), IRA, y planes de pensiones',
+                defaultAllocation: 30,
+                riskLevel: 'low',
+                expectedReturn: 6
+            },
+            'education': {
+                name: 'Inversión en Educación',
+                description: 'Desarrollo de habilidades y certificaciones',
+                defaultAllocation: 10,
+                riskLevel: 'low',
+                expectedReturn: 15
+            },
+            'commodities': {
+                name: 'Commodities',
+                description: 'Oro, plata y otros metales preciosos',
+                defaultAllocation: 5,
+                riskLevel: 'high',
+                expectedReturn: 5
+            }
+        };
+
+        let selectedStrategies = {};
+        let strategyAllocations = {};
+
+        function toggleStrategy(strategyId) {
+            selectedStrategies[strategyId] = !selectedStrategies[strategyId];
+            
+            // Cambiar apariencia visual
+            const card = event.target.closest('.asset-card');
+            if (selectedStrategies[strategyId]) {
+                card.classList.add('selected');
+                strategyAllocations[strategyId] = strategies[strategyId].defaultAllocation;
+            } else {
+                card.classList.remove('selected');
+                delete strategyAllocations[strategyId];
+            }
+            
+            updateStrategyConfigs();
+        }
+
+        function updateStrategyConfigs() {
+            const container = document.getElementById('strategy-configs');
+            container.innerHTML = '';
+            
+            Object.keys(selectedStrategies).forEach(strategyId => {
+                if (selectedStrategies[strategyId]) {
+                    const strategy = strategies[strategyId];
+                    const configDiv = document.createElement('div');
+                    configDiv.className = 'asset-card';
+                    configDiv.innerHTML = `
+                        <h4>${strategy.name}</h4>
+                        <p>${strategy.description}</p>
+                        <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                            <label for="allocation-${strategyId}">Asignación (%):</label>
+                            <input type="range" 
+                                   id="allocation-${strategyId}" 
+                                   min="0" 
+                                   max="100" 
+                                   value="${strategyAllocations[strategyId]}" 
+                                   oninput="updateAllocation('${strategyId}', this.value)">
+                            <span id="allocation-value-${strategyId}" style="background: #007bff; color: white; padding: 5px 10px; border-radius: 15px; min-width: 50px; text-align: center;">
+                                ${strategyAllocations[strategyId]}%
+                            </span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                            <div>
+                                <label>Riesgo:</label>
+                                <span style="color: ${strategy.riskLevel === 'high' ? '#dc3545' : strategy.riskLevel === 'medium' ? '#ffc107' : '#28a745'}; font-weight: bold;">
+                                    ${strategy.riskLevel.toUpperCase()}
+                                </span>
+                            </div>
+                            <div>
+                                <label>Retorno Esperado:</label>
+                                <span style="color: #007bff; font-weight: bold;">${strategy.expectedReturn}%</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(configDiv);
+                }
+            });
+        }
+
+        function updateAllocation(strategyId, value) {
+            strategyAllocations[strategyId] = parseInt(value);
+            document.getElementById(`allocation-value-${strategyId}`).textContent = value + '%';
+        }
+
+        function buildWealth() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value);
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value);
+            const debt = parseFloat(document.getElementById('debt').value);
+            const riskTolerance = document.getElementById('riskTolerance').value;
+            
+            // Calcular proyección de patrimonio
+            const wealthProjection = calculateWealthProjection(
+                currentAge, annualIncome, currentSavings, monthlyExpenses, 
+                debt, riskTolerance, strategyAllocations
+            );
+            
+            // Mostrar resultados
+            displayResults(wealthProjection, strategyAllocations);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function calculateWealthProjection(age, income, savings, expenses, debt, riskTolerance, allocations) {
+            const years = 65 - age; // Hasta jubilación
+            const monthlyIncome = income / 12;
+            const monthlySavings = monthlyIncome - expenses;
+            
+            // Calcular retorno promedio ponderado
+            let weightedReturn = 0;
+            let totalAllocation = 0;
+            
+            Object.keys(allocations).forEach(strategyId => {
+                const allocation = allocations[strategyId] / 100;
+                const strategy = strategies[strategyId];
+                weightedReturn += allocation * strategy.expectedReturn;
+                totalAllocation += allocation;
+            });
+            
+            if (totalAllocation > 0) {
+                weightedReturn = weightedReturn / totalAllocation;
+            }
+            
+            // Proyección año por año
+            const projection = [];
+            let currentWealth = savings - debt; // Patrimonio neto actual
+            
+            for (let year = 0; year <= years; year++) {
+                if (year > 0) {
+                    // Agregar contribuciones anuales
+                    currentWealth += monthlySavings * 12;
+                    // Aplicar crecimiento
+                    currentWealth *= (1 + weightedReturn / 100);
+                }
+                
+                projection.push({
+                    year: year,
+                    age: age + year,
+                    wealth: currentWealth,
+                    contributions: savings - debt + (monthlySavings * 12 * year)
+                });
+            }
+            
+            return {
+                projection: projection,
+                weightedReturn: weightedReturn,
+                monthlySavings: monthlySavings,
+                finalWealth: projection[projection.length - 1].wealth
+            };
+        }
+
+        function displayResults(wealthProjection, allocations) {
+            const { projection, weightedReturn, monthlySavings, finalWealth } = wealthProjection;
+            
+            // Mostrar proyección principal
+            document.getElementById('wealthProjection').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>💰 Patrimonio Final</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${finalWealth.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>📈 Retorno Promedio</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">${weightedReturn.toFixed(1)}%</p>
+                    </div>
+                    <div>
+                        <h4>💵 Ahorro Mensual</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">$${monthlySavings.toFixed(0)}</p>
+                    </div>
+                    <div>
+                        <h4>📊 Estrategias Activas</h4>
+                        <p style="font-size: 1.5em; color: #fd7e14;">${Object.keys(allocations).length}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar distribución de activos
+            displayAssetDistribution(allocations);
+            
+            // Mostrar estrategias implementadas
+            displayImplementedStrategies(allocations);
+            
+            // Mostrar asignación de recursos
+            displayResourceAllocation(allocations, monthlySavings);
+            
+            // Mostrar hitos de riqueza
+            displayWealthMilestones(projection);
+        }
+
+        function displayAssetDistribution(allocations) {
+            const distributionDiv = document.getElementById('assetDistribution');
+            const totalAllocation = Object.values(allocations).reduce((sum, val) => sum + val, 0);
+            
+            distributionDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.keys(allocations).map(strategyId => {
+                        const strategy = strategies[strategyId];
+                        const allocation = allocations[strategyId];
+                        const percentage = totalAllocation > 0 ? (allocation / totalAllocation) * 100 : 0;
+                        
+                        return `
+                            <div style="margin: 15px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>${strategy.name}</strong></span>
+                                    <span>${allocation}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentage}%; background: ${getStrategyColor(strategyId)};">
+                                        ${allocation}%
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displayImplementedStrategies(allocations) {
+            const strategiesDiv = document.getElementById('implementedStrategies');
+            
+            strategiesDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.keys(allocations).map(strategyId => {
+                        const strategy = strategies[strategyId];
+                        const allocation = allocations[strategyId];
+                        
+                        return `
+                            <div style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4>${strategy.name}</h4>
+                                        <p>${strategy.description}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p><strong>Asignación:</strong> ${allocation}%</p>
+                                        <p><strong>Retorno Esperado:</strong> ${strategy.expectedReturn}%</p>
+                                        <p><strong>Riesgo:</strong> ${strategy.riskLevel.toUpperCase()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displayResourceAllocation(allocations, monthlySavings) {
+            const allocationDiv = document.getElementById('resourceAllocation');
+            const totalAllocation = Object.values(allocations).reduce((sum, val) => sum + val, 0);
+            
+            allocationDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    <h4>💰 Distribución Mensual de Ahorros</h4>
+                    <p>Basado en ahorro mensual de $${monthlySavings.toFixed(0)}</p>
+                    
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Estrategia</th>
+                                <th>Asignación</th>
+                                <th>Monto Mensual</th>
+                                <th>Monto Anual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(allocations).map(strategyId => {
+                                const strategy = strategies[strategyId];
+                                const allocation = allocations[strategyId];
+                                const monthlyAmount = (monthlySavings * allocation) / 100;
+                                const annualAmount = monthlyAmount * 12;
+                                
+                                return `
+                                    <tr>
+                                        <td>${strategy.name}</td>
+                                        <td>${allocation}%</td>
+                                        <td>$${monthlyAmount.toFixed(0)}</td>
+                                        <td>$${annualAmount.toFixed(0)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function displayWealthMilestones(projection) {
+            const milestonesDiv = document.getElementById('wealthMilestones');
+            
+            const milestones = [
+                { name: 'Primer $100K', target: 100000 },
+                { name: 'Primer $500K', target: 500000 },
+                { name: 'Primer Millón', target: 1000000 },
+                { name: 'Libertad Financiera', target: 2000000 }
+            ];
+            
+            milestonesDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${milestones.map(milestone => {
+                        const achievementYear = projection.find(p => p.wealth >= milestone.target);
+                        const yearsToAchieve = achievementYear ? achievementYear.year : 'No alcanzado';
+                        
+                        return `
+                            <div style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4>${milestone.name}</h4>
+                                        <p>Meta: $${milestone.target.toLocaleString()}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p><strong>Años para alcanzar:</strong> ${yearsToAchieve}</p>
+                                        ${achievementYear ? `<p style="color: #28a745;">✅ Alcanzable</p>` : `<p style="color: #dc3545;">❌ No alcanzable</p>`}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function getStrategyColor(strategyId) {
+            const colors = {
+                'investing': '#007bff',
+                'real_estate': '#28a745',
+                'business': '#fd7e14',
+                'retirement': '#6f42c1',
+                'education': '#17a2b8',
+                'commodities': '#ffc107'
+            };
+            return colors[strategyId] || '#6c757d';
+        }
+    </script>
+</body>
+</html>

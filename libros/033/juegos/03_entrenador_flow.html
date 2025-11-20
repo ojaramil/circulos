@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Flow - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .flow-exercise {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .timer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .flow-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .flow-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffe6e6 0%, #f0f8ff 100%);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .flow-circle.active {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .flow-level {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .flow-status {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .exercise-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .exercise-card.active {
+            border-left-color: #27ae60;
+            background: #e8f5e8;
+        }
+        .exercise-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .exercise-description {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .exercise-duration {
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #666;
+            display: inline-block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn.start {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        .btn.stop {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        .result {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .flow-tips {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .flow-tips h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .flow-tips ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .flow-tips li {
+            margin: 5px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 Entrenador de Flow</h1>
+        
+        <div class="game-section">
+            <h2>🎯 ¿Qué es el Estado de Flow?</h2>
+            <p>El estado de flow es un estado mental en el que estás completamente inmerso en una actividad, con una sensación de energía enfocada, participación plena y disfrute en el proceso. Este entrenador te ayudará a desarrollar y mantener el estado de flow.</p>
+        </div>
+
+        <div class="flow-indicator">
+            <div class="flow-circle" id="flowCircle">
+                <div class="flow-level" id="flowLevel">0%</div>
+                <div class="flow-status" id="flowStatus">Preparado</div>
+            </div>
+        </div>
+
+        <div class="flow-tips">
+            <h4>💡 Consejos para Entrar en Flow</h4>
+            <ul>
+                <li>Elige una actividad que te desafíe pero que sea alcanzable</li>
+                <li>Elimina todas las distracciones</li>
+                <li>Establece objetivos claros y específicos</li>
+                <li>Busca retroalimentación inmediata</li>
+                <li>Mantén un enfoque total en la tarea</li>
+            </ul>
+        </div>
+
+        <div class="exercise-grid">
+            <div class="exercise-card" onclick="selectExercise(this, 'meditation')">
+                <div class="exercise-title">🧘 Meditación</div>
+                <div class="exercise-description">Ejercicio de mindfulness y concentración</div>
+                <div class="exercise-duration">5-15 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'breathing')">
+                <div class="exercise-title">🫁 Respiración</div>
+                <div class="exercise-description">Técnicas de respiración profunda</div>
+                <div class="exercise-duration">3-10 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'focus')">
+                <div class="exercise-title">🎯 Enfoque</div>
+                <div class="exercise-description">Ejercicios de concentración mental</div>
+                <div class="exercise-duration">5-20 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'creativity')">
+                <div class="exercise-title">🎨 Creatividad</div>
+                <div class="exercise-description">Ejercicios de expresión creativa</div>
+                <div class="exercise-duration">10-30 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'movement')">
+                <div class="exercise-title">🏃 Movimiento</div>
+                <div class="exercise-description">Ejercicios de movimiento consciente</div>
+                <div class="exercise-duration">5-15 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'reading')">
+                <div class="exercise-title">📚 Lectura</div>
+                <div class="exercise-description">Lectura profunda y concentrada</div>
+                <div class="exercise-duration">15-45 minutos</div>
+            </div>
+        </div>
+
+        <div class="flow-exercise" id="exerciseContent" style="display: none;">
+            <h3 id="exerciseTitle">Ejercicio Seleccionado</h3>
+            <div id="exerciseInstructions"></div>
+            <div class="timer" id="timer" style="display: none;">00:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="result" id="result">
+            <h2>🎉 ¡Sesión de Flow Completada!</h2>
+            <div id="flowResult"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn start" id="startBtn" onclick="startExercise()" disabled>▶️ Iniciar Ejercicio</button>
+            <button class="btn stop" id="stopBtn" onclick="stopExercise()" style="display: none;">⏹️ Detener</button>
+            <button class="btn" id="resetBtn" onclick="resetExercise()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = null;
+        let isRunning = false;
+        let startTime = null;
+        let timerInterval = null;
+        let flowLevel = 0;
+        let exerciseStartTime = null;
+
+        const exercises = {
+            meditation: {
+                title: "🧘 Meditación de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Siéntate cómodamente con la espalda recta</li>
+                        <li>Cierra los ojos y respira profundamente</li>
+                        <li>Enfócate en tu respiración, sintiendo el aire entrar y salir</li>
+                        <li>Cuando surjan pensamientos, déjalos pasar sin juzgar</li>
+                        <li>Mantén tu atención en el momento presente</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 5-15 minutos</p>
+                `,
+                duration: 15
+            },
+            breathing: {
+                title: "🫁 Respiración de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Inhala lentamente por la nariz contando hasta 4</li>
+                        <li>Mantén la respiración contando hasta 4</li>
+                        <li>Exhala lentamente por la boca contando hasta 4</li>
+                        <li>Repite el ciclo manteniendo el ritmo</li>
+                        <li>Enfócate completamente en el ritmo de tu respiración</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 3-10 minutos</p>
+                `,
+                duration: 10
+            },
+            focus: {
+                title: "🎯 Enfoque de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Elige un objeto simple para enfocar (una vela, una piedra, etc.)</li>
+                        <li>Míralo fijamente sin parpadear</li>
+                        <li>Observa todos los detalles del objeto</li>
+                        <li>Mantén tu atención completamente en el objeto</li>
+                        <li>Si tu mente divaga, regresa suavemente al objeto</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 5-20 minutos</p>
+                `,
+                duration: 20
+            },
+            creativity: {
+                title: "🎨 Creatividad de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Elige una actividad creativa (dibujar, escribir, tocar música)</li>
+                        <li>Comienza sin expectativas ni juicios</li>
+                        <li>Déjate llevar por el proceso creativo</li>
+                        <li>Enfócate en el acto de crear, no en el resultado</li>
+                        <li>Permite que tu creatividad fluya libremente</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 10-30 minutos</p>
+                `,
+                duration: 30
+            },
+            movement: {
+                title: "🏃 Movimiento de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Elige un movimiento simple (caminar, estirar, yoga)</li>
+                        <li>Realiza el movimiento de manera lenta y consciente</li>
+                        <li>Enfócate en cada sensación del movimiento</li>
+                        <li>Mantén tu atención en tu cuerpo y sus sensaciones</li>
+                        <li>Permite que el movimiento fluya naturalmente</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 5-15 minutos</p>
+                `,
+                duration: 15
+            },
+            reading: {
+                title: "📚 Lectura de Flow",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Elige un libro o texto que te interese</li>
+                        <li>Lee a un ritmo cómodo y constante</li>
+                        <li>Enfócate completamente en el contenido</li>
+                        <li>Evita distracciones y relecturas innecesarias</li>
+                        <li>Permite que la lectura te absorba completamente</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 15-45 minutos</p>
+                `,
+                duration: 45
+            }
+        };
+
+        function selectExercise(card, exerciseType) {
+            // Remove previous selection
+            document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('active'));
+            
+            // Add selection to current card
+            card.classList.add('active');
+            
+            // Set current exercise
+            currentExercise = exerciseType;
+            
+            // Show exercise content
+            const exercise = exercises[exerciseType];
+            document.getElementById('exerciseContent').style.display = 'block';
+            document.getElementById('exerciseTitle').textContent = exercise.title;
+            document.getElementById('exerciseInstructions').innerHTML = exercise.instructions;
+            
+            // Enable start button
+            document.getElementById('startBtn').disabled = false;
+        }
+
+        function startExercise() {
+            if (!currentExercise) return;
+            
+            isRunning = true;
+            startTime = Date.now();
+            exerciseStartTime = Date.now();
+            flowLevel = 0;
+            
+            // Update UI
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            document.getElementById('timer').style.display = 'block';
+            
+            // Start timer
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Start flow simulation
+            simulateFlow();
+        }
+
+        function stopExercise() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            
+            // Update UI
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+            
+            // Show results
+            showResults();
+        }
+
+        function updateTimer() {
+            if (!isRunning) return;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update progress
+            const exercise = exercises[currentExercise];
+            const progress = Math.min((elapsed / (exercise.duration * 60)) * 100, 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function simulateFlow() {
+            if (!isRunning) return;
+            
+            const elapsed = (Date.now() - exerciseStartTime) / 1000;
+            const exercise = exercises[currentExercise];
+            const maxDuration = exercise.duration * 60;
+            
+            // Simulate flow level based on time
+            if (elapsed < 60) {
+                // Building up phase
+                flowLevel = Math.min((elapsed / 60) * 30, 30);
+            } else if (elapsed < maxDuration * 0.8) {
+                // Peak flow phase
+                flowLevel = 30 + Math.random() * 40; // 30-70%
+            } else {
+                // Maintaining phase
+                flowLevel = 50 + Math.random() * 30; // 50-80%
+            }
+            
+            // Update flow indicator
+            updateFlowIndicator();
+            
+            // Continue simulation
+            setTimeout(simulateFlow, 2000);
+        }
+
+        function updateFlowIndicator() {
+            const circle = document.getElementById('flowCircle');
+            const level = document.getElementById('flowLevel');
+            const status = document.getElementById('flowStatus');
+            
+            level.textContent = Math.round(flowLevel) + '%';
+            
+            if (flowLevel > 60) {
+                circle.classList.add('active');
+                status.textContent = 'En Flow';
+            } else if (flowLevel > 30) {
+                circle.classList.remove('active');
+                status.textContent = 'Construyendo';
+            } else {
+                circle.classList.remove('active');
+                status.textContent = 'Preparando';
+            }
+        }
+
+        function showResults() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            let resultText = `
+                <h3>📊 Resumen de tu Sesión</h3>
+                <p><strong>Duración:</strong> ${minutes}:${seconds.toString().padStart(2, '0')}</p>
+                <p><strong>Nivel de Flow Promedio:</strong> ${Math.round(flowLevel)}%</p>
+            `;
+            
+            if (flowLevel > 70) {
+                resultText += `
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>🌟 ¡Excelente! Alcanzaste un alto nivel de flow</h4>
+                        <p>Has logrado entrar en un estado de flow profundo. Esto indica que la actividad elegida está bien alineada con tus habilidades y desafíos.</p>
+                    </div>
+                `;
+            } else if (flowLevel > 50) {
+                resultText += `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>👍 Buen trabajo! Lograste un nivel moderado de flow</h4>
+                        <p>Has experimentado el estado de flow. Con más práctica, podrás alcanzar niveles más profundos.</p>
+                    </div>
+                `;
+            } else {
+                resultText += `
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>💡 Sigue practicando</h4>
+                        <p>El flow requiere práctica. Intenta ajustar el nivel de desafío o eliminar distracciones para mejorar tu experiencia.</p>
+                    </div>
+                `;
+            }
+            
+            resultText += `
+                <h4>💡 Consejos para Mejorar tu Flow:</h4>
+                <ul>
+                    <li>Elimina todas las distracciones (teléfono, notificaciones, etc.)</li>
+                    <li>Elige actividades que te desafíen pero que sean alcanzables</li>
+                    <li>Establece objetivos claros antes de comenzar</li>
+                    <li>Practica regularmente para desarrollar tu capacidad de flow</li>
+                    <li>Busca actividades que realmente te apasionen</li>
+                </ul>
+            `;
+            
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('flowResult').innerHTML = resultText;
+        }
+
+        function resetExercise() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            currentExercise = null;
+            flowLevel = 0;
+            
+            // Reset UI
+            document.getElementById('exerciseContent').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Remove selections
+            document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('active'));
+            
+            // Reset flow indicator
+            updateFlowIndicator();
+        }
+    </script>
+</body>
+</html>

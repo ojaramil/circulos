@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Autodisciplina - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .game-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .mastery-level {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .mastery-level h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .mastery-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .mastery-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .mastery-skills {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .mastery-skills h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .skill-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .skill-item h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .skill-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .mastery-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .mastery-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .skill-level {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .skill-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 Maestro de Autodisciplina</h1>
+            <p>Domina el Arte de la Autodisciplina</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>👑 ¿Qué es el Maestro de Autodisciplina?</h3>
+                <p>El Maestro de Autodisciplina es la herramienta definitiva para desarrollar y perfeccionar tu autodisciplina. A través de ejercicios avanzados, seguimiento de progreso y técnicas de maestría, aprenderás a dominar completamente el arte de la autodisciplina.</p>
+            </div>
+
+            <div class="mastery-level">
+                <h4>📊 Tu Nivel de Maestría</h4>
+                <div class="level-display">
+                    <div class="level-number" id="masteryLevel">50</div>
+                    <div class="level-text" id="masteryText">Maestría Media</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="masteryProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de maestría actual se basa en tu dominio de la autodisciplina en todos los aspectos de tu vida.</p>
+            </div>
+
+            <div class="mastery-exercises">
+                <h4>🏋️ Ejercicios de Maestría</h4>
+                
+                <div class="exercise">
+                    <h5>1. Meditación de Maestría</h5>
+                    <p>Medita sobre tu capacidad de autodisciplina y cómo puedes perfeccionarla.</p>
+                    <button class="btn" onclick="startMasteryMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Visualización de Maestría</h5>
+                    <p>Visualiza cómo te conviertes en un maestro de la autodisciplina.</p>
+                    <button class="btn" onclick="startMasteryVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Integración</h5>
+                    <p>Integra todos los aspectos de la autodisciplina en tu vida diaria.</p>
+                    <button class="btn" onclick="startIntegrationExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Simulación de Maestría</h5>
+                    <p>Simula diferentes escenarios donde demuestras maestría en autodisciplina.</p>
+                    <button class="btn" onclick="startMasterySimulation()">Iniciar Simulación</button>
+                </div>
+            </div>
+
+            <div class="mastery-skills">
+                <h4>🎯 Habilidades de Maestría</h4>
+                <div id="skillsList">
+                    <div class="skill-item">
+                        <h5>Autocontrol</h5>
+                        <p>Capacidad de controlar tus impulsos y emociones</p>
+                        <div class="skill-level">
+                            <div class="skill-fill" id="autocontrolSkill" style="width: 50%"></div>
+                        </div>
+                        <p>Nivel: <span id="autocontrolLevel">50%</span></p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h5>Persistencia</h5>
+                        <p>Capacidad de mantener el esfuerzo a pesar de los obstáculos</p>
+                        <div class="skill-level">
+                            <div class="skill-fill" id="persistenceSkill" style="width: 50%"></div>
+                        </div>
+                        <p>Nivel: <span id="persistenceLevel">50%</span></p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h5>Foco</h5>
+                        <p>Capacidad de mantener la atención en tus objetivos</p>
+                        <div class="skill-level">
+                            <div class="skill-fill" id="focusSkill" style="width: 50%"></div>
+                        </div>
+                        <p>Nivel: <span id="focusLevel">50%</span></p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h5>Consistencia</h5>
+                        <p>Capacidad de mantener la constancia en tus acciones</p>
+                        <div class="skill-level">
+                            <div class="skill-fill" id="consistencySkill" style="width: 50%"></div>
+                        </div>
+                        <p>Nivel: <span id="consistencyLevel">50%</span></p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h5>Resiliencia</h5>
+                        <p>Capacidad de recuperarte de las adversidades</p>
+                        <div class="skill-level">
+                            <div class="skill-fill" id="resilienceSkill" style="width: 50%"></div>
+                        </div>
+                        <p>Nivel: <span id="resilienceLevel">50%</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mastery-quote">
+                <h4>💬 Cita de Maestría del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La autodisciplina es la clave de la libertad. Cuanto más te disciplinas, más libre te vuelves."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas de Maestría</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel de Maestría:</span>
+                    <span class="stat-value" id="masteryLevelStat">50</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Habilidades Desarrolladas:</span>
+                    <span class="stat-value" id="skillsDeveloped">5</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Ejercicios Completados:</span>
+                    <span class="stat-value" id="exercisesCompleted">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Días de Entrenamiento:</span>
+                    <span class="stat-value" id="trainingDays">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros de Maestría</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Ejercicio</div>
+                            <div class="achievement-desc">Completa tu primer ejercicio de maestría</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestría Alta</div>
+                            <div class="achievement-desc">Alcanza un nivel de maestría de 80 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de Habilidades</div>
+                            <div class="achievement-desc">Desarrolla todas las habilidades al 80%</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Gran Maestro</div>
+                            <div class="achievement-desc">Alcanza el nivel máximo de maestría</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let masteryStats = JSON.parse(localStorage.getItem('masteryStats')) || {
+            masteryLevel: 50,
+            skillsDeveloped: 5,
+            exercisesCompleted: 0,
+            trainingDays: 0,
+            skills: {
+                autocontrol: 50,
+                persistence: 50,
+                focus: 50,
+                consistency: 50,
+                resilience: 50
+            }
+        };
+
+        // Citas de maestría
+        const quotes = [
+            { text: "La autodisciplina es la clave de la libertad. Cuanto más te disciplinas, más libre te vuelves.", author: "Anónimo" },
+            { text: "La autodisciplina es la diferencia entre lo que quieres ahora y lo que quieres más.", author: "Anónimo" },
+            { text: "La autodisciplina es la capacidad de hacer lo que sabes que debes hacer, cuando debes hacerlo, sin importar cómo te sientas.", author: "Anónimo" },
+            { text: "La autodisciplina es la base de todo éxito.", author: "Anónimo" },
+            { text: "La autodisciplina es la capacidad de controlar tus impulsos y mantener el enfoque en tus objetivos.", author: "Anónimo" },
+            { text: "La autodisciplina es la clave de la productividad.", author: "Anónimo" },
+            { text: "La autodisciplina es la capacidad de mantener la constancia en tus esfuerzos.", author: "Anónimo" },
+            { text: "La autodisciplina es la diferencia entre el éxito y el fracaso.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateMasteryLevel();
+            updateSkills();
+            updateStats();
+            updateAchievements();
+            displayRandomQuote();
+        }
+
+        // Actualizar nivel de maestría
+        function updateMasteryLevel() {
+            document.getElementById('masteryLevel').textContent = masteryStats.masteryLevel;
+            document.getElementById('masteryProgress').style.width = masteryStats.masteryLevel + '%';
+            
+            let levelText = '';
+            if (masteryStats.masteryLevel < 20) levelText = 'Maestría Muy Baja';
+            else if (masteryStats.masteryLevel < 40) levelText = 'Maestría Baja';
+            else if (masteryStats.masteryLevel < 60) levelText = 'Maestría Media';
+            else if (masteryStats.masteryLevel < 80) levelText = 'Maestría Alta';
+            else levelText = 'Maestría Máxima';
+            
+            document.getElementById('masteryText').textContent = levelText;
+        }
+
+        // Actualizar habilidades
+        function updateSkills() {
+            const skills = masteryStats.skills;
+            
+            document.getElementById('autocontrolSkill').style.width = skills.autocontrol + '%';
+            document.getElementById('autocontrolLevel').textContent = skills.autocontrol + '%';
+            
+            document.getElementById('persistenceSkill').style.width = skills.persistence + '%';
+            document.getElementById('persistenceLevel').textContent = skills.persistence + '%';
+            
+            document.getElementById('focusSkill').style.width = skills.focus + '%';
+            document.getElementById('focusLevel').textContent = skills.focus + '%';
+            
+            document.getElementById('consistencySkill').style.width = skills.consistency + '%';
+            document.getElementById('consistencyLevel').textContent = skills.consistency + '%';
+            
+            document.getElementById('resilienceSkill').style.width = skills.resilience + '%';
+            document.getElementById('resilienceLevel').textContent = skills.resilience + '%';
+        }
+
+        // Iniciar meditación de maestría
+        function startMasteryMeditation() {
+            alert('Ejercicio de Meditación de Maestría:\n\n1. Siéntate cómodamente\n2. Respira profundamente\n3. Visualiza tu maestría en autodisciplina\n4. Medita sobre cómo puedes perfeccionarla\n\n¡Ejercicio completado!');
+            masteryStats.exercisesCompleted++;
+            masteryStats.masteryLevel = Math.min(100, masteryStats.masteryLevel + 5);
+            updateMasteryLevel();
+            updateStats();
+            saveData();
+        }
+
+        // Iniciar visualización de maestría
+        function startMasteryVisualization() {
+            alert('Ejercicio de Visualización de Maestría:\n\n1. Cierra los ojos\n2. Imagina tu maestría en autodisciplina\n3. Visualiza cómo te conviertes en un maestro\n4. Siente la satisfacción de la maestría\n\n¡Ejercicio completado!');
+            masteryStats.exercisesCompleted++;
+            masteryStats.masteryLevel = Math.min(100, masteryStats.masteryLevel + 5);
+            updateMasteryLevel();
+            updateStats();
+            saveData();
+        }
+
+        // Iniciar ejercicio de integración
+        function startIntegrationExercise() {
+            alert('Ejercicio de Integración:\n\n1. Piensa en todos los aspectos de la autodisciplina\n2. Integra el autocontrol, persistencia, foco, consistencia y resiliencia\n3. Visualiza cómo trabajan juntos\n4. Desarrolla tu maestría integral\n\n¡Ejercicio completado!');
+            masteryStats.exercisesCompleted++;
+            masteryStats.masteryLevel = Math.min(100, masteryStats.masteryLevel + 5);
+            updateMasteryLevel();
+            updateStats();
+            saveData();
+        }
+
+        // Iniciar simulación de maestría
+        function startMasterySimulation() {
+            alert('Ejercicio de Simulación de Maestría:\n\n1. Imagina diferentes escenarios desafiantes\n2. Practica tu respuesta de maestría\n3. Visualiza cómo superas cada desafío\n4. Desarrolla tu confianza en la maestría\n\n¡Ejercicio completado!');
+            masteryStats.exercisesCompleted++;
+            masteryStats.masteryLevel = Math.min(100, masteryStats.masteryLevel + 5);
+            updateMasteryLevel();
+            updateStats();
+            saveData();
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('masteryLevelStat').textContent = masteryStats.masteryLevel;
+            document.getElementById('skillsDeveloped').textContent = masteryStats.skillsDeveloped;
+            document.getElementById('exercisesCompleted').textContent = masteryStats.exercisesCompleted;
+            document.getElementById('trainingDays').textContent = masteryStats.trainingDays;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Ejercicio
+            if (masteryStats.exercisesCompleted >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestría Alta
+            if (masteryStats.masteryLevel >= 80) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de Habilidades
+            const allSkillsHigh = Object.values(masteryStats.skills).every(skill => skill >= 80);
+            if (allSkillsHigh) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Gran Maestro
+            if (masteryStats.masteryLevel >= 100) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('masteryStats', JSON.stringify(masteryStats));
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

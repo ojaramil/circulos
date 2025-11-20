@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Inflamación Cerebral</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .inflammation-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .inflammation-meter {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .inflammation-meter h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .inflammation-level {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .inflammation-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        .inflammation-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.3s;
+            border-radius: 15px;
+        }
+        .inflammation-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #333;
+        }
+        .anti-inflammatory-foods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .food-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .food-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .food-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .food-card.consumed {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .food-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .food-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .food-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .food-benefit {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .inflammation-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .inflammation-btn:hover {
+            background: #5a6fd8;
+        }
+        .inflammation-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .inflammation-btn.active {
+            background: #28a745;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .inflammation-stats {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .inflammation-stats h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .inflammation-tips {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .inflammation-tips h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .tip-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        .tip-text {
+            flex: 1;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-low { background: #d4edda; color: #155724; }
+        .level-medium { background: #fff3cd; color: #856404; }
+        .level-high { background: #f8d7da; color: #721c24; }
+        .level-critical { background: #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Anti-Inflamación Cerebral</h1>
+            <p>Reduce la inflamación cerebral con alimentos y hábitos saludables</p>
+        </div>
+
+        <div class="inflammation-area">
+            <div class="inflammation-meter">
+                <h3>🔥 Nivel de Inflamación Cerebral</h3>
+                <div class="inflammation-level" id="inflammation-level">60%</div>
+                <div class="inflammation-bar">
+                    <div class="inflammation-bar-fill" id="inflammation-bar-fill" style="width: 60%"></div>
+                    <div class="inflammation-bar-text" id="inflammation-bar-text">60%</div>
+                </div>
+                <p id="inflammation-status">Nivel medio - Considera alimentos antiinflamatorios</p>
+            </div>
+
+            <div class="inflammation-tips">
+                <h3>💡 Tips Antiinflamatorios</h3>
+                <div class="tip-item">
+                    <div class="tip-icon">🥗</div>
+                    <div class="tip-text">Consume alimentos ricos en omega-3</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">🍓</div>
+                    <div class="tip-text">Incluye frutas y verduras coloridas</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">🧘</div>
+                    <div class="tip-text">Practica meditación regularmente</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">🏃</div>
+                    <div class="tip-text">Haz ejercicio moderado</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">😴</div>
+                    <div class="tip-text">Duerme 7-9 horas por noche</div>
+                </div>
+            </div>
+
+            <div class="anti-inflammatory-foods" id="anti-inflammatory-foods">
+                <div class="food-card" onclick="selectFood('salmon')">
+                    <div class="food-icon">🐟</div>
+                    <div class="food-title">Salmón</div>
+                    <div class="food-description">Rico en omega-3</div>
+                    <div class="food-benefit">-15% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('blueberries')">
+                    <div class="food-icon">🫐</div>
+                    <div class="food-title">Arándanos</div>
+                    <div class="food-description">Antioxidantes potentes</div>
+                    <div class="food-benefit">-12% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('turmeric')">
+                    <div class="food-icon">🟡</div>
+                    <div class="food-title">Cúrcuma</div>
+                    <div class="food-description">Curcumina antiinflamatoria</div>
+                    <div class="food-benefit">-18% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('spinach')">
+                    <div class="food-icon">🥬</div>
+                    <div class="food-title">Espinacas</div>
+                    <div class="food-description">Ricas en folato</div>
+                    <div class="food-benefit">-10% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('walnuts')">
+                    <div class="food-icon">🥜</div>
+                    <div class="food-title">Nueces</div>
+                    <div class="food-description">Omega-3 vegetal</div>
+                    <div class="food-benefit">-8% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('green-tea')">
+                    <div class="food-icon">🍵</div>
+                    <div class="food-title">Té Verde</div>
+                    <div class="food-description">EGCG antiinflamatorio</div>
+                    <div class="food-benefit">-14% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('avocado')">
+                    <div class="food-icon">🥑</div>
+                    <div class="food-title">Aguacate</div>
+                    <div class="food-description">Grasas monoinsaturadas</div>
+                    <div class="food-benefit">-11% inflamación</div>
+                </div>
+                <div class="food-card" onclick="selectFood('broccoli')">
+                    <div class="food-icon">🥦</div>
+                    <div class="food-title">Brócoli</div>
+                    <div class="food-description">Sulforafano</div>
+                    <div class="food-benefit">-9% inflamación</div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="inflammation-btn" onclick="startAntiInflammation()" id="startBtn">🚀 Iniciar Plan</button>
+                <button class="inflammation-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="inflammation-stats" style="display: none;">
+                <div class="inflammation-stats">
+                    <h3>📊 Estadísticas Antiinflamatorias</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="inflammation-reduction">0</div>
+                            <div class="stat-label">Reducción Total</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="foods-consumed">0</div>
+                            <div class="stat-label">Alimentos Consumidos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-level">Medio</div>
+                            <div class="stat-label">Nivel Actual</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="improvement">0</div>
+                            <div class="stat-label">Mejora Total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentInflammation = {
+            level: 60,
+            foods: [],
+            consumedFoods: 0,
+            totalReduction: 0,
+            improvement: 0
+        };
+
+        const antiInflammatoryFoods = {
+            'salmon': { 
+                name: 'Salmón',
+                reduction: 15,
+                description: 'Rico en omega-3'
+            },
+            'blueberries': { 
+                name: 'Arándanos',
+                reduction: 12,
+                description: 'Antioxidantes potentes'
+            },
+            'turmeric': { 
+                name: 'Cúrcuma',
+                reduction: 18,
+                description: 'Curcumina antiinflamatoria'
+            },
+            'spinach': { 
+                name: 'Espinacas',
+                reduction: 10,
+                description: 'Ricas en folato'
+            },
+            'walnuts': { 
+                name: 'Nueces',
+                reduction: 8,
+                description: 'Omega-3 vegetal'
+            },
+            'green-tea': { 
+                name: 'Té Verde',
+                reduction: 14,
+                description: 'EGCG antiinflamatorio'
+            },
+            'avocado': { 
+                name: 'Aguacate',
+                reduction: 11,
+                description: 'Grasas monoinsaturadas'
+            },
+            'broccoli': { 
+                name: 'Brócoli',
+                reduction: 9,
+                description: 'Sulforafano'
+            }
+        };
+
+        function selectFood(foodType) {
+            if (currentInflammation.foods.includes(foodType)) return;
+            
+            currentInflammation.foods.push(foodType);
+            currentInflammation.consumedFoods++;
+            const reduction = antiInflammatoryFoods[foodType].reduction;
+            currentInflammation.level = Math.max(0, currentInflammation.level - reduction);
+            currentInflammation.totalReduction += reduction;
+            currentInflammation.improvement = 60 - currentInflammation.level;
+            
+            // Actualizar visual
+            const card = event.target.closest('.food-card');
+            card.classList.add('consumed');
+            card.onclick = null;
+            
+            // Actualizar nivel
+            updateInflammationDisplay();
+            
+            // Mostrar logro
+            showAchievement(reduction);
+        }
+
+        function startAntiInflammation() {
+            // Simular plan antiinflamatorio automático
+            const foods = Object.keys(antiInflammatoryFoods);
+            let consumed = 0;
+            
+            const interval = setInterval(() => {
+                if (consumed >= 4) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                if (!currentInflammation.foods.includes(randomFood)) {
+                    currentInflammation.foods.push(randomFood);
+                    currentInflammation.consumedFoods++;
+                    const reduction = antiInflammatoryFoods[randomFood].reduction;
+                    currentInflammation.level = Math.max(0, currentInflammation.level - reduction);
+                    currentInflammation.totalReduction += reduction;
+                    currentInflammation.improvement = 60 - currentInflammation.level;
+                    
+                    // Actualizar visual
+                    const cards = document.querySelectorAll('.food-card');
+                    cards.forEach(card => {
+                        if (card.textContent.includes(antiInflammatoryFoods[randomFood].name)) {
+                            card.classList.add('consumed');
+                            card.onclick = null;
+                        }
+                    });
+                    
+                    updateInflammationDisplay();
+                    showAchievement(reduction);
+                    consumed++;
+                }
+            }, 2000);
+        }
+
+        function updateInflammationDisplay() {
+            const level = currentInflammation.level;
+            document.getElementById('inflammation-level').textContent = `${level}%`;
+            document.getElementById('inflammation-bar-fill').style.width = `${level}%`;
+            document.getElementById('inflammation-bar-text').textContent = `${level}%`;
+            
+            let status, levelClass;
+            if (level < 20) {
+                status = 'Nivel bajo - ¡Excelente! Tu cerebro está muy saludable';
+                levelClass = 'level-low';
+            } else if (level < 40) {
+                status = 'Nivel medio-bajo - Muy bien, continúa con los hábitos saludables';
+                levelClass = 'level-medium';
+            } else if (level < 60) {
+                status = 'Nivel medio - Considera más alimentos antiinflamatorios';
+                levelClass = 'level-medium';
+            } else if (level < 80) {
+                status = 'Nivel alto - Es importante reducir la inflamación';
+                levelClass = 'level-high';
+            } else {
+                status = 'Nivel crítico - Necesitas implementar cambios urgentes';
+                levelClass = 'level-critical';
+            }
+            
+            document.getElementById('inflammation-status').textContent = status;
+            document.getElementById('current-level').textContent = 
+                level < 20 ? 'Bajo' : level < 40 ? 'Medio-Bajo' : level < 60 ? 'Medio' : level < 80 ? 'Alto' : 'Crítico';
+            document.getElementById('current-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement(reduction) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '🔥 ¡Inflamación reducida! -' + reduction + '%';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('inflammation-reduction').textContent = currentInflammation.totalReduction;
+            document.getElementById('foods-consumed').textContent = currentInflammation.consumedFoods;
+            document.getElementById('improvement').textContent = currentInflammation.improvement > 0 ? '+' + currentInflammation.improvement : currentInflammation.improvement;
+            
+            updateInflammationDisplay();
+            document.getElementById('inflammation-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                level: currentInflammation.level,
+                foods: currentInflammation.foods,
+                consumedFoods: currentInflammation.consumedFoods,
+                totalReduction: currentInflammation.totalReduction,
+                improvement: currentInflammation.improvement
+            };
+            localStorage.setItem('inflammationStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('inflammationStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentInflammation.level = stats.level || 60;
+                currentInflammation.foods = stats.foods || [];
+                currentInflammation.consumedFoods = stats.consumedFoods || 0;
+                currentInflammation.totalReduction = stats.totalReduction || 0;
+                currentInflammation.improvement = stats.improvement || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateInflammationDisplay();
+        
+        // Guardar estadísticas cada 30 segundos
+        setInterval(saveStats, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Civilidad - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .situation-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .response-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .response-option {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .response-option:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .response-option.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .response-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .response-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .civility-principles {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Entrenador de Civilidad</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar la civilidad en diferentes situaciones de conflicto. Aprende a mantener el respeto mutuo, buscar puntos en común y promover el diálogo constructivo incluso en situaciones difíciles.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Respuestas Civiles: <span id="correct">0</span> | Respuestas Inciviles: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada situación y selecciona la respuesta que consideres más civil y constructiva. La civilidad se caracteriza por el respeto mutuo, la búsqueda de entendimiento y la promoción del diálogo.</p>
+        </div>
+
+        <div class="civility-principles">
+            <h3>📋 Principios de Civilidad:</h3>
+            <ul>
+                <li>Respeto mutuo independientemente de las diferencias</li>
+                <li>Búsqueda de puntos en común</li>
+                <li>Escucha activa y empática</li>
+                <li>Lenguaje respetuoso y constructivo</li>
+                <li>Promoción del diálogo sobre la confrontación</li>
+            </ul>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextSituation()" id="next-btn" style="display: none;">Siguiente Situación</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentSituation = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedResponse = null;
+
+        const situations = [
+            {
+                title: "Reunión de Trabajo",
+                description: "En una reunión de equipo, un colega interrumpe constantemente a otros y descarta sus ideas sin consideración. Cuando intentas hacer una sugerencia, te dice: 'Esa idea no tiene sentido y es una pérdida de tiempo.'",
+                responses: [
+                    {
+                        text: "Entiendo que tienes una perspectiva diferente. ¿Podrías explicarme qué aspectos específicos te preocupan para que pueda mejorar mi propuesta?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta mantiene la civilidad al reconocer la perspectiva del otro, buscar entendimiento y proponer colaboración."
+                    },
+                    {
+                        text: "Tú no sabes de lo que estás hablando. Mi idea es mucho mejor que cualquier cosa que hayas propuesto.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es confrontacional, ataca personalmente y no busca entendimiento mutuo."
+                    },
+                    {
+                        text: "Me gustaría escuchar tus ideas también. ¿Podríamos discutir las ventajas y desventajas de cada propuesta?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta promueve el diálogo constructivo y muestra respeto por las ideas de todos."
+                    },
+                    {
+                        text: "Si no te gusta, puedes irte de la reunión.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es excluyente y no promueve la colaboración o el entendimiento mutuo."
+                    }
+                ]
+            },
+            {
+                title: "Discusión Política",
+                description: "En una conversación sobre política, alguien dice: 'Todas las personas que votan por el partido opuesto son ignorantes y no entienden los problemas reales del país.'",
+                responses: [
+                    {
+                        text: "Entiendo que tienes fuertes convicciones. ¿Podrías compartir qué aspectos específicos te preocupan más? Me gustaría entender tu perspectiva.",
+                        isCorrect: true,
+                        explanation: "Esta respuesta mantiene la civilidad al buscar entender la perspectiva del otro sin atacar personalmente."
+                    },
+                    {
+                        text: "Eso es una generalización ofensiva. No puedes juzgar a millones de personas de esa manera.",
+                        isCorrect: false,
+                        explanation: "Aunque esta respuesta tiene razón, es confrontacional y no promueve el diálogo constructivo."
+                    },
+                    {
+                        text: "Creo que todos tenemos diferentes experiencias que influyen en nuestras decisiones. ¿Qué experiencias te han llevado a esta conclusión?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta reconoce la diversidad de perspectivas y busca entender las razones detrás de la opinión del otro."
+                    },
+                    {
+                        text: "Tú eres el ignorante aquí. No sabes nada de política.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es completamente incivil, ataca personalmente y no contribuye al diálogo."
+                    }
+                ]
+            },
+            {
+                title: "Conflicto Familiar",
+                description: "En una discusión familiar sobre las vacaciones, tu hermano dice: 'Siempre quieres controlar todo. No puedes simplemente dejar que otros tomen decisiones por una vez.'",
+                responses: [
+                    {
+                        text: "Entiendo que te sientes así. No es mi intención controlar, pero me gustaría que todos estemos cómodos con la decisión. ¿Cómo podríamos encontrar una solución que funcione para todos?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta reconoce los sentimientos del otro, aclara las intenciones y busca una solución colaborativa."
+                    },
+                    {
+                        text: "Tú eres el que siempre causa problemas. Si no te gusta, no vengas.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es confrontacional, ataca personalmente y no busca resolver el conflicto."
+                    },
+                    {
+                        text: "Me disculpo si he dado esa impresión. ¿Podrías ayudarme a entender qué específicamente te hace sentir que estoy controlando?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta muestra humildad, busca entendimiento y promueve el diálogo constructivo."
+                    },
+                    {
+                        text: "Eso es ridículo. Tú eres el que siempre se queja de todo.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es defensiva, ataca personalmente y no contribuye a resolver el conflicto."
+                    }
+                ]
+            }
+        ];
+
+        function loadSituation() {
+            const situation = situations[currentSituation];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Situación: ${situation.title}</h3>
+                    <div class="situation-box">
+                        <p><strong>Contexto:</strong> ${situation.description}</p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>💭 ¿Cómo responderías de manera civil?</h3>
+                    <div class="response-options">
+                        ${situation.responses.map((response, index) => `
+                            <div class="response-option" onclick="selectResponse(${index})" data-index="${index}">
+                                ${response.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedResponse = null;
+        }
+
+        function selectResponse(index) {
+            selectedResponse = index;
+            document.querySelectorAll('.response-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function checkAnswer() {
+            if (selectedResponse === null) {
+                alert('Por favor, selecciona una respuesta antes de verificar.');
+                return;
+            }
+
+            const situation = situations[currentSituation];
+            const response = situation.responses[selectedResponse];
+            const isCorrect = response.isCorrect;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.response-option').forEach((option, index) => {
+                option.classList.remove('selected');
+                if (situation.responses[index].isCorrect) {
+                    option.classList.add('correct');
+                } else if (index === selectedResponse && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente respuesta civil!' : '❌ Revisa tu respuesta'}</h3>
+                <p><strong>Tu respuesta:</strong> ${response.text}</p>
+                <p><strong>Explicación:</strong> ${response.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextSituation() {
+            currentSituation++;
+            if (currentSituation < situations.length) {
+                loadSituation();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el entrenador de civilidad.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentSituation = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadSituation();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadSituation();
+    </script>
+</body>
+</html>

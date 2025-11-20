@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Obstáculos - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #a8edea;
+        }
+
+        .game-section h3 {
+            color: #a8edea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .obstacle-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .obstacle-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .obstacle-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .obstacle-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #a8edea;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .obstacle-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .obstacle-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #a8edea;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .obstacles-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .obstacles-list h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .obstacle-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .obstacle-item h5 {
+            color: #a8edea;
+            margin-bottom: 10px;
+        }
+
+        .obstacle-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #a8edea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .obstacle-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #a8edea;
+        }
+
+        .obstacle-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .priority-high {
+            border-left-color: #f44336;
+        }
+
+        .priority-medium {
+            border-left-color: #ff9800;
+        }
+
+        .priority-low {
+            border-left-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚧 Gestor de Obstáculos</h1>
+            <p>Identifica, Analiza y Supera los Obstáculos</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🚧 ¿Qué es el Gestor de Obstáculos?</h3>
+                <p>El Gestor de Obstáculos es una herramienta interactiva que te ayuda a identificar, analizar y superar los obstáculos que se presentan en tu camino hacia tus objetivos. A través de técnicas de análisis y estrategias de superación, aprenderás a convertir los obstáculos en oportunidades de crecimiento.</p>
+            </div>
+
+            <div class="obstacle-level">
+                <h4>📊 Tu Nivel de Superación de Obstáculos</h4>
+                <div class="level-display">
+                    <div class="level-number" id="obstacleLevel">50</div>
+                    <div class="level-text" id="obstacleText">Superación Media</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="obstacleProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de superación de obstáculos actual se basa en cómo enfrentas y resuelves los desafíos.</p>
+            </div>
+
+            <div class="obstacle-tracker">
+                <h4>📝 Registrar Obstáculo</h4>
+                <form id="obstacleForm">
+                    <div class="form-group">
+                        <label for="obstacleName">Nombre del Obstáculo:</label>
+                        <input type="text" id="obstacleName" placeholder="Ej: Falta de tiempo para estudiar" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="obstacleDescription">Descripción del Obstáculo:</label>
+                        <textarea id="obstacleDescription" placeholder="Describe el obstáculo en detalle..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="obstaclePriority">Prioridad del Obstáculo:</label>
+                        <select id="obstaclePriority" required>
+                            <option value="">Selecciona prioridad</option>
+                            <option value="high">Alta</option>
+                            <option value="medium">Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="obstacleType">Tipo de Obstáculo:</label>
+                        <select id="obstacleType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="time">Tiempo</option>
+                            <option value="resources">Recursos</option>
+                            <option value="knowledge">Conocimiento</option>
+                            <option value="skills">Habilidades</option>
+                            <option value="motivation">Motivación</option>
+                            <option value="external">Externo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="obstacleSolution">Solución Propuesta:</label>
+                        <textarea id="obstacleSolution" placeholder="Describe cómo planeas superar este obstáculo..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Obstáculo</button>
+                </form>
+            </div>
+
+            <div class="obstacle-exercises">
+                <h4>🏋️ Ejercicios de Superación</h4>
+                
+                <div class="exercise">
+                    <h5>1. Análisis de Obstáculos</h5>
+                    <p>Analiza los obstáculos desde diferentes perspectivas para encontrar soluciones creativas.</p>
+                    <button class="btn" onclick="startObstacleAnalysis()">Iniciar Análisis</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Visualización de Soluciones</h5>
+                    <p>Visualiza diferentes formas de superar los obstáculos que enfrentas.</p>
+                    <button class="btn" onclick="startSolutionVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Creatividad</h5>
+                    <p>Desarrolla tu creatividad para encontrar soluciones innovadoras a los obstáculos.</p>
+                    <button class="btn" onclick="startCreativityExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Simulación de Obstáculos</h5>
+                    <p>Simula diferentes tipos de obstáculos y practica tu respuesta de superación.</p>
+                    <button class="btn" onclick="startObstacleSimulation()">Iniciar Simulación</button>
+                </div>
+            </div>
+
+            <div class="obstacles-list">
+                <h4>🎯 Mis Obstáculos</h4>
+                <div id="obstaclesList">
+                    <!-- Los obstáculos se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="obstacle-quote">
+                <h4>💬 Cita de Superación del Día</h4>
+                <div class="quote-text" id="dailyQuote">"Los obstáculos son esas cosas espantosas que ves cuando quitas los ojos de tu meta."</div>
+                <div class="quote-author" id="quoteAuthor">- Henry Ford</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Obstáculos Registrados:</span>
+                    <span class="stat-value" id="totalObstacles">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Obstáculos Superados:</span>
+                    <span class="stat-value" id="overcomeObstacles">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tasa de Superación:</span>
+                    <span class="stat-value" id="overcomeRate">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel de Superación:</span>
+                    <span class="stat-value" id="overcomeLevel">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🚧</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Obstáculo</div>
+                            <div class="achievement-desc">Registra tu primer obstáculo</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Superador de Obstáculos</div>
+                            <div class="achievement-desc">Supera tu primer obstáculo</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de la Superación</div>
+                            <div class="achievement-desc">Supera 10 obstáculos diferentes</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Campeón de Obstáculos</div>
+                            <div class="achievement-desc">Alcanza 90% de tasa de superación</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let obstacles = JSON.parse(localStorage.getItem('obstacles')) || [];
+        let stats = JSON.parse(localStorage.getItem('obstacleStats')) || {
+            totalObstacles: 0,
+            overcomeObstacles: 0,
+            overcomeRate: 0,
+            overcomeLevel: 0
+        };
+
+        let currentObstacleLevel = parseInt(localStorage.getItem('currentObstacleLevel')) || 50;
+
+        // Citas de superación
+        const quotes = [
+            { text: "Los obstáculos son esas cosas espantosas que ves cuando quitas los ojos de tu meta.", author: "Henry Ford" },
+            { text: "No hay nada imposible para quien se atreve a intentarlo.", author: "Anónimo" },
+            { text: "La adversidad es la madre de la invención.", author: "Benjamin Franklin" },
+            { text: "Lo que no te mata, te hace más fuerte.", author: "Friedrich Nietzsche" },
+            { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier" },
+            { text: "No importa lo lento que vayas, siempre y cuando no te detengas.", author: "Confucio" },
+            { text: "La persistencia es la clave del éxito.", author: "Anónimo" },
+            { text: "Los obstáculos son oportunidades disfrazadas.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateObstacleLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderObstacles();
+        }
+
+        // Registrar nuevo obstáculo
+        document.getElementById('obstacleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const obstacle = {
+                id: Date.now(),
+                name: document.getElementById('obstacleName').value,
+                description: document.getElementById('obstacleDescription').value,
+                priority: document.getElementById('obstaclePriority').value,
+                type: document.getElementById('obstacleType').value,
+                solution: document.getElementById('obstacleSolution').value,
+                createdAt: new Date().toISOString(),
+                isOvercome: false,
+                overcomeDate: null
+            };
+            
+            obstacles.push(obstacle);
+            currentObstacleLevel = Math.min(100, currentObstacleLevel + 5);
+            
+            saveData();
+            updateStats();
+            updateObstacleLevel();
+            updateAchievements();
+            renderObstacles();
+            
+            // Limpiar formulario
+            document.getElementById('obstacleForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Obstáculo registrado exitosamente!');
+        });
+
+        // Actualizar nivel de superación
+        function updateObstacleLevel() {
+            document.getElementById('obstacleLevel').textContent = currentObstacleLevel;
+            document.getElementById('obstacleProgress').style.width = currentObstacleLevel + '%';
+            
+            let levelText = '';
+            if (currentObstacleLevel < 20) levelText = 'Superación Muy Baja';
+            else if (currentObstacleLevel < 40) levelText = 'Superación Baja';
+            else if (currentObstacleLevel < 60) levelText = 'Superación Media';
+            else if (currentObstacleLevel < 80) levelText = 'Superación Alta';
+            else levelText = 'Superación Máxima';
+            
+            document.getElementById('obstacleText').textContent = levelText;
+        }
+
+        // Iniciar análisis de obstáculos
+        function startObstacleAnalysis() {
+            alert('Ejercicio de Análisis de Obstáculos:\n\n1. Identifica el obstáculo claramente\n2. Analiza sus causas raíz\n3. Considera diferentes perspectivas\n4. Busca soluciones creativas\n\n¡Ejercicio completado!');
+            currentObstacleLevel = Math.min(100, currentObstacleLevel + 5);
+            updateObstacleLevel();
+            saveData();
+        }
+
+        // Iniciar visualización de soluciones
+        function startSolutionVisualization() {
+            alert('Ejercicio de Visualización de Soluciones:\n\n1. Cierra los ojos\n2. Imagina el obstáculo claramente\n3. Visualiza diferentes formas de superarlo\n4. Siente la satisfacción de la superación\n\n¡Ejercicio completado!');
+            currentObstacleLevel = Math.min(100, currentObstacleLevel + 5);
+            updateObstacleLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de creatividad
+        function startCreativityExercise() {
+            alert('Ejercicio de Creatividad:\n\n1. Piensa en el obstáculo\n2. Genera 10 ideas diferentes para superarlo\n3. Considera soluciones innovadoras\n4. Desarrolla tu pensamiento creativo\n\n¡Ejercicio completado!');
+            currentObstacleLevel = Math.min(100, currentObstacleLevel + 5);
+            updateObstacleLevel();
+            saveData();
+        }
+
+        // Iniciar simulación de obstáculos
+        function startObstacleSimulation() {
+            alert('Ejercicio de Simulación de Obstáculos:\n\n1. Imagina diferentes tipos de obstáculos\n2. Practica tu respuesta mental\n3. Desarrolla estrategias de afrontamiento\n4. Fortalece tu capacidad de superación\n\n¡Ejercicio completado!');
+            currentObstacleLevel = Math.min(100, currentObstacleLevel + 5);
+            updateObstacleLevel();
+            saveData();
+        }
+
+        // Renderizar obstáculos
+        function renderObstacles() {
+            const obstaclesList = document.getElementById('obstaclesList');
+            obstaclesList.innerHTML = '';
+            
+            if (obstacles.length === 0) {
+                obstaclesList.innerHTML = '<p>No tienes obstáculos registrados aún. ¡Registra tu primer obstáculo!</p>';
+                return;
+            }
+            
+            obstacles.forEach(obstacle => {
+                const obstacleItem = document.createElement('div');
+                obstacleItem.className = `obstacle-item priority-${obstacle.priority}`;
+                obstacleItem.innerHTML = `
+                    <h5>${obstacle.name}</h5>
+                    <p><strong>Descripción:</strong> ${obstacle.description}</p>
+                    <p><strong>Tipo:</strong> ${getObstacleTypeText(obstacle.type)}</p>
+                    <p><strong>Prioridad:</strong> ${getPriorityText(obstacle.priority)}</p>
+                    <p><strong>Solución:</strong> ${obstacle.solution}</p>
+                    <p><strong>Estado:</strong> ${obstacle.isOvercome ? 'Superado' : 'Pendiente'}</p>
+                    <p><strong>Fecha:</strong> ${new Date(obstacle.createdAt).toLocaleDateString()}</p>
+                    ${!obstacle.isOvercome ? `
+                        <button class="btn" onclick="overcomeObstacle(${obstacle.id})">Superar Obstáculo</button>
+                    ` : ''}
+                `;
+                obstaclesList.appendChild(obstacleItem);
+            });
+        }
+
+        // Superar obstáculo
+        function overcomeObstacle(obstacleId) {
+            const obstacle = obstacles.find(o => o.id === obstacleId);
+            if (obstacle) {
+                obstacle.isOvercome = true;
+                obstacle.overcomeDate = new Date().toISOString();
+                currentObstacleLevel = Math.min(100, currentObstacleLevel + 10);
+                
+                saveData();
+                updateStats();
+                updateObstacleLevel();
+                updateAchievements();
+                renderObstacles();
+                
+                alert('¡Obstáculo superado exitosamente! ¡Felicidades!');
+            }
+        }
+
+        // Obtener texto del tipo de obstáculo
+        function getObstacleTypeText(type) {
+            const types = {
+                'time': 'Tiempo',
+                'resources': 'Recursos',
+                'knowledge': 'Conocimiento',
+                'skills': 'Habilidades',
+                'motivation': 'Motivación',
+                'external': 'Externo'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener texto de prioridad
+        function getPriorityText(priority) {
+            const priorities = {
+                'high': 'Alta',
+                'medium': 'Media',
+                'low': 'Baja'
+            };
+            return priorities[priority] || priority;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalObstacles = obstacles.length;
+            stats.overcomeObstacles = obstacles.filter(o => o.isOvercome).length;
+            stats.overcomeRate = stats.totalObstacles > 0 ? Math.round((stats.overcomeObstacles / stats.totalObstacles) * 100) : 0;
+            stats.overcomeLevel = currentObstacleLevel;
+            
+            document.getElementById('totalObstacles').textContent = stats.totalObstacles;
+            document.getElementById('overcomeObstacles').textContent = stats.overcomeObstacles;
+            document.getElementById('overcomeRate').textContent = stats.overcomeRate + '%';
+            document.getElementById('overcomeLevel').textContent = stats.overcomeLevel;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Obstáculo
+            if (stats.totalObstacles >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Superador de Obstáculos
+            if (stats.overcomeObstacles >= 1) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de la Superación
+            if (stats.overcomeObstacles >= 10) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Campeón de Obstáculos
+            if (stats.overcomeRate >= 90) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('obstacles', JSON.stringify(obstacles));
+            localStorage.setItem('obstacleStats', JSON.stringify(stats));
+            localStorage.setItem('currentObstacleLevel', currentObstacleLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

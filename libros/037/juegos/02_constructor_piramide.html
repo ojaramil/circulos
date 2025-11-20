@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Pirámide de Necesidades</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .pyramid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .pyramid-level {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 300px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .pyramid-level.level-1 {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            width: 100%;
+        }
+        .pyramid-level.level-2 {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            width: 90%;
+        }
+        .pyramid-level.level-3 {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            width: 80%;
+        }
+        .pyramid-level.level-4 {
+            background: #e2e3e5;
+            border: 2px solid #6c757d;
+            width: 70%;
+        }
+        .pyramid-level.level-5 {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            width: 60%;
+        }
+        .pyramid-level.completed {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+        .pyramid-level.completed::after {
+            content: '✅';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+        }
+        .level-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        .level-content {
+            flex: 1;
+        }
+        .level-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .level-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        .resources-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .resource-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Constructor de Pirámide de Necesidades</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Construye la pirámide de abundancia satisfaciendo cada nivel de necesidades humanas. Comienza desde la base (necesidades fisiológicas) y avanza hacia la cima (autorrealización). Usa recursos estratégicamente para crear abundancia en cada nivel.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="totalScore">0</div>
+                <div class="stat-label">Puntuación Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="completedLevels">0</div>
+                <div class="stat-label">Niveles Completados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalResources">100</div>
+                <div class="stat-label">Recursos Disponibles</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="efficiency">0%</div>
+                <div class="stat-label">Eficiencia</div>
+            </div>
+        </div>
+
+        <div class="pyramid-container">
+            <div class="pyramid-level level-5" onclick="workOnLevel(5)">
+                <div class="level-icon">🌟</div>
+                <div class="level-content">
+                    <div class="level-title">Autorrealización</div>
+                    <div class="level-description">Creatividad, espiritualidad, sabiduría, legado</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level5Progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pyramid-level level-4" onclick="workOnLevel(4)">
+                <div class="level-icon">🎓</div>
+                <div class="level-content">
+                    <div class="level-title">Necesidades de Estima</div>
+                    <div class="level-description">Autoestima, respeto, logros, independencia</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level4Progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pyramid-level level-3" onclick="workOnLevel(3)">
+                <div class="level-icon">🤝</div>
+                <div class="level-content">
+                    <div class="level-title">Necesidades Sociales</div>
+                    <div class="level-description">Amistad, familia, comunidad, intimidad</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level3Progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pyramid-level level-2" onclick="workOnLevel(2)">
+                <div class="level-icon">🏠</div>
+                <div class="level-content">
+                    <div class="level-title">Necesidades de Seguridad</div>
+                    <div class="level-description">Seguridad física, económica, de salud, ambiental</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level2Progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pyramid-level level-1" onclick="workOnLevel(1)">
+                <div class="level-icon">💧</div>
+                <div class="level-content">
+                    <div class="level-title">Necesidades Fisiológicas</div>
+                    <div class="level-description">Agua, comida, refugio, aire respirable</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level1Progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="resources-panel">
+            <h3>🛠️ Recursos Disponibles</h3>
+            <div class="resource-item">
+                <span>💧 Tecnologías de Agua</span>
+                <div>
+                    <span id="waterTech">5</span>
+                    <button class="button" onclick="useResource('water')">Usar (2 recursos)</button>
+                </div>
+            </div>
+            <div class="resource-item">
+                <span>🍎 Tecnologías de Alimentos</span>
+                <div>
+                    <span id="foodTech">5</span>
+                    <button class="button" onclick="useResource('food')">Usar (2 recursos)</button>
+                </div>
+            </div>
+            <div class="resource-item">
+                <span>⚡ Tecnologías de Energía</span>
+                <div>
+                    <span id="energyTech">5</span>
+                    <button class="button" onclick="useResource('energy')">Usar (2 recursos)</button>
+                </div>
+            </div>
+            <div class="resource-item">
+                <span>🎓 Tecnologías de Educación</span>
+                <div>
+                    <span id="educationTech">5</span>
+                    <button class="button" onclick="useResource('education')">Usar (2 recursos)</button>
+                </div>
+            </div>
+            <div class="resource-item">
+                <span>🏥 Tecnologías de Salud</span>
+                <div>
+                    <span id="healthTech">5</span>
+                    <button class="button" onclick="useResource('health')">Usar (2 recursos)</button>
+                </div>
+            </div>
+            <div class="resource-item">
+                <span>🕊️ Tecnologías de Libertad</span>
+                <div>
+                    <span id="freedomTech">5</span>
+                    <button class="button" onclick="useResource('freedom')">Usar (2 recursos)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones Disponibles</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="generateResources()">Generar Recursos</button>
+                <button class="button" onclick="researchTechnology()">Investigar Tecnología</button>
+                <button class="button" onclick="collaborate()">Colaborar</button>
+                <button class="button" onclick="innovate()">Innovar</button>
+                <button class="button" onclick="scaleSolution()">Escalar Solución</button>
+                <button class="button" onclick="optimize()">Optimizar</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Completa niveles para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            resources: 100,
+            levels: {
+                1: { progress: 0, completed: false, name: 'Necesidades Fisiológicas' },
+                2: { progress: 0, completed: false, name: 'Necesidades de Seguridad' },
+                3: { progress: 0, completed: false, name: 'Necesidades Sociales' },
+                4: { progress: 0, completed: false, name: 'Necesidades de Estima' },
+                5: { progress: 0, completed: false, name: 'Autorrealización' }
+            },
+            technologies: {
+                water: 5,
+                food: 5,
+                energy: 5,
+                education: 5,
+                health: 5,
+                freedom: 5
+            },
+            score: 0,
+            achievements: []
+        };
+
+        function workOnLevel(level) {
+            if (gameState.resources < 5) {
+                alert('No tienes suficientes recursos. Genera más recursos primero.');
+                return;
+            }
+
+            if (level > 1 && !gameState.levels[level - 1].completed) {
+                alert('Debes completar el nivel anterior primero.');
+                return;
+            }
+
+            // Trabajar en el nivel
+            gameState.resources -= 5;
+            gameState.levels[level].progress += Math.random() * 15 + 5;
+
+            if (gameState.levels[level].progress >= 100) {
+                gameState.levels[level].progress = 100;
+                gameState.levels[level].completed = true;
+                gameState.score += level * 100;
+                showAchievement(`¡Nivel ${level} completado!`, `Has alcanzado la abundancia en ${gameState.levels[level].name}`);
+            }
+
+            updateDisplay();
+        }
+
+        function useResource(type) {
+            if (gameState.resources < 2) {
+                alert('No tienes suficientes recursos.');
+                return;
+            }
+
+            if (gameState.technologies[type] <= 0) {
+                alert('No tienes más tecnologías de este tipo.');
+                return;
+            }
+
+            gameState.resources -= 2;
+            gameState.technologies[type]--;
+
+            // Aplicar tecnología a niveles apropiados
+            switch(type) {
+                case 'water':
+                case 'food':
+                case 'energy':
+                    gameState.levels[1].progress += 10;
+                    break;
+                case 'education':
+                    gameState.levels[4].progress += 10;
+                    break;
+                case 'health':
+                    gameState.levels[2].progress += 10;
+                    break;
+                case 'freedom':
+                    gameState.levels[5].progress += 10;
+                    break;
+            }
+
+            // Verificar completación
+            Object.keys(gameState.levels).forEach(level => {
+                if (gameState.levels[level].progress >= 100 && !gameState.levels[level].completed) {
+                    gameState.levels[level].progress = 100;
+                    gameState.levels[level].completed = true;
+                    gameState.score += parseInt(level) * 100;
+                    showAchievement(`¡Nivel ${level} completado!`, `Has alcanzado la abundancia en ${gameState.levels[level].name}`);
+                }
+            });
+
+            updateDisplay();
+        }
+
+        function generateResources() {
+            gameState.resources += Math.floor(Math.random() * 20) + 10;
+            updateDisplay();
+        }
+
+        function researchTechnology() {
+            if (gameState.resources < 10) {
+                alert('Necesitas al menos 10 recursos para investigar.');
+                return;
+            }
+
+            gameState.resources -= 10;
+            const techTypes = Object.keys(gameState.technologies);
+            const randomTech = techTypes[Math.floor(Math.random() * techTypes.length)];
+            gameState.technologies[randomTech]++;
+
+            showAchievement('🔬 Investigación Completada', `Has desarrollado más tecnología de ${randomTech}`);
+            updateDisplay();
+        }
+
+        function collaborate() {
+            if (gameState.resources < 8) {
+                alert('Necesitas al menos 8 recursos para colaborar.');
+                return;
+            }
+
+            gameState.resources -= 8;
+            // Colaboración mejora todos los niveles ligeramente
+            Object.keys(gameState.levels).forEach(level => {
+                if (!gameState.levels[level].completed) {
+                    gameState.levels[level].progress += 5;
+                }
+            });
+
+            showAchievement('🤝 Colaboración Exitosa', 'La cooperación ha acelerado el progreso en todos los niveles');
+            updateDisplay();
+        }
+
+        function innovate() {
+            if (gameState.resources < 15) {
+                alert('Necesitas al menos 15 recursos para innovar.');
+                return;
+            }
+
+            gameState.resources -= 15;
+            // Innovación da un gran impulso a un nivel aleatorio
+            const incompleteLevels = Object.keys(gameState.levels).filter(level => !gameState.levels[level].completed);
+            if (incompleteLevels.length > 0) {
+                const randomLevel = incompleteLevels[Math.floor(Math.random() * incompleteLevels.length)];
+                gameState.levels[randomLevel].progress += 25;
+            }
+
+            showAchievement('💡 Innovación Breakthrough', 'Una innovación revolucionaria ha acelerado el progreso');
+            updateDisplay();
+        }
+
+        function scaleSolution() {
+            if (gameState.resources < 12) {
+                alert('Necesitas al menos 12 recursos para escalar.');
+                return;
+            }
+
+            gameState.resources -= 12;
+            // Escalar mejora significativamente el nivel más avanzado
+            let maxProgress = 0;
+            let maxLevel = 1;
+            Object.keys(gameState.levels).forEach(level => {
+                if (gameState.levels[level].progress > maxProgress && !gameState.levels[level].completed) {
+                    maxProgress = gameState.levels[level].progress;
+                    maxLevel = level;
+                }
+            });
+
+            gameState.levels[maxLevel].progress += 20;
+
+            showAchievement('📈 Escalamiento Exitoso', `Has escalado la solución para el nivel ${maxLevel}`);
+            updateDisplay();
+        }
+
+        function optimize() {
+            if (gameState.resources < 6) {
+                alert('Necesitas al menos 6 recursos para optimizar.');
+                return;
+            }
+
+            gameState.resources -= 6;
+            // Optimización mejora la eficiencia (reduce costos futuros)
+            gameState.score += 50;
+
+            showAchievement('⚡ Optimización Completada', 'Has mejorado la eficiencia del sistema');
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Actualizar estadísticas
+            document.getElementById('totalScore').textContent = gameState.score;
+            document.getElementById('completedLevels').textContent = Object.values(gameState.levels).filter(level => level.completed).length;
+            document.getElementById('totalResources').textContent = gameState.resources;
+            
+            const completedLevels = Object.values(gameState.levels).filter(level => level.completed).length;
+            const efficiency = Math.round((completedLevels / 5) * 100);
+            document.getElementById('efficiency').textContent = efficiency + '%';
+
+            // Actualizar niveles de la pirámide
+            Object.keys(gameState.levels).forEach(level => {
+                const progress = gameState.levels[level].progress;
+                document.getElementById(`level${level}Progress`).style.width = progress + '%';
+                
+                const levelElement = document.querySelector(`.level-${level}`);
+                if (gameState.levels[level].completed) {
+                    levelElement.classList.add('completed');
+                } else {
+                    levelElement.classList.remove('completed');
+                }
+            });
+
+            // Actualizar tecnologías
+            Object.keys(gameState.technologies).forEach(tech => {
+                document.getElementById(tech + 'Tech').textContent = gameState.technologies[tech];
+            });
+
+            // Verificar victoria
+            if (completedLevels === 5) {
+                showVictory();
+            }
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showVictory() {
+            const victory = document.createElement('div');
+            victory.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 1000;
+                text-align: center;
+                max-width: 500px;
+            `;
+            
+            victory.innerHTML = `
+                <h2>🎉 ¡Victoria!</h2>
+                <p>Has construido exitosamente la pirámide de abundancia.</p>
+                <p><strong>Puntuación Final:</strong> ${gameState.score}</p>
+                <p><strong>Eficiencia:</strong> 100%</p>
+                <p>¡Has creado un mundo de abundancia para todos!</p>
+                <button class="button" onclick="location.reload()">Jugar de Nuevo</button>
+            `;
+            
+            document.body.appendChild(victory);
+        }
+
+        // Inicializar juego
+        updateDisplay();
+    </script>
+</body>
+</html>

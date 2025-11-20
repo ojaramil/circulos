@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Manifiesto Personal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .rule-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #218838;
+        }
+        .manifesto-display {
+            background: #e8f5e9;
+            border: 3px solid #28a745;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📜 Creador de Manifiesto Personal</h1>
+        
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Crea tu conjunto de reglas personales para guiar tus decisiones diarias
+        </p>
+
+        <div class="rule-section">
+            <h3>Regla 1: Autoevaluación</h3>
+            <p>Pregúntate: "De no ser por el miedo o la apatía, ¿me rendiría?"</p>
+        </div>
+
+        <div class="rule-section">
+            <h3>Regla 2: Tres Tareas Máximo</h3>
+            <div class="input-group">
+                <label>Tarea Prioritaria #1:</label>
+                <input type="text" id="task1" placeholder="La tarea más importante del día">
+            </div>
+            <div class="input-group">
+                <label>Tarea Prioritaria #2:</label>
+                <input type="text" id="task2" placeholder="Segunda tarea importante">
+            </div>
+            <div class="input-group">
+                <label>Tarea Prioritaria #3:</label>
+                <input type="text" id="task3" placeholder="Tercera tarea importante">
+            </div>
+        </div>
+
+        <div class="rule-section">
+            <h3>Regla 3: Restricciones y Requisitos</h3>
+            <div class="input-group">
+                <label>Mis 3 Restricciones (Lo que NO haré):</label>
+                <textarea id="restrictions" rows="3" placeholder="Ej: No más de 1 hora en redes sociales"></textarea>
+            </div>
+            <div class="input-group">
+                <label>Mis 3 Requisitos (Lo que SÍ haré):</label>
+                <textarea id="requirements" rows="3" placeholder="Ej: Leer 30 páginas al día"></textarea>
+            </div>
+        </div>
+
+        <div class="rule-section">
+            <h3>Regla 4: Reafirma tu Propósito</h3>
+            <div class="input-group">
+                <label>Quiero...</label>
+                <input type="text" id="want" placeholder="Tu objetivo final">
+            </div>
+            <div class="input-group">
+                <label>Tengo que...</label>
+                <input type="text" id="must" placeholder="Qué debes hacer para lograrlo">
+            </div>
+            <div class="input-group">
+                <label>Evitaré...</label>
+                <input type="text" id="avoid" placeholder="Qué no debes hacer">
+            </div>
+        </div>
+
+        <button class="button" onclick="generateManifesto()">Generar Mi Manifiesto</button>
+
+        <div id="manifestoDisplay" class="manifesto-display">
+            <h2 style="text-align: center; color: #28a745;">📜 MI MANIFIESTO PERSONAL</h2>
+            <div id="manifestoContent"></div>
+            <button class="button" onclick="downloadManifesto()">Descargar PDF</button>
+        </div>
+    </div>
+
+    <script>
+        function generateManifesto() {
+            const task1 = document.getElementById('task1').value;
+            const task2 = document.getElementById('task2').value;
+            const task3 = document.getElementById('task3').value;
+            const restrictions = document.getElementById('restrictions').value;
+            const requirements = document.getElementById('requirements').value;
+            const want = document.getElementById('want').value;
+            const must = document.getElementById('must').value;
+            const avoid = document.getElementById('avoid').value;
+
+            if (!task1 || !want || !must) {
+                alert('Por favor completa al menos las tareas prioritarias y tu propósito');
+                return;
+            }
+
+            const content = `
+                <h3>📋 Mis 3 Tareas Diarias</h3>
+                <ol>
+                    <li>${task1}</li>
+                    ${task2 ? '<li>' + task2 + '</li>' : ''}
+                    ${task3 ? '<li>' + task3 + '</li>' : ''}
+                </ol>
+
+                <h3>🚫 Mis Restricciones</h3>
+                <p>${restrictions || 'No definidas'}</p>
+
+                <h3>✅ Mis Requisitos</h3>
+                <p>${requirements || 'No definidos'}</p>
+
+                <h3>🎯 Mi Propósito</h3>
+                <p><strong>Quiero:</strong> ${want}</p>
+                <p><strong>Tengo que:</strong> ${must}</p>
+                <p><strong>Evitaré:</strong> ${avoid}</p>
+
+                <p style="margin-top: 30px; text-align: center; font-style: italic;">
+                    Creado el ${new Date().toLocaleDateString()}
+                </p>
+            `;
+
+            document.getElementById('manifestoContent').innerHTML = content;
+            document.getElementById('manifestoDisplay').style.display = 'block';
+            
+            localStorage.setItem('myManifesto', JSON.stringify({
+                task1, task2, task3, restrictions, requirements, want, must, avoid,
+                date: new Date().toISOString()
+            }));
+        }
+
+        function downloadManifesto() {
+            alert('Funcionalidad de descarga en desarrollo. Por ahora, puedes tomar una captura de pantalla de tu manifiesto.');
+        }
+
+        // Load saved manifesto
+        window.onload = function() {
+            const saved = localStorage.getItem('myManifesto');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('task1').value = data.task1 || '';
+                document.getElementById('task2').value = data.task2 || '';
+                document.getElementById('task3').value = data.task3 || '';
+                document.getElementById('restrictions').value = data.restrictions || '';
+                document.getElementById('requirements').value = data.requirements || '';
+                document.getElementById('want').value = data.want || '';
+                document.getElementById('must').value = data.must || '';
+                document.getElementById('avoid').value = data.avoid || '';
+            }
+        };
+    </script>
+</body>
+</html>

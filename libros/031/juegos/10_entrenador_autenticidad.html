@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Autenticidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .exercise-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exercise-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .question-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .question-card h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .question-card p {
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .insight {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .insight h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .reflection {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .reflection h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Entrenador de Autenticidad</h1>
+            <p>Desarrolla la capacidad de ser genuinamente tú mismo en todas las situaciones</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este entrenador te ayuda a desarrollar la autenticidad a través de ejercicios de autoconocimiento, reflexión y práctica. Aprende a ser genuinamente tú mismo, expresar tus valores y vivir de acuerdo con tu verdadero ser.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Autenticidad</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Ejercicios Completados</h4>
+                        <div class="stat-number" id="exercises-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Valores Identificados</h4>
+                        <div class="stat-number" id="values-identified">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Nivel de Autenticidad</h4>
+                        <div class="stat-number" id="authenticity-level">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exercise-container">
+                <div class="exercise-card">
+                    <h3>🎯 Ejercicio 1: Identificando tus Valores</h3>
+                    <p>Los valores son la brújula de la autenticidad. Identifica qué valores son más importantes para ti y cómo se manifiestan en tu vida diaria.</p>
+                    
+                    <div class="question-card">
+                        <h4>📝 Pregunta de Reflexión</h4>
+                        <p>¿Qué valores son más importantes para ti en la vida? Selecciona los que más te representen:</p>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'honestidad')">
+                            <h4>Honestidad</h4>
+                            <p>Ser auténtico y transparente en todas las situaciones</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'crecimiento')">
+                            <h4>Crecimiento</h4>
+                            <p>Desarrollarse continuamente y aprender nuevas cosas</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'familia')">
+                            <h4>Familia</h4>
+                            <p>Priorizar las relaciones familiares y el bienestar de los seres queridos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'libertad')">
+                            <h4>Libertad</h4>
+                            <p>Tener autonomía y capacidad de elección en la vida</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'servicio')">
+                            <h4>Servicio</h4>
+                            <p>Ayudar a otros y contribuir al bienestar de la comunidad</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'creatividad')">
+                            <h4>Creatividad</h4>
+                            <p>Expresarse de manera única y crear cosas nuevas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzeResponse()" disabled>Analizar Respuesta</button>
+                <button class="btn" onclick="nextExercise()">Siguiente Ejercicio</button>
+            </div>
+
+            <div id="analysis-container" style="display: none;">
+                <div class="insight">
+                    <h4>💡 Insight sobre Autenticidad</h4>
+                    <div id="insight-content"></div>
+                </div>
+
+                <div class="reflection">
+                    <h4>🤔 Pregunta de Reflexión</h4>
+                    <div id="reflection-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let selectedValues = [];
+        let exercisesCompleted = 0;
+        let valuesIdentified = 0;
+        let authenticityLevel = 0;
+
+        const exercises = [
+            {
+                title: "Identificando tus Valores",
+                description: "Los valores son la brújula de la autenticidad. Identifica qué valores son más importantes para ti y cómo se manifiestan en tu vida diaria.",
+                question: "¿Qué valores son más importantes para ti en la vida? Selecciona los que más te representen:",
+                options: [
+                    { id: 'honestidad', title: 'Honestidad', description: 'Ser auténtico y transparente en todas las situaciones' },
+                    { id: 'crecimiento', title: 'Crecimiento', description: 'Desarrollarse continuamente y aprender nuevas cosas' },
+                    { id: 'familia', title: 'Familia', description: 'Priorizar las relaciones familiares y el bienestar de los seres queridos' },
+                    { id: 'libertad', title: 'Libertad', description: 'Tener autonomía y capacidad de elección en la vida' },
+                    { id: 'servicio', title: 'Servicio', description: 'Ayudar a otros y contribuir al bienestar de la comunidad' },
+                    { id: 'creatividad', title: 'Creatividad', description: 'Expresarse de manera única y crear cosas nuevas' }
+                ],
+                insights: {
+                    'honestidad': 'La honestidad es fundamental para la autenticidad. Vivir de acuerdo con tus valores de honestidad te permite ser genuinamente tú mismo.',
+                    'crecimiento': 'El crecimiento personal es un valor que fomenta la autenticidad. Al buscar desarrollarte continuamente, te acercas más a tu verdadero ser.',
+                    'familia': 'Los valores familiares pueden ser una fuente importante de autenticidad. Vivir de acuerdo con estos valores te permite ser genuino en tus relaciones.',
+                    'libertad': 'La libertad es un valor que puede fomentar la autenticidad. Al tener autonomía, puedes expresar tu verdadero ser sin restricciones externas.',
+                    'servicio': 'El servicio a otros puede ser una expresión de autenticidad. Al ayudar a otros, puedes expresar tus valores más profundos.',
+                    'creatividad': 'La creatividad es una expresión natural de autenticidad. Al crear, puedes expresar tu verdadero ser de manera única.'
+                }
+            },
+            {
+                title: "Expresando tu Verdadero Ser",
+                description: "Aprende a expresar tu verdadero ser de manera auténtica en diferentes situaciones y contextos.",
+                question: "¿Cómo sueles expresar tu verdadero ser en diferentes situaciones?",
+                options: [
+                    { id: 'directo', title: 'Directo', description: 'Expreso mis opiniones y sentimientos de manera directa y clara' },
+                    { id: 'empatico', title: 'Empático', description: 'Me enfoco en entender a otros antes de expresar mi perspectiva' },
+                    { id: 'reflexivo', title: 'Reflexivo', description: 'Reflexiono sobre la situación antes de expresar mi verdadero ser' },
+                    { id: 'adaptativo', title: 'Adaptativo', description: 'Adapto mi expresión según el contexto y las personas involucradas' },
+                    { id: 'consistente', title: 'Consistente', description: 'Mantengo una expresión consistente de mi verdadero ser en todas las situaciones' },
+                    { id: 'vulnerable', title: 'Vulnerable', description: 'Me permito ser vulnerable y mostrar mi verdadero ser, incluyendo mis debilidades' }
+                ],
+                insights: {
+                    'directo': 'Ser directo puede ser una expresión de autenticidad, pero asegúrate de ser también empático y considerado con otros.',
+                    'empatico': 'La empatía puede fomentar la autenticidad al permitirte conectar genuinamente con otros antes de expresar tu verdadero ser.',
+                    'reflexivo': 'La reflexión puede ayudarte a expresar tu verdadero ser de manera más consciente y auténtica.',
+                    'adaptativo': 'Ser adaptativo puede ser útil, pero asegúrate de no comprometer tu autenticidad en el proceso.',
+                    'consistente': 'La consistencia es una característica clave de la autenticidad. Mantener una expresión consistente de tu verdadero ser puede fortalecer tu autenticidad.',
+                    'vulnerable': 'La vulnerabilidad es una expresión poderosa de autenticidad. Al mostrar tu verdadero ser, incluyendo tus debilidades, puedes conectar más genuinamente con otros.'
+                }
+            },
+            {
+                title: "Viviendo de Acuerdo con tus Valores",
+                description: "Aprende a vivir de acuerdo con tus valores de manera auténtica y consistente en tu vida diaria.",
+                question: "¿Cómo puedes vivir de manera más auténtica según tus valores?",
+                options: [
+                    { id: 'decisiones_conscientes', title: 'Decisiones Conscientes', description: 'Tomar decisiones conscientes que reflejen mis valores' },
+                    { id: 'comunicacion_autentica', title: 'Comunicación Auténtica', description: 'Comunicarme de manera auténtica y genuina con otros' },
+                    { id: 'acciones_consistentes', title: 'Acciones Consistentes', description: 'Actuar de manera consistente con mis valores en todas las situaciones' },
+                    { id: 'relaciones_autenticas', title: 'Relaciones Auténticas', description: 'Cultivar relaciones auténticas y genuinas con otros' },
+                    { id: 'crecimiento_personal', title: 'Crecimiento Personal', description: 'Buscar crecimiento personal que me acerque más a mi verdadero ser' },
+                    { id: 'servicio_autentico', title: 'Servicio Auténtico', description: 'Servir a otros de manera auténtica y genuina' }
+                ],
+                insights: {
+                    'decisiones_conscientes': 'Tomar decisiones conscientes que reflejen tus valores es fundamental para vivir de manera auténtica. Cada decisión es una oportunidad de expresar tu verdadero ser.',
+                    'comunicacion_autentica': 'La comunicación auténtica es clave para vivir de acuerdo con tus valores. Al comunicarte genuinamente, puedes expresar tu verdadero ser.',
+                    'acciones_consistentes': 'La consistencia en tus acciones es una característica clave de la autenticidad. Al actuar de manera consistente con tus valores, puedes vivir más auténticamente.',
+                    'relaciones_autenticas': 'Las relaciones auténticas pueden fomentar la autenticidad. Al cultivar conexiones genuinas, puedes expresar tu verdadero ser.',
+                    'crecimiento_personal': 'El crecimiento personal puede acercarte más a tu verdadero ser. Al buscar desarrollarte continuamente, puedes vivir más auténticamente.',
+                    'servicio_autentico': 'El servicio auténtico puede ser una expresión poderosa de tus valores. Al servir a otros genuinamente, puedes vivir de acuerdo con tu verdadero ser.'
+                }
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Toggle selection
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                selectedValues = selectedValues.filter(id => id !== optionId);
+            } else {
+                element.classList.add('selected');
+                selectedValues.push(optionId);
+            }
+            
+            // Enable analyze button if at least one option is selected
+            document.getElementById('analyze-btn').disabled = selectedValues.length === 0;
+        }
+
+        function analyzeResponse() {
+            if (selectedValues.length === 0) return;
+
+            const exercise = exercises[currentExercise];
+            let insights = [];
+            let reflections = [];
+
+            selectedValues.forEach(valueId => {
+                if (exercise.insights[valueId]) {
+                    insights.push(exercise.insights[valueId]);
+                }
+            });
+
+            // Generate reflection questions based on selected values
+            if (currentExercise === 0) {
+                reflections.push("¿Cómo puedes vivir de acuerdo con estos valores en tu vida diaria?");
+                reflections.push("¿Qué acciones específicas puedes tomar para expresar estos valores?");
+            } else if (currentExercise === 1) {
+                reflections.push("¿Cómo puedes expresar tu verdadero ser de manera más auténtica?");
+                reflections.push("¿Qué obstáculos podrías enfrentar al expresar tu verdadero ser?");
+            } else if (currentExercise === 2) {
+                reflections.push("¿Cómo puedes vivir de manera más auténtica según tus valores?");
+                reflections.push("¿Qué cambios específicos puedes hacer para vivir más auténticamente?");
+            }
+
+            // Show insights
+            document.getElementById('insight-content').innerHTML = `
+                <p><strong>Insights sobre tu selección:</strong></p>
+                <ul>
+                    ${insights.map(insight => `<li>${insight}</li>`).join('')}
+                </ul>
+            `;
+
+            // Show reflection questions
+            document.getElementById('reflection-content').innerHTML = `
+                <p><strong>Preguntas para reflexionar:</strong></p>
+                <ul>
+                    ${reflections.map(reflection => `<li>${reflection}</li>`).join('')}
+                </ul>
+            `;
+
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'block';
+            
+            // Update stats
+            exercisesCompleted++;
+            valuesIdentified += selectedValues.length;
+            authenticityLevel += 10;
+            updateStats();
+        }
+
+        function nextExercise() {
+            currentExercise = (currentExercise + 1) % exercises.length;
+            loadExercise();
+        }
+
+        function loadExercise() {
+            const exercise = exercises[currentExercise];
+            
+            document.querySelector('.exercise-card h3').textContent = `🎯 Ejercicio ${currentExercise + 1}: ${exercise.title}`;
+            document.querySelector('.exercise-card p').textContent = exercise.description;
+            document.querySelector('.question-card p').textContent = exercise.question;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            exercise.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedValues = [];
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('exercises-completed').textContent = exercisesCompleted;
+            document.getElementById('values-identified').textContent = valuesIdentified;
+            document.getElementById('authenticity-level').textContent = authenticityLevel;
+            
+            // Update progress bar
+            const progress = (exercisesCompleted / exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExercise();
+        });
+    </script>
+</body>
+</html>

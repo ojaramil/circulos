@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Autocuidado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .care-category {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .care-category h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .activity-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .activity-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .activity-card.completed {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        .activity-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .activity-card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .activity-card .duration {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            display: inline-block;
+        }
+
+        .progress-section {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .achievement {
+            background: #fff8e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .achievement h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Entrenador de Autocuidado</h1>
+            <p>Desarrolla hábitos de autocuidado que nutran tu bienestar integral</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este entrenador te ayudará a desarrollar hábitos de autocuidado en diferentes áreas de tu vida. Completa actividades diarias y observa cómo mejora tu bienestar general.</p>
+            </div>
+
+            <div class="progress-section">
+                <h3>Progreso del Día</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="progress-text">0 actividades completadas</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Actividades Completadas</h4>
+                    <div class="stat-number" id="completed-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Días Consecutivos</h4>
+                    <div class="stat-number" id="streak-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Puntos de Bienestar</h4>
+                    <div class="stat-number" id="wellness-points">0</div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>💪 Autocuidado Físico</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'ejercicio')">
+                        <h4>🏃 Ejercicio</h4>
+                        <p>Realiza 30 minutos de actividad física</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'hidratacion')">
+                        <h4>💧 Hidratación</h4>
+                        <p>Bebe 8 vasos de agua durante el día</p>
+                        <span class="duration">Todo el día</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'sueño')">
+                        <h4>😴 Sueño Reparador</h4>
+                        <p>Duerme 7-8 horas de calidad</p>
+                        <span class="duration">8 horas</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'nutricion')">
+                        <h4>🥗 Nutrición Saludable</h4>
+                        <p>Come una comida nutritiva y balanceada</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>🧠 Autocuidado Mental</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'meditacion')">
+                        <h4>🧘 Meditación</h4>
+                        <p>Practica 10 minutos de meditación</p>
+                        <span class="duration">10 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'lectura')">
+                        <h4>📚 Lectura</h4>
+                        <p>Lee algo que te inspire o eduque</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'aprendizaje')">
+                        <h4>🎓 Aprendizaje</h4>
+                        <p>Aprende algo nuevo o desarrolla una habilidad</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'mindfulness')">
+                        <h4>🌿 Mindfulness</h4>
+                        <p>Practica la atención plena en una actividad</p>
+                        <span class="duration">15 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>😊 Autocuidado Emocional</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'autocompasion')">
+                        <h4>💝 Autocompasión</h4>
+                        <p>Practica la bondad hacia ti mismo</p>
+                        <span class="duration">10 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'gratitud')">
+                        <h4>🙏 Gratitud</h4>
+                        <p>Escribe 3 cosas por las que estás agradecido</p>
+                        <span class="duration">5 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'emociones')">
+                        <h4>😌 Procesar Emociones</h4>
+                        <p>Reconoce y procesa una emoción difícil</p>
+                        <span class="duration">15 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'autoconocimiento')">
+                        <h4>🔍 Autoconocimiento</h4>
+                        <p>Reflexiona sobre tus pensamientos y sentimientos</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>🌟 Autocuidado Espiritual</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'naturaleza')">
+                        <h4>🌳 Conexión con la Naturaleza</h4>
+                        <p>Pasa tiempo al aire libre</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'propósito')">
+                        <h4>🎯 Reflexión de Propósito</h4>
+                        <p>Reflexiona sobre tu propósito y valores</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'gratitud')">
+                        <h4>🙏 Práctica Espiritual</h4>
+                        <p>Practica tu fe o filosofía personal</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'silencio')">
+                        <h4>🤫 Silencio y Soledad</h4>
+                        <p>Disfruta del silencio y la soledad</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>👥 Autocuidado Social</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'conexion')">
+                        <h4>💬 Conexión Social</h4>
+                        <p>Conecta con un ser querido</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'límites')">
+                        <h4>🛡️ Establecer Límites</h4>
+                        <p>Establece un límite saludable</p>
+                        <span class="duration">15 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'apoyo')">
+                        <h4>🤝 Buscar Apoyo</h4>
+                        <p>Pide ayuda cuando la necesites</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'comunidad')">
+                        <h4>🏘️ Participación Comunitaria</h4>
+                        <p>Participa en una actividad comunitaria</p>
+                        <span class="duration">1 hora</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-category">
+                <h3>🎨 Autocuidado Creativo</h3>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="completeActivity(this, 'arte')">
+                        <h4>🎨 Expresión Artística</h4>
+                        <p>Practica una forma de arte</p>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'música')">
+                        <h4>🎵 Música</h4>
+                        <p>Escucha o crea música</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'escritura')">
+                        <h4>✍️ Escritura</h4>
+                        <p>Escribe en un diario o creativamente</p>
+                        <span class="duration">20 min</span>
+                    </div>
+                    <div class="activity-card" onclick="completeActivity(this, 'hobby')">
+                        <h4>🎯 Hobby</h4>
+                        <p>Dedica tiempo a tu hobby favorito</p>
+                        <span class="duration">45 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievement">
+                <h4>🏆 Logros Desbloqueados</h4>
+                <div id="achievements-content">
+                    <p>Completa actividades para desbloquear logros.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="resetProgress()">🔄 Reiniciar Progreso</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let completedActivities = 0;
+        let wellnessPoints = 0;
+        let streak = 0;
+        let achievements = [];
+
+        function completeActivity(element, activityType) {
+            if (element.classList.contains('completed')) {
+                return; // Already completed
+            }
+
+            element.classList.add('completed');
+            completedActivities++;
+            wellnessPoints += 10;
+            
+            updateProgress();
+            updateStats();
+            checkAchievements();
+        }
+
+        function updateProgress() {
+            const totalActivities = 24; // Total number of activities
+            const progress = (completedActivities / totalActivities) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${completedActivities} actividades completadas`;
+        }
+
+        function updateStats() {
+            document.getElementById('completed-count').textContent = completedActivities;
+            document.getElementById('wellness-points').textContent = wellnessPoints;
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+            
+            if (completedActivities >= 5 && !achievements.includes('primeros_pasos')) {
+                newAchievements.push('🌱 Primeros Pasos - Completaste 5 actividades');
+                achievements.push('primeros_pasos');
+            }
+            
+            if (completedActivities >= 10 && !achievements.includes('constancia')) {
+                newAchievements.push('💪 Constancia - Completaste 10 actividades');
+                achievements.push('constancia');
+            }
+            
+            if (completedActivities >= 15 && !achievements.includes('dedicacion')) {
+                newAchievements.push('🌟 Dedicación - Completaste 15 actividades');
+                achievements.push('dedicacion');
+            }
+            
+            if (completedActivities >= 20 && !achievements.includes('maestro')) {
+                newAchievements.push('🏆 Maestro del Autocuidado - Completaste 20 actividades');
+                achievements.push('maestro');
+            }
+            
+            if (wellnessPoints >= 100 && !achievements.includes('bienestar')) {
+                newAchievements.push('💎 Experto en Bienestar - Alcanzaste 100 puntos');
+                achievements.push('bienestar');
+            }
+            
+            if (newAchievements.length > 0) {
+                showAchievements(newAchievements);
+            }
+        }
+
+        function showAchievements(newAchievements) {
+            const achievementsContent = document.getElementById('achievements-content');
+            let html = '';
+            
+            achievements.forEach(achievement => {
+                html += `<div style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px; border-left: 4px solid #4caf50;">${achievement}</div>`;
+            });
+            
+            achievementsContent.innerHTML = html;
+            
+            // Show notification
+            alert('🎉 ¡Logro Desbloqueado!\n\n' + newAchievements.join('\n'));
+        }
+
+        function resetProgress() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todo el progreso?')) {
+                completedActivities = 0;
+                wellnessPoints = 0;
+                streak = 0;
+                achievements = [];
+                
+                // Reset all activity cards
+                document.querySelectorAll('.activity-card').forEach(card => {
+                    card.classList.remove('completed');
+                });
+                
+                updateProgress();
+                updateStats();
+                
+                document.getElementById('achievements-content').innerHTML = '<p>Completa actividades para desbloquear logros.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
+

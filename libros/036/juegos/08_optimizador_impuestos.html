@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Impuestos - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .optimizer-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tax-strategy {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .deduction-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        .deduction-item:hover {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .deduction-item.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tax-bracket {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .savings-highlight {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Optimizador de Impuestos</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Aprende a optimizar tu situación fiscal utilizando estrategias legales para minimizar impuestos y maximizar tu riqueza después de impuestos.</p>
+        </div>
+
+        <div class="optimizer-box">
+            <h3>💰 Información Financiera</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="annualIncome">Ingresos Anuales:</label>
+                    <input type="number" id="annualIncome" value="75000" min="10000" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="filingStatus">Estado Civil:</label>
+                    <select id="filingStatus">
+                        <option value="single">Soltero</option>
+                        <option value="married" selected>Casado</option>
+                        <option value="head">Cabeza de Familia</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="state">Estado:</label>
+                    <select id="state">
+                        <option value="ca" selected>California</option>
+                        <option value="tx">Texas</option>
+                        <option value="ny">Nueva York</option>
+                        <option value="fl">Florida</option>
+                        <option value="other">Otro</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="age">Edad:</label>
+                    <input type="number" id="age" value="35" min="18" max="80">
+                </div>
+            </div>
+        </div>
+
+        <div class="optimizer-box">
+            <h3>📋 Deducciones Disponibles</h3>
+            <p>Selecciona las deducciones que aplican a tu situación:</p>
+            
+            <div id="deductions-container">
+                <!-- Las deducciones se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="optimizer-box">
+            <h3>🏦 Estrategias de Inversión</h3>
+            <p>Selecciona las estrategias que puedes implementar:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div class="deduction-item" onclick="toggleStrategy('401k')">
+                    <h4>💰 401(k) / 403(b)</h4>
+                    <p>Contribuciones pre-impuestos hasta $22,500</p>
+                </div>
+                <div class="deduction-item" onclick="toggleStrategy('ira')">
+                    <h4>🏛️ IRA Tradicional</h4>
+                    <p>Contribuciones deducibles hasta $6,500</p>
+                </div>
+                <div class="deduction-item" onclick="toggleStrategy('hsa')">
+                    <h4>🏥 HSA (Health Savings Account)</h4>
+                    <p>Triple beneficio fiscal hasta $3,850</p>
+                </div>
+                <div class="deduction-item" onclick="toggleStrategy('roth')">
+                    <h4>💎 Roth IRA</h4>
+                    <p>Contribuciones post-impuestos, crecimiento libre</p>
+                </div>
+                <div class="deduction-item" onclick="toggleStrategy('real_estate')">
+                    <h4>🏠 Bienes Raíces</h4>
+                    <p>Depreciación y deducciones de intereses</p>
+                </div>
+                <div class="deduction-item" onclick="toggleStrategy('business')">
+                    <h4>💼 Gastos de Negocio</h4>
+                    <p>Deducciones por trabajo independiente</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="optimizeTaxes()">📊 Optimizar Impuestos</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Resumen de Optimización</h3>
+                <div id="taxSummary"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Comparación Antes vs Después</h3>
+                <div id="taxComparison"></div>
+            </div>
+            
+            <div class="tax-strategy">
+                <h3>💡 Estrategias Recomendadas</h3>
+                <div id="recommendedStrategies"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📋 Plan de Acción</h3>
+                <div id="actionPlan"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Principios de Optimización Fiscal</h2>
+            <ul>
+                <li><strong>Diferir impuestos:</strong> Usa cuentas de jubilación para diferir impuestos</li>
+                <li><strong>Maximiza deducciones:</strong> Aprovecha todas las deducciones disponibles</li>
+                <li><strong>Timing de ingresos:</strong> Controla cuándo recibes ingresos</li>
+                <li><strong>Diversifica cuentas:</strong> Combina cuentas pre y post-impuestos</li>
+                <li><strong>Planifica a largo plazo:</strong> Considera el impacto en jubilación</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const deductions = [
+            { id: 'mortgage', name: 'Intereses de Hipoteca', maxAmount: 15000, description: 'Intereses pagados en hipoteca principal' },
+            { id: 'property_tax', name: 'Impuestos de Propiedad', maxAmount: 10000, description: 'Impuestos estatales y locales' },
+            { id: 'charitable', name: 'Donaciones Caritativas', maxAmount: 5000, description: 'Donaciones a organizaciones calificadas' },
+            { id: 'medical', name: 'Gastos Médicos', maxAmount: 3000, description: 'Gastos médicos que exceden el 7.5% del AGI' },
+            { id: 'education', name: 'Gastos Educativos', maxAmount: 4000, description: 'Matrícula y libros universitarios' },
+            { id: 'childcare', name: 'Cuidado de Niños', maxAmount: 3000, description: 'Gastos de cuidado infantil' },
+            { id: 'business', name: 'Gastos de Negocio', maxAmount: 5000, description: 'Gastos relacionados con trabajo' },
+            { id: 'student_loan', name: 'Intereses de Préstamos Estudiantiles', maxAmount: 2500, description: 'Intereses en préstamos estudiantiles' }
+        ];
+
+        let selectedDeductions = {};
+        let selectedStrategies = {};
+
+        function initializeDeductions() {
+            const container = document.getElementById('deductions-container');
+            container.innerHTML = '';
+            
+            deductions.forEach(deduction => {
+                selectedDeductions[deduction.id] = 0;
+                
+                const deductionDiv = document.createElement('div');
+                deductionDiv.className = 'deduction-item';
+                deductionDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>${deduction.name}</h4>
+                            <p style="margin: 5px 0; color: #6c757d;">${deduction.description}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="number" 
+                                   id="deduction-${deduction.id}" 
+                                   min="0" 
+                                   max="${deduction.maxAmount}" 
+                                   value="0" 
+                                   step="100"
+                                   style="width: 100px; padding: 5px; border: 1px solid #e9ecef; border-radius: 3px;"
+                                   onchange="updateDeduction('${deduction.id}', this.value)">
+                            <span style="color: #6c757d; font-size: 0.9em;">Max: $${deduction.maxAmount.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(deductionDiv);
+            });
+        }
+
+        function updateDeduction(deductionId, value) {
+            selectedDeductions[deductionId] = parseFloat(value) || 0;
+        }
+
+        function toggleStrategy(strategyId) {
+            selectedStrategies[strategyId] = !selectedStrategies[strategyId];
+            
+            // Cambiar apariencia visual
+            const item = event.target.closest('.deduction-item');
+            if (selectedStrategies[strategyId]) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        }
+
+        function optimizeTaxes() {
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+            const filingStatus = document.getElementById('filingStatus').value;
+            const state = document.getElementById('state').value;
+            const age = parseInt(document.getElementById('age').value);
+            
+            // Calcular impuestos actuales
+            const currentTaxes = calculateTaxes(annualIncome, filingStatus, state, selectedDeductions, {});
+            
+            // Calcular impuestos optimizados
+            const optimizedTaxes = calculateOptimizedTaxes(annualIncome, filingStatus, state, selectedDeductions, selectedStrategies);
+            
+            // Mostrar resultados
+            displayResults(currentTaxes, optimizedTaxes, annualIncome);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function calculateTaxes(income, filingStatus, state, deductions, strategies) {
+            // Calcular deducciones totales
+            const totalDeductions = Object.values(deductions).reduce((sum, amount) => sum + amount, 0);
+            const adjustedGrossIncome = income - totalDeductions;
+            
+            // Calcular impuestos federales (simplificado)
+            let federalTax = 0;
+            if (adjustedGrossIncome <= 11000) {
+                federalTax = adjustedGrossIncome * 0.10;
+            } else if (adjustedGrossIncome <= 44725) {
+                federalTax = 1100 + (adjustedGrossIncome - 11000) * 0.12;
+            } else if (adjustedGrossIncome <= 95375) {
+                federalTax = 5147 + (adjustedGrossIncome - 44725) * 0.22;
+            } else if (adjustedGrossIncome <= 182050) {
+                federalTax = 16290 + (adjustedGrossIncome - 95375) * 0.24;
+            } else {
+                federalTax = 37104 + (adjustedGrossIncome - 182050) * 0.32;
+            }
+            
+            // Calcular impuestos estatales (simplificado)
+            let stateTax = 0;
+            const stateRates = {
+                'ca': 0.093,
+                'tx': 0.00,
+                'ny': 0.088,
+                'fl': 0.00,
+                'other': 0.05
+            };
+            stateTax = adjustedGrossIncome * stateRates[state];
+            
+            // Calcular ahorros por estrategias
+            let strategySavings = 0;
+            if (strategies['401k']) {
+                const contribution401k = Math.min(22500, income * 0.15);
+                strategySavings += contribution401k * (federalTax / adjustedGrossIncome);
+            }
+            if (strategies['ira']) {
+                const contributionIRA = Math.min(6500, income);
+                strategySavings += contributionIRA * (federalTax / adjustedGrossIncome);
+            }
+            if (strategies['hsa']) {
+                const contributionHSA = Math.min(3850, income);
+                strategySavings += contributionHSA * (federalTax / adjustedGrossIncome);
+            }
+            
+            return {
+                grossIncome: income,
+                deductions: totalDeductions,
+                adjustedGrossIncome: adjustedGrossIncome,
+                federalTax: federalTax,
+                stateTax: stateTax,
+                totalTax: federalTax + stateTax,
+                strategySavings: strategySavings,
+                afterTaxIncome: income - (federalTax + stateTax) + strategySavings
+            };
+        }
+
+        function calculateOptimizedTaxes(income, filingStatus, state, deductions, strategies) {
+            // Aplicar estrategias de optimización
+            let optimizedIncome = income;
+            let additionalDeductions = 0;
+            
+            if (strategies['401k']) {
+                const contribution401k = Math.min(22500, income * 0.15);
+                additionalDeductions += contribution401k;
+                optimizedIncome -= contribution401k;
+            }
+            if (strategies['ira']) {
+                const contributionIRA = Math.min(6500, income);
+                additionalDeductions += contributionIRA;
+                optimizedIncome -= contributionIRA;
+            }
+            if (strategies['hsa']) {
+                const contributionHSA = Math.min(3850, income);
+                additionalDeductions += contributionHSA;
+                optimizedIncome -= contributionHSA;
+            }
+            
+            return calculateTaxes(income, filingStatus, state, deductions, strategies);
+        }
+
+        function displayResults(currentTaxes, optimizedTaxes, income) {
+            const taxSavings = currentTaxes.totalTax - optimizedTaxes.totalTax;
+            const savingsPercentage = (taxSavings / currentTaxes.totalTax) * 100;
+            
+            // Mostrar resumen
+            document.getElementById('taxSummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>💰 Ingresos Brutos</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${income.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>📉 Impuestos Actuales</h4>
+                        <p style="font-size: 1.5em; color: #dc3545;">$${currentTaxes.totalTax.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>📈 Impuestos Optimizados</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">$${optimizedTaxes.totalTax.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>💎 Ahorro en Impuestos</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">$${taxSavings.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Crear comparación
+            createTaxComparison(currentTaxes, optimizedTaxes);
+            
+            // Mostrar estrategias recomendadas
+            displayRecommendedStrategies(selectedStrategies, taxSavings);
+            
+            // Mostrar plan de acción
+            displayActionPlan(selectedStrategies, taxSavings);
+        }
+
+        function createTaxComparison(currentTaxes, optimizedTaxes) {
+            const comparisonDiv = document.getElementById('taxComparison');
+            
+            comparisonDiv.innerHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Antes</th>
+                            <th>Después</th>
+                            <th>Ahorro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ingresos Brutos</td>
+                            <td>$${currentTaxes.grossIncome.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.grossIncome.toLocaleString()}</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Deducciones</td>
+                            <td>$${currentTaxes.deductions.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.deductions.toLocaleString()}</td>
+                            <td style="color: #28a745;">+$${(optimizedTaxes.deductions - currentTaxes.deductions).toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td>Ingresos Ajustados</td>
+                            <td>$${currentTaxes.adjustedGrossIncome.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.adjustedGrossIncome.toLocaleString()}</td>
+                            <td style="color: #28a745;">-$${(currentTaxes.adjustedGrossIncome - optimizedTaxes.adjustedGrossIncome).toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td>Impuesto Federal</td>
+                            <td>$${currentTaxes.federalTax.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.federalTax.toLocaleString()}</td>
+                            <td style="color: #28a745;">-$${(currentTaxes.federalTax - optimizedTaxes.federalTax).toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td>Impuesto Estatal</td>
+                            <td>$${currentTaxes.stateTax.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.stateTax.toLocaleString()}</td>
+                            <td style="color: #28a745;">-$${(currentTaxes.stateTax - optimizedTaxes.stateTax).toLocaleString()}</td>
+                        </tr>
+                        <tr style="font-weight: bold; background: #e3f2fd;">
+                            <td>Total Impuestos</td>
+                            <td>$${currentTaxes.totalTax.toLocaleString()}</td>
+                            <td>$${optimizedTaxes.totalTax.toLocaleString()}</td>
+                            <td style="color: #28a745;">-$${(currentTaxes.totalTax - optimizedTaxes.totalTax).toLocaleString()}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function displayRecommendedStrategies(strategies, savings) {
+            const strategiesDiv = document.getElementById('recommendedStrategies');
+            
+            const strategyInfo = {
+                '401k': {
+                    name: '401(k) / 403(b)',
+                    description: 'Contribuciones pre-impuestos hasta $22,500',
+                    impact: 'Alto',
+                    priority: 'Alta'
+                },
+                'ira': {
+                    name: 'IRA Tradicional',
+                    description: 'Contribuciones deducibles hasta $6,500',
+                    impact: 'Medio',
+                    priority: 'Media'
+                },
+                'hsa': {
+                    name: 'HSA',
+                    description: 'Triple beneficio fiscal hasta $3,850',
+                    impact: 'Alto',
+                    priority: 'Alta'
+                },
+                'roth': {
+                    name: 'Roth IRA',
+                    description: 'Crecimiento libre de impuestos',
+                    impact: 'Largo Plazo',
+                    priority: 'Media'
+                },
+                'real_estate': {
+                    name: 'Bienes Raíces',
+                    description: 'Depreciación y deducciones',
+                    impact: 'Alto',
+                    priority: 'Media'
+                },
+                'business': {
+                    name: 'Gastos de Negocio',
+                    description: 'Deducciones por trabajo independiente',
+                    impact: 'Medio',
+                    priority: 'Baja'
+                }
+            };
+            
+            strategiesDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.keys(strategies).filter(key => strategies[key]).map(strategyId => {
+                        const strategy = strategyInfo[strategyId];
+                        return `
+                            <div style="background: white; border: 2px solid #28a745; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                                <h4 style="color: #28a745;">${strategy.name}</h4>
+                                <p>${strategy.description}</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span><strong>Impacto:</strong> ${strategy.impact}</span>
+                                    <span style="background: #28a745; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8em;">
+                                        Prioridad: ${strategy.priority}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displayActionPlan(strategies, savings) {
+            const actionDiv = document.getElementById('actionPlan');
+            
+            const actions = [
+                {
+                    title: '📅 Enero - Marzo',
+                    tasks: [
+                        'Maximiza contribuciones 401(k)',
+                        'Establece contribuciones automáticas IRA',
+                        'Revisa y ajusta deducciones'
+                    ]
+                },
+                {
+                    title: '📅 Abril - Junio',
+                    tasks: [
+                        'Presenta declaración de impuestos',
+                        'Planifica estrategias para el próximo año',
+                        'Revisa gastos médicos para HSA'
+                    ]
+                },
+                {
+                    title: '📅 Julio - Septiembre',
+                    tasks: [
+                        'Evalúa progreso hacia metas anuales',
+                        'Considera inversiones adicionales',
+                        'Revisa estrategias de bienes raíces'
+                    ]
+                },
+                {
+                    title: '📅 Octubre - Diciembre',
+                    tasks: [
+                        'Maximiza contribuciones restantes',
+                        'Realiza donaciones caritativas',
+                        'Planifica para el próximo año'
+                    ]
+                }
+            ];
+            
+            actionDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${actions.map(period => `
+                        <div style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                            <h4 style="color: #007bff;">${period.title}</h4>
+                            <ul style="margin: 10px 0;">
+                                ${period.tasks.map(task => `<li>${task}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Inicializar cuando se carga la página
+        initializeDeductions();
+    </script>
+</body>
+</html>

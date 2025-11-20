@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ingresos</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <link rel="stylesheet" href="../juegos-style.css">
+    <style>
+        .calc-input {
+            background: #142b47;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .calc-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2a4464;
+            border-radius: 6px;
+            background: #0D1F33;
+            color: #E0E7EF;
+            font-size: 1.1em;
+        }
+        .result-big {
+            background: linear-gradient(135deg, #005BAA 0%, #00FF00 100%);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .result-big h2 {
+            font-size: 3em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Calculadora de Ingresos Potenciales</h1>
+        <h2>Descubre tu Verdadero Potencial de Ingresos</h2>
+        
+        <div class="quote">
+            "No puedes ganar más en la realidad exterior de lo que ganas en tu interior."
+            <br><strong>- Brian Tracy</strong>
+        </div>
+
+        <h3>Escenario 1: ¿Cuánto Podrías Ganar?</h3>
+        
+        <div class="calc-input">
+            <label>¿Cuántas llamadas puedes hacer por día?</label>
+            <input type="number" id="calls" value="10">
+        </div>
+
+        <div class="calc-input">
+            <label>¿Cuántas llamadas necesitas para 1 cita? (tasa de conversión)</label>
+            <input type="number" id="callsPerMeeting" value="10">
+        </div>
+
+        <div class="calc-input">
+            <label>¿Cuántas citas necesitas para 1 venta?</label>
+            <input type="number" id="meetingsPerSale" value="3">
+        </div>
+
+        <div class="calc-input">
+            <label>¿Cuál es tu venta promedio ($)?</label>
+            <input type="number" id="avgSale" value="5000">
+        </div>
+
+        <div class="calc-input">
+            <label>¿Cuál es tu comisión (%)? </label>
+            <input type="number" id="commission" value="20">
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="calculate()" style="background: #005BAA; color: white; padding: 15px 40px; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer;">
+                Calcular Mi Potencial
+            </button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-big">
+                <h3>Tu Potencial de Ingresos Anuales:</h3>
+                <h2 id="annual">$0</h2>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Por Mes</h4>
+                    <h2 id="monthly">$0</h2>
+                </div>
+                <div class="card">
+                    <h4>Por Semana</h4>
+                    <h2 id="weekly">$0</h2>
+                </div>
+                <div class="card">
+                    <h4>Por Día</h4>
+                    <h2 id="daily">$0</h2>
+                </div>
+            </div>
+
+            <div class="highlight" style="margin: 30px 0;">
+                <h3>📊 Tus Números de Actividad</h3>
+                <div id="activity"></div>
+            </div>
+
+            <div class="card">
+                <h3>�� ¿Qué Pasaría Si...?</h3>
+                <div id="scenarios"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const callsPerDay = parseFloat(document.getElementById('calls').value) || 10;
+            const callsPerMeeting = parseFloat(document.getElementById('callsPerMeeting').value) || 10;
+            const meetingsPerSale = parseFloat(document.getElementById('meetingsPerSale').value) || 3;
+            const avgSale = parseFloat(document.getElementById('avgSale').value) || 5000;
+            const commission = parseFloat(document.getElementById('commission').value) / 100 || 0.2;
+
+            // Calculations
+            const workDays = 250; // días laborales al año
+            const callsPerYear = callsPerDay * workDays;
+            const meetingsPerYear = callsPerYear / callsPerMeeting;
+            const salesPerYear = meetingsPerYear / meetingsPerSale;
+            const revenuePerYear = salesPerYear * avgSale;
+            const incomePerYear = revenuePerYear * commission;
+
+            // Display results
+            document.getElementById('annual').textContent = '$' + Math.round(incomePerYear).toLocaleString();
+            document.getElementById('monthly').textContent = '$' + Math.round(incomePerYear / 12).toLocaleString();
+            document.getElementById('weekly').textContent = '$' + Math.round(incomePerYear / 50).toLocaleString();
+            document.getElementById('daily').textContent = '$' + Math.round(incomePerYear / 250).toLocaleString();
+
+            // Activity breakdown
+            const activity = `
+                <ul style="font-size: 1.1em;">
+                    <li><strong>${Math.round(callsPerYear).toLocaleString()}</strong> llamadas al año (${callsPerDay} por día)</li>
+                    <li><strong>${Math.round(meetingsPerYear).toLocaleString()}</strong> reuniones al año (${(meetingsPerYear/250).toFixed(1)} por día)</li>
+                    <li><strong>${Math.round(salesPerYear).toLocaleString()}</strong> ventas al año (${(salesPerYear/250).toFixed(1)} por día)</li>
+                    <li><strong>$${Math.round(revenuePerYear).toLocaleString()}</strong> en ventas totales</li>
+                </ul>
+            `;
+            document.getElementById('activity').innerHTML = activity;
+
+            // Scenarios
+            const doubleCallsIncome = (callsPerDay * 2 * workDays / callsPerMeeting / meetingsPerSale * avgSale * commission);
+            const betterConversion = (callsPerDay * workDays / (callsPerMeeting * 0.8) / meetingsPerSale * avgSale * commission);
+            const higherAvgSale = (callsPerDay * workDays / callsPerMeeting / meetingsPerSale * (avgSale * 1.5) * commission);
+
+            const scenarios = `
+                <p><strong>Si duplicaras tus llamadas diarias a ${callsPerDay * 2}:</strong></p>
+                <p style="font-size: 1.5em; color: #00FF00;">$${Math.round(doubleCallsIncome).toLocaleString()}/año</p>
+                <p>Aumento: $${Math.round(doubleCallsIncome - incomePerYear).toLocaleString()}</p>
+                <hr>
+                <p><strong>Si mejoraras tu tasa de conversión en 20%:</strong></p>
+                <p style="font-size: 1.5em; color: #00FF00;">$${Math.round(betterConversion).toLocaleString()}/año</p>
+                <p>Aumento: $${Math.round(betterConversion - incomePerYear).toLocaleString()}</p>
+                <hr>
+                <p><strong>Si aumentaras tu venta promedio en 50%:</strong></p>
+                <p style="font-size: 1.5em; color: #00FF00;">$${Math.round(higherAvgSale).toLocaleString()}/año</p>
+                <p>Aumento: $${Math.round(higherAvgSale - incomePerYear).toLocaleString()}</p>
+            `;
+            document.getElementById('scenarios').innerHTML = scenarios;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

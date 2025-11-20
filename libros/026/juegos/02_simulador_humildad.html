@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Humildad - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .scenario {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        .scenario h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .scenario-description {
+            margin: 15px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .options {
+            margin: 20px 0;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .option:hover {
+            border-color: #4facfe;
+            background: #f0f8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .option.selected {
+            border-color: #4facfe;
+            background: #e7f3ff;
+        }
+        .option.ego-option {
+            border-left: 4px solid #dc3545;
+        }
+        .option.humble-option {
+            border-left: 4px solid #28a745;
+        }
+        .option.neutral-option {
+            border-left: 4px solid #ffc107;
+        }
+        .option-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .ego-label {
+            color: #dc3545;
+        }
+        .humble-label {
+            color: #28a745;
+        }
+        .neutral-label {
+            color: #ffc107;
+        }
+        .btn {
+            background: #4facfe;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 10px 20px 0;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #3d8bfe;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .results.low-ego {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .results.moderate-ego {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .results.high-ego {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .feedback {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .feedback h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .feedback ul {
+            margin: 10px 0;
+        }
+        .feedback li {
+            margin: 5px 0;
+        }
+        .scenario-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #666;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #4facfe;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧘 Simulador de Humildad</h1>
+        <p>Practica la humildad en situaciones reales</p>
+    </div>
+
+    <div class="content">
+        <div id="simulator-container">
+            <div class="scenario-counter">
+                <span id="current-scenario">1</span> de <span id="total-scenarios">5</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div id="scenario-content">
+                <div class="scenario">
+                    <h3 id="scenario-title">Escenario 1: Reunión de Trabajo</h3>
+                    <div class="scenario-description" id="scenario-description">
+                        Estás en una reunión importante donde se está discutiendo una nueva estrategia. Tu jefe presenta una idea que crees que tiene serios problemas. Tienes experiencia en este tema y sabes que tu enfoque sería mejor. ¿Qué haces?
+                    </div>
+                    <div class="options" id="options-container">
+                        <div class="option ego-option" data-score="3">
+                            <div class="option-label ego-label">❌ Enfoque del Ego</div>
+                            Interrumpes inmediatamente y dices: "Eso nunca va a funcionar. He estado en este negocio por años y sé que mi enfoque es superior."
+                        </div>
+                        <div class="option neutral-option" data-score="2">
+                            <div class="option-label neutral-label">⚠️ Enfoque Neutral</div>
+                            Esperas a que termine de hablar y luego presentas tu contrapropuesta de manera directa.
+                        </div>
+                        <div class="option humble-option" data-score="1">
+                            <div class="option-label humble-label">✅ Enfoque Humilde</div>
+                            Escuchas completamente, haces preguntas para entender mejor, y luego ofreces tu perspectiva como una alternativa a considerar.
+                        </div>
+                        <div class="option neutral-option" data-score="2">
+                            <div class="option-label neutral-label">🤐 Enfoque Pasivo</div>
+                            Te callas y dejas que la idea se implemente, esperando que fallen para poder decir "te lo dije".
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextScenario()">Siguiente Escenario</button>
+            <button class="btn" id="finish-btn" onclick="showResults()" style="display: none;">Ver Resultados</button>
+        </div>
+
+        <div id="results" class="results">
+            <h2>Resultados del Simulador</h2>
+            <div class="score" id="score"></div>
+            <div id="description"></div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Escenario 1: Reunión de Trabajo",
+                description: "Estás en una reunión importante donde se está discutiendo una nueva estrategia. Tu jefe presenta una idea que crees que tiene serios problemas. Tienes experiencia en este tema y sabes que tu enfoque sería mejor. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Interrumpes inmediatamente y dices: 'Eso nunca va a funcionar. He estado en este negocio por años y sé que mi enfoque es superior.'",
+                        type: "ego",
+                        score: 3
+                    },
+                    {
+                        text: "Esperas a que termine de hablar y luego presentas tu contrapropuesta de manera directa.",
+                        type: "neutral",
+                        score: 2
+                    },
+                    {
+                        text: "Escuchas completamente, haces preguntas para entender mejor, y luego ofreces tu perspectiva como una alternativa a considerar.",
+                        type: "humble",
+                        score: 1
+                    },
+                    {
+                        text: "Te callas y dejas que la idea se implemente, esperando que fallen para poder decir 'te lo dije'.",
+                        type: "neutral",
+                        score: 2
+                    }
+                ]
+            },
+            {
+                title: "Escenario 2: Reconocimiento Público",
+                description: "Tu equipo acaba de completar un proyecto exitoso. En la reunión de celebración, tu jefe te elogia específicamente por tu contribución. Todos están mirando. ¿Cómo respondes?",
+                options: [
+                    {
+                        text: "Aceptas el elogio y agregas: 'Sí, fue un trabajo increíble. Realmente llevé el proyecto a otro nivel.'",
+                        type: "ego",
+                        score: 3
+                    },
+                    {
+                        text: "Dices 'Gracias' y rápidamente cambias el tema.",
+                        type: "neutral",
+                        score: 2
+                    },
+                    {
+                        text: "Agradeces el reconocimiento y destacas las contribuciones específicas de cada miembro del equipo.",
+                        type: "humble",
+                        score: 1
+                    },
+                    {
+                        text: "Minimizas tu contribución y dices que fue un esfuerzo de equipo.",
+                        type: "humble",
+                        score: 1
+                    }
+                ]
+            },
+            {
+                title: "Escenario 3: Error Costoso",
+                description: "Cometiste un error que costó a la empresa $50,000. Tu jefe te llama a su oficina para discutir el problema. ¿Cómo manejas la situación?",
+                options: [
+                    {
+                        text: "Buscas excusas y culpas a otros factores o personas por el error.",
+                        type: "ego",
+                        score: 3
+                    },
+                    {
+                        text: "Admites el error pero minimizas su impacto y te enfocas en por qué no fue completamente tu culpa.",
+                        type: "neutral",
+                        score: 2
+                    },
+                    {
+                        text: "Admites completamente el error, te disculpas, y presentas un plan para evitar que vuelva a suceder.",
+                        type: "humble",
+                        score: 1
+                    },
+                    {
+                        text: "Ofreces renunciar o asumir la responsabilidad financiera del error.",
+                        type: "humble",
+                        score: 1
+                    }
+                ]
+            },
+            {
+                title: "Escenario 4: Competencia Interna",
+                description: "Un colega que empezó después que tú acaba de recibir una promoción que esperabas. Te encuentras con él en el elevador. ¿Qué dices?",
+                options: [
+                    {
+                        text: "Le dices sarcásticamente: 'Bueno, supongo que alguien tiene que hacer el trabajo.'",
+                        type: "ego",
+                        score: 3
+                    },
+                    {
+                        text: "Evitas el tema y hablas del clima o algo trivial.",
+                        type: "neutral",
+                        score: 2
+                    },
+                    {
+                        text: "Le felicitas genuinamente y le preguntas sobre sus planes para el nuevo rol.",
+                        type: "humble",
+                        score: 1
+                    },
+                    {
+                        text: "Le felicitas y le ofreces tu ayuda para la transición.",
+                        type: "humble",
+                        score: 1
+                    }
+                ]
+            },
+            {
+                title: "Escenario 5: Feedback Difícil",
+                description: "Un subordinado te da feedback constructivo sobre tu estilo de liderazgo, sugiriendo que podrías ser más accesible. ¿Cómo reaccionas?",
+                options: [
+                    {
+                        text: "Te defiendes y le dices que no entiende las presiones de tu posición.",
+                        type: "ego",
+                        score: 3
+                    },
+                    {
+                        text: "Escuchas pero no haces cambios porque crees que tu estilo funciona.",
+                        type: "neutral",
+                        score: 2
+                    },
+                    {
+                        text: "Escuchas atentamente, haces preguntas para entender mejor, y agradeces el feedback.",
+                        type: "humble",
+                        score: 1
+                    },
+                    {
+                        text: "Le agradeces, pides ejemplos específicos, y creas un plan de acción para mejorar.",
+                        type: "humble",
+                        score: 1
+                    }
+                ]
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        let scores = [];
+
+        function updateProgress() {
+            const progress = ((currentScenarioIndex + 1) / scenarios.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('current-scenario').textContent = currentScenarioIndex + 1;
+            document.getElementById('total-scenarios').textContent = scenarios.length;
+        }
+
+        function loadScenario(index) {
+            const scenario = scenarios[index];
+            document.getElementById('scenario-title').textContent = scenario.title;
+            document.getElementById('scenario-description').textContent = scenario.description;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            scenario.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${option.type}-option`;
+                optionDiv.setAttribute('data-score', option.score);
+                optionDiv.innerHTML = `
+                    <div class="option-label ${option.type}-label">
+                        ${option.type === 'ego' ? '❌' : option.type === 'humble' ? '✅' : '⚠️'} 
+                        ${option.type === 'ego' ? 'Enfoque del Ego' : option.type === 'humble' ? 'Enfoque Humilde' : 'Enfoque Neutral'}
+                    </div>
+                    ${option.text}
+                `;
+                
+                optionDiv.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    optionsContainer.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    // Store the score
+                    scores[currentScenarioIndex] = parseInt(this.getAttribute('data-score'));
+                });
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function nextScenario() {
+            if (scores[currentScenarioIndex] === undefined) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            currentScenarioIndex++;
+            updateProgress();
+            
+            if (currentScenarioIndex < scenarios.length) {
+                loadScenario(currentScenarioIndex);
+                if (currentScenarioIndex === scenarios.length - 1) {
+                    document.getElementById('next-btn').style.display = 'none';
+                    document.getElementById('finish-btn').style.display = 'inline-block';
+                }
+            }
+        }
+
+        function showResults() {
+            if (scores[currentScenarioIndex] === undefined) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            const totalScore = scores.reduce((sum, score) => sum + score, 0);
+            const averageScore = totalScore / scores.length;
+            const percentage = Math.round((averageScore / 3) * 100);
+            
+            const resultsDiv = document.getElementById('results');
+            const scoreDiv = document.getElementById('score');
+            const descriptionDiv = document.getElementById('description');
+            const feedbackDiv = document.getElementById('feedback');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            scoreDiv.textContent = `${percentage}%`;
+            
+            if (averageScore <= 1.5) {
+                resultsDiv.className = 'results low-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>🎉 ¡Excelente! Nivel de Humildad Alto</h3>
+                    <p>Demuestras una comprensión profunda de la humildad en situaciones difíciles. Tu enfoque está alineado con los principios de liderazgo efectivo.</p>
+                `;
+                feedbackDiv.innerHTML = `
+                    <h4>💡 Fortalezas Identificadas:</h4>
+                    <ul>
+                        <li>Excelente capacidad de escucha</li>
+                        <li>Reconocimiento genuino de otros</li>
+                        <li>Responsabilidad personal por errores</li>
+                        <li>Celebración del éxito de otros</li>
+                        <li>Apertura al feedback constructivo</li>
+                    </ul>
+                `;
+            } else if (averageScore <= 2.5) {
+                resultsDiv.className = 'results moderate-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>⚠️ Nivel de Humildad Moderado</h3>
+                    <p>Tienes algunas tendencias hacia la humildad, pero hay oportunidades significativas de mejora. Con práctica, puedes desarrollar una mentalidad más humilde.</p>
+                `;
+                feedbackDiv.innerHTML = `
+                    <h4>💡 Áreas de Mejora:</h4>
+                    <ul>
+                        <li>Practica más la escucha activa antes de responder</li>
+                        <li>Busca oportunidades para reconocer a otros</li>
+                        <li>Admite errores más rápidamente</li>
+                        <li>Celebra genuinamente el éxito de otros</li>
+                        <li>Sé más abierto al feedback</li>
+                    </ul>
+                `;
+            } else {
+                resultsDiv.className = 'results high-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>🚨 Nivel de Humildad Bajo</h3>
+                    <p>Tu ego está interfiriendo significativamente con tu efectividad. Es crucial que trabajes en desarrollar humildad para mejorar tus relaciones y liderazgo.</p>
+                `;
+                feedbackDiv.innerHTML = `
+                    <h4>💡 Acciones Inmediatas:</h4>
+                    <ul>
+                        <li>Comienza cada día con la intención de escuchar más</li>
+                        <li>Busca un mentor que te dé feedback honesto</li>
+                        <li>Practica la meditación para aumentar la autoconciencia</li>
+                        <li>Haz un esfuerzo consciente para reconocer a otros</li>
+                        <li>Admite cuando no sabes algo</li>
+                        <li>Pide perdón cuando cometas errores</li>
+                    </ul>
+                `;
+            }
+        }
+
+        // Initialize the first scenario
+        loadScenario(0);
+        updateProgress();
+    </script>
+</body>
+</html>

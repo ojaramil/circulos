@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Visión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .quiz-question {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .option-btn:hover {
+            background: #e8f4f8;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .results {
+            background: #e8f4f8;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .score-label {
+            text-align: center;
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .recommendation {
+            background: white;
+            border-left: 4px solid #FF6B35;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .recommendation h4 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Evaluador de Visión</h1>
+            <p>Evalúa la Claridad y Poder de tu Visión</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>📋 Sobre esta Evaluación</h3>
+                <p>Esta evaluación te ayudará a determinar qué tan clara y poderosa es tu visión de abundancia. Responde
+                    honestamente a cada pregunta para obtener una evaluación precisa.</p>
+            </div>
+
+            <div id="quizContainer">
+                <!-- Las preguntas se generarán dinámicamente -->
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="calculateResults()" id="submitBtn" style="display: none;">Ver
+                    Resultados</button>
+            </div>
+
+            <div class="results" id="results">
+                <div class="score-label">Tu Puntuación de Visión</div>
+                <div class="score-display" id="scoreDisplay">0/100</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="scoreBar" style="width: 0%;">0%</div>
+                </div>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "¿Tienes una visión clara y específica de tu futuro?",
+                options: [
+                    { text: "Sí, muy clara y detallada", points: 20 },
+                    { text: "Tengo una idea general", points: 10 },
+                    { text: "Es vaga y poco definida", points: 5 },
+                    { text: "No tengo una visión clara", points: 0 }
+                ]
+            },
+            {
+                id: 2,
+                question: "¿Escribes y revisas tu visión regularmente?",
+                options: [
+                    { text: "Sí, diariamente o semanalmente", points: 20 },
+                    { text: "Ocasionalmente", points: 10 },
+                    { text: "Raramente", points: 5 },
+                    { text: "Nunca", points: 0 }
+                ]
+            },
+            {
+                id: 3,
+                question: "¿Tu visión te emociona y te motiva?",
+                options: [
+                    { text: "Sí, me apasiona profundamente", points: 20 },
+                    { text: "Me motiva moderadamente", points: 10 },
+                    { text: "Apenas me motiva", points: 5 },
+                    { text: "No me emociona", points: 0 }
+                ]
+            },
+            {
+                id: 4,
+                question: "¿Tomas decisiones basadas en tu visión?",
+                options: [
+                    { text: "Siempre", points: 20 },
+                    { text: "Frecuentemente", points: 10 },
+                    { text: "Ocasionalmente", points: 5 },
+                    { text: "Raramente o nunca", points: 0 }
+                ]
+            },
+            {
+                id: 5,
+                question: "¿Compartes tu visión con otros?",
+                options: [
+                    { text: "Sí, regularmente", points: 20 },
+                    { text: "A veces", points: 10 },
+                    { text: "Raramente", points: 5 },
+                    { text: "Nunca", points: 0 }
+                ]
+            }
+        ];
+
+        let answers = {};
+
+        function initQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <h3>Pregunta ${index + 1}: ${q.question}</h3>
+                    <div class="options" id="options-${q.id}">
+                        ${q.options.map((opt, i) => `
+                            <button class="option-btn" onclick="selectOption(${q.id}, ${i}, ${opt.points})">
+                                ${opt.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionId, optionIndex, points) {
+            // Guardar respuesta
+            answers[questionId] = points;
+
+            // Actualizar UI
+            const options = document.querySelectorAll(`#options-${questionId} .option-btn`);
+            options.forEach((btn, i) => {
+                btn.classList.remove('selected');
+                if (i === optionIndex) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            // Mostrar botón de envío si todas las preguntas están respondidas
+            if (Object.keys(answers).length === questions.length) {
+                document.getElementById('submitBtn').style.display = 'inline-block';
+            }
+        }
+
+        function calculateResults() {
+            const totalScore = Object.values(answers).reduce((sum, points) => sum + points, 0);
+            const maxScore = 100;
+            const percentage = (totalScore / maxScore) * 100;
+
+            // Mostrar resultados
+            document.getElementById('scoreDisplay').textContent = `${totalScore}/${maxScore}`;
+            document.getElementById('scoreBar').style.width = percentage + '%';
+            document.getElementById('scoreBar').textContent = Math.round(percentage) + '%';
+
+            // Generar recomendaciones
+            const recommendations = getRecommendations(percentage);
+            document.getElementById('recommendations').innerHTML = recommendations;
+
+            // Mostrar sección de resultados
+            document.getElementById('results').classList.add('show');
+
+            // Scroll a resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getRecommendations(percentage) {
+            let level, recommendations;
+
+            if (percentage >= 80) {
+                level = "Excelente - Visión Clara y Poderosa";
+                recommendations = `
+                    <div class="recommendation">
+                        <h4>🌟 ¡Felicidades!</h4>
+                        <p>Tienes una visión clara y poderosa. Continúa:</p>
+                        <ul>
+                            <li>Revisando y refinando tu visión regularmente</li>
+                            <li>Compartiendo tu visión para inspirar a otros</li>
+                            <li>Tomando acciones consistentes hacia tu visión</li>
+                            <li>Celebrando los hitos alcanzados</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (percentage >= 60) {
+                level = "Bueno - Visión en Desarrollo";
+                recommendations = `
+                    <div class="recommendation">
+                        <h4>💪 Buen Progreso</h4>
+                        <p>Tu visión está tomando forma. Para mejorar:</p>
+                        <ul>
+                            <li>Escribe tu visión con más detalles específicos</li>
+                            <li>Revisa tu visión diariamente</li>
+                            <li>Conecta emocionalmente con tu visión</li>
+                            <li>Comparte tu visión con personas de confianza</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (percentage >= 40) {
+                level = "Regular - Visión Necesita Claridad";
+                recommendations = `
+                    <div class="recommendation">
+                        <h4>🎯 Área de Mejora</h4>
+                        <p>Tu visión necesita más claridad. Trabaja en:</p>
+                        <ul>
+                            <li>Definir específicamente qué quieres lograr</li>
+                            <li>Escribir tu visión en detalle</li>
+                            <li>Visualizar tu futuro deseado diariamente</li>
+                            <li>Buscar inspiración en historias de éxito</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                level = "Bajo - Visión Requiere Atención Urgente";
+                recommendations = `
+                    <div class="recommendation">
+                        <h4>⚠️ Acción Necesaria</h4>
+                        <p>Es momento de desarrollar tu visión. Comienza por:</p>
+                        <ul>
+                            <li>Dedicar tiempo a reflexionar sobre tu futuro ideal</li>
+                            <li>Escribir aunque sea una versión inicial de tu visión</li>
+                            <li>Leer libros inspiradores sobre visión y propósito</li>
+                            <li>Buscar mentoría o guía espiritual</li>
+                            <li>Orar y meditar sobre el propósito de Dios para tu vida</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 style="color: #667eea; margin-bottom: 20px;">${level}</h3>
+                ${recommendations}
+                <div class="recommendation">
+                    <h4>📖 Versículo Bíblico</h4>
+                    <p><em>"Donde no hay visión, el pueblo perece; mas el que guarda la ley es bienaventurado."</em> - Proverbios 29:18</p>
+                </div>
+            `;
+        }
+
+        // Inicializar el quiz
+        initQuiz();
+    </script>
+</body>
+
+</html>

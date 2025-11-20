@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Razonamiento - El Cerebro se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .game-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .question-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+        .question-box h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .question-box .question {
+            font-size: 1.2em;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .option {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        .option:hover {
+            background: #dee2e6;
+        }
+        .option.selected {
+            background: #667eea;
+            color: white;
+        }
+        .option.correct {
+            background: #28a745;
+            color: white;
+        }
+        .option.incorrect {
+            background: #dc3545;
+            color: white;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .game-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .game-info h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .timer {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+        .timer h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .difficulty-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .difficulty-selector h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .difficulty-option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .difficulty-option:hover {
+            border-color: #667eea;
+        }
+        .difficulty-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .difficulty-option h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .difficulty-option p {
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧩 Juego de Razonamiento</h1>
+            <p>Desarrolla tu pensamiento lógico y crítico</p>
+        </div>
+
+        <div class="tip-box">
+            <h4>🧠 ¿Por qué es importante el juego de razonamiento?</h4>
+            <p>El juego de razonamiento es una excelente manera de ejercitar tu cerebro y mejorar la neuroplasticidad. Al jugar regularmente, puedes fortalecer las conexiones neuronales relacionadas con el pensamiento lógico y crítico.</p>
+        </div>
+
+        <div class="difficulty-selector">
+            <h3>🎯 Selecciona la Dificultad</h3>
+            <p>Elige el nivel de dificultad que mejor se adapte a tu nivel actual:</p>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('easy')">
+                <h4>🟢 Fácil</h4>
+                <p>Preguntas básicas de lógica - Ideal para principiantes</p>
+            </div>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('medium')">
+                <h4>🟡 Medio</h4>
+                <p>Preguntas intermedias de razonamiento - Nivel intermedio</p>
+            </div>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('hard')">
+                <h4>🔴 Difícil</h4>
+                <p>Preguntas avanzadas de lógica - Para expertos</p>
+            </div>
+        </div>
+
+        <div class="game-section" id="game-section" style="display: none;">
+            <h3>🎮 Juego de Razonamiento</h3>
+            <div class="timer">
+                <h4>⏰ Tiempo</h4>
+                <div class="timer-display" id="timer-display">00:00</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <p>Progreso: <span id="progress-text">0/10</span></p>
+            <div class="question-box" id="question-box">
+                <h4>Pregunta</h4>
+                <div class="question" id="question-text">Selecciona una dificultad para comenzar</div>
+                <div class="options" id="options"></div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="startGame()" id="start-btn">▶️ Comenzar Juego</button>
+                <button class="btn btn-secondary" onclick="pauseGame()" id="pause-btn" style="display: none;">⏸️ Pausar</button>
+                <button class="btn btn-danger" onclick="stopGame()" id="stop-btn" style="display: none;">⏹️ Detener</button>
+                <button class="btn btn-success" onclick="nextQuestion()" id="next-btn" style="display: none;">➡️ Siguiente</button>
+            </div>
+        </div>
+
+        <div class="game-info" id="game-info" style="display: none;">
+            <h3>📊 Información del Juego</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <h4>Respuestas Correctas</h4>
+                    <div class="number" id="correct-answers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Respuestas Incorrectas</h4>
+                    <div class="number" id="incorrect-answers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Precisión</h4>
+                    <div class="number" id="accuracy">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Puntuación</h4>
+                    <div class="number" id="score">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Juegos Completados</h4>
+                <div class="number" id="games-completed">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Mejor Puntuación</h4>
+                <div class="number" id="best-score">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Precisión Promedio</h4>
+                <div class="number" id="average-accuracy">0%</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Actual</h4>
+                <div class="number" id="current-streak">0 días</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()" id="stats-btn" style="display: none;">📊 Ver Estadísticas</button>
+            <button class="btn btn-success" onclick="saveGame()" id="save-btn" style="display: none;">💾 Guardar Juego</button>
+            <button class="btn btn-secondary" onclick="resetGame()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentDifficulty = null;
+        let gameTimer = null;
+        let gameStartTime = null;
+        let gameTime = 0;
+        let isPaused = false;
+        let gameData = JSON.parse(localStorage.getItem('reasoningGameData') || '[]');
+        let gameState = {
+            questions: [],
+            currentQuestion: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            isGameActive: false,
+            selectedAnswer: null
+        };
+
+        const questions = {
+            'easy': [
+                {
+                    question: "Si todos los gatos son animales y todos los animales necesitan agua, ¿qué podemos concluir?",
+                    options: ["Todos los gatos necesitan agua", "Algunos gatos necesitan agua", "Los gatos no necesitan agua", "No se puede concluir nada"],
+                    correct: 0
+                },
+                {
+                    question: "¿Cuál es el siguiente número en la secuencia: 2, 4, 6, 8, ?",
+                    options: ["9", "10", "12", "14"],
+                    correct: 1
+                },
+                {
+                    question: "Si A es mayor que B y B es mayor que C, ¿qué relación hay entre A y C?",
+                    options: ["A es mayor que C", "A es menor que C", "A es igual a C", "No se puede determinar"],
+                    correct: 0
+                },
+                {
+                    question: "¿Cuál es la palabra que no pertenece al grupo?",
+                    options: ["Perro", "Gato", "Pájaro", "Mesa"],
+                    correct: 3
+                },
+                {
+                    question: "Si hoy es lunes, ¿qué día será en 3 días?",
+                    options: ["Martes", "Miércoles", "Jueves", "Viernes"],
+                    correct: 2
+                }
+            ],
+            'medium': [
+                {
+                    question: "En una habitación hay 3 bombillas y 3 interruptores. Solo puedes entrar una vez. ¿Cómo puedes determinar qué interruptor controla cada bombilla?",
+                    options: ["Encender todos los interruptores", "Encender uno y esperar", "Encender uno, apagarlo y encender otro", "No se puede determinar"],
+                    correct: 2
+                },
+                {
+                    question: "Si 5 máquinas hacen 5 artículos en 5 minutos, ¿cuánto tiempo tardarán 100 máquinas en hacer 100 artículos?",
+                    options: ["5 minutos", "100 minutos", "500 minutos", "No se puede determinar"],
+                    correct: 0
+                },
+                {
+                    question: "¿Cuál es el patrón en la secuencia: 1, 1, 2, 3, 5, 8, ?",
+                    options: ["11", "12", "13", "14"],
+                    correct: 2
+                },
+                {
+                    question: "Si un reloj se atrasa 5 minutos cada hora, ¿cuánto tiempo tardará en atrasarse 1 hora?",
+                    options: ["10 horas", "12 horas", "15 horas", "20 horas"],
+                    correct: 1
+                },
+                {
+                    question: "¿Cuál es la probabilidad de obtener dos caras al lanzar dos monedas?",
+                    options: ["1/4", "1/2", "3/4", "1"],
+                    correct: 0
+                }
+            ],
+            'hard': [
+                {
+                    question: "En una isla hay 3 tipos de personas: los que siempre dicen la verdad, los que siempre mienten, y los que a veces dicen la verdad y a veces mienten. Te encuentras con 3 personas. A dice: 'B es un mentiroso'. B dice: 'C es un mentiroso'. C dice: 'A es un mentiroso'. ¿Quién está diciendo la verdad?",
+                    options: ["A", "B", "C", "No se puede determinar"],
+                    correct: 3
+                },
+                {
+                    question: "¿Cuál es el siguiente número en la secuencia: 1, 4, 9, 16, 25, ?",
+                    options: ["30", "36", "40", "49"],
+                    correct: 1
+                },
+                {
+                    question: "Si tienes 12 bolas que se ven idénticas pero una pesa diferente (no sabes si es más pesada o más liviana), ¿cuál es el número mínimo de pesadas necesarias para encontrar la bola diferente usando una balanza?",
+                    options: ["2", "3", "4", "5"],
+                    correct: 1
+                },
+                {
+                    question: "¿Cuál es la probabilidad de que al menos dos personas en una habitación de 23 personas tengan el mismo cumpleaños?",
+                    options: ["Menos del 50%", "Aproximadamente 50%", "Más del 50%", "100%"],
+                    correct: 2
+                },
+                {
+                    question: "Si un tren viaja a 60 km/h y otro a 40 km/h en direcciones opuestas, ¿a qué velocidad se acercan entre sí?",
+                    options: ["20 km/h", "60 km/h", "80 km/h", "100 km/h"],
+                    correct: 3
+                }
+            ]
+        };
+
+        function selectDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.difficulty-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva dificultad
+            event.currentTarget.classList.add('selected');
+            
+            // Mostrar sección del juego
+            document.getElementById('game-section').style.display = 'block';
+            
+            // Configurar preguntas
+            setupQuestions();
+        }
+
+        function setupQuestions() {
+            gameState.questions = questions[currentDifficulty];
+            gameState.currentQuestion = 0;
+            gameState.correctAnswers = 0;
+            gameState.incorrectAnswers = 0;
+            gameState.selectedAnswer = null;
+            
+            // Mostrar primera pregunta
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = gameState.questions[gameState.currentQuestion];
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options');
+            
+            questionText.textContent = question.question;
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Actualizar progreso
+            updateProgress();
+        }
+
+        function selectAnswer(answerIndex) {
+            if (!gameState.isGameActive || isPaused) return;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva respuesta
+            document.querySelectorAll('.option')[answerIndex].classList.add('selected');
+            gameState.selectedAnswer = answerIndex;
+        }
+
+        function startGame() {
+            if (!currentDifficulty) return;
+            
+            gameState.isGameActive = true;
+            gameStartTime = Date.now();
+            gameTime = 0;
+            
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            document.getElementById('stop-btn').style.display = 'inline-block';
+            document.getElementById('game-info').style.display = 'block';
+            
+            // Iniciar timer
+            gameTimer = setInterval(() => {
+                if (!isPaused) {
+                    gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+                    updateTimer();
+                }
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            if (gameState.selectedAnswer === null) {
+                alert('Por favor selecciona una respuesta antes de continuar.');
+                return;
+            }
+            
+            const question = gameState.questions[gameState.currentQuestion];
+            const isCorrect = gameState.selectedAnswer === question.correct;
+            
+            if (isCorrect) {
+                gameState.correctAnswers++;
+            } else {
+                gameState.incorrectAnswers++;
+            }
+            
+            // Mostrar respuesta correcta
+            showAnswer();
+            
+            // Actualizar estadísticas
+            updateStats();
+            
+            // Continuar o terminar
+            if (gameState.currentQuestion < gameState.questions.length - 1) {
+                gameState.currentQuestion++;
+                setTimeout(() => {
+                    showQuestion();
+                    document.getElementById('next-btn').style.display = 'none';
+                }, 2000);
+            } else {
+                completeGame();
+            }
+        }
+
+        function showAnswer() {
+            const question = gameState.questions[gameState.currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === gameState.selectedAnswer && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function pauseGame() {
+            isPaused = !isPaused;
+            document.getElementById('pause-btn').textContent = isPaused ? '▶️ Continuar' : '⏸️ Pausar';
+        }
+
+        function stopGame() {
+            if (confirm('¿Estás seguro de que quieres detener el juego?')) {
+                clearInterval(gameTimer);
+                gameTimer = null;
+                resetGame();
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(gameTime / 60);
+            const seconds = gameTime % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateProgress() {
+            const progress = ((gameState.currentQuestion + 1) / gameState.questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `${gameState.currentQuestion + 1}/${gameState.questions.length}`;
+        }
+
+        function updateStats() {
+            document.getElementById('correct-answers').textContent = gameState.correctAnswers;
+            document.getElementById('incorrect-answers').textContent = gameState.incorrectAnswers;
+            
+            const totalAnswers = gameState.correctAnswers + gameState.incorrectAnswers;
+            const accuracy = totalAnswers > 0 ? Math.round((gameState.correctAnswers / totalAnswers) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            
+            const score = gameState.correctAnswers * 100 - gameState.incorrectAnswers * 50;
+            document.getElementById('score').textContent = Math.max(0, score);
+        }
+
+        function completeGame() {
+            clearInterval(gameTimer);
+            gameTimer = null;
+            
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            
+            // Guardar juego
+            saveGameData();
+            
+            // Mostrar mensaje de felicitación
+            const score = gameState.correctAnswers * 100 - gameState.incorrectAnswers * 50;
+            alert(`¡Juego completado! Respondiste correctamente ${gameState.correctAnswers} de ${gameState.questions.length} preguntas. Puntuación: ${Math.max(0, score)}`);
+        }
+
+        function saveGameData() {
+            const game = {
+                difficulty: currentDifficulty,
+                time: gameTime,
+                correctAnswers: gameState.correctAnswers,
+                incorrectAnswers: gameState.incorrectAnswers,
+                score: gameState.correctAnswers * 100 - gameState.incorrectAnswers * 50,
+                timestamp: new Date().toISOString()
+            };
+            
+            gameData.push(game);
+            localStorage.setItem('reasoningGameData', JSON.stringify(gameData));
+        }
+
+        function saveGame() {
+            alert('¡Juego guardado exitosamente!');
+        }
+
+        function viewStats() {
+            const totalGames = gameData.length;
+            const bestScore = gameData.length > 0 ? 
+                Math.max(...gameData.map(game => game.score)) : 0;
+            const averageAccuracy = gameData.length > 0 ? 
+                Math.round(gameData.reduce((sum, game) => {
+                    const totalAnswers = game.correctAnswers + game.incorrectAnswers;
+                    return sum + (totalAnswers > 0 ? (game.correctAnswers / totalAnswers) * 100 : 0);
+                }, 0) / gameData.length) : 0;
+            
+            document.getElementById('games-completed').textContent = totalGames;
+            document.getElementById('best-score').textContent = bestScore;
+            document.getElementById('average-accuracy').textContent = `${averageAccuracy}%`;
+            document.getElementById('current-streak').textContent = '0 días';
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function resetGame() {
+            gameState.isGameActive = false;
+            gameTime = 0;
+            isPaused = false;
+            
+            if (gameTimer) {
+                clearInterval(gameTimer);
+                gameTimer = null;
+            }
+            
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('stats-btn').style.display = 'none';
+            document.getElementById('game-info').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            
+            // Resetear estado
+            gameState.currentQuestion = 0;
+            gameState.correctAnswers = 0;
+            gameState.incorrectAnswers = 0;
+            gameState.selectedAnswer = null;
+            
+            // Mostrar primera pregunta
+            if (currentDifficulty) {
+                showQuestion();
+            }
+        }
+    </script>
+</body>
+</html>

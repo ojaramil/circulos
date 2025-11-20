@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Cerebro se Cambia a Sí Mismo - Interactivo</title>
+    <style>
+        :root {
+            --primary-bg: #f4f7f6;
+            --secondary-bg: #ffffff;
+            --header-bg: #e0e0e0;
+            --text-color: #333;
+            --link-color: #0056b3;
+            --hover-color: #003d82;
+            --active-lesson-bg: #d0e0f0;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-color) 0px 2px 4px;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            line-height: 1;
+        }
+
+        .course-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .module-name {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        .content-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .header nav a {
+            text-decoration: none;
+            color: var(--link-color);
+            font-weight: 500;
+            margin-left: 20px;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .header nav a:hover {
+            color: var(--hover-color);
+        }
+
+        .arrow-down {
+            font-size: 0.8em;
+        }
+
+        .main-content-wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar-left, .sidebar-right {
+            width: 280px;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: var(--shadow-color) 2px 0px 4px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #FF6B35 var(--secondary-bg);
+        }
+
+        .sidebar-right {
+            border-right: none;
+            border-left: 1px solid var(--border-color);
+            box-shadow: var(--shadow-color) -2px 0px 4px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: var(--primary-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-iframe {
+            flex-grow: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-color) 0px 0px 10px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            padding-bottom: 20px;
+        }
+
+        .sidebar-list li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-list a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .sidebar-list a:hover {
+            background-color: #f0f0f0;
+            color: var(--link-color);
+        }
+
+        .sidebar-list a.active-lesson {
+            background-color: var(--active-lesson-bg);
+            color: var(--link-color);
+            font-weight: bold;
+        }
+        
+        .sidebar-left::-webkit-scrollbar,
+        .sidebar-right::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar-left::-webkit-scrollbar-track,
+        .sidebar-right::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+            border-radius: 4px;
+        }
+        
+        .sidebar-left::-webkit-scrollbar-thumb,
+        .sidebar-right::-webkit-scrollbar-thumb {
+            background: #FF6B35;
+            border-radius: 4px;
+        }
+        
+        .sidebar-left::-webkit-scrollbar-thumb:hover,
+        .sidebar-right::-webkit-scrollbar-thumb:hover {
+            background: #E55A2B;
+        }
+
+        .icon-placeholder {
+            font-size: 1.2em;
+            line-height: 1;
+        }
+
+        .sub-sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 20px;
+        }
+
+        .sub-sidebar-list li {
+            margin-bottom: 5px;
+        }
+
+        .sub-sidebar-list a {
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: var(--link-color);
+            background-color: #f8f9fa;
+            border-left: 3px solid var(--link-color);
+        }
+
+        .footer {
+            background-color: var(--header-bg);
+            color: #555;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 0.9em;
+            border-top: 1px solid var(--border-color);
+            box-shadow: var(--shadow-color) 0px -2px 4px;
+            flex-shrink: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar-left, .sidebar-right {
+                width: 220px;
+            }
+            .content-title {
+                font-size: 1.2em;
+            }
+            .header nav a {
+                margin-left: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .header nav {
+                margin-top: 10px;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+            }
+            .header nav a {
+                margin: 0;
+            }
+            .main-content-wrapper {
+                flex-direction: column;
+            }
+            .sidebar-left, .sidebar-right {
+                width: 100%;
+                border-right: none;
+                border-left: none;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: none;
+                max-height: 300px;
+            }
+            .sidebar-right {
+                border-top: 1px solid var(--border-color);
+            }
+            .main-content {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2em;
+            }
+            .content-title {
+                font-size: 1em;
+            }
+            .module-name {
+                font-size: 0.8em;
+            }
+            .sidebar-list a {
+                font-size: 0.9em;
+                padding: 8px 10px;
+            }
+            .sidebar-section h3 {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo">🧠</div>
+            <div class="course-info">
+                <span class="module-name">Círculo de Lectura • Neurociencia</span>
+                <span class="content-title">El Cerebro se Cambia a Sí Mismo - Norman Doidge</span>
+            </div>
+        </div>
+        <nav>
+            <a href="#">Ver Otros Libros</a>
+            <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+        </nav>
+    </header>
+
+    <div class="main-content-wrapper">
+        <aside class="sidebar-left">
+            <section class="sidebar-section">
+                <h3>Lecciones del Libro</h3>
+                <ul class="sidebar-list">
+                    <li><a href="#" data-src="lecciones/01_prefacio.html" class="active-lesson"><span class="icon-placeholder">📖</span>Prefacio</a></li>
+                    <li><a href="#" data-src="lecciones/02_capitulo_1.html"><span class="icon-placeholder">👩</span>Capítulo I: Una mujer que se cae constantemente</a></li>
+                    <li><a href="#" data-src="lecciones/03_capitulo_2.html"><span class="icon-placeholder">🔧</span>Capítulo II: Fabricarse un cerebro mejor</a></li>
+                    <li><a href="#" data-src="lecciones/04_capitulo_3.html"><span class="icon-placeholder">🎯</span>Capítulo III: Rediseñar el cerebro</a></li>
+                    <li><a href="#" data-src="lecciones/05_capitulo_4.html"><span class="icon-placeholder">💕</span>Capítulo IV: La adquisición de gustos y preferencias</a></li>
+                    <li><a href="#" data-src="lecciones/06_capitulo_5.html"><span class="icon-placeholder">🌅</span>Capítulo V: Salir de la oscuridad</a></li>
+                    <li><a href="#" data-src="lecciones/07_capitulo_6.html"><span class="icon-placeholder">🚪</span>Capítulo VI: Abrir las puertas del cerebro</a></li>
+                    <li><a href="#" data-src="lecciones/08_capitulo_7.html"><span class="icon-placeholder">😣</span>Capítulo VII: El dolor</a></li>
+                    <li><a href="#" data-src="lecciones/09_capitulo_8.html"><span class="icon-placeholder">💭</span>Capítulo VIII: La imaginación</a></li>
+                    <li><a href="#" data-src="lecciones/10_capitulo_9.html"><span class="icon-placeholder">👻</span>Capítulo IX: Reconocer nuestros fantasmas</a></li>
+                    <li><a href="#" data-src="lecciones/11_capitulo_10.html"><span class="icon-placeholder">🔄</span>Capítulo X: Rejuvenecer</a></li>
+                    <li><a href="#" data-src="lecciones/12_capitulo_11.html"><span class="icon-placeholder">🧩</span>Capítulo XI: Más que la suma de sus partes</a></li>
+                    <li><a href="#" data-src="lecciones/13_apendices.html"><span class="icon-placeholder">📚</span>Apéndices</a></li>
+                </ul>
+            </section>
+        </aside>
+
+        <main class="main-content">
+            <iframe id="contentFrame" src="lecciones/01_prefacio.html" class="content-iframe" frameborder="0"></iframe>
+        </main>
+
+        <aside class="sidebar-right">
+            <section class="sidebar-section">
+                <h3>Juegos y Actividades</h3>
+                <ul class="sidebar-list">
+                    <li><a href="#" data-src="juegos/01_test_plasticidad.html"><span class="icon-placeholder">🧠</span>Test: Tu Nivel de Plasticidad Cerebral</a></li>
+                    <li><a href="#" data-src="juegos/02_ejercicios_mentales.html"><span class="icon-placeholder">💪</span>Ejercicios de Entrenamiento Mental</a></li>
+                    <li><a href="#" data-src="juegos/03_meditacion_cerebro.html"><span class="icon-placeholder">🧘</span>Meditación para el Cerebro</a></li>
+                    <li><a href="#" data-src="juegos/04_diario_neuroplasticidad.html"><span class="icon-placeholder">📔</span>Diario de Neuroplasticidad</a></li>
+                    <li><a href="#" data-src="juegos/05_simulador_cerebro.html"><span class="icon-placeholder">🎮</span>Simulador de Cambios Cerebrales</a></li>
+                    <li><a href="#" data-src="juegos/06_planificador_mental.html"><span class="icon-placeholder">📅</span>Planificador de Entrenamiento Mental</a></li>
+                    <li><a href="#" data-src="juegos/07_reflexion_aprendizaje.html"><span class="icon-placeholder">🤔</span>Reflexión sobre el Aprendizaje</a></li>
+                    <li><a href="#" data-src="juegos/08_desafio_memoria.html"><span class="icon-placeholder">🎯</span>Desafío de Memoria</a></li>
+                    <li><a href="#" data-src="juegos/09_ejercicio_imaginacion.html"><span class="icon-placeholder">✨</span>Ejercicio de Imaginación</a></li>
+                    <li><a href="#" data-src="juegos/10_guia_rejuvenecimiento.html"><span class="icon-placeholder">🔄</span>Guía de Rejuvenecimiento Cerebral</a></li>
+                </ul>
+            </section>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        <p>© 2023 Círculo de Lectura. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentFrame = document.getElementById('contentFrame');
+            const sidebarLinks = document.querySelectorAll('.sidebar-list a');
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    const src = link.getAttribute('data-src');
+                    if (src) {
+                        contentFrame.src = src;
+
+                        // Remove active class from all links
+                        sidebarLinks.forEach(l => l.classList.remove('active-lesson'));
+
+                        // Add active class to the clicked link
+                        link.classList.add('active-lesson');
+                    }
+                });
+            });
+
+            // Optional: Highlight the initially loaded lesson
+            const initialSrc = contentFrame.getAttribute('src');
+            if (initialSrc) {
+                const initialLink = document.querySelector(`.sidebar-list a[data-src="${initialSrc}"]`);
+                if (initialLink) {
+                    initialLink.classList.add('active-lesson');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Autodominio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .exercise-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exercise-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .scenario-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .scenario-card h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .scenario-card p {
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .mastery-tip {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .mastery-tip h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .reflection {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .reflection h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 Maestro de Autodominio</h1>
+            <p>Desarrolla el control consciente sobre tus pensamientos, emociones y acciones</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este maestro te guiará a través de ejercicios de autodominio diseñados para ayudarte a desarrollar el control consciente sobre tus pensamientos, emociones y acciones. Aprende a ser el maestro de tu propia vida.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Autodominio</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Ejercicios Completados</h4>
+                        <div class="stat-number" id="exercises-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Técnicas Aprendidas</h4>
+                        <div class="stat-number" id="techniques-learned">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Nivel de Autodominio</h4>
+                        <div class="stat-number" id="mastery-level">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exercise-container">
+                <div class="exercise-card">
+                    <h3>🧠 Ejercicio 1: Control de Pensamientos</h3>
+                    <p>El autodominio comienza con el control de tus pensamientos. Aprende a observar, dirigir y transformar tu diálogo interno.</p>
+                    
+                    <div class="scenario-card">
+                        <h4>📝 Escenario</h4>
+                        <p>Te encuentras en una situación estresante donde tu mente comienza a generar pensamientos negativos y catastróficos. ¿Cómo ejercerías el control sobre estos pensamientos?</p>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'observar')">
+                            <h4>Observar Sin Juzgar</h4>
+                            <p>Observar los pensamientos sin juzgarlos, reconociendo que son solo pensamientos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'redirigir')">
+                            <h4>Redirigir la Atención</h4>
+                            <p>Conscientemente redirigir tu atención hacia pensamientos más positivos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'cuestionar')">
+                            <h4>Cuestionar los Pensamientos</h4>
+                            <p>Cuestionar la validez de los pensamientos negativos y buscar evidencia</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'respirar')">
+                            <h4>Usar la Respiración</h4>
+                            <p>Usar técnicas de respiración para calmar la mente y los pensamientos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'aceptar')">
+                            <h4>Aceptar y Dejar Ir</h4>
+                            <p>Aceptar la presencia de los pensamientos y permitir que pasen</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'reemplazar')">
+                            <h4>Reemplazar con Afirmaciones</h4>
+                            <p>Reemplazar pensamientos negativos con afirmaciones positivas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzeResponse()" disabled>Analizar Respuesta</button>
+                <button class="btn" onclick="nextExercise()">Siguiente Ejercicio</button>
+            </div>
+
+            <div id="analysis-container" style="display: none;">
+                <div class="mastery-tip">
+                    <h4>💡 Técnica de Autodominio</h4>
+                    <div id="tip-content"></div>
+                </div>
+
+                <div class="reflection">
+                    <h4>🤔 Pregunta de Reflexión</h4>
+                    <div id="reflection-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let selectedResponse = null;
+        let exercisesCompleted = 0;
+        let techniquesLearned = 0;
+        let masteryLevel = 0;
+
+        const exercises = [
+            {
+                title: "Control de Pensamientos",
+                description: "El autodominio comienza con el control de tus pensamientos. Aprende a observar, dirigir y transformar tu diálogo interno.",
+                scenario: "Te encuentras en una situación estresante donde tu mente comienza a generar pensamientos negativos y catastróficos. ¿Cómo ejercerías el control sobre estos pensamientos?",
+                options: [
+                    { id: 'observar', title: 'Observar Sin Juzgar', description: 'Observar los pensamientos sin juzgarlos, reconociendo que son solo pensamientos' },
+                    { id: 'redirigir', title: 'Redirigir la Atención', description: 'Conscientemente redirigir tu atención hacia pensamientos más positivos' },
+                    { id: 'cuestionar', title: 'Cuestionar los Pensamientos', description: 'Cuestionar la validez de los pensamientos negativos y buscar evidencia' },
+                    { id: 'respirar', title: 'Usar la Respiración', description: 'Usar técnicas de respiración para calmar la mente y los pensamientos' },
+                    { id: 'aceptar', title: 'Aceptar y Dejar Ir', description: 'Aceptar la presencia de los pensamientos y permitir que pasen' },
+                    { id: 'reemplazar', title: 'Reemplazar con Afirmaciones', description: 'Reemplazar pensamientos negativos con afirmaciones positivas' }
+                ],
+                tips: {
+                    'observar': 'La observación sin juzgar es una técnica fundamental del autodominio. Te permite reconocer que los pensamientos son solo pensamientos, no la realidad.',
+                    'redirigir': 'Redirigir la atención es una técnica muy efectiva para el autodominio. Te permite tomar control consciente de dónde enfocas tu mente.',
+                    'cuestionar': 'Cuestionar los pensamientos es una técnica poderosa para el autodominio. Te permite examinar la validez de tus pensamientos y tomar decisiones más conscientes.',
+                    'respirar': 'La respiración es una herramienta fundamental para el autodominio. Puede ayudarte a calmar la mente y crear espacio para decisiones más conscientes.',
+                    'aceptar': 'Aceptar y dejar ir es una técnica avanzada de autodominio. Te permite reconocer que no puedes controlar todos los pensamientos, pero sí puedes elegir cómo responder a ellos.',
+                    'reemplazar': 'Reemplazar con afirmaciones es una técnica muy efectiva para el autodominio. Te permite cambiar conscientemente el contenido de tu diálogo interno.'
+                }
+            },
+            {
+                title: "Control de Emociones",
+                description: "Aprende a reconocer, procesar y dirigir tus emociones de manera consciente y constructiva.",
+                scenario: "Te encuentras en una situación que desencadena emociones intensas como ira, miedo o tristeza. ¿Cómo ejercerías el control sobre estas emociones?",
+                options: [
+                    { id: 'reconocer', title: 'Reconocer la Emoción', description: 'Reconocer y nombrar la emoción que estás sintiendo' },
+                    { id: 'respirar', title: 'Usar la Respiración', description: 'Usar técnicas de respiración para calmar la intensidad emocional' },
+                    { id: 'pausar', title: 'Hacer una Pausa', description: 'Hacer una pausa antes de responder emocionalmente' },
+                    { id: 'expresar', title: 'Expresar de Manera Saludable', description: 'Expresar la emoción de manera saludable y constructiva' },
+                    { id: 'procesar', title: 'Procesar la Emoción', description: 'Procesar la emoción para entender su origen y significado' },
+                    { id: 'transformar', title: 'Transformar la Emoción', description: 'Transformar la emoción en una acción constructiva' }
+                ],
+                tips: {
+                    'reconocer': 'Reconocer la emoción es el primer paso hacia el autodominio emocional. Te permite tomar conciencia de lo que estás sintiendo.',
+                    'respirar': 'La respiración es una herramienta poderosa para el autodominio emocional. Puede ayudarte a calmar la intensidad emocional y crear espacio para decisiones más conscientes.',
+                    'pausar': 'Hacer una pausa es una técnica fundamental del autodominio emocional. Te permite evitar reacciones impulsivas y tomar decisiones más conscientes.',
+                    'expresar': 'Expresar las emociones de manera saludable es importante para el autodominio. Te permite liberar la energía emocional de manera constructiva.',
+                    'procesar': 'Procesar las emociones es crucial para el autodominio emocional. Te permite entender el origen y significado de tus emociones.',
+                    'transformar': 'Transformar las emociones en acciones constructivas es una técnica avanzada de autodominio. Te permite usar la energía emocional de manera positiva.'
+                }
+            },
+            {
+                title: "Control de Acciones",
+                description: "Desarrolla la capacidad de tomar decisiones conscientes y actuar de acuerdo con tus valores y objetivos.",
+                scenario: "Te encuentras en una situación donde tienes que tomar una decisión importante que puede tener consecuencias significativas. ¿Cómo ejercerías el control sobre tus acciones?",
+                options: [
+                    { id: 'reflexionar', title: 'Reflexionar Antes de Actuar', description: 'Tomar tiempo para reflexionar sobre las opciones y consecuencias' },
+                    { id: 'valores', title: 'Considerar tus Valores', description: 'Considerar cómo cada opción se alinea con tus valores personales' },
+                    { id: 'consecuencias', title: 'Evaluar Consecuencias', description: 'Evaluar las consecuencias a corto y largo plazo de cada opción' },
+                    { id: 'intuicion', title: 'Escuchar tu Intuición', description: 'Escuchar tu intuición y sabiduría interna' },
+                    { id: 'apoyo', title: 'Buscar Apoyo', description: 'Buscar consejo y apoyo de personas de confianza' },
+                    { id: 'decisión', title: 'Tomar Decisión Consciente', description: 'Tomar una decisión consciente basada en tu análisis' }
+                ],
+                tips: {
+                    'reflexionar': 'Reflexionar antes de actuar es fundamental para el autodominio. Te permite tomar decisiones más conscientes y deliberadas.',
+                    'valores': 'Considerar tus valores es crucial para el autodominio. Te permite tomar decisiones que se alinean con lo que es importante para ti.',
+                    'consecuencias': 'Evaluar las consecuencias es importante para el autodominio. Te permite tomar decisiones más informadas y responsables.',
+                    'intuicion': 'Escuchar tu intuición es una técnica valiosa para el autodominio. Te permite acceder a tu sabiduría interna y tomar decisiones más auténticas.',
+                    'apoyo': 'Buscar apoyo es una estrategia inteligente para el autodominio. Te permite obtener perspectiva y consejo valioso antes de tomar decisiones importantes.',
+                    'decisión': 'Tomar decisiones conscientes es la esencia del autodominio. Te permite actuar de manera deliberada y responsable.'
+                }
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Remove previous selection
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            selectedResponse = optionId;
+            
+            // Enable analyze button
+            document.getElementById('analyze-btn').disabled = false;
+        }
+
+        function analyzeResponse() {
+            if (!selectedResponse) return;
+
+            const exercise = exercises[currentExercise];
+            const tip = exercise.tips[selectedResponse];
+            
+            if (!tip) return;
+
+            // Update stats
+            exercisesCompleted++;
+            techniquesLearned++;
+            masteryLevel += 10;
+
+            // Show tip
+            document.getElementById('tip-content').innerHTML = `
+                <p><strong>Técnica seleccionada:</strong> ${exercise.options.find(opt => opt.id === selectedResponse)?.title}</p>
+                <p><strong>Explicación:</strong> ${tip}</p>
+            `;
+
+            // Show reflection
+            document.getElementById('reflection-content').innerHTML = `
+                <p><strong>Preguntas para reflexionar:</strong></p>
+                <ul>
+                    <li>¿Cómo puedes practicar esta técnica en tu vida diaria?</li>
+                    <li>¿Qué obstáculos podrías enfrentar al implementar esta técnica?</li>
+                    <li>¿Cómo puedes desarrollar esta habilidad de manera más efectiva?</li>
+                    <li>¿Qué recursos o apoyo necesitas para implementar esta técnica?</li>
+                </ul>
+            `;
+
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'block';
+            
+            // Update stats display
+            updateStats();
+        }
+
+        function nextExercise() {
+            currentExercise = (currentExercise + 1) % exercises.length;
+            loadExercise();
+        }
+
+        function loadExercise() {
+            const exercise = exercises[currentExercise];
+            
+            document.querySelector('.exercise-card h3').textContent = `🧠 Ejercicio ${currentExercise + 1}: ${exercise.title}`;
+            document.querySelector('.exercise-card p').textContent = exercise.description;
+            document.querySelector('.scenario-card p').textContent = exercise.scenario;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            exercise.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedResponse = null;
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('exercises-completed').textContent = exercisesCompleted;
+            document.getElementById('techniques-learned').textContent = techniquesLearned;
+            document.getElementById('mastery-level').textContent = masteryLevel;
+            
+            // Update progress bar
+            const progress = (exercisesCompleted / exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExercise();
+        });
+    </script>
+</body>
+</html>

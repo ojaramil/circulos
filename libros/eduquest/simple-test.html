@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test - EduQuest Auth</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 15px; margin: 5px; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Simple Auth Test</h1>
+    
+    <button onclick="testRegister()">Test Register</button>
+    <button onclick="testLogin()">Test Login (Username)</button>
+    <button onclick="testLoginEmail()">Test Login (Email)</button>
+    <button onclick="testLogout()">Test Logout</button>
+    <button onclick="migrateUsers()">Migrate Old Users</button>
+    <button onclick="debugMigration()">Debug Migration</button>
+    <button onclick="checkStatus()">Check Status</button>
+    <button onclick="clearAll()">Clear All</button>
+    
+    <div id="result" class="result">Ready...</div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        
+        function log(message, type = 'info') {
+            console.log(message);
+            const className = type === 'error' ? 'result error' : type === 'success' ? 'result success' : 'result';
+            resultDiv.className = className;
+            resultDiv.innerHTML += message + '<br>';
+        }
+        
+        async function testRegister() {
+            resultDiv.innerHTML = 'Testing register...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                const userData = {
+                    fullName: 'Test User',
+                    username: 'testuser' + Date.now(),
+                    email: 'test' + Date.now() + '@example.com',
+                    password: '123456',
+                    confirmPassword: '123456'
+                };
+                
+                log('📝 Calling AuthSystem.register...');
+                log('Data: ' + JSON.stringify(userData, null, 2));
+                
+                const result = await AuthSystem.register(userData);
+                
+                if (result.success) {
+                    log('✅ Registration successful!', 'success');
+                    log('User: ' + JSON.stringify(result.user, null, 2));
+                } else {
+                    log('❌ Registration failed: ' + result.error, 'error');
+                }
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+                log('Stack: ' + error.stack);
+            }
+        }
+        
+        async function testLogin() {
+            resultDiv.innerHTML = 'Testing login with username...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                // Get the most recent user for testing
+                const users = AuthSystem.getAllUsers();
+                if (users.length === 0) {
+                    log('❌ No users found. Please register a user first.', 'error');
+                    return;
+                }
+                
+                // Use the most recent user
+                const lastUser = users[users.length - 1];
+                const username = lastUser.username;
+                const password = '123456'; // We know this is the test password
+                
+                log('🔐 Calling AuthSystem.login...');
+                log('Username: ' + username);
+                log('Password: ' + password);
+                
+                const result = await AuthSystem.login(username, password);
+                
+                if (result.success) {
+                    log('✅ Login successful!', 'success');
+                    log('User: ' + JSON.stringify(result.user, null, 2));
+                } else {
+                    log('❌ Login failed: ' + result.error, 'error');
+                }
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+            }
+        }
+        
+        async function testLoginEmail() {
+            resultDiv.innerHTML = 'Testing login with email...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                // Get the most recent user for testing
+                const users = AuthSystem.getAllUsers();
+                if (users.length === 0) {
+                    log('❌ No users found. Please register a user first.', 'error');
+                    return;
+                }
+                
+                // Use the most recent user
+                const lastUser = users[users.length - 1];
+                const email = lastUser.email;
+                const password = '123456'; // We know this is the test password
+                
+                log('🔐 Calling AuthSystem.login...');
+                log('Email: ' + email);
+                log('Password: ' + password);
+                
+                const result = await AuthSystem.login(email, password);
+                
+                if (result.success) {
+                    log('✅ Login successful!', 'success');
+                    log('User: ' + JSON.stringify(result.user, null, 2));
+                } else {
+                    log('❌ Login failed: ' + result.error, 'error');
+                }
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+            }
+        }
+        
+        function testLogout() {
+            resultDiv.innerHTML = 'Testing logout...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                log('🚪 Calling AuthSystem.logout...');
+                const result = AuthSystem.logout();
+                
+                if (result.success) {
+                    log('✅ Logout successful!', 'success');
+                    log('Message: ' + result.message);
+                } else {
+                    log('❌ Logout failed: ' + result.error, 'error');
+                }
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+            }
+        }
+        
+        function migrateUsers() {
+            resultDiv.innerHTML = 'Migrating old users...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                log('🔄 Forcing user migration...');
+                
+                // Clear current users storage to force migration
+                localStorage.removeItem('eduquest_users');
+                
+                // Call getAllUsers to trigger migration
+                const users = AuthSystem.getAllUsers();
+                
+                log('✅ Migration completed!', 'success');
+                log('Migrated users: ' + users.length);
+                
+                users.forEach((user, index) => {
+                    log(`  ${index + 1}. ${user.username} (${user.email})`);
+                });
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+            }
+        }
+        
+        function debugMigration() {
+            resultDiv.innerHTML = 'Debugging migration process...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                if (typeof AuthSystem === 'undefined') {
+                    log('❌ AuthSystem is not defined', 'error');
+                    return;
+                }
+                
+                log('🔍 Analyzing localStorage for user data...');
+                
+                // Check current storage keys
+                const keys = Object.keys(localStorage);
+                const userKeys = keys.filter(key => key.startsWith('eduquest_user_') && !key.includes('_progress_') && !key.includes('_sessions_'));
+                
+                log('📋 Found potential user keys: ' + userKeys.length);
+                userKeys.forEach(key => {
+                    log('  - ' + key);
+                });
+                
+                // Try to read each user key
+                log('📖 Reading user data from keys...');
+                userKeys.forEach(key => {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        log(`Key: ${key}`);
+                        log(`  Username: ${userData.username || 'N/A'}`);
+                        log(`  Email: ${userData.email || 'N/A'}`);
+                        log(`  ID: ${userData.id || 'N/A'}`);
+                        log(`  Valid: ${userData && userData.username ? 'Yes' : 'No'}`);
+                    } catch (error) {
+                        log(`❌ Error reading ${key}: ${error.message}`, 'error');
+                    }
+                });
+                
+                // Check current AuthSystem storage
+                log('🗄️ Checking AuthSystem storage...');
+                const currentUsers = localStorage.getItem('eduquest_users');
+                log('Current users storage: ' + (currentUsers ? 'EXISTS' : 'EMPTY'));
+                if (currentUsers) {
+                    try {
+                        const parsed = JSON.parse(currentUsers);
+                        log('Parsed users count: ' + parsed.length);
+                    } catch (error) {
+                        log('❌ Error parsing current users: ' + error.message, 'error');
+                    }
+                }
+                
+                // Test migration manually
+                log('🔧 Testing manual migration...');
+                if (typeof AuthSystem.migrateOldUsers === 'function') {
+                    const migratedUsers = AuthSystem.migrateOldUsers();
+                    log('Manual migration result: ' + migratedUsers.length + ' users');
+                    migratedUsers.forEach((user, index) => {
+                        log(`  ${index + 1}. ${user.username} (${user.email}) - ID: ${user.id}`);
+                    });
+                } else {
+                    log('❌ migrateOldUsers function not available', 'error');
+                }
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+                log('Stack: ' + error.stack);
+            }
+        }
+        
+        function checkStatus() {
+            resultDiv.innerHTML = 'Checking status...<br>';
+            resultDiv.className = 'result';
+            
+            try {
+                log('🔍 AuthSystem available: ' + (typeof AuthSystem !== 'undefined'));
+                
+                if (typeof AuthSystem !== 'undefined') {
+                    const users = AuthSystem.getAllUsers();
+                    log('👥 Users in storage: ' + users.length);
+                    
+                    const currentUser = AuthSystem.getCurrentUser();
+                    log('👤 Current user: ' + (currentUser ? currentUser.username : 'None'));
+                    
+                    // List all users
+                    if (users.length > 0) {
+                        log('📋 User list:');
+                        users.forEach((user, index) => {
+                            log(`  ${index + 1}. ${user.username} (${user.email})`);
+                        });
+                    }
+                } else {
+                    log('❌ AuthSystem not available', 'error');
+                }
+                
+                // Check localStorage
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('eduquest_'));
+                log('🗄️ EduQuest keys in localStorage: ' + keys.length);
+                keys.forEach(key => {
+                    log('  - ' + key);
+                });
+                
+            } catch (error) {
+                log('💥 Exception: ' + error.message, 'error');
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('Clear all localStorage data?')) {
+                localStorage.clear();
+                resultDiv.innerHTML = '🗑️ Storage cleared<br>';
+                resultDiv.className = 'result success';
+            }
+        }
+        
+        // Load AuthSystem script dynamically and handle errors
+        const script = document.createElement('script');
+        script.src = 'js/utils/authSystem.js';
+        script.onload = function() {
+            log('✅ AuthSystem script loaded successfully');
+            setTimeout(checkStatus, 100); // Give it a moment to initialize
+        };
+        script.onerror = function() {
+            log('❌ Failed to load AuthSystem script', 'error');
+        };
+        document.head.appendChild(script);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Page loaded');
+        });
+    </script>
+    
+    <script>
+        const resultDiv = document.getElementById('result');
+        
+        function log(message) {
+            console.log(message);
+            resultDiv.innerHTML += message + '<br>';
+        }
+        
+        async function testRegister() {
+            resultDiv.innerHTML = 'Testing register...<br>';
+            
+            try {
+                const userData = {
+                    fullName: 'Test User',
+                    username: 'testuser' + Date.now(),
+                    email: 'test' + Date.now() + '@example.com',
+                    password: '123456',
+                    confirmPassword: '123456'
+                };
+                
+                log('Calling AuthSystem.register...');
+                const result = await AuthSystem.register(userData);
+                
+                log('Result: ' + JSON.stringify(result, null, 2));
+                
+            } catch (error) {
+                log('Error: ' + error.message);
+                log('Stack: ' + error.stack);
+            }
+        }
+        
+        async function testLogin() {
+            resultDiv.innerHTML = 'Testing login...<br>';
+            
+            try {
+                log('Calling AuthSystem.login...');
+                const result = await AuthSystem.login('testuser', '123456');
+                
+                log('Result: ' + JSON.stringify(result, null, 2));
+                
+            } catch (error) {
+                log('Error: ' + error.message);
+            }
+        }
+        
+        function checkStatus() {
+            resultDiv.innerHTML = 'Checking status...<br>';
+            
+            try {
+                log('AuthSystem available: ' + (typeof AuthSystem !== 'undefined'));
+                
+                if (typeof AuthSystem !== 'undefined') {
+                    const users = AuthSystem.getAllUsers();
+                    log('Users in storage: ' + users.length);
+                    
+                    const currentUser = AuthSystem.getCurrentUser();
+                    log('Current user: ' + (currentUser ? currentUser.username : 'None'));
+                }
+                
+            } catch (error) {
+                log('Error: ' + error.message);
+            }
+        }
+        
+        function clearAll() {
+            localStorage.clear();
+            resultDiv.innerHTML = 'Storage cleared<br>';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded');
+            checkStatus();
+        });
+    </script>
+</body>
+</html>

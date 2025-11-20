@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alimentador de Visión - Mentalidad de Abundancia</title>
+    <link rel="stylesheet" href="../juegos-style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 Alimentador de Visión</h1>
+            <p>Nutre tu Visión Diariamente</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 Sobre el Alimentador de Visión</h3>
+                <p>Tu visión necesita ser alimentada constantemente. Este juego te ayuda a nutrir tu visión con
+                    contenido inspirador, afirmaciones y recordatorios diarios.</p>
+            </div>
+
+            <div class="vision-feeder">
+                <h3>📚 Fuentes de Alimentación</h3>
+                <div class="feed-grid" id="feedGrid"></div>
+            </div>
+
+            <div class="stats-panel">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span>Días Alimentados:</span>
+                    <span id="daysCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Fuentes Activas:</span>
+                    <span id="sourcesCount">0/8</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="feedVision()">Alimentar Visión Hoy</button>
+                <button class="btn" onclick="viewReport()">Ver Reporte</button>
+            </div>
+
+            <div id="achievements"></div>
+        </div>
+    </div>
+
+    <script src="../juegos-common.js"></script>
+    <script>
+        const feedSources = [
+            { id: 1, icon: '📖', title: 'Lectura Bíblica', active: false },
+            { id: 2, icon: '📚', title: 'Libros Inspiradores', active: false },
+            { id: 3, icon: '🎧', title: 'Podcasts Motivacionales', active: false },
+            { id: 4, icon: '👥', title: 'Mentoría', active: false },
+            { id: 5, icon: '✍️', title: 'Diario de Visión', active: false },
+            { id: 6, icon: '🙏', title: 'Oración y Meditación', active: false },
+            { id: 7, icon: '🎯', title: 'Visualización', active: false },
+            { id: 8, icon: '💬', title: 'Afirmaciones Positivas', active: false }
+        ];
+
+        let gameState = { daysCount: 0, activeSources: [] };
+
+        function initGame() {
+            const grid = document.getElementById('feedGrid');
+            grid.innerHTML = feedSources.map(source => `
+                <div class="feed-card ${source.active ? 'active' : ''}" onclick="toggleSource(${source.id})">
+                    <div class="feed-icon">${source.icon}</div>
+                    <div class="feed-title">${source.title}</div>
+                </div>
+            `).join('');
+            updateDisplay();
+        }
+
+        function toggleSource(id) {
+            const index = gameState.activeSources.indexOf(id);
+            if (index > -1) {
+                gameState.activeSources.splice(index, 1);
+            } else {
+                gameState.activeSources.push(id);
+            }
+            updateDisplay();
+        }
+
+        function feedVision() {
+            if (gameState.activeSources.length > 0) {
+                gameState.daysCount++;
+                showAchievement('✨ Visión Alimentada', 'Has nutrido tu visión hoy');
+                updateDisplay();
+            } else {
+                alert('Selecciona al menos una fuente de alimentación');
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('daysCount').textContent = gameState.daysCount;
+            document.getElementById('sourcesCount').textContent = `${gameState.activeSources.length}/8`;
+        }
+
+        function viewReport() {
+            alert(`Reporte de Alimentación de Visión\n\nDías Alimentados: ${gameState.daysCount}\nFuentes Activas: ${gameState.activeSources.length}/8`);
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

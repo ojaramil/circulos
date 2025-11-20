@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Riqueza Inmobiliaria</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+        }
+        .calculator {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Calculadora de Riqueza Inmobiliaria</h1>
+        
+        <div class="calculator">
+            <h3>Calcula Tu Riqueza Futura</h3>
+            
+            <label>Valor Inicial de la Propiedad ($)</label>
+            <input type="number" id="initialValue" value="200000">
+            
+            <label>Apreciación Anual (%)</label>
+            <input type="number" id="appreciation" value="3" step="0.1">
+            
+            <label>Años</label>
+            <input type="number" id="years" value="10">
+            
+            <button class="button" onclick="calculate()">Calcular</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const initial = parseFloat(document.getElementById('initialValue').value);
+            const appreciation = parseFloat(document.getElementById('appreciation').value) / 100;
+            const years = parseFloat(document.getElementById('years').value);
+            
+            const futureValue = initial * Math.pow(1 + appreciation, years);
+            const equity = futureValue - initial;
+            
+            document.getElementById('results').innerHTML = `
+                <h3>Resultado</h3>
+                <p>Valor Futuro: $${futureValue.toLocaleString()}</p>
+                <p>Riqueza Construida: $${equity.toLocaleString()}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+

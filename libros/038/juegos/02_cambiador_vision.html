@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiador de Visión</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+        .vision-builder {
+            background: #e8f4f8;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .vision-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: white;
+            font-size: 1.2em;
+            margin: 20px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5568d3;
+        }
+        .button.clear {
+            background: #6c757d;
+        }
+        .button.save {
+            background: #28a745;
+        }
+        .saved-visions {
+            margin: 20px 0;
+        }
+        .vision-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            border-left: 5px solid #667eea;
+        }
+        .vision-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👁️ Cambiador de Visión</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>La Escritura dice: "Donde no hay visión, el pueblo perece." Este juego te ayuda a construir y mantener una visión clara y poderosa de tu futuro. Escribe tu visión y visualízate viviéndola.</p>
+        </div>
+
+        <div class="vision-builder">
+            <h3>🌅 Construye Tu Visión</h3>
+            <p>Describe detalladamente cómo te ves a ti mismo:</p>
+            <textarea class="vision-area" id="visionInput" placeholder="Veo mi vida llena de abundancia...">
+Veo mi vida llena de abundancia. Me veo próspero, saludable, y exitoso. Me veo alcanzando mis sueños y siendo una bendición para otros...</textarea>
+            <button class="button" onclick="saveVision()">Guardar Visión</button>
+            <button class="button clear" onclick="clearVision()">Limpiar</button>
+        </div>
+
+        <div class="saved-visions">
+            <h3>📚 Tus Visiones Guardadas</h3>
+            <div id="visionsList"></div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones</h3>
+            <button class="button" onclick="addVisionElement('Prosperidad')">+ Prosperidad</button>
+            <button class="button" onclick="addVisionElement('Salud')">+ Salud</button>
+            <button class="button" onclick="addVisionElement('Relaciones')">+ Relaciones</button>
+            <button class="button" onclick="addVisionElement('Propósito')">+ Propósito</button>
+            <button class="button save" onclick="applyVision()">Aplicar Visión</button>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Crea y mantén tu visión para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let visions = [];
+
+        function saveVision() {
+            const vision = document.getElementById('visionInput').value;
+            if (vision.trim()) {
+                visions.push({
+                    text: vision,
+                    date: new Date().toLocaleDateString(),
+                    id: Date.now()
+                });
+                displayVisions();
+                showAchievement('💎 Visión Guardada', 'Has guardado tu visión exitosamente');
+            }
+        }
+
+        function clearVision() {
+            document.getElementById('visionInput').value = '';
+        }
+
+        function addVisionElement(element) {
+            const textarea = document.getElementById('visionInput');
+            textarea.value += `\n• Me veo experimentando ${element} en abundancia. `;
+        }
+
+        function applyVision() {
+            if (visions.length > 0) {
+                showAchievement('✨ Visión Aplicada', 'Tu visión está trabajando en tu vida');
+            } else {
+                alert('Guarda primero una visión.');
+            }
+        }
+
+        function displayVisions() {
+            const container = document.getElementById('visionsList');
+            container.innerHTML = visions.map(v => `
+                <div class="vision-card">
+                    <div class="vision-title">Visión del ${v.date}</div>
+                    <div>${v.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                background: #d4edda;
+                border: 2px solid #28a745;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 10px 0;
+                animation: slideIn 0.5s ease;
+            `;
+            achievement.innerHTML = `<h4>${title}</h4><p>${description}</p>`;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => achievement.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
+

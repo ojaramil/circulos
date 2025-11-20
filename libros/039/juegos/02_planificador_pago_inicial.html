@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Pago Inicial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .planner {
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💵 Planificador de Pago Inicial</h1>
+        
+        <div class="planner">
+            <h3>¿Cuánto Necesitas Ahorrar?</h3>
+            
+            <div class="input-group">
+                <label>Precio de la Casa que Quieres Comprar ($)</label>
+                <input type="number" id="housePrice" value="200000" placeholder="200000">
+            </div>
+            
+            <div class="input-group">
+                <label>Porcentaje de Pago Inicial (%)</label>
+                <input type="number" id="downPaymentPercent" value="20" placeholder="20">
+            </div>
+            
+            <div class="input-group">
+                <label>Ahorros Actuales ($)</label>
+                <input type="number" id="currentSavings" value="5000" placeholder="5000">
+            </div>
+            
+            <div class="input-group">
+                <label>Cuánto Puedes Ahorrar por Mes ($)</label>
+                <input type="number" id="monthlySavings" value="1000" placeholder="1000">
+            </div>
+            
+            <button class="button" onclick="calculatePlan()">Calcular Plan de Ahorro</button>
+        </div>
+
+        <div id="results" class="result" style="display: none;">
+            <h3>📊 Tu Plan de Ahorro</h3>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculatePlan() {
+            const housePrice = parseFloat(document.getElementById('housePrice').value);
+            const downPaymentPercent = parseFloat(document.getElementById('downPaymentPercent').value) / 100;
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value);
+            const monthlySavings = parseFloat(document.getElementById('monthlySavings').value);
+
+            const downPaymentNeeded = housePrice * downPaymentPercent;
+            const costosCierre = housePrice * 0.05; // 5% estimado
+            const totalNeeded = downPaymentNeeded + costosCierre;
+            const remaining = totalNeeded - currentSavings;
+            const monthsNeeded = Math.ceil(remaining / monthlySavings);
+
+            const html = `
+                <p><strong>Pago Inicial Necesario:</strong> $${downPaymentNeeded.toLocaleString()}</p>
+                <p><strong>Costos de Cierre (estimado):</strong> $${costosCierre.toLocaleString()}</p>
+                <p><strong>Total Necesario:</strong> $${totalNeeded.toLocaleString()}</p>
+                <p><strong>Ahorros Actuales:</strong> $${currentSavings.toLocaleString()}</p>
+                <p><strong>Falta por Ahorrar:</strong> $${remaining.toLocaleString()}</p>
+                <p><strong>Tiempo Estimado:</strong> ${monthsNeeded} meses (${(monthsNeeded/12).toFixed(1)} años)</p>
+            `;
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

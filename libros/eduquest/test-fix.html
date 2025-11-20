@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduQuest - Test Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 EduQuest - Verificación de Correcciones</h1>
+        <p>Verificando que las correcciones aplicadas funcionen correctamente...</p>
+        
+        <div id="results"></div>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="runTests()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                🧪 Ejecutar Pruebas
+            </button>
+            <button onclick="window.open('index.html', '_blank')" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+                🚀 Abrir EduQuest
+            </button>
+        </div>
+    </div>
+
+    <!-- Load scripts to test -->
+    <script src="js/models/User.js"></script>
+    <script src="js/models/Course.js"></script>
+    <script src="js/models/Progress.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/components/Dashboard.js"></script>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        function runTests() {
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            
+            addResult('🔍 Iniciando verificación de correcciones...', 'info');
+            
+            // Test 1: Verificar que Dashboard esté definido
+            try {
+                if (typeof Dashboard !== 'undefined') {
+                    addResult('✅ Clase Dashboard correctamente definida', 'success');
+                } else {
+                    addResult('❌ Clase Dashboard no está definida', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error al verificar Dashboard: ${error.message}`, 'error');
+            }
+            
+            // Test 2: Verificar que se puede crear una instancia de Dashboard
+            try {
+                const mockApp = { user: { username: 'Test' }, courses: new Map() };
+                const dashboard = new Dashboard(mockApp);
+                if (dashboard) {
+                    addResult('✅ Instancia de Dashboard creada correctamente', 'success');
+                } else {
+                    addResult('❌ No se pudo crear instancia de Dashboard', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error al crear instancia de Dashboard: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Verificar otras clases principales
+            const classes = ['User', 'Course', 'Progress', 'StorageManager'];
+            classes.forEach(className => {
+                try {
+                    if (typeof window[className] !== 'undefined') {
+                        addResult(`✅ Clase ${className} disponible`, 'success');
+                    } else {
+                        addResult(`⚠️ Clase ${className} no encontrada`, 'info');
+                    }
+                } catch (error) {
+                    addResult(`❌ Error verificando ${className}: ${error.message}`, 'error');
+                }
+            });
+            
+            // Test 4: Verificar LocalStorage
+            try {
+                localStorage.setItem('test', 'value');
+                const value = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (value === 'value') {
+                    addResult('✅ LocalStorage funcionando correctamente', 'success');
+                } else {
+                    addResult('❌ LocalStorage no funciona correctamente', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error con LocalStorage: ${error.message}`, 'error');
+            }
+            
+            addResult('🎉 Verificación completada. Si todos los tests son exitosos, EduQuest debería funcionar correctamente.', 'info');
+        }
+        
+        // Ejecutar tests automáticamente al cargar
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>

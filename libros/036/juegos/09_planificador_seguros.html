@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Seguros - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .planner-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .insurance-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .insurance-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .insurance-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .coverage-analysis {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .risk-assessment {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .recommendation-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .priority-high { color: #dc3545; font-weight: bold; }
+        .priority-medium { color: #ffc107; font-weight: bold; }
+        .priority-low { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Planificador de Seguros</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Evalúa tus necesidades de seguro y crea un plan integral de protección financiera para ti y tu familia.</p>
+        </div>
+
+        <div class="planner-box">
+            <h3>👤 Información Personal</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="age">Edad:</label>
+                    <input type="number" id="age" value="35" min="18" max="80">
+                </div>
+                <div class="input-group">
+                    <label for="income">Ingresos Anuales:</label>
+                    <input type="number" id="income" value="75000" min="10000" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="dependents">Dependientes:</label>
+                    <input type="number" id="dependents" value="2" min="0" max="10">
+                </div>
+                <div class="input-group">
+                    <label for="debt">Deudas Totales:</label>
+                    <input type="number" id="debt" value="150000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="savings">Ahorros Actuales:</label>
+                    <input type="number" id="savings" value="50000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="health">Estado de Salud:</label>
+                    <select id="health">
+                        <option value="excellent">Excelente</option>
+                        <option value="good" selected>Bueno</option>
+                        <option value="fair">Regular</option>
+                        <option value="poor">Malo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="planner-box">
+            <h3>🛡️ Tipos de Seguro</h3>
+            <p>Selecciona los tipos de seguro que necesitas evaluar:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div class="insurance-card" onclick="toggleInsurance('life')">
+                    <h4>💀 Seguro de Vida</h4>
+                    <p>Protección financiera para tu familia</p>
+                </div>
+                <div class="insurance-card" onclick="toggleInsurance('health')">
+                    <h4>🏥 Seguro de Salud</h4>
+                    <p>Cobertura médica y hospitalaria</p>
+                </div>
+                <div class="insurance-card" onclick="toggleInsurance('disability')">
+                    <h4>♿ Seguro de Discapacidad</h4>
+                    <p>Protección por incapacidad laboral</p>
+                </div>
+                <div class="insurance-card" onclick="toggleInsurance('auto')">
+                    <h4>🚗 Seguro de Auto</h4>
+                    <p>Cobertura vehicular obligatoria</p>
+                </div>
+                <div class="insurance-card" onclick="toggleInsurance('home')">
+                    <h4>🏠 Seguro de Hogar</h4>
+                    <p>Protección de propiedad</p>
+                </div>
+                <div class="insurance-card" onclick="toggleInsurance('umbrella')">
+                    <h4>☂️ Seguro de Responsabilidad</h4>
+                    <p>Cobertura adicional de responsabilidad</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="planner-box">
+            <h3>📊 Análisis de Riesgo</h3>
+            <p>Evalúa tu exposición a diferentes riesgos:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="jobStability">Estabilidad Laboral:</label>
+                    <select id="jobStability">
+                        <option value="high">Muy Estable</option>
+                        <option value="medium" selected>Estable</option>
+                        <option value="low">Inestable</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="lifestyle">Estilo de Vida:</label>
+                    <select id="lifestyle">
+                        <option value="conservative">Conservador</option>
+                        <option value="moderate" selected>Moderado</option>
+                        <option value="risky">Arriesgado</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="location">Ubicación:</label>
+                    <select id="location">
+                        <option value="urban">Urbana</option>
+                        <option value="suburban" selected>Suburbana</option>
+                        <option value="rural">Rural</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="analyzeInsurance()">📊 Analizar Necesidades de Seguro</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Resumen de Análisis</h3>
+                <div id="insuranceSummary"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>🛡️ Cobertura Recomendada</h3>
+                <div id="coverageRecommendations"></div>
+            </div>
+            
+            <div class="risk-assessment">
+                <h3>⚠️ Evaluación de Riesgo</h3>
+                <div id="riskAssessment"></div>
+            </div>
+            
+            <div class="coverage-analysis">
+                <h3>📊 Análisis de Cobertura</h3>
+                <div id="coverageAnalysis"></div>
+            </div>
+            
+            <div class="recommendation-box">
+                <h3>💡 Plan de Acción</h3>
+                <div id="actionPlan"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Principios de Seguros</h2>
+            <ul>
+                <li><strong>Protege lo que no puedes reemplazar:</strong> Vida, salud, capacidad de generar ingresos</li>
+                <li><strong>Regla del 10-15%:</strong> No gastes más del 10-15% de ingresos en seguros</li>
+                <li><strong>Deductibles altos:</strong> Para reducir primas si puedes cubrir emergencias</li>
+                <li><strong>Revisa regularmente:</strong> Tus necesidades cambian con el tiempo</li>
+                <li><strong>Combinación inteligente:</strong> Usa diferentes tipos de seguro estratégicamente</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let selectedInsurances = {};
+
+        function toggleInsurance(insuranceType) {
+            selectedInsurances[insuranceType] = !selectedInsurances[insuranceType];
+            
+            // Cambiar apariencia visual
+            const card = event.target.closest('.insurance-card');
+            if (selectedInsurances[insuranceType]) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+
+        function analyzeInsurance() {
+            const age = parseInt(document.getElementById('age').value);
+            const income = parseFloat(document.getElementById('income').value);
+            const dependents = parseInt(document.getElementById('dependents').value);
+            const debt = parseFloat(document.getElementById('debt').value);
+            const savings = parseFloat(document.getElementById('savings').value);
+            const health = document.getElementById('health').value;
+            const jobStability = document.getElementById('jobStability').value;
+            const lifestyle = document.getElementById('lifestyle').value;
+            const location = document.getElementById('location').value;
+            
+            // Calcular necesidades de seguro
+            const insuranceNeeds = calculateInsuranceNeeds(age, income, dependents, debt, savings, health, jobStability, lifestyle, location);
+            
+            // Mostrar resultados
+            displayResults(insuranceNeeds, selectedInsurances);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function calculateInsuranceNeeds(age, income, dependents, debt, savings, health, jobStability, lifestyle, location) {
+            const needs = {};
+            
+            // Seguro de Vida
+            if (selectedInsurances['life']) {
+                const lifeInsuranceNeed = Math.max(
+                    income * 10, // Regla de 10x ingresos
+                    debt + (income * 5), // Deudas + 5 años de ingresos
+                    dependents * income * 3 // 3 años por dependiente
+                );
+                needs.life = {
+                    recommended: lifeInsuranceNeed,
+                    priority: dependents > 0 ? 'high' : 'medium',
+                    monthlyCost: lifeInsuranceNeed * 0.0005, // Estimación aproximada
+                    description: 'Protección financiera para familia'
+                };
+            }
+            
+            // Seguro de Salud
+            if (selectedInsurances['health']) {
+                const healthPriority = health === 'poor' ? 'high' : health === 'fair' ? 'medium' : 'low';
+                needs.health = {
+                    recommended: 'Completo',
+                    priority: healthPriority,
+                    monthlyCost: health === 'poor' ? 800 : health === 'fair' ? 600 : 400,
+                    description: 'Cobertura médica integral'
+                };
+            }
+            
+            // Seguro de Discapacidad
+            if (selectedInsurances['disability']) {
+                const disabilityNeed = income * 0.6; // 60% de ingresos
+                needs.disability = {
+                    recommended: disabilityNeed,
+                    priority: jobStability === 'low' ? 'high' : 'medium',
+                    monthlyCost: income * 0.01, // 1% de ingresos
+                    description: 'Protección por incapacidad'
+                };
+            }
+            
+            // Seguro de Auto
+            if (selectedInsurances['auto']) {
+                const autoCost = location === 'urban' ? 200 : location === 'suburban' ? 150 : 100;
+                needs.auto = {
+                    recommended: 'Completo',
+                    priority: 'high',
+                    monthlyCost: autoCost,
+                    description: 'Cobertura vehicular obligatoria'
+                };
+            }
+            
+            // Seguro de Hogar
+            if (selectedInsurances['home']) {
+                const homeValue = savings * 3; // Estimación
+                needs.home = {
+                    recommended: homeValue,
+                    priority: 'high',
+                    monthlyCost: homeValue * 0.0003, // 0.3% anual
+                    description: 'Protección de propiedad'
+                };
+            }
+            
+            // Seguro de Responsabilidad
+            if (selectedInsurances['umbrella']) {
+                const umbrellaNeed = income * 2; // 2x ingresos
+                needs.umbrella = {
+                    recommended: umbrellaNeed,
+                    priority: lifestyle === 'risky' ? 'high' : 'medium',
+                    monthlyCost: umbrellaNeed * 0.0001, // 0.1% anual
+                    description: 'Cobertura adicional de responsabilidad'
+                };
+            }
+            
+            return needs;
+        }
+
+        function displayResults(insuranceNeeds, selectedInsurances) {
+            const totalMonthlyCost = Object.values(insuranceNeeds).reduce((sum, need) => sum + need.monthlyCost, 0);
+            const totalAnnualCost = totalMonthlyCost * 12;
+            const costPercentage = (totalAnnualCost / parseFloat(document.getElementById('income').value)) * 100;
+            
+            // Mostrar resumen
+            document.getElementById('insuranceSummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>💰 Costo Mensual Total</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${totalMonthlyCost.toFixed(0)}</p>
+                    </div>
+                    <div>
+                        <h4>📅 Costo Anual Total</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">$${totalAnnualCost.toFixed(0)}</p>
+                    </div>
+                    <div>
+                        <h4>📊 % de Ingresos</h4>
+                        <p style="font-size: 1.5em; color: ${costPercentage <= 10 ? '#28a745' : costPercentage <= 15 ? '#ffc107' : '#dc3545'};">${costPercentage.toFixed(1)}%</p>
+                    </div>
+                    <div>
+                        <h4>🛡️ Tipos de Seguro</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">${Object.keys(selectedInsurances).filter(key => selectedInsurances[key]).length}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar recomendaciones de cobertura
+            displayCoverageRecommendations(insuranceNeeds);
+            
+            // Mostrar evaluación de riesgo
+            displayRiskAssessment(insuranceNeeds);
+            
+            // Mostrar análisis de cobertura
+            displayCoverageAnalysis(insuranceNeeds);
+            
+            // Mostrar plan de acción
+            displayActionPlan(insuranceNeeds, totalMonthlyCost);
+        }
+
+        function displayCoverageRecommendations(insuranceNeeds) {
+            const recommendationsDiv = document.getElementById('coverageRecommendations');
+            
+            recommendationsDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.keys(insuranceNeeds).map(insuranceType => {
+                        const need = insuranceNeeds[insuranceType];
+                        const priorityClass = need.priority === 'high' ? 'priority-high' : 
+                                            need.priority === 'medium' ? 'priority-medium' : 'priority-low';
+                        
+                        return `
+                            <div style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4>${getInsuranceName(insuranceType)}</h4>
+                                        <p>${need.description}</p>
+                                        <p><strong>Cobertura recomendada:</strong> $${typeof need.recommended === 'number' ? need.recommended.toLocaleString() : need.recommended}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p class="${priorityClass}">Prioridad: ${need.priority.toUpperCase()}</p>
+                                        <p><strong>Costo mensual:</strong> $${need.monthlyCost.toFixed(0)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function displayRiskAssessment(insuranceNeeds) {
+            const riskDiv = document.getElementById('riskAssessment');
+            
+            const riskFactors = [
+                {
+                    factor: 'Dependientes Financieros',
+                    level: parseInt(document.getElementById('dependents').value) > 0 ? 'Alto' : 'Bajo',
+                    impact: 'Mayor necesidad de seguro de vida'
+                },
+                {
+                    factor: 'Nivel de Deuda',
+                    level: parseFloat(document.getElementById('debt').value) > parseFloat(document.getElementById('income').value) * 2 ? 'Alto' : 'Medio',
+                    impact: 'Protección adicional necesaria'
+                },
+                {
+                    factor: 'Estabilidad Laboral',
+                    level: document.getElementById('jobStability').value === 'low' ? 'Alto' : 'Bajo',
+                    impact: 'Mayor necesidad de seguro de discapacidad'
+                },
+                {
+                    factor: 'Estado de Salud',
+                    level: document.getElementById('health').value === 'poor' ? 'Alto' : 'Bajo',
+                    impact: 'Cobertura médica más importante'
+                }
+            ];
+            
+            riskDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${riskFactors.map(factor => `
+                        <div style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4>${factor.factor}</h4>
+                                    <p>${factor.impact}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="background: ${factor.level === 'Alto' ? '#dc3545' : factor.level === 'Medio' ? '#ffc107' : '#28a745'}; color: white; padding: 5px 10px; border-radius: 15px;">
+                                        ${factor.level}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function displayCoverageAnalysis(insuranceNeeds) {
+            const analysisDiv = document.getElementById('coverageAnalysis');
+            
+            analysisDiv.innerHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Seguro</th>
+                            <th>Cobertura Recomendada</th>
+                            <th>Costo Mensual</th>
+                            <th>Prioridad</th>
+                            <th>Beneficio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.keys(insuranceNeeds).map(insuranceType => {
+                            const need = insuranceNeeds[insuranceType];
+                            return `
+                                <tr>
+                                    <td>${getInsuranceName(insuranceType)}</td>
+                                    <td>$${typeof need.recommended === 'number' ? need.recommended.toLocaleString() : need.recommended}</td>
+                                    <td>$${need.monthlyCost.toFixed(0)}</td>
+                                    <td class="${need.priority === 'high' ? 'priority-high' : need.priority === 'medium' ? 'priority-medium' : 'priority-low'}">${need.priority.toUpperCase()}</td>
+                                    <td>${need.description}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function displayActionPlan(insuranceNeeds, totalMonthlyCost) {
+            const actionDiv = document.getElementById('actionPlan');
+            
+            const highPriorityInsurances = Object.keys(insuranceNeeds).filter(type => insuranceNeeds[type].priority === 'high');
+            const mediumPriorityInsurances = Object.keys(insuranceNeeds).filter(type => insuranceNeeds[type].priority === 'medium');
+            
+            actionDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    <h4>🎯 Plan de Implementación</h4>
+                    
+                    <div style="background: white; border: 2px solid #dc3545; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                        <h5 style="color: #dc3545;">📅 Fase 1: Prioridad Alta (Inmediato)</h5>
+                        <ul>
+                            ${highPriorityInsurances.map(type => `<li>Obtener ${getInsuranceName(type)} - $${insuranceNeeds[type].monthlyCost.toFixed(0)}/mes</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div style="background: white; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                        <h5 style="color: #ffc107;">📅 Fase 2: Prioridad Media (3-6 meses)</h5>
+                        <ul>
+                            ${mediumPriorityInsurances.map(type => `<li>Evaluar ${getInsuranceName(type)} - $${insuranceNeeds[type].monthlyCost.toFixed(0)}/mes</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div style="background: white; border: 2px solid #28a745; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                        <h5 style="color: #28a745;">📅 Fase 3: Optimización (6-12 meses)</h5>
+                        <ul>
+                            <li>Revisar y ajustar coberturas</li>
+                            <li>Comparar precios con otros proveedores</li>
+                            <li>Considerar bundling de seguros</li>
+                            <li>Revisar deducibles y límites</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                        <h5 style="color: #2196f3;">💰 Presupuesto Total</h5>
+                        <p><strong>Costo mensual total:</strong> $${totalMonthlyCost.toFixed(0)}</p>
+                        <p><strong>Costo anual total:</strong> $${(totalMonthlyCost * 12).toFixed(0)}</p>
+                        <p><strong>% de ingresos:</strong> ${((totalMonthlyCost * 12) / parseFloat(document.getElementById('income').value) * 100).toFixed(1)}%</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getInsuranceName(insuranceType) {
+            const names = {
+                'life': 'Seguro de Vida',
+                'health': 'Seguro de Salud',
+                'disability': 'Seguro de Discapacidad',
+                'auto': 'Seguro de Auto',
+                'home': 'Seguro de Hogar',
+                'umbrella': 'Seguro de Responsabilidad'
+            };
+            return names[insuranceType] || insuranceType;
+        }
+    </script>
+</body>
+</html>

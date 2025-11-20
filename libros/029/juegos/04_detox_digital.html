@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detox Digital</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .detox-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .detox-timer {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .detox-timer h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .detox-level {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .detox-level h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px;
+            font-size: 1.2em;
+        }
+        .level-beginner { background: #f8d7da; color: #721c24; }
+        .level-intermediate { background: #fff3cd; color: #856404; }
+        .level-advanced { background: #d4edda; color: #155724; }
+        .level-expert { background: #d1ecf1; color: #0c5460; }
+        .detox-challenges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .challenge-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .challenge-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .challenge-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .challenge-card.completed {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .challenge-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .challenge-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .challenge-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .challenge-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .detox-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .detox-btn:hover {
+            background: #5a6fd8;
+        }
+        .detox-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .detox-btn.active {
+            background: #28a745;
+        }
+        .detox-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .detox-stats {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .detox-stats h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .motivational-quote {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            font-style: italic;
+            text-align: center;
+        }
+        .motivational-quote h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .achievement-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .badge-bronze { background: #cd7f32; color: white; }
+        .badge-silver { background: #c0c0c0; color: #333; }
+        .badge-gold { background: #ffd700; color: #333; }
+        .badge-platinum { background: #e5e4e2; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Detox Digital</h1>
+            <p>Libera tu mente de la dependencia digital</p>
+        </div>
+
+        <div class="detox-area">
+            <div class="detox-timer">
+                <h3>⏱️ Tiempo de Detox</h3>
+                <div class="timer-display" id="timer-display">00:00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="detox-progress" style="width: 0%"></div>
+                </div>
+                <p id="detox-status">Selecciona un desafío para comenzar</p>
+            </div>
+
+            <div class="detox-level">
+                <h3>🏆 Nivel de Detox</h3>
+                <div class="level-indicator" id="detox-level">Principiante</div>
+                <div id="achievements"></div>
+            </div>
+
+            <div class="detox-challenges" id="challenges">
+                <div class="challenge-card" onclick="selectChallenge('quick')">
+                    <div class="challenge-icon">⚡</div>
+                    <div class="challenge-title">Desafío Rápido</div>
+                    <div class="challenge-description">30 minutos sin pantallas</div>
+                    <div class="challenge-duration">30 min</div>
+                </div>
+                <div class="challenge-card" onclick="selectChallenge('short')">
+                    <div class="challenge-icon">🕐</div>
+                    <div class="challenge-title">Desafío Corto</div>
+                    <div class="challenge-description">2 horas sin pantallas</div>
+                    <div class="challenge-duration">2 horas</div>
+                </div>
+                <div class="challenge-card" onclick="selectChallenge('medium')">
+                    <div class="challenge-icon">🕐</div>
+                    <div class="challenge-title">Desafío Medio</div>
+                    <div class="challenge-description">4 horas sin pantallas</div>
+                    <div class="challenge-duration">4 horas</div>
+                </div>
+                <div class="challenge-card" onclick="selectChallenge('long')">
+                    <div class="challenge-icon">🕐</div>
+                    <div class="challenge-title">Desafío Largo</div>
+                    <div class="challenge-description">8 horas sin pantallas</div>
+                    <div class="challenge-duration">8 horas</div>
+                </div>
+                <div class="challenge-card" onclick="selectChallenge('daily')">
+                    <div class="challenge-icon">🌅</div>
+                    <div class="challenge-title">Desafío Diario</div>
+                    <div class="challenge-description">24 horas sin pantallas</div>
+                    <div class="challenge-duration">24 horas</div>
+                </div>
+                <div class="challenge-card" onclick="selectChallenge('weekend')">
+                    <div class="challenge-icon">🏖️</div>
+                    <div class="challenge-title">Desafío de Fin de Semana</div>
+                    <div class="challenge-description">48 horas sin pantallas</div>
+                    <div class="challenge-duration">48 horas</div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="detox-btn" onclick="startDetox()" id="startBtn">🚀 Iniciar Detox</button>
+                <button class="detox-btn" onclick="pauseDetox()" id="pauseBtn" disabled>⏸️ Pausar</button>
+                <button class="detox-btn" onclick="stopDetox()" id="stopBtn" disabled>⏹️ Detener</button>
+                <button class="detox-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div class="motivational-quote" id="motivational-quote">
+                <h3>💪 Motivación</h3>
+                <p id="quote-text">"La tecnología es una herramienta, no una adicción. Tú controlas la tecnología, no al revés."</p>
+            </div>
+
+            <div id="detox-stats" style="display: none;">
+                <div class="detox-stats">
+                    <h3>📊 Estadísticas de Detox</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-time">0</div>
+                            <div class="stat-label">Horas Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="challenges-completed">0</div>
+                            <div class="stat-label">Desafíos Completados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="current-streak">0</div>
+                            <div class="stat-label">Racha Actual</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="longest-streak">0</div>
+                            <div class="stat-label">Racha Más Larga</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDetox = {
+            challenge: null,
+            isActive: false,
+            isPaused: false,
+            startTime: 0,
+            elapsedTime: 0,
+            totalTime: 0,
+            challengesCompleted: 0,
+            currentStreak: 0,
+            longestStreak: 0
+        };
+
+        let detoxInterval;
+
+        const challenges = {
+            'quick': { duration: 30 * 60 * 1000, name: 'Desafío Rápido' },
+            'short': { duration: 2 * 60 * 60 * 1000, name: 'Desafío Corto' },
+            'medium': { duration: 4 * 60 * 60 * 1000, name: 'Desafío Medio' },
+            'long': { duration: 8 * 60 * 60 * 1000, name: 'Desafío Largo' },
+            'daily': { duration: 24 * 60 * 60 * 1000, name: 'Desafío Diario' },
+            'weekend': { duration: 48 * 60 * 60 * 1000, name: 'Desafío de Fin de Semana' }
+        };
+
+        const motivationalQuotes = [
+            "La tecnología es una herramienta, no una adicción. Tú controlas la tecnología, no al revés.",
+            "La paz mental comienza cuando te desconectas del ruido digital.",
+            "Cada momento sin pantallas es un momento para reconectar contigo mismo.",
+            "La verdadera libertad digital es poder elegir cuándo no estar conectado.",
+            "Tu mente es más poderosa cuando no está fragmentada por las pantallas.",
+            "El detox digital no es castigo, es autocuidado.",
+            "En el silencio digital encuentras tu voz interior.",
+            "La concentración profunda solo es posible en la ausencia de distracciones digitales."
+        ];
+
+        function selectChallenge(challengeType) {
+            currentDetox.challenge = challengeType;
+            
+            // Actualizar selección visual
+            document.querySelectorAll('.challenge-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.challenge-card').classList.add('selected');
+            
+            // Actualizar estado
+            document.getElementById('detox-status').textContent = 
+                `Desafío seleccionado: ${challenges[challengeType].name}`;
+        }
+
+        function startDetox() {
+            if (!currentDetox.challenge || currentDetox.isActive) return;
+            
+            currentDetox.isActive = true;
+            currentDetox.isPaused = false;
+            currentDetox.startTime = Date.now();
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Iniciar temporizador
+            detoxInterval = setInterval(updateTimer, 1000);
+            
+            // Mostrar desafío seleccionado como activo
+            document.querySelectorAll('.challenge-card').forEach(card => {
+                if (card.classList.contains('selected')) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        function pauseDetox() {
+            if (!currentDetox.isActive) return;
+            
+            currentDetox.isPaused = !currentDetox.isPaused;
+            
+            if (currentDetox.isPaused) {
+                clearInterval(detoxInterval);
+                document.getElementById('pauseBtn').textContent = '▶️ Continuar';
+                document.getElementById('pauseBtn').classList.add('pause');
+            } else {
+                detoxInterval = setInterval(updateTimer, 1000);
+                document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+                document.getElementById('pauseBtn').classList.remove('pause');
+            }
+        }
+
+        function stopDetox() {
+            if (!currentDetox.isActive) return;
+            
+            currentDetox.isActive = false;
+            currentDetox.isPaused = false;
+            
+            clearInterval(detoxInterval);
+            
+            // Guardar estadísticas
+            const sessionTime = Math.floor((Date.now() - currentDetox.startTime) / 1000);
+            currentDetox.totalTime += sessionTime;
+            
+            // Verificar si se completó el desafío
+            const challengeDuration = challenges[currentDetox.challenge].duration / 1000;
+            if (sessionTime >= challengeDuration) {
+                currentDetox.challengesCompleted++;
+                currentDetox.currentStreak++;
+                currentDetox.longestStreak = Math.max(currentDetox.longestStreak, currentDetox.currentStreak);
+                
+                // Mostrar logro
+                showAchievement();
+            } else {
+                currentDetox.currentStreak = 0;
+            }
+            
+            // Guardar en localStorage
+            saveStats();
+            
+            // Resetear controles
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
+            document.getElementById('pauseBtn').classList.remove('pause');
+            
+            // Resetear visual
+            document.querySelectorAll('.challenge-card').forEach(card => {
+                card.classList.remove('selected', 'active');
+            });
+            document.getElementById('timer-display').textContent = '00:00:00';
+            document.getElementById('detox-progress').style.width = '0%';
+            document.getElementById('detox-status').textContent = 'Selecciona un desafío para comenzar';
+            
+            updateDetoxLevel();
+        }
+
+        function updateTimer() {
+            if (currentDetox.isPaused) return;
+            
+            const elapsed = Math.floor((Date.now() - currentDetox.startTime) / 1000);
+            const hours = Math.floor(elapsed / 3600);
+            const minutes = Math.floor((elapsed % 3600) / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('timer-display').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Actualizar progreso
+            const challengeDuration = challenges[currentDetox.challenge].duration / 1000;
+            const progress = Math.min((elapsed / challengeDuration) * 100, 100);
+            document.getElementById('detox-progress').style.width = `${progress}%`;
+            
+            // Actualizar estado
+            if (progress >= 100) {
+                document.getElementById('detox-status').textContent = '¡Desafío completado! 🎉';
+            } else {
+                const remaining = Math.max(0, challengeDuration - elapsed);
+                const remainingHours = Math.floor(remaining / 3600);
+                const remainingMinutes = Math.floor((remaining % 3600) / 60);
+                document.getElementById('detox-status').textContent = 
+                    `Tiempo restante: ${remainingHours}h ${remainingMinutes}m`;
+            }
+        }
+
+        function updateDetoxLevel() {
+            const totalHours = Math.floor(currentDetox.totalTime / 3600);
+            let level, levelClass;
+            
+            if (totalHours >= 100) {
+                level = "Experto";
+                levelClass = "level-expert";
+            } else if (totalHours >= 50) {
+                level = "Avanzado";
+                levelClass = "level-advanced";
+            } else if (totalHours >= 20) {
+                level = "Intermedio";
+                levelClass = "level-intermediate";
+            } else {
+                level = "Principiante";
+                levelClass = "level-beginner";
+            }
+            
+            document.getElementById('detox-level').textContent = level;
+            document.getElementById('detox-level').className = `level-indicator ${levelClass}`;
+        }
+
+        function showAchievement() {
+            const achievements = document.getElementById('achievements');
+            const badge = document.createElement('span');
+            badge.className = 'achievement-badge badge-gold';
+            badge.textContent = '🏆 Desafío Completado!';
+            achievements.appendChild(badge);
+            
+            // Remover después de 5 segundos
+            setTimeout(() => {
+                badge.remove();
+            }, 5000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            document.getElementById('total-time').textContent = Math.floor(currentDetox.totalTime / 3600);
+            document.getElementById('challenges-completed').textContent = currentDetox.challengesCompleted;
+            document.getElementById('current-streak').textContent = currentDetox.currentStreak;
+            document.getElementById('longest-streak').textContent = currentDetox.longestStreak;
+            
+            document.getElementById('detox-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                totalTime: currentDetox.totalTime,
+                challengesCompleted: currentDetox.challengesCompleted,
+                currentStreak: currentDetox.currentStreak,
+                longestStreak: currentDetox.longestStreak,
+                lastSession: Date.now()
+            };
+            localStorage.setItem('detoxStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('detoxStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentDetox.totalTime = stats.totalTime || 0;
+                currentDetox.challengesCompleted = stats.challengesCompleted || 0;
+                currentDetox.currentStreak = stats.currentStreak || 0;
+                currentDetox.longestStreak = stats.longestStreak || 0;
+            }
+        }
+
+        function updateMotivationalQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('quote-text').textContent = randomQuote;
+        }
+
+        // Cargar estadísticas y actualizar cita motivacional al iniciar
+        loadStats();
+        updateDetoxLevel();
+        updateMotivationalQuote();
+        
+        // Actualizar cita motivacional cada 30 segundos
+        setInterval(updateMotivationalQuote, 30000);
+    </script>
+</body>
+</html>

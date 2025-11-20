@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Hipoteca</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+        }
+        .simulator {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Simulador de Hipoteca</h1>
+        
+        <div class="simulator">
+            <h3>Calcula Tu Pago Mensual</h3>
+            
+            <label>Monto de la Hipoteca ($)</label>
+            <input type="number" id="loanAmount" value="160000" placeholder="160000">
+            
+            <label>Tasa de Interés Anual (%)</label>
+            <input type="number" id="interestRate" value="4.5" step="0.1" placeholder="4.5">
+            
+            <label>Plazo en Años</label>
+            <input type="number" id="years" value="30" placeholder="30">
+            
+            <button class="button" onclick="calculate()">Calcular Pago Mensual</button>
+        </div>
+
+        <div id="results" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+            const years = parseFloat(document.getElementById('years').value);
+            const totalPayments = years * 12;
+
+            const monthlyPayment = (loanAmount * interestRate * Math.pow(1 + interestRate, totalPayments)) / 
+                                    (Math.pow(1 + interestRate, totalPayments) - 1);
+
+            const totalPaid = monthlyPayment * totalPayments;
+            const totalInterest = totalPaid - loanAmount;
+
+            document.getElementById('results').innerHTML = `
+                <h3>Resultado</h3>
+                <p><strong>Pago Mensual:</strong> $${monthlyPayment.toFixed(2)}</p>
+                <p><strong>Total a Pagar:</strong> $${totalPaid.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
+                <p><strong>Interés Total:</strong> $${totalInterest.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+

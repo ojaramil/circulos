@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Patrones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .pattern-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .pattern-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .question-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .question-card h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .question-card p {
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .analysis {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .analysis h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .insight {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .insight h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Analizador de Patrones</h1>
+            <p>Identifica y comprende los patrones en tu comportamiento y pensamiento</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este analizador te ayuda a identificar patrones en tu comportamiento, pensamiento y emociones. A través de preguntas reflexivas y análisis, podrás reconocer patrones que te sirven y aquellos que te limitan, para poder transformarlos.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso del Análisis</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Patrones Identificados</h4>
+                        <div class="stat-number" id="patterns-identified">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Análisis Completados</h4>
+                        <div class="stat-number" id="analyses-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Insights Obtenidos</h4>
+                        <div class="stat-number" id="insights-gained">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pattern-container">
+                <div class="pattern-card">
+                    <h3>🔍 Patrón 1: Respuestas al Estrés</h3>
+                    <p>Analiza cómo respondes típicamente al estrés y qué patrones puedes identificar en tu comportamiento.</p>
+                    
+                    <div class="question-card">
+                        <h4>📝 Preguntas de Análisis</h4>
+                        <p>¿Cómo sueles responder cuando te sientes estresado o abrumado?</p>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'evitar')">
+                            <h4>Evitar</h4>
+                            <p>Tiendo a evitar o posponer las situaciones estresantes</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'confrontar')">
+                            <h4>Confrontar</h4>
+                            <p>Me enfrento directamente a los problemas y busco soluciones</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'buscar_apoyo')">
+                            <h4>Buscar Apoyo</h4>
+                            <p>Busco ayuda y apoyo de otros cuando me siento estresado</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'autocuidado')">
+                            <h4>Autocuidado</h4>
+                            <p>Me enfoco en cuidar de mí mismo y mi bienestar</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'distraccion')">
+                            <h4>Distracción</h4>
+                            <p>Me distraigo con actividades que me relajan</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'reflexion')">
+                            <h4>Reflexión</h4>
+                            <p>Reflexiono sobre la situación y busco entender qué está pasando</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzePattern()" disabled>Analizar Patrón</button>
+                <button class="btn" onclick="nextPattern()">Siguiente Patrón</button>
+            </div>
+
+            <div id="analysis-container" style="display: none;">
+                <div class="analysis">
+                    <h4>🎯 Análisis del Patrón</h4>
+                    <div id="analysis-content"></div>
+                </div>
+
+                <div class="insight">
+                    <h4>💡 Insight y Recomendaciones</h4>
+                    <div id="insight-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPattern = 0;
+        let selectedResponse = null;
+        let patternsIdentified = 0;
+        let analysesCompleted = 0;
+        let insightsGained = 0;
+
+        const patterns = [
+            {
+                title: "Respuestas al Estrés",
+                description: "Analiza cómo respondes típicamente al estrés y qué patrones puedes identificar en tu comportamiento.",
+                question: "¿Cómo sueles responder cuando te sientes estresado o abrumado?",
+                options: [
+                    { id: 'evitar', title: 'Evitar', description: 'Tiendo a evitar o posponer las situaciones estresantes' },
+                    { id: 'confrontar', title: 'Confrontar', description: 'Me enfrento directamente a los problemas y busco soluciones' },
+                    { id: 'buscar_apoyo', title: 'Buscar Apoyo', description: 'Busco ayuda y apoyo de otros cuando me siento estresado' },
+                    { id: 'autocuidado', title: 'Autocuidado', description: 'Me enfoco en cuidar de mí mismo y mi bienestar' },
+                    { id: 'distraccion', title: 'Distracción', description: 'Me distraigo con actividades que me relajan' },
+                    { id: 'reflexion', title: 'Reflexión', description: 'Reflexiono sobre la situación y busco entender qué está pasando' }
+                ],
+                analyses: {
+                    'evitar': 'El patrón de evitar puede ser útil a corto plazo, pero puede llevar a acumulación de estrés y problemas no resueltos. Considera desarrollar estrategias para enfrentar gradualmente las situaciones estresantes.',
+                    'confrontar': 'El patrón de confrontar muestra una actitud proactiva hacia los problemas. Esto es generalmente saludable, pero asegúrate de no ser demasiado agresivo o descuidar tu bienestar emocional.',
+                    'buscar_apoyo': 'El patrón de buscar apoyo es muy saludable. Muestra que reconoces la importancia de las conexiones sociales y no intentas manejar todo solo.',
+                    'autocuidado': 'El patrón de autocuidado es excelente. Muestra que priorizas tu bienestar y reconoces la importancia de cuidar de ti mismo.',
+                    'distraccion': 'El patrón de distracción puede ser útil ocasionalmente, pero si es tu única estrategia, puede evitar que enfrentes los problemas subyacentes.',
+                    'reflexion': 'El patrón de reflexión es muy valioso. Muestra que buscas entender las situaciones antes de actuar, lo cual puede llevar a soluciones más efectivas.'
+                }
+            },
+            {
+                title: "Patrones de Comunicación",
+                description: "Analiza cómo te comunicas con otros y qué patrones puedes identificar en tus interacciones.",
+                question: "¿Cómo sueles comunicarte cuando hay un desacuerdo o conflicto?",
+                options: [
+                    { id: 'asertivo', title: 'Asertivo', description: 'Expreso mis necesidades y opiniones de manera clara y respetuosa' },
+                    { id: 'agresivo', title: 'Agresivo', description: 'Me expreso de manera directa, a veces sin considerar los sentimientos de otros' },
+                    { id: 'pasivo', title: 'Pasivo', description: 'Tiendo a evitar el conflicto y no expreso mis necesidades' },
+                    { id: 'pasivo_agresivo', title: 'Pasivo-Agresivo', description: 'Expreso mi descontento de manera indirecta o sutil' },
+                    { id: 'empatico', title: 'Empático', description: 'Me enfoco en entender la perspectiva del otro antes de expresar la mía' },
+                    { id: 'analitico', title: 'Analítico', description: 'Analizo la situación objetivamente antes de responder' }
+                ],
+                analyses: {
+                    'asertivo': 'El patrón asertivo es muy saludable. Permite expresar tus necesidades mientras respetas a los demás, lo cual es fundamental para relaciones saludables.',
+                    'agresivo': 'El patrón agresivo puede ser efectivo a corto plazo, pero puede dañar las relaciones a largo plazo. Considera desarrollar habilidades de comunicación más empáticas.',
+                    'pasivo': 'El patrón pasivo puede evitar conflictos inmediatos, pero puede llevar a resentimiento y problemas no resueltos. Practica expresar tus necesidades de manera asertiva.',
+                    'pasivo_agresivo': 'El patrón pasivo-agresivo puede crear tensión en las relaciones. Considera desarrollar formas más directas y saludables de expresar tus necesidades.',
+                    'empatico': 'El patrón empático es muy valioso. Muestra que valoras las relaciones y buscas entender a otros, lo cual puede llevar a soluciones más efectivas.',
+                    'analitico': 'El patrón analítico puede ser útil para resolver problemas complejos, pero asegúrate de no descuidar el aspecto emocional de las situaciones.'
+                }
+            },
+            {
+                title: "Patrones de Autocuidado",
+                description: "Analiza cómo cuidas de ti mismo y qué patrones puedes identificar en tu bienestar.",
+                question: "¿Cómo sueles cuidar de tu bienestar físico y mental?",
+                options: [
+                    { id: 'ejercicio', title: 'Ejercicio', description: 'Mantengo una rutina regular de ejercicio físico' },
+                    { id: 'alimentacion', title: 'Alimentación', description: 'Me enfoco en una alimentación saludable y balanceada' },
+                    { id: 'sueno', title: 'Sueño', description: 'Priorizo un sueño de calidad y descanso adecuado' },
+                    { id: 'relajacion', title: 'Relajación', description: 'Practico técnicas de relajación y manejo del estrés' },
+                    { id: 'social', title: 'Social', description: 'Mantengo conexiones sociales y relaciones significativas' },
+                    { id: 'crecimiento', title: 'Crecimiento', description: 'Me enfoco en el desarrollo personal y el aprendizaje' }
+                ],
+                analyses: {
+                    'ejercicio': 'El patrón de ejercicio es excelente para el bienestar físico y mental. El ejercicio regular puede mejorar el estado de ánimo y reducir el estrés.',
+                    'alimentacion': 'El patrón de alimentación saludable es fundamental para el bienestar. Una buena nutrición puede mejorar la energía y el estado de ánimo.',
+                    'sueno': 'El patrón de sueño adecuado es crucial para el bienestar. Un sueño de calidad es fundamental para la salud física y mental.',
+                    'relajacion': 'El patrón de relajación es muy valioso para el manejo del estrés. Las técnicas de relajación pueden mejorar la calidad de vida y el bienestar.',
+                    'social': 'El patrón social es importante para el bienestar emocional. Las conexiones sociales pueden proporcionar apoyo y sentido de pertenencia.',
+                    'crecimiento': 'El patrón de crecimiento personal es muy valioso. El desarrollo continuo puede aumentar la satisfacción y el sentido de propósito en la vida.'
+                }
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Remove previous selection
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            selectedResponse = optionId;
+            
+            // Enable analyze button
+            document.getElementById('analyze-btn').disabled = false;
+        }
+
+        function analyzePattern() {
+            if (!selectedResponse) return;
+
+            const pattern = patterns[currentPattern];
+            const analysis = pattern.analyses[selectedResponse];
+            
+            if (!analysis) return;
+
+            // Update stats
+            patternsIdentified++;
+            analysesCompleted++;
+            insightsGained++;
+
+            // Show analysis
+            document.getElementById('analysis-content').innerHTML = `
+                <p><strong>Patrón identificado:</strong> ${pattern.title}</p>
+                <p><strong>Respuesta seleccionada:</strong> ${pattern.options.find(opt => opt.id === selectedResponse)?.title}</p>
+                <p><strong>Análisis:</strong> ${analysis}</p>
+            `;
+
+            // Show insight
+            document.getElementById('insight-content').innerHTML = `
+                <p><strong>Recomendaciones para el desarrollo:</strong></p>
+                <ul>
+                    <li>Reflexiona sobre cómo este patrón te ha servido en el pasado</li>
+                    <li>Considera si hay aspectos de este patrón que te gustaría cambiar</li>
+                    <li>Identifica estrategias específicas para desarrollar este patrón de manera más efectiva</li>
+                    <li>Practica nuevas formas de responder en situaciones similares</li>
+                </ul>
+            `;
+
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'block';
+            
+            // Update stats display
+            updateStats();
+        }
+
+        function nextPattern() {
+            currentPattern = (currentPattern + 1) % patterns.length;
+            loadPattern();
+        }
+
+        function loadPattern() {
+            const pattern = patterns[currentPattern];
+            
+            document.querySelector('.pattern-card h3').textContent = `🔍 Patrón ${currentPattern + 1}: ${pattern.title}`;
+            document.querySelector('.pattern-card p').textContent = pattern.description;
+            document.querySelector('.question-card p').textContent = pattern.question;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            pattern.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedResponse = null;
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('patterns-identified').textContent = patternsIdentified;
+            document.getElementById('analyses-completed').textContent = analysesCompleted;
+            document.getElementById('insights-gained').textContent = insightsGained;
+            
+            // Update progress bar
+            const progress = (analysesCompleted / patterns.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first pattern
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPattern();
+        });
+    </script>
+</body>
+</html>
+

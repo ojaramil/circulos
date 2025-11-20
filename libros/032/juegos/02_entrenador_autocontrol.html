@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Autocontrol - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .game-section h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .training-area {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .training-area h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ff6b6b;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .progress-section h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .timer {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Entrenador de Autocontrol</h1>
+            <p>Fortalece tu Mente y Domina tus Impulsos</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 ¿Qué es el Entrenador de Autocontrol?</h3>
+                <p>El Entrenador de Autocontrol es una herramienta interactiva que te ayuda a desarrollar y fortalecer tu capacidad de autocontrol. A través de ejercicios específicos y técnicas de mindfulness, aprenderás a manejar mejor tus impulsos y tomar decisiones más conscientes.</p>
+            </div>
+
+            <div class="training-area">
+                <h4>🏋️ Ejercicios de Autocontrol</h4>
+                
+                <div class="exercise">
+                    <h5>1. Respiración Consciente</h5>
+                    <p>Practica la respiración profunda para calmar tu mente y aumentar tu autocontrol.</p>
+                    <button class="btn" onclick="startBreathingExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Meditación de 5 Minutos</h5>
+                    <p>Medita durante 5 minutos para mejorar tu concentración y autocontrol.</p>
+                    <button class="btn" onclick="startMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Resistencia</h5>
+                    <p>Resiste a una tentación durante un tiempo determinado para fortalecer tu autocontrol.</p>
+                    <button class="btn" onclick="startResistanceExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Visualización Positiva</h5>
+                    <p>Visualiza tus objetivos y fortalece tu motivación para mantener el autocontrol.</p>
+                    <button class="btn" onclick="startVisualization()">Iniciar Visualización</button>
+                </div>
+            </div>
+
+            <div class="timer" id="timerSection" style="display: none;">
+                <h4 id="timerTitle">Ejercicio en Progreso</h4>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <button class="btn" onclick="stopExercise()">Detener</button>
+            </div>
+
+            <div class="progress-section">
+                <h4>📈 Progreso del Autocontrol</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="controlProgress" style="width: 0%"></div>
+                </div>
+                <p>Nivel de Autocontrol: <span id="controlLevel">Principiante</span></p>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Ejercicios Completados:</span>
+                    <span class="stat-value" id="completedExercises">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tiempo Total de Entrenamiento:</span>
+                    <span class="stat-value" id="totalTime">0 min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Días de Entrenamiento:</span>
+                    <span class="stat-value" id="trainingDays">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel de Autocontrol:</span>
+                    <span class="stat-value" id="controlLevelStat">Principiante</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🌱</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Ejercicio</div>
+                            <div class="achievement-desc">Completa tu primer ejercicio de autocontrol</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Racha de 7 Días</div>
+                            <div class="achievement-desc">Entrena tu autocontrol por 7 días consecutivos</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro del Autocontrol</div>
+                            <div class="achievement-desc">Completa 50 ejercicios de autocontrol</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Control Total</div>
+                            <div class="achievement-desc">Alcanza el nivel máximo de autocontrol</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let stats = JSON.parse(localStorage.getItem('autocontrolStats')) || {
+            completedExercises: 0,
+            totalTime: 0,
+            trainingDays: 0,
+            controlLevel: 0
+        };
+
+        let currentExercise = null;
+        let exerciseTimer = null;
+        let exerciseStartTime = null;
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateAchievements();
+        }
+
+        // Iniciar ejercicio de respiración
+        function startBreathingExercise() {
+            currentExercise = 'breathing';
+            startTimer(300); // 5 minutos
+        }
+
+        // Iniciar meditación
+        function startMeditation() {
+            currentExercise = 'meditation';
+            startTimer(300); // 5 minutos
+        }
+
+        // Iniciar ejercicio de resistencia
+        function startResistanceExercise() {
+            currentExercise = 'resistance';
+            startTimer(600); // 10 minutos
+        }
+
+        // Iniciar visualización
+        function startVisualization() {
+            currentExercise = 'visualization';
+            startTimer(180); // 3 minutos
+        }
+
+        // Iniciar temporizador
+        function startTimer(seconds) {
+            document.getElementById('timerSection').style.display = 'block';
+            document.getElementById('timerTitle').textContent = getExerciseTitle(currentExercise);
+            
+            let timeLeft = seconds;
+            exerciseStartTime = new Date();
+            
+            exerciseTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    completeExercise();
+                }
+            }, 1000);
+        }
+
+        // Actualizar display del temporizador
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Completar ejercicio
+        function completeExercise() {
+            clearInterval(exerciseTimer);
+            document.getElementById('timerSection').style.display = 'none';
+            
+            stats.completedExercises++;
+            stats.totalTime += Math.floor((new Date() - exerciseStartTime) / 60000);
+            stats.controlLevel = Math.min(stats.controlLevel + 1, 100);
+            
+            updateStats();
+            updateAchievements();
+            
+            alert('¡Ejercicio completado! ¡Buen trabajo!');
+        }
+
+        // Detener ejercicio
+        function stopExercise() {
+            clearInterval(exerciseTimer);
+            document.getElementById('timerSection').style.display = 'none';
+            currentExercise = null;
+        }
+
+        // Obtener título del ejercicio
+        function getExerciseTitle(exercise) {
+            const titles = {
+                'breathing': 'Ejercicio de Respiración',
+                'meditation': 'Meditación',
+                'resistance': 'Ejercicio de Resistencia',
+                'visualization': 'Visualización Positiva'
+            };
+            return titles[exercise] || 'Ejercicio';
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('completedExercises').textContent = stats.completedExercises;
+            document.getElementById('totalTime').textContent = stats.totalTime + ' min';
+            document.getElementById('trainingDays').textContent = stats.trainingDays;
+            
+            const level = getControlLevel(stats.controlLevel);
+            document.getElementById('controlLevel').textContent = level;
+            document.getElementById('controlLevelStat').textContent = level;
+            
+            // Actualizar barra de progreso
+            const progress = Math.min(stats.controlLevel, 100);
+            document.getElementById('controlProgress').style.width = progress + '%';
+            
+            saveData();
+        }
+
+        // Obtener nivel de autocontrol
+        function getControlLevel(level) {
+            if (level < 20) return 'Principiante';
+            if (level < 40) return 'Intermedio';
+            if (level < 60) return 'Avanzado';
+            if (level < 80) return 'Experto';
+            return 'Maestro';
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Ejercicio
+            if (stats.completedExercises >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Racha de 7 Días
+            if (stats.trainingDays >= 7) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro del Autocontrol
+            if (stats.completedExercises >= 50) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Control Total
+            if (stats.controlLevel >= 100) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('autocontrolStats', JSON.stringify(stats));
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

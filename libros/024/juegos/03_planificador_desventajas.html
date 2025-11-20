@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Desventajas - David y Goliat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .disadvantage-analyzer {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        .disadvantage-analyzer h3 {
+            color: #9c27b0;
+            margin-top: 0;
+        }
+        .disadvantage-input {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+        }
+        .disadvantage-input h4 {
+            color: #9c27b0;
+            margin-top: 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #9c27b0;
+        }
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .transformation-workshop {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ff9800;
+            display: none;
+        }
+        .transformation-workshop h3 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .transformation-step {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .transformation-step h4 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .strategy-suggestions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .strategy-suggestions h4 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .strategy-suggestion {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #2196f3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .strategy-suggestion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .strategy-suggestion.selected {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+        .strategy-suggestion h5 {
+            color: #1976d2;
+            margin: 0 0 8px 0;
+        }
+        .strategy-suggestion .icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+        .action-plan {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .action-plan h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .action-step {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border-left: 3px solid #4caf50;
+        }
+        .action-step .step-number {
+            background: #4caf50;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        .progress-tracker {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+            display: none;
+        }
+        .progress-tracker h3 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .progress-item {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border-left: 3px solid #9c27b0;
+        }
+        .progress-item h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9c27b0, #673ab7);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        .btn {
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #7b1fa2;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-success {
+            background: #4caf50;
+        }
+        .btn-success:hover {
+            background: #45a049;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover {
+            background: #0056b3;
+        }
+        .example-disadvantages {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .example-disadvantages h4 {
+            color: #6c757d;
+            margin-top: 0;
+        }
+        .example-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .example-item:hover {
+            border-color: #9c27b0;
+            transform: translateY(-2px);
+        }
+        .example-item h5 {
+            color: #6c757d;
+            margin: 0 0 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Planificador de Desventajas</h1>
+        <p>"Convierte tus limitaciones en fortalezas"</p>
+    </div>
+
+    <div class="game-container">
+        <h2>¿Cómo Funciona el Planificador?</h2>
+        <p>Este planificador te ayuda a identificar tus desventajas aparentes y transformarlas en ventajas estratégicas. Siguiendo los principios de David y Goliat, aprenderás a ver tus limitaciones desde una nueva perspectiva y desarrollar planes de acción concretos para convertir desventajas en oportunidades.</p>
+
+        <div class="disadvantage-analyzer">
+            <h3>🔍 Paso 1: Analiza tu Desventaja</h3>
+            <p>Identifica y describe la desventaja que quieres transformar:</p>
+            
+            <div class="disadvantage-input">
+                <h4>📝 Describe tu Desventaja</h4>
+                <div class="input-group">
+                    <label for="disadvantageTitle">Título de la Desventaja:</label>
+                    <input type="text" id="disadvantageTitle" placeholder="Ej: Falta de experiencia en el campo">
+                </div>
+                
+                <div class="input-group">
+                    <label for="disadvantageDescription">Descripción Detallada:</label>
+                    <textarea id="disadvantageDescription" placeholder="Describe específicamente en qué consiste esta desventaja, cómo te afecta y por qué la consideras un problema..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="disadvantageCategory">Categoría:</label>
+                    <select id="disadvantageCategory">
+                        <option value="">Selecciona una categoría</option>
+                        <option value="personal">Personal (habilidades, características)</option>
+                        <option value="professional">Profesional (trabajo, carrera)</option>
+                        <option value="academic">Académico (estudios, educación)</option>
+                        <option value="social">Social (relaciones, comunicación)</option>
+                        <option value="financial">Financiero (recursos, dinero)</option>
+                        <option value="physical">Físico (salud, apariencia)</option>
+                        <option value="other">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="disadvantageImpact">Impacto Actual (1-10):</label>
+                    <input type="range" id="disadvantageImpact" min="1" max="10" value="5">
+                    <span id="impactValue">5</span>
+                </div>
+            </div>
+            
+            <div class="example-disadvantages">
+                <h4>💡 Ejemplos de Desventajas Comunes</h4>
+                <p>Haz clic en un ejemplo para usarlo como punto de partida:</p>
+                
+                <div class="example-list">
+                    <div class="example-item" data-example="inexperience">
+                        <h5>Falta de Experiencia</h5>
+                        <p>Ser nuevo en un campo o industria</p>
+                    </div>
+                    <div class="example-item" data-example="resources">
+                        <h5>Recursos Limitados</h5>
+                        <p>Tener poco dinero, tiempo o acceso</p>
+                    </div>
+                    <div class="example-item" data-example="size">
+                        <h5>Tamaño o Escala</h5>
+                        <p>Ser pequeño en comparación con competidores</p>
+                    </div>
+                    <div class="example-item" data-example="age">
+                        <h5>Edad o Generación</h5>
+                        <p>Ser muy joven o muy mayor para el contexto</p>
+                    </div>
+                    <div class="example-item" data-example="background">
+                        <h5>Antecedentes Diferentes</h5>
+                        <p>No encajar en el perfil típico</p>
+                    </div>
+                    <div class="example-item" data-example="location">
+                        <h5>Ubicación Geográfica</h5>
+                        <p>Estar en un lugar desfavorable</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" id="analyzeDisadvantage">🔍 Analizar Desventaja</button>
+                <button class="btn btn-secondary" id="clearForm">🗑️ Limpiar</button>
+            </div>
+        </div>
+
+        <div class="transformation-workshop" id="transformationWorkshop">
+            <h3>⚡ Paso 2: Taller de Transformación</h3>
+            <p>Ahora vamos a analizar tu desventaja desde la perspectiva de David y Goliat:</p>
+            
+            <div class="transformation-step">
+                <h4>🧠 Reenmarcar la Desventaja</h4>
+                <p><strong>Pregunta clave:</strong> ¿Cómo podría esta "desventaja" ser en realidad una ventaja disfrazada?</p>
+                <div class="input-group">
+                    <label for="reframePerspective">Nueva Perspectiva:</label>
+                    <textarea id="reframePerspective" placeholder="Describe cómo podrías ver esta desventaja desde un ángulo positivo..."></textarea>
+                </div>
+            </div>
+            
+            <div class="transformation-step">
+                <h4>🎯 Identificar Oportunidades Ocultas</h4>
+                <p><strong>Pregunta clave:</strong> ¿Qué oportunidades únicas te ofrece esta desventaja?</p>
+                <div class="input-group">
+                    <label for="hiddenOpportunities">Oportunidades Identificadas:</label>
+                    <textarea id="hiddenOpportunities" placeholder="Lista las oportunidades que podrías aprovechar gracias a esta desventaja..."></textarea>
+                </div>
+            </div>
+            
+            <div class="transformation-step">
+                <h4>🚀 Estrategias de Transformación</h4>
+                <p>Selecciona las estrategias que mejor se adapten a tu situación:</p>
+                
+                <div class="strategy-suggestions">
+                    <h4>💡 Estrategias Recomendadas</h4>
+                    <div class="strategy-grid">
+                        <div class="strategy-suggestion" data-strategy="change-rules">
+                            <div class="icon">🔄</div>
+                            <h5>Cambiar las Reglas</h5>
+                            <p>No juegues según las expectativas del oponente</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="reject-conventions">
+                            <div class="icon">🚫</div>
+                            <h5>Rechazar Convenciones</h5>
+                            <p>Ignora las reglas tradicionales y crea las tuyas</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="use-speed">
+                            <div class="icon">⚡</div>
+                            <h5>Usar Velocidad</h5>
+                            <p>Aprovecha tu agilidad y rapidez</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="specialize">
+                            <div class="icon">🎯</div>
+                            <h5>Habilidades Especializadas</h5>
+                            <p>Desarrolla una fortaleza única</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="non-linear">
+                            <div class="icon">🧠</div>
+                            <h5>Pensamiento No Lineal</h5>
+                            <p>Encuentra soluciones creativas e inesperadas</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="leverage-context">
+                            <div class="icon">🌍</div>
+                            <h5>Aprovechar Contexto</h5>
+                            <p>Usa tu entorno a tu favor</p>
+                        </div>
+                        <div class="strategy-suggestion" data-strategy="convert-weakness">
+                            <div class="icon">💪</div>
+                            <h5>Convertir Debilidades</h5>
+                            <p>Transforma tus limitaciones en ventajas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="customStrategy">Estrategia Personalizada:</label>
+                    <textarea id="customStrategy" placeholder="Describe una estrategia específica que hayas desarrollado para tu situación..."></textarea>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" id="createActionPlan">📋 Crear Plan de Acción</button>
+                <button class="btn btn-secondary" id="resetWorkshop">🔄 Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="action-plan" id="actionPlan">
+            <h3>📋 Paso 3: Plan de Acción</h3>
+            <p>Basado en tu análisis, aquí tienes un plan de acción personalizado:</p>
+            
+            <div class="action-step">
+                <span class="step-number">1</span>
+                <strong>Objetivo de Transformación:</strong>
+                <p id="transformationGoal">[Se generará automáticamente]</p>
+            </div>
+            
+            <div class="action-step">
+                <span class="step-number">2</span>
+                <strong>Estrategias Seleccionadas:</strong>
+                <div id="selectedStrategies">[Se generará automáticamente]</div>
+            </div>
+            
+            <div class="action-step">
+                <span class="step-number">3</span>
+                <strong>Acciones Específicas:</strong>
+                <div id="specificActions">[Se generará automáticamente]</div>
+            </div>
+            
+            <div class="action-step">
+                <span class="step-number">4</span>
+                <strong>Métricas de Éxito:</strong>
+                <div id="successMetrics">[Se generará automáticamente]</div>
+            </div>
+            
+            <div class="action-step">
+                <span class="step-number">5</span>
+                <strong>Timeline:</strong>
+                <div id="timeline">[Se generará automáticamente]</div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn btn-success" id="startTracking">🚀 Comenzar Seguimiento</button>
+                <button class="btn btn-secondary" id="downloadPlan">📥 Descargar Plan</button>
+            </div>
+        </div>
+
+        <div class="progress-tracker" id="progressTracker">
+            <h3>📊 Paso 4: Seguimiento del Progreso</h3>
+            <p>Monitorea tu progreso en la transformación de tu desventaja:</p>
+            
+            <div class="progress-item">
+                <h4>🎯 Progreso General</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="generalProgress" style="width: 0%"></div>
+                </div>
+                <p><strong>Estado:</strong> <span id="progressStatus">Iniciando</span></p>
+            </div>
+            
+            <div class="progress-item">
+                <h4>📈 Métricas de Seguimiento</h4>
+                <div class="input-group">
+                    <label for="weeklyUpdate">Actualización Semanal:</label>
+                    <textarea id="weeklyUpdate" placeholder="Describe tu progreso esta semana, qué funcionó, qué no, y qué ajustes harás..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="confidenceLevel">Nivel de Confianza (1-10):</label>
+                    <input type="range" id="confidenceLevel" min="1" max="10" value="5">
+                    <span id="confidenceValue">5</span>
+                </div>
+                <button class="btn" id="saveProgress">💾 Guardar Progreso</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="02_simulador_estrategias.html" class="nav-btn">← Anterior</a>
+        <a href="04_casos_estudio.html" class="nav-btn">Siguiente →</a>
+    </div>
+
+    <script>
+        let currentDisadvantage = {};
+        let selectedStrategies = [];
+        let progressData = {};
+
+        // Ejemplos de desventajas
+        const exampleDisadvantages = {
+            inexperience: {
+                title: "Falta de Experiencia",
+                description: "Ser nuevo en un campo o industria, sin historial probado o credenciales establecidas.",
+                category: "professional",
+                impact: 7
+            },
+            resources: {
+                title: "Recursos Limitados",
+                description: "Tener poco dinero, tiempo, acceso a tecnología o conexiones profesionales.",
+                category: "financial",
+                impact: 8
+            },
+            size: {
+                title: "Tamaño o Escala",
+                description: "Ser pequeño en comparación con competidores, tener menos empleados o infraestructura.",
+                category: "professional",
+                impact: 6
+            },
+            age: {
+                title: "Edad o Generación",
+                description: "Ser muy joven o muy mayor para el contexto, no encajar en el perfil típico esperado.",
+                category: "personal",
+                impact: 5
+            },
+            background: {
+                title: "Antecedentes Diferentes",
+                description: "No encajar en el perfil típico, tener educación o experiencia en campos no relacionados.",
+                category: "personal",
+                impact: 6
+            },
+            location: {
+                title: "Ubicación Geográfica",
+                description: "Estar en un lugar desfavorable, lejos de centros de poder o recursos importantes.",
+                category: "other",
+                impact: 7
+            }
+        };
+
+        // Estrategias y sus descripciones
+        const strategies = {
+            "change-rules": {
+                name: "Cambiar las Reglas",
+                description: "No juegues según las expectativas del oponente. Crea nuevas formas de competir.",
+                actions: ["Identifica las reglas no escritas del juego", "Desarrolla alternativas innovadoras", "Cambia el terreno de la competencia"]
+            },
+            "reject-conventions": {
+                name: "Rechazar Convenciones",
+                description: "Ignora las reglas tradicionales y crea las tuyas propias.",
+                actions: ["Cuestiona los supuestos básicos", "Desarrolla métodos alternativos", "Crea tu propio sistema"]
+            },
+            "use-speed": {
+                name: "Usar Velocidad",
+                description: "Aprovecha tu agilidad y rapidez para superar obstáculos.",
+                actions: ["Identifica dónde puedes moverte más rápido", "Desarrolla procesos ágiles", "Aprovecha la lentitud de los grandes"]
+            },
+            "specialize": {
+                name: "Habilidades Especializadas",
+                description: "Desarrolla una fortaleza única que otros no tienen.",
+                actions: ["Encuentra tu nicho específico", "Desarrolla expertise en un área", "Conviértete en el mejor en algo específico"]
+            },
+            "non-linear": {
+                name: "Pensamiento No Lineal",
+                description: "Encuentra soluciones creativas e inesperadas.",
+                actions: ["Busca conexiones inesperadas", "Piensa fuera de la caja", "Desarrolla enfoques únicos"]
+            },
+            "leverage-context": {
+                name: "Aprovechar Contexto",
+                description: "Usa tu entorno y circunstancias a tu favor.",
+                actions: ["Analiza tu contexto único", "Identifica ventajas del entorno", "Usa la geografía o situación a tu favor"]
+            },
+            "convert-weakness": {
+                name: "Convertir Debilidades",
+                description: "Transforma tus limitaciones en ventajas estratégicas.",
+                actions: ["Identifica cómo tu debilidad puede ser una fortaleza", "Desarrolla estrategias que usen tu limitación", "Conviértete en experto en tu área de debilidad"]
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ejemplos de desventajas
+            document.querySelectorAll('.example-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const example = exampleDisadvantages[this.dataset.example];
+                    fillDisadvantageForm(example);
+                });
+            });
+
+            // Botones principales
+            document.getElementById('analyzeDisadvantage').addEventListener('click', analyzeDisadvantage);
+            document.getElementById('clearForm').addEventListener('click', clearForm);
+            document.getElementById('resetWorkshop').addEventListener('click', resetWorkshop);
+            document.getElementById('createActionPlan').addEventListener('click', createActionPlan);
+            document.getElementById('startTracking').addEventListener('click', startTracking);
+            document.getElementById('saveProgress').addEventListener('click', saveProgress);
+
+            // Estrategias
+            document.querySelectorAll('.strategy-suggestion').forEach(suggestion => {
+                suggestion.addEventListener('click', function() {
+                    const strategy = this.dataset.strategy;
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        selectedStrategies = selectedStrategies.filter(s => s !== strategy);
+                    } else {
+                        this.classList.add('selected');
+                        selectedStrategies.push(strategy);
+                    }
+                });
+            });
+
+            // Range inputs
+            document.getElementById('disadvantageImpact').addEventListener('input', function() {
+                document.getElementById('impactValue').textContent = this.value;
+            });
+
+            document.getElementById('confidenceLevel').addEventListener('input', function() {
+                document.getElementById('confidenceValue').textContent = this.value;
+            });
+        });
+
+        function fillDisadvantageForm(example) {
+            document.getElementById('disadvantageTitle').value = example.title;
+            document.getElementById('disadvantageDescription').value = example.description;
+            document.getElementById('disadvantageCategory').value = example.category;
+            document.getElementById('disadvantageImpact').value = example.impact;
+            document.getElementById('impactValue').textContent = example.impact;
+        }
+
+        function analyzeDisadvantage() {
+            const title = document.getElementById('disadvantageTitle').value;
+            const description = document.getElementById('disadvantageDescription').value;
+            const category = document.getElementById('disadvantageCategory').value;
+            const impact = document.getElementById('disadvantageImpact').value;
+
+            if (!title || !description || !category) {
+                alert('Por favor, completa todos los campos requeridos.');
+                return;
+            }
+
+            currentDisadvantage = { title, description, category, impact };
+            document.getElementById('transformationWorkshop').style.display = 'block';
+            
+            // Scroll to workshop
+            document.getElementById('transformationWorkshop').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearForm() {
+            document.getElementById('disadvantageTitle').value = '';
+            document.getElementById('disadvantageDescription').value = '';
+            document.getElementById('disadvantageCategory').value = '';
+            document.getElementById('disadvantageImpact').value = '5';
+            document.getElementById('impactValue').textContent = '5';
+            document.getElementById('transformationWorkshop').style.display = 'none';
+            document.getElementById('actionPlan').style.display = 'none';
+            document.getElementById('progressTracker').style.display = 'none';
+        }
+
+        function resetWorkshop() {
+            document.querySelectorAll('.strategy-suggestion').forEach(s => s.classList.remove('selected'));
+            selectedStrategies = [];
+            document.getElementById('reframePerspective').value = '';
+            document.getElementById('hiddenOpportunities').value = '';
+            document.getElementById('customStrategy').value = '';
+        }
+
+        function createActionPlan() {
+            if (selectedStrategies.length === 0) {
+                alert('Por favor, selecciona al menos una estrategia.');
+                return;
+            }
+
+            const reframePerspective = document.getElementById('reframePerspective').value;
+            const hiddenOpportunities = document.getElementById('hiddenOpportunities').value;
+            const customStrategy = document.getElementById('customStrategy').value;
+
+            // Generar plan de acción
+            document.getElementById('transformationGoal').textContent = `Transformar "${currentDisadvantage.title}" de una desventaja limitante en una ventaja estratégica que me permita ${hiddenOpportunities || 'aprovechar oportunidades únicas'}.`;
+
+            let strategiesHtml = '<ul>';
+            selectedStrategies.forEach(strategy => {
+                const strategyData = strategies[strategy];
+                strategiesHtml += `<li><strong>${strategyData.name}:</strong> ${strategyData.description}</li>`;
+            });
+            if (customStrategy) {
+                strategiesHtml += `<li><strong>Estrategia Personalizada:</strong> ${customStrategy}</li>`;
+            }
+            strategiesHtml += '</ul>';
+            document.getElementById('selectedStrategies').innerHTML = strategiesHtml;
+
+            let actionsHtml = '<ul>';
+            selectedStrategies.forEach(strategy => {
+                const strategyData = strategies[strategy];
+                actionsHtml += `<li><strong>${strategyData.name}:</strong><ul>`;
+                strategyData.actions.forEach(action => {
+                    actionsHtml += `<li>${action}</li>`;
+                });
+                actionsHtml += '</ul></li>';
+            });
+            actionsHtml += '</ul>';
+            document.getElementById('specificActions').innerHTML = actionsHtml;
+
+            document.getElementById('successMetrics').innerHTML = `
+                <ul>
+                    <li><strong>Reducción del impacto negativo:</strong> De ${currentDisadvantage.impact}/10 a menos de 3/10</li>
+                    <li><strong>Desarrollo de nuevas fortalezas:</strong> Al menos 2 habilidades relacionadas con la estrategia</li>
+                    <li><strong>Reconocimiento externo:</strong> Otros notan tu nueva ventaja</li>
+                    <li><strong>Confianza personal:</strong> Te sientes más seguro en esta área</li>
+                </ul>
+            `;
+
+            document.getElementById('timeline').innerHTML = `
+                <ul>
+                    <li><strong>Semana 1-2:</strong> Implementar estrategias básicas</li>
+                    <li><strong>Semana 3-4:</strong> Evaluar progreso y ajustar</li>
+                    <li><strong>Mes 2:</strong> Consolidar ganancias</li>
+                    <li><strong>Mes 3:</strong> Evaluar transformación completa</li>
+                </ul>
+            `;
+
+            document.getElementById('actionPlan').style.display = 'block';
+            document.getElementById('actionPlan').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function startTracking() {
+            document.getElementById('progressTracker').style.display = 'block';
+            document.getElementById('progressTracker').scrollIntoView({ behavior: 'smooth' });
+            
+            // Inicializar progreso
+            progressData = {
+                startDate: new Date(),
+                weeklyUpdates: [],
+                confidenceLevels: [],
+                generalProgress: 0
+            };
+            
+            updateProgressDisplay();
+        }
+
+        function saveProgress() {
+            const weeklyUpdate = document.getElementById('weeklyUpdate').value;
+            const confidenceLevel = document.getElementById('confidenceLevel').value;
+            
+            if (!weeklyUpdate) {
+                alert('Por favor, describe tu progreso semanal.');
+                return;
+            }
+
+            progressData.weeklyUpdates.push({
+                date: new Date(),
+                update: weeklyUpdate,
+                confidence: parseInt(confidenceLevel)
+            });
+
+            progressData.confidenceLevels.push(parseInt(confidenceLevel));
+            
+            // Calcular progreso general
+            const weeksElapsed = Math.min(progressData.weeklyUpdates.length, 12); // Máximo 12 semanas
+            progressData.generalProgress = Math.min((weeksElapsed / 12) * 100, 100);
+            
+            updateProgressDisplay();
+            
+            // Limpiar formulario
+            document.getElementById('weeklyUpdate').value = '';
+            document.getElementById('confidenceLevel').value = '5';
+            document.getElementById('confidenceValue').textContent = '5';
+            
+            alert('Progreso guardado exitosamente.');
+        }
+
+        function updateProgressDisplay() {
+            document.getElementById('generalProgress').style.width = progressData.generalProgress + '%';
+            
+            let status = 'Iniciando';
+            if (progressData.generalProgress > 25) status = 'En Progreso';
+            if (progressData.generalProgress > 50) status = 'Bien Encaminado';
+            if (progressData.generalProgress > 75) status = 'Casi Completado';
+            if (progressData.generalProgress >= 100) status = 'Completado';
+            
+            document.getElementById('progressStatus').textContent = status;
+        }
+    </script>
+</body>
+</html>

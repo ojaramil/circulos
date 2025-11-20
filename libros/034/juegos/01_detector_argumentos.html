@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Argumentos - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .argument-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .argument-box:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 8px rgba(0,123,255,0.1);
+        }
+        .argument-box.selected {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .argument-box.incorrect {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .argument-box.correct {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Detector de Argumentos</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es identificar cuáles de las siguientes afirmaciones son argumentos válidos y cuáles no. Un argumento debe tener premisas que apoyen una conclusión.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Correctas: <span id="correct">0</span> | Incorrectas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada afirmación y determina si es un argumento válido o no. Haz clic en las que consideres argumentos válidos.</p>
+        </div>
+
+        <div id="arguments-container">
+            <!-- Los argumentos se cargarán dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswers()" id="check-btn">Verificar Respuestas</button>
+            <button class="btn" onclick="nextRound()" id="next-btn" style="display: none;">Siguiente Ronda</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentRound = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedArguments = [];
+        let currentArguments = [];
+
+        const argumentSets = [
+            [
+                {
+                    text: "Todos los humanos son mortales. Sócrates es humano. Por tanto, Sócrates es mortal.",
+                    isArgument: true,
+                    explanation: "Este es un argumento deductivo válido con premisas claras y una conclusión lógica."
+                },
+                {
+                    text: "Me gusta el chocolate.",
+                    isArgument: false,
+                    explanation: "Esta es una opinión personal, no un argumento. No hay premisas que apoyen una conclusión."
+                },
+                {
+                    text: "El cambio climático es real porque el 97% de los científicos climáticos están de acuerdo en que las actividades humanas están causando el calentamiento global.",
+                    isArgument: true,
+                    explanation: "Este es un argumento inductivo que usa evidencia científica para apoyar una conclusión."
+                },
+                {
+                    text: "¡Qué día tan hermoso!",
+                    isArgument: false,
+                    explanation: "Esta es una exclamación emocional, no un argumento. No presenta razones para una conclusión."
+                },
+                {
+                    text: "Debemos invertir en educación porque los países con mejor educación tienen economías más fuertes y menor desigualdad social.",
+                    isArgument: true,
+                    explanation: "Este es un argumento que presenta razones (premisas) para apoyar una conclusión sobre inversión educativa."
+                }
+            ],
+            [
+                {
+                    text: "La democracia es el mejor sistema de gobierno porque permite la participación ciudadana y protege los derechos individuales.",
+                    isArgument: true,
+                    explanation: "Este es un argumento que presenta razones para apoyar una conclusión sobre la democracia."
+                },
+                {
+                    text: "¡Vamos al cine!",
+                    isArgument: false,
+                    explanation: "Esta es una propuesta o invitación, no un argumento. No presenta razones para una conclusión."
+                },
+                {
+                    text: "Si llueve, las calles se mojan. Está lloviendo. Por tanto, las calles están mojadas.",
+                    isArgument: true,
+                    explanation: "Este es un argumento deductivo válido con premisas claras y una conclusión lógica."
+                },
+                {
+                    text: "El arte es subjetivo.",
+                    isArgument: false,
+                    explanation: "Esta es una afirmación general, no un argumento. No hay premisas que apoyen una conclusión."
+                },
+                {
+                    text: "La tecnología ha mejorado nuestras vidas porque nos permite comunicarnos instantáneamente, acceder a información fácilmente y automatizar tareas repetitivas.",
+                    isArgument: true,
+                    explanation: "Este es un argumento que presenta múltiples razones para apoyar una conclusión sobre la tecnología."
+                }
+            ]
+        ];
+
+        function loadArguments() {
+            currentArguments = argumentSets[currentRound];
+            const container = document.getElementById('arguments-container');
+            container.innerHTML = '';
+            selectedArguments = [];
+
+            currentArguments.forEach((argument, index) => {
+                const argumentBox = document.createElement('div');
+                argumentBox.className = 'argument-box';
+                argumentBox.innerHTML = `
+                    <h4>Afirmación ${index + 1}</h4>
+                    <p>${argument.text}</p>
+                `;
+                argumentBox.onclick = () => selectArgument(index, argumentBox);
+                container.appendChild(argumentBox);
+            });
+        }
+
+        function selectArgument(index, element) {
+            if (selectedArguments.includes(index)) {
+                selectedArguments = selectedArguments.filter(i => i !== index);
+                element.classList.remove('selected');
+            } else {
+                selectedArguments.push(index);
+                element.classList.add('selected');
+            }
+        }
+
+        function checkAnswers() {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.innerHTML = '<h3>📝 Resultados:</h3>';
+
+            let roundCorrect = 0;
+            const argumentBoxes = document.querySelectorAll('.argument-box');
+
+            currentArguments.forEach((argument, index) => {
+                const isSelected = selectedArguments.includes(index);
+                const isCorrect = (argument.isArgument && isSelected) || (!argument.isArgument && !isSelected);
+                
+                if (isCorrect) {
+                    roundCorrect++;
+                    argumentBoxes[index].classList.add('correct');
+                } else {
+                    argumentBoxes[index].classList.add('incorrect');
+                }
+
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+                resultDiv.innerHTML = `
+                    <strong>Afirmación ${index + 1}:</strong> ${isCorrect ? '✅ Correcto' : '❌ Incorrecto'}<br>
+                    <strong>Explicación:</strong> ${argument.explanation}
+                `;
+                feedback.appendChild(resultDiv);
+            });
+
+            score.correct += roundCorrect;
+            score.incorrect += (currentArguments.length - roundCorrect);
+            score.total += currentArguments.length;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextRound() {
+            currentRound++;
+            if (currentRound < argumentSets.length) {
+                loadArguments();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                alert('¡Felicidades! Has completado todas las rondas del juego.');
+            }
+        }
+
+        function resetGame() {
+            currentRound = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadArguments();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadArguments();
+    </script>
+</body>
+</html>

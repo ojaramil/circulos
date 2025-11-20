@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Atención - El Cerebro se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .game-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .attention-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .attention-cell {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e9ecef;
+            font-size: 2em;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .attention-cell:hover {
+            background: #dee2e6;
+        }
+        .attention-cell.target {
+            background: #28a745;
+            color: white;
+        }
+        .attention-cell.distractor {
+            background: #dc3545;
+            color: white;
+        }
+        .attention-cell.neutral {
+            background: #6c757d;
+            color: white;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .game-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .game-info h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .timer {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+        .timer h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .difficulty-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .difficulty-selector h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .difficulty-option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .difficulty-option:hover {
+            border-color: #667eea;
+        }
+        .difficulty-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .difficulty-option h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .difficulty-option p {
+            margin: 10px 0;
+        }
+        .instruction-box {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .instruction-box h4 {
+            color: #155724;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Juego de Atención</h1>
+            <p>Mejora tu concentración y enfoque</p>
+        </div>
+
+        <div class="tip-box">
+            <h4>🧠 ¿Por qué es importante el juego de atención?</h4>
+            <p>El juego de atención es una excelente manera de ejercitar tu cerebro y mejorar la neuroplasticidad. Al jugar regularmente, puedes fortalecer las conexiones neuronales relacionadas con la atención y la concentración.</p>
+        </div>
+
+        <div class="difficulty-selector">
+            <h3>🎯 Selecciona la Dificultad</h3>
+            <p>Elige el nivel de dificultad que mejor se adapte a tu nivel actual:</p>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('easy')">
+                <h4>🟢 Fácil</h4>
+                <p>3x3 grid - 1 objetivo - Ideal para principiantes</p>
+            </div>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('medium')">
+                <h4>🟡 Medio</h4>
+                <p>4x4 grid - 2 objetivos - Nivel intermedio</p>
+            </div>
+            
+            <div class="difficulty-option" onclick="selectDifficulty('hard')">
+                <h4>🔴 Difícil</h4>
+                <p>5x5 grid - 3 objetivos - Para expertos</p>
+            </div>
+        </div>
+
+        <div class="game-section" id="game-section" style="display: none;">
+            <h3>🎮 Juego de Atención</h3>
+            <div class="timer">
+                <h4>⏰ Tiempo</h4>
+                <div class="timer-display" id="timer-display">00:00</div>
+            </div>
+            <div class="instruction-box">
+                <h4>📋 Instrucciones</h4>
+                <p>Haz clic en las celdas verdes (objetivos) lo más rápido posible. Evita hacer clic en las celdas rojas (distractores).</p>
+            </div>
+            <div class="attention-grid" id="attention-grid"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="startGame()" id="start-btn">▶️ Comenzar Juego</button>
+                <button class="btn btn-secondary" onclick="pauseGame()" id="pause-btn" style="display: none;">⏸️ Pausar</button>
+                <button class="btn btn-danger" onclick="stopGame()" id="stop-btn" style="display: none;">⏹️ Detener</button>
+            </div>
+        </div>
+
+        <div class="game-info" id="game-info" style="display: none;">
+            <h3>📊 Información del Juego</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <h4>Objetivos Encontrados</h4>
+                    <div class="number" id="targets-found">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Errores</h4>
+                    <div class="number" id="errors">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Precisión</h4>
+                    <div class="number" id="accuracy">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Puntuación</h4>
+                    <div class="number" id="score">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Juegos Completados</h4>
+                <div class="number" id="games-completed">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Mejor Puntuación</h4>
+                <div class="number" id="best-score">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Precisión Promedio</h4>
+                <div class="number" id="average-accuracy">0%</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Actual</h4>
+                <div class="number" id="current-streak">0 días</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()" id="stats-btn" style="display: none;">📊 Ver Estadísticas</button>
+            <button class="btn btn-success" onclick="saveGame()" id="save-btn" style="display: none;">💾 Guardar Juego</button>
+            <button class="btn btn-secondary" onclick="resetGame()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentDifficulty = null;
+        let gameTimer = null;
+        let gameStartTime = null;
+        let gameTime = 0;
+        let isPaused = false;
+        let gameData = JSON.parse(localStorage.getItem('attentionGameData') || '[]');
+        let gameState = {
+            targets: [],
+            targetsFound: 0,
+            errors: 0,
+            isGameActive: false,
+            currentRound: 0,
+            totalRounds: 10
+        };
+
+        const difficulties = {
+            'easy': {
+                gridSize: 3,
+                targets: 1,
+                duration: 30
+            },
+            'medium': {
+                gridSize: 4,
+                targets: 2,
+                duration: 45
+            },
+            'hard': {
+                gridSize: 5,
+                targets: 3,
+                duration: 60
+            }
+        };
+
+        function selectDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.difficulty-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva dificultad
+            event.currentTarget.classList.add('selected');
+            
+            // Mostrar sección del juego
+            document.getElementById('game-section').style.display = 'block';
+            
+            // Configurar grid
+            setupGrid();
+        }
+
+        function setupGrid() {
+            const difficulty = difficulties[currentDifficulty];
+            const grid = document.getElementById('attention-grid');
+            
+            // Limpiar grid
+            grid.innerHTML = '';
+            
+            // Configurar grid
+            grid.style.gridTemplateColumns = `repeat(${difficulty.gridSize}, 1fr)`;
+            
+            // Crear celdas
+            const totalCells = difficulty.gridSize * difficulty.gridSize;
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'attention-cell';
+                cell.dataset.cellId = i;
+                cell.onclick = () => handleCellClick(i);
+                grid.appendChild(cell);
+            }
+        }
+
+        function startGame() {
+            if (!currentDifficulty) return;
+            
+            gameState.isGameActive = true;
+            gameState.currentRound = 0;
+            gameState.targetsFound = 0;
+            gameState.errors = 0;
+            gameStartTime = Date.now();
+            gameTime = 0;
+            
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            document.getElementById('stop-btn').style.display = 'inline-block';
+            document.getElementById('game-info').style.display = 'block';
+            
+            // Iniciar timer
+            gameTimer = setInterval(() => {
+                if (!isPaused) {
+                    gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+                    updateTimer();
+                    
+                    // Verificar si el juego terminó
+                    if (gameTime >= difficulties[currentDifficulty].duration) {
+                        completeGame();
+                    }
+                }
+            }, 1000);
+            
+            // Iniciar primera ronda
+            startRound();
+        }
+
+        function startRound() {
+            const difficulty = difficulties[currentDifficulty];
+            const grid = document.getElementById('attention-grid');
+            const cells = grid.querySelectorAll('.attention-cell');
+            
+            // Limpiar celdas
+            cells.forEach(cell => {
+                cell.className = 'attention-cell';
+                cell.textContent = '';
+            });
+            
+            // Seleccionar objetivos aleatorios
+            const targetIndices = [];
+            while (targetIndices.length < difficulty.targets) {
+                const randomIndex = Math.floor(Math.random() * cells.length);
+                if (!targetIndices.includes(randomIndex)) {
+                    targetIndices.push(randomIndex);
+                }
+            }
+            
+            // Marcar objetivos
+            targetIndices.forEach(index => {
+                const cell = cells[index];
+                cell.classList.add('target');
+                cell.textContent = '🎯';
+            });
+            
+            // Agregar distractores
+            const distractorCount = Math.floor(cells.length * 0.3);
+            const distractorIndices = [];
+            while (distractorIndices.length < distractorCount) {
+                const randomIndex = Math.floor(Math.random() * cells.length);
+                if (!targetIndices.includes(randomIndex) && !distractorIndices.includes(randomIndex)) {
+                    distractorIndices.push(randomIndex);
+                }
+            }
+            
+            distractorIndices.forEach(index => {
+                const cell = cells[index];
+                cell.classList.add('distractor');
+                cell.textContent = '❌';
+            });
+            
+            // Marcar celdas restantes como neutrales
+            cells.forEach((cell, index) => {
+                if (!targetIndices.includes(index) && !distractorIndices.includes(index)) {
+                    cell.classList.add('neutral');
+                    cell.textContent = '⚪';
+                }
+            });
+            
+            // Guardar objetivos para esta ronda
+            gameState.targets = targetIndices;
+        }
+
+        function handleCellClick(cellIndex) {
+            if (!gameState.isGameActive || isPaused) return;
+            
+            const cell = document.querySelector(`[data-cell-id="${cellIndex}"]`);
+            
+            if (cell.classList.contains('target')) {
+                // Objetivo encontrado
+                gameState.targetsFound++;
+                cell.classList.remove('target');
+                cell.classList.add('neutral');
+                cell.textContent = '✅';
+                
+                // Verificar si se encontraron todos los objetivos
+                if (gameState.targetsFound >= difficulties[currentDifficulty].targets) {
+                    gameState.currentRound++;
+                    if (gameState.currentRound < gameState.totalRounds) {
+                        setTimeout(() => startRound(), 1000);
+                    } else {
+                        completeGame();
+                    }
+                }
+            } else if (cell.classList.contains('distractor')) {
+                // Error
+                gameState.errors++;
+                cell.classList.remove('distractor');
+                cell.classList.add('neutral');
+                cell.textContent = '❌';
+            }
+            
+            updateStats();
+        }
+
+        function pauseGame() {
+            isPaused = !isPaused;
+            document.getElementById('pause-btn').textContent = isPaused ? '▶️ Continuar' : '⏸️ Pausar';
+        }
+
+        function stopGame() {
+            if (confirm('¿Estás seguro de que quieres detener el juego?')) {
+                clearInterval(gameTimer);
+                gameTimer = null;
+                resetGame();
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(gameTime / 60);
+            const seconds = gameTime % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateStats() {
+            document.getElementById('targets-found').textContent = gameState.targetsFound;
+            document.getElementById('errors').textContent = gameState.errors;
+            
+            const totalClicks = gameState.targetsFound + gameState.errors;
+            const accuracy = totalClicks > 0 ? Math.round((gameState.targetsFound / totalClicks) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            
+            const score = gameState.targetsFound * 100 - gameState.errors * 50;
+            document.getElementById('score').textContent = Math.max(0, score);
+        }
+
+        function completeGame() {
+            clearInterval(gameTimer);
+            gameTimer = null;
+            
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            
+            // Guardar juego
+            saveGameData();
+            
+            // Mostrar mensaje de felicitación
+            const score = gameState.targetsFound * 100 - gameState.errors * 50;
+            alert(`¡Juego completado! Encontraste ${gameState.targetsFound} objetivos con ${gameState.errors} errores. Puntuación: ${Math.max(0, score)}`);
+        }
+
+        function saveGameData() {
+            const game = {
+                difficulty: currentDifficulty,
+                time: gameTime,
+                targetsFound: gameState.targetsFound,
+                errors: gameState.errors,
+                score: gameState.targetsFound * 100 - gameState.errors * 50,
+                timestamp: new Date().toISOString()
+            };
+            
+            gameData.push(game);
+            localStorage.setItem('attentionGameData', JSON.stringify(gameData));
+        }
+
+        function saveGame() {
+            alert('¡Juego guardado exitosamente!');
+        }
+
+        function viewStats() {
+            const totalGames = gameData.length;
+            const bestScore = gameData.length > 0 ? 
+                Math.max(...gameData.map(game => game.score)) : 0;
+            const averageAccuracy = gameData.length > 0 ? 
+                Math.round(gameData.reduce((sum, game) => {
+                    const totalClicks = game.targetsFound + game.errors;
+                    return sum + (totalClicks > 0 ? (game.targetsFound / totalClicks) * 100 : 0);
+                }, 0) / gameData.length) : 0;
+            
+            document.getElementById('games-completed').textContent = totalGames;
+            document.getElementById('best-score').textContent = bestScore;
+            document.getElementById('average-accuracy').textContent = `${averageAccuracy}%`;
+            document.getElementById('current-streak').textContent = '0 días';
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function resetGame() {
+            gameState.isGameActive = false;
+            gameTime = 0;
+            isPaused = false;
+            
+            if (gameTimer) {
+                clearInterval(gameTimer);
+                gameTimer = null;
+            }
+            
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('stats-btn').style.display = 'none';
+            document.getElementById('game-info').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            
+            // Resetear grid
+            const grid = document.getElementById('attention-grid');
+            const cells = grid.querySelectorAll('.attention-cell');
+            cells.forEach(cell => {
+                cell.className = 'attention-cell';
+                cell.textContent = '';
+            });
+            
+            // Resetear estado
+            gameState.targets = [];
+            gameState.targetsFound = 0;
+            gameState.errors = 0;
+            gameState.currentRound = 0;
+        }
+    </script>
+</body>
+</html>

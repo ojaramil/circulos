@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Course Discovery</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        .info { background: #e3f2fd; color: #1565c0; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Debug Course Discovery</h1>
+    <div id="logs"></div>
+    <div id="results"></div>
+
+    <script src="js/models/User.js"></script>
+    <script src="js/models/Course.js"></script>
+    <script src="js/models/Progress.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/courseMetadata.js"></script>
+    <script src="js/utils/courseDiscovery.js"></script>
+
+    <script>
+        const logsDiv = document.getElementById('logs');
+        const resultsDiv = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            log(args.join(' '), 'info');
+        };
+
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            log(args.join(' '), 'error');
+        };
+
+        const originalError = console.error;
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            log(args.join(' '), 'error');
+        };
+
+        async function debugCourseDiscovery() {
+            log('🔍 Starting course discovery debug...', 'info');
+            
+            try {
+                // Test basic file access
+                log('Testing basic file access...', 'info');
+                
+                const testResponse = await fetch('../001/pantalla_principal.html', { method: 'HEAD' });
+                log(`Main file test: ${testResponse.status} ${testResponse.statusText}`, testResponse.ok ? 'success' : 'error');
+                
+                // Test lesson file access
+                const lessonResponse = await fetch('../001/lecciones/01_resumen_teorico.html', { method: 'HEAD' });
+                log(`Lesson file test: ${lessonResponse.status} ${lessonResponse.statusText}`, lessonResponse.ok ? 'success' : 'error');
+                
+                // Test game file access
+                const gameResponse = await fetch('../001/juegos/01_simulador.html', { method: 'HEAD' });
+                log(`Game file test: ${gameResponse.status} ${gameResponse.statusText}`, gameResponse.ok ? 'success' : 'error');
+                
+                // Now test course discovery
+                log('Testing course discovery...', 'info');
+                const course = await Course.fromFolder('001');
+                
+                if (course) {
+                    log(`✅ Course loaded: ${course.title}`, 'success');
+                    log(`📚 Lessons found: ${course.lessons.length}`, 'info');
+                    log(`🎮 Games found: ${course.games.length}`, 'info');
+                    
+                    resultsDiv.innerHTML = `
+                        <h2>Course: ${course.title}</h2>
+                        <p><strong>Description:</strong> ${course.description}</p>
+                        <p><strong>Category:</strong> ${course.category}</p>
+                        <p><strong>Total Points:</strong> ${course.totalPoints}</p>
+                        
+                        <h3>Lessons (${course.lessons.length}):</h3>
+                        <ul>
+                            ${course.lessons.map(lesson => `
+                                <li>
+                                    ${lesson.icon} <strong>${lesson.title}</strong><br>
+                                    <small>ID: ${lesson.id} | Type: ${lesson.type} | Points: ${lesson.points}</small><br>
+                                    <small>Path: ${lesson.filePath}</small>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        
+                        <h3>Games (${course.games.length}):</h3>
+                        <ul>
+                            ${course.games.map(game => `
+                                <li>
+                                    ${game.icon} <strong>${game.title}</strong><br>
+                                    <small>ID: ${game.id} | Type: ${game.type} | Points: ${game.points}</small><br>
+                                    <small>Path: ${game.filePath}</small>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        
+                        <h3>Course Object:</h3>
+                        <pre>${JSON.stringify(course, null, 2)}</pre>
+                    `;
+                } else {
+                    log('❌ Course not loaded', 'error');
+                    resultsDiv.innerHTML = '<p style="color: red;">Course could not be loaded</p>';
+                }
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`, 'error');
+                resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Run debug when page loads
+        document.addEventListener('DOMContentLoaded', debugCourseDiscovery);
+    </script>
+</body>
+</html>

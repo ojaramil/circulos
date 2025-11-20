@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Falacias - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .argument-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .fallacy-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .fallacy-option {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .fallacy-option:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .fallacy-option.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .fallacy-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .fallacy-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚫 Evaluador de Falacias</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es identificar qué tipo de falacia lógica está presente en cada argumento. Las falacias son errores en el razonamiento que pueden hacer que un argumento parezca convincente cuando en realidad es defectuoso.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Correctas: <span id="correct">0</span> | Incorrectas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada argumento y selecciona qué tipo de falacia contiene. Si no contiene falacias, selecciona "Argumento válido".</p>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextQuestion()" id="next-btn" style="display: none;">Siguiente Pregunta</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedFallacy = null;
+
+        const questions = [
+            {
+                argument: "No puedes confiar en la opinión de María sobre política porque es una mujer.",
+                correctFallacy: "Ad hominem",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Esta es una falacia ad hominem porque ataca a la persona (María) en lugar de abordar su argumento, y además usa un estereotipo de género."
+            },
+            {
+                argument: "Si permitimos que los estudiantes usen calculadoras en matemáticas, pronto no sabrán hacer operaciones básicas, y después no podrán resolver problemas complejos, y finalmente la educación matemática colapsará.",
+                correctFallacy: "Slippery slope",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Esta es una falacia de pendiente resbaladiza (slippery slope) porque asume que un pequeño cambio llevará inevitablemente a consecuencias extremas sin evidencia suficiente."
+            },
+            {
+                argument: "O estás con nosotros o estás contra nosotros. No hay término medio.",
+                correctFallacy: "False dilemma",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Esta es una falacia de falso dilema porque presenta solo dos opciones cuando en realidad hay más alternativas disponibles."
+            },
+            {
+                argument: "Mi oponente quiere destruir la economía porque propone aumentar los impuestos a las empresas.",
+                correctFallacy: "Straw man",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Esta es una falacia de hombre de paja (straw man) porque distorsiona la posición del oponente, exagerando sus propuestas para hacerlas más fáciles de atacar."
+            },
+            {
+                argument: "El 97% de los científicos climáticos están de acuerdo en que el cambio climático es causado por actividades humanas. Por tanto, debemos tomar medidas inmediatas para reducir las emisiones.",
+                correctFallacy: "Argumento válido",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Este es un argumento válido porque presenta evidencia sólida (consenso científico) para apoyar una conclusión lógica."
+            },
+            {
+                argument: "No puedes criticar la política de inmigración porque tú mismo eres inmigrante.",
+                correctFallacy: "Ad hominem",
+                fallacies: ["Ad hominem", "Straw man", "False dilemma", "Slippery slope", "Argumento válido"],
+                explanation: "Esta es una falacia ad hominem porque ataca a la persona (su estatus de inmigrante) en lugar de abordar los méritos de su argumento sobre política de inmigración."
+            }
+        ];
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📝 Argumento a Evaluar:</h3>
+                    <div class="argument-box">
+                        <p><strong>"${question.argument}"</strong></p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>🔍 ¿Qué tipo de falacia contiene este argumento?</h3>
+                    <div class="fallacy-options">
+                        ${question.fallacies.map(fallacy => `
+                            <div class="fallacy-option" onclick="selectFallacy('${fallacy}')">
+                                ${fallacy}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedFallacy = null;
+        }
+
+        function selectFallacy(fallacy) {
+            selectedFallacy = fallacy;
+            document.querySelectorAll('.fallacy-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function checkAnswer() {
+            if (!selectedFallacy) {
+                alert('Por favor, selecciona una opción antes de verificar.');
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            const isCorrect = selectedFallacy === question.correctFallacy;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación
+            document.querySelectorAll('.fallacy-option').forEach(option => {
+                option.classList.remove('selected');
+                if (option.textContent === question.correctFallacy) {
+                    option.classList.add('correct');
+                } else if (option.textContent === selectedFallacy && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                <p><strong>Tu respuesta:</strong> ${selectedFallacy}</p>
+                <p><strong>Respuesta correcta:</strong> ${question.correctFallacy}</p>
+                <p><strong>Explicación:</strong> ${question.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el juego.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentQuestion = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadQuestion();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadQuestion();
+    </script>
+</body>
+</html>

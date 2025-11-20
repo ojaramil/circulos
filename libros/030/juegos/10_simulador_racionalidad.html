@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Racionalidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .scenario {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .scenario h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .scenario p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .simulation-area {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .simulation-area h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .simulation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .simulation-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .simulation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .simulation-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .simulation-result {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .simulation-result.show {
+            display: block;
+        }
+
+        .simulation-result h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .rationality-indicator {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .rationality-indicator.high {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .rationality-indicator.medium {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .rationality-indicator.low {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .rationality-indicator h5 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .rationality-indicator.high h5 {
+            color: #28a745;
+        }
+
+        .rationality-indicator.medium h5 {
+            color: #ffc107;
+        }
+
+        .rationality-indicator.low h5 {
+            color: #dc3545;
+        }
+
+        .rationality-indicator p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .simulation-stats {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .simulation-stats h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .score .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .achievements {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .achievements.show {
+            display: block;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .achievement .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .game-area {
+                padding: 20px;
+            }
+            
+            .simulation-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Simulador de Racionalidad</h1>
+            <p>Simula diferentes niveles de racionalidad en la toma de decisiones</p>
+        </div>
+
+        <div class="game-area">
+            <div class="score">
+                <h3>Puntuación</h3>
+                <div class="score-value" id="score">0</div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div id="scenario-container">
+                <!-- Los escenarios se cargarán dinámicamente -->
+            </div>
+
+            <div class="simulation-result" id="simulation-result">
+                <h4>Resultado de la Simulación</h4>
+                <div id="simulation-content"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="next-btn" onclick="nextScenario()" disabled>Siguiente</button>
+                <button class="btn" id="restart-btn" onclick="restartGame()">Reiniciar</button>
+            </div>
+
+            <div class="achievements" id="achievements">
+                <h3>🏆 Logros Desbloqueados</h3>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = 0;
+        let selectedOption = null;
+        let scenarios = [
+            {
+                title: "Simulación de Racionalidad Alta",
+                description: "Simula cómo una persona altamente racional tomaría una decisión de inversión.",
+                simulation: {
+                    type: "high_rationality",
+                    steps: [
+                        {
+                            step: "Recopilación de Información",
+                            description: "Busca información objetiva de múltiples fuentes",
+                            effect: "Considera datos estadísticos, análisis de expertos y evidencia empírica"
+                        },
+                        {
+                            step: "Análisis de Riesgo",
+                            description: "Evalúa sistemáticamente los riesgos y beneficios",
+                            effect: "Usa herramientas cuantitativas y considera múltiples escenarios"
+                        },
+                        {
+                            step: "Decisión Objetiva",
+                            description: "Toma una decisión basada en evidencia y lógica",
+                            effect: "La decisión está respaldada por análisis riguroso"
+                        }
+                    ]
+                },
+                analysis: {
+                    rationality: "Alta",
+                    level: "high",
+                    description: "La simulación muestra un proceso de decisión altamente racional, basado en evidencia objetiva y análisis sistemático.",
+                    impact: "Este nivel de racionalidad conduce a decisiones más informadas y menos propensas a errores."
+                },
+                maxScore: 100
+            },
+            {
+                title: "Simulación de Racionalidad Media",
+                description: "Simula cómo una persona con racionalidad moderada tomaría una decisión de inversión.",
+                simulation: {
+                    type: "medium_rationality",
+                    steps: [
+                        {
+                            step: "Búsqueda de Información",
+                            description: "Busca información de fuentes confiables pero limitadas",
+                            effect: "Considera algunas fuentes objetivas pero también opiniones personales"
+                        },
+                        {
+                            step: "Evaluación Parcial",
+                            description: "Evalúa algunos riesgos y beneficios",
+                            effect: "Considera algunos factores importantes pero puede pasar por alto otros"
+                        },
+                        {
+                            step: "Decisión Mixta",
+                            description: "Combina análisis objetivo con intuición personal",
+                            effect: "La decisión está parcialmente respaldada por evidencia"
+                        }
+                    ]
+                },
+                analysis: {
+                    rationality: "Media",
+                    level: "medium",
+                    description: "La simulación muestra un proceso de decisión moderadamente racional, que combina análisis objetivo con intuición personal.",
+                    impact: "Este nivel de racionalidad puede conducir a decisiones razonables pero con mayor riesgo de sesgos."
+                },
+                maxScore: 100
+            },
+            {
+                title: "Simulación de Racionalidad Baja",
+                description: "Simula cómo una persona con baja racionalidad tomaría una decisión de inversión.",
+                simulation: {
+                    type: "low_rationality",
+                    steps: [
+                        {
+                            step: "Información Limitada",
+                            description: "Busca información de fuentes no verificadas",
+                            effect: "Se basa principalmente en rumores, opiniones no fundamentadas y sesgos"
+                        },
+                        {
+                            step: "Evaluación Superficial",
+                            description: "Evalúa riesgos y beneficios de manera superficial",
+                            effect: "Ignora factores importantes y se enfoca en información sesgada"
+                        },
+                        {
+                            step: "Decisión Emocional",
+                            description: "Toma una decisión basada principalmente en emociones",
+                            effect: "La decisión está influenciada por sesgos cognitivos y emociones"
+                        }
+                    ]
+                },
+                analysis: {
+                    rationality: "Baja",
+                    level: "low",
+                    description: "La simulación muestra un proceso de decisión con baja racionalidad, basado principalmente en emociones y sesgos.",
+                    impact: "Este nivel de racionalidad conduce a decisiones altamente propensas a errores y sesgos."
+                },
+                maxScore: 100
+            },
+            {
+                title: "Simulación de Racionalidad Adaptativa",
+                description: "Simula cómo una persona con racionalidad adaptativa tomaría una decisión de inversión.",
+                simulation: {
+                    type: "adaptive_rationality",
+                    steps: [
+                        {
+                            step: "Evaluación del Contexto",
+                            description: "Evalúa la complejidad y urgencia de la decisión",
+                            effect: "Ajusta el nivel de análisis según las circunstancias"
+                        },
+                        {
+                            step: "Análisis Proporcional",
+                            description: "Aplica el nivel de análisis apropiado para la situación",
+                            effect: "Usa análisis detallado para decisiones importantes y análisis rápido para decisiones menores"
+                        },
+                        {
+                            step: "Decisión Contextual",
+                            description: "Toma una decisión apropiada para el contexto",
+                            effect: "La decisión está optimizada para el contexto específico"
+                        }
+                    ]
+                },
+                analysis: {
+                    rationality: "Adaptativa",
+                    level: "high",
+                    description: "La simulación muestra un proceso de decisión adaptativo que ajusta el nivel de racionalidad según el contexto.",
+                    impact: "Este nivel de racionalidad conduce a decisiones eficientes y apropiadas para cada situación."
+                },
+                maxScore: 100
+            },
+            {
+                title: "Simulación de Racionalidad Colaborativa",
+                description: "Simula cómo un grupo con racionalidad colaborativa tomaría una decisión de inversión.",
+                simulation: {
+                    type: "collaborative_rationality",
+                    steps: [
+                        {
+                            step: "Diversidad de Perspectivas",
+                            description: "Incluye múltiples perspectivas y experiencias",
+                            effect: "Considera diferentes puntos de vista y reduce sesgos individuales"
+                        },
+                        {
+                            step: "Análisis Colectivo",
+                            description: "Realiza análisis colaborativo de riesgos y beneficios",
+                            effect: "Combina el conocimiento y experiencia de múltiples personas"
+                        },
+                        {
+                            step: "Decisión Consensuada",
+                            description: "Llega a una decisión consensuada basada en evidencia",
+                            effect: "La decisión está respaldada por análisis colectivo y consenso"
+                        }
+                    ]
+                },
+                analysis: {
+                    rationality: "Colaborativa",
+                    level: "high",
+                    description: "La simulación muestra un proceso de decisión colaborativo que aprovecha la diversidad de perspectivas.",
+                    impact: "Este nivel de racionalidad conduce a decisiones más robustas y menos propensas a sesgos individuales."
+                },
+                maxScore: 100
+            }
+        ];
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <h3>${scenario.title}</h3>
+                    <p>${scenario.description}</p>
+                    <div class="simulation-area">
+                        <h4>Simulación de Racionalidad</h4>
+                        <div class="simulation-controls">
+                            <button class="simulation-btn" onclick="startSimulation()">Iniciar Simulación</button>
+                            <button class="simulation-btn" onclick="showAnalysis()" id="analysis-btn" disabled>Ver Análisis</button>
+                        </div>
+                        <div class="simulation-stats" id="simulation-stats" style="display: none;">
+                            <h4>Estadísticas de la Simulación</h4>
+                            <div class="stat-item">
+                                <span class="stat-label">Nivel de Racionalidad:</span>
+                                <span class="stat-value">${scenario.analysis.rationality}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Calidad del Proceso:</span>
+                                <span class="stat-value">${scenario.analysis.level === 'high' ? 'Alta' : scenario.analysis.level === 'medium' ? 'Media' : 'Baja'}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Puntuación Obtenida:</span>
+                                <span class="stat-value">${scenario.maxScore} puntos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('simulation-result').classList.remove('show');
+            document.getElementById('next-btn').disabled = true;
+            selectedOption = null;
+        }
+
+        function startSimulation() {
+            const scenario = scenarios[currentScenario];
+            const simulationResult = document.getElementById('simulation-result');
+            const simulationContent = document.getElementById('simulation-content');
+            
+            simulationContent.innerHTML = `
+                <div class="rationality-indicator ${scenario.analysis.level}">
+                    <h5>Nivel de Racionalidad: ${scenario.analysis.rationality}</h5>
+                    <p><strong>Descripción:</strong> ${scenario.analysis.description}</p>
+                    <p><strong>Impacto:</strong> ${scenario.analysis.impact}</p>
+                </div>
+                <div class="simulation-stats">
+                    <h4>Pasos de la Simulación</h4>
+                    ${scenario.simulation.steps.map(step => `
+                        <div class="stat-item">
+                            <span class="stat-label">${step.step}:</span>
+                            <span class="stat-value">${step.description}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            simulationResult.classList.add('show');
+            document.getElementById('analysis-btn').disabled = false;
+            document.getElementById('simulation-stats').style.display = 'block';
+            
+            // Actualizar puntuación
+            score += scenario.maxScore;
+            document.getElementById('score').textContent = score;
+            
+            // Actualizar progreso
+            const progress = ((currentScenario + 1) / scenarios.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Verificar logros
+            checkAchievements();
+            
+            // Preparar siguiente escenario
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                document.getElementById('next-btn').textContent = 'Siguiente';
+                document.getElementById('next-btn').disabled = false;
+            } else {
+                document.getElementById('next-btn').textContent = 'Finalizar';
+                document.getElementById('next-btn').onclick = finishGame;
+                document.getElementById('next-btn').disabled = false;
+            }
+        }
+
+        function showAnalysis() {
+            alert('Análisis completado. Has aprendido sobre diferentes niveles de racionalidad en la toma de decisiones.');
+        }
+
+        function nextScenario() {
+            if (currentScenario < scenarios.length) {
+                loadScenario();
+            } else {
+                finishGame();
+            }
+        }
+
+        function checkAchievements() {
+            const achievements = document.getElementById('achievements');
+            const achievementsList = document.getElementById('achievements-list');
+            let newAchievements = [];
+            
+            if (score >= 200 && !localStorage.getItem('achievement_200')) {
+                newAchievements.push('🧠 Simulador Novato: Obtuviste 200 puntos');
+                localStorage.setItem('achievement_200', 'true');
+            }
+            
+            if (score >= 400 && !localStorage.getItem('achievement_400')) {
+                newAchievements.push('🎯 Analista de Racionalidad: Obtuviste 400 puntos');
+                localStorage.setItem('achievement_400', 'true');
+            }
+            
+            if (score >= 500 && !localStorage.getItem('achievement_500')) {
+                newAchievements.push('🏆 Maestro de Simulación: Obtuviste 500 puntos');
+                localStorage.setItem('achievement_500', 'true');
+            }
+            
+            if (newAchievements.length > 0) {
+                achievementsList.innerHTML = newAchievements.map(achievement => 
+                    `<div class="achievement">
+                        <span class="icon">${achievement.split(' ')[0]}</span>
+                        <span>${achievement}</span>
+                    </div>`
+                ).join('');
+                achievements.classList.add('show');
+            }
+        }
+
+        function finishGame() {
+            alert(`¡Simulación completada! Tu puntuación final es: ${score} puntos`);
+            restartGame();
+        }
+
+        function restartGame() {
+            currentScenario = 0;
+            score = 0;
+            selectedOption = null;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('next-btn').textContent = 'Siguiente';
+            document.getElementById('next-btn').onclick = nextScenario;
+            document.getElementById('achievements').classList.remove('show');
+            loadScenario();
+        }
+
+        // Cargar el primer escenario
+        loadScenario();
+    </script>
+</body>
+</html>

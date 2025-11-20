@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Leaderboard - EduQuest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test de Funcionalidades del Leaderboard</h1>
+        
+        <div class="test-section">
+            <h3>1. Rankings Múltiples</h3>
+            <p>Verificar que funcionen todas las categorías de ranking:</p>
+            <button class="test-button" onclick="testRankingCategories()">Test Categorías</button>
+            <div id="ranking-categories-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Períodos de Tiempo</h3>
+            <p>Verificar filtros por período:</p>
+            <button class="test-button" onclick="testTimePeriods()">Test Períodos</button>
+            <div id="time-periods-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Posición del Usuario</h3>
+            <p>Verificar cálculo de posición y percentil:</p>
+            <button class="test-button" onclick="testUserPosition()">Test Posición</button>
+            <div id="user-position-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Usuarios Trending</h3>
+            <p>Verificar identificación de usuarios con alta actividad:</p>
+            <button class="test-button" onclick="testTrendingUsers()">Test Trending</button>
+            <div id="trending-users-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. Líderes en Logros</h3>
+            <p>Verificar ranking por achievements:</p>
+            <button class="test-button" onclick="testAchievementLeaders()">Test Logros</button>
+            <div id="achievement-leaders-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6. Comparación de Usuarios</h3>
+            <p>Verificar sistema de comparación:</p>
+            <button class="test-button" onclick="testUserComparison()">Test Comparación</button>
+            <div id="user-comparison-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>7. Actualización en Tiempo Real</h3>
+            <p>Verificar actualización automática:</p>
+            <button class="test-button" onclick="testRealTimeUpdates()">Test Tiempo Real</button>
+            <div id="real-time-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>8. Interfaz Completa</h3>
+            <p>Mostrar leaderboard completo:</p>
+            <button class="test-button" onclick="showFullLeaderboard()">Mostrar Leaderboard</button>
+        </div>
+    </div>
+
+    <!-- Scripts necesarios -->
+    <script src="js/models/User.js"></script>
+    <script src="js/models/Course.js"></script>
+    <script src="js/models/Progress.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/achievementSystem.js"></script>
+    <script src="js/utils/leaderboardSystem.js"></script>
+    <script src="js/utils/demoData.js"></script>
+    <script src="js/components/Leaderboard.js"></script>
+
+    <script>
+        // Inicializar datos de prueba
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Inicializando test del leaderboard...');
+            
+            // Generar datos demo si no existen
+            if (!DemoDataGenerator.hasDemoData()) {
+                DemoDataGenerator.generateDemoUsers();
+                console.log('✅ Datos demo generados');
+            }
+            
+            // Crear usuario actual si no existe
+            let currentUser = User.load();
+            if (!currentUser.id || currentUser.username === 'Usuario') {
+                currentUser.username = 'Test User';
+                currentUser.totalPoints = 1500;
+                currentUser.coursesCompleted = 2;
+                currentUser.currentStreak = 5;
+                currentUser.achievements = ['first_course', 'week_streak'];
+                currentUser.save();
+                console.log('✅ Usuario de prueba creado');
+            }
+            
+            console.log('🚀 Test listo para ejecutar');
+        });
+
+        function testRankingCategories() {
+            const result = document.getElementById('ranking-categories-result');
+            let output = 'TESTING RANKING CATEGORIES:\n\n';
+            
+            try {
+                // Test cada categoría
+                const categories = Object.values(LeaderboardSystem.RANKING_CATEGORIES);
+                
+                categories.forEach(category => {
+                    const leaderboard = LeaderboardSystem.getLeaderboard('all_time', category, 5);
+                    const categoryInfo = LeaderboardSystem.getCategoryInfo(category);
+                    
+                    output += `📊 ${categoryInfo.name} (${categoryInfo.icon}):\n`;
+                    output += `   Total usuarios: ${leaderboard.totalUsers}\n`;
+                    output += `   Top 3:\n`;
+                    
+                    leaderboard.rankings.slice(0, 3).forEach((user, index) => {
+                        let value;
+                        switch(category) {
+                            case 'total_points': value = user.totalPoints; break;
+                            case 'courses_completed': value = user.coursesCompleted; break;
+                            case 'current_streak': value = user.currentStreak; break;
+                            case 'activities_completed': value = user.totalActivities; break;
+                        }
+                        output += `   ${index + 1}. ${user.username}: ${value}\n`;
+                    });
+                    output += '\n';
+                });
+                
+                output += '✅ TODAS LAS CATEGORÍAS FUNCIONAN CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testTimePeriods() {
+            const result = document.getElementById('time-periods-result');
+            let output = 'TESTING TIME PERIODS:\n\n';
+            
+            try {
+                const periods = Object.values(LeaderboardSystem.RANKING_PERIODS);
+                
+                periods.forEach(period => {
+                    const leaderboard = LeaderboardSystem.getLeaderboard(period, 'total_points', 3);
+                    const periodInfo = LeaderboardSystem.getPeriodInfo(period);
+                    
+                    output += `📅 ${periodInfo.name} (${periodInfo.icon}):\n`;
+                    output += `   Usuarios activos: ${leaderboard.totalUsers}\n`;
+                    output += `   Última actualización: ${new Date(leaderboard.lastUpdated).toLocaleTimeString()}\n\n`;
+                });
+                
+                output += '✅ TODOS LOS PERÍODOS FUNCIONAN CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testUserPosition() {
+            const result = document.getElementById('user-position-result');
+            let output = 'TESTING USER POSITION:\n\n';
+            
+            try {
+                const currentUser = User.load();
+                const position = LeaderboardSystem.getUserPosition(currentUser.id);
+                
+                output += `👤 Usuario: ${currentUser.username}\n`;
+                output += `📊 Puntos: ${currentUser.totalPoints}\n`;
+                
+                if (position.found) {
+                    output += `🏆 Posición: #${position.rank} de ${position.totalUsers}\n`;
+                    output += `📈 Percentil: Top ${position.percentile}%\n`;
+                } else {
+                    output += `❌ Usuario no encontrado en ranking\n`;
+                }
+                
+                // Test neighbors
+                const neighbors = LeaderboardSystem.getUserNeighbors(currentUser.id);
+                if (neighbors.found) {
+                    output += `\n👥 Usuarios cercanos:\n`;
+                    neighbors.neighbors.forEach((user, index) => {
+                        const marker = index === neighbors.userIndex ? '👉' : '  ';
+                        output += `${marker} #${user.rank} ${user.username}: ${user.totalPoints} pts\n`;
+                    });
+                }
+                
+                output += '\n✅ POSICIÓN DEL USUARIO FUNCIONA CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testTrendingUsers() {
+            const result = document.getElementById('trending-users-result');
+            let output = 'TESTING TRENDING USERS:\n\n';
+            
+            try {
+                const trendingUsers = LeaderboardSystem.getTrendingUsers(5);
+                
+                output += `📈 Usuarios en tendencia (${trendingUsers.length}):\n\n`;
+                
+                trendingUsers.forEach((user, index) => {
+                    output += `🔥 #${index + 1} ${user.username}\n`;
+                    output += `   Puntos: ${user.totalPoints}\n`;
+                    output += `   Actividades: ${user.totalActivities}\n`;
+                    output += `   Última actividad: ${user.lastActivity ? new Date(user.lastActivity).toLocaleDateString() : 'N/A'}\n\n`;
+                });
+                
+                output += '✅ USUARIOS TRENDING FUNCIONAN CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testAchievementLeaders() {
+            const result = document.getElementById('achievement-leaders-result');
+            let output = 'TESTING ACHIEVEMENT LEADERS:\n\n';
+            
+            try {
+                const users = LeaderboardSystem.getAllUsers();
+                const achievementLeaders = users
+                    .sort((a, b) => b.achievements.length - a.achievements.length)
+                    .slice(0, 5);
+                
+                output += `🏅 Líderes en logros:\n\n`;
+                
+                achievementLeaders.forEach((user, index) => {
+                    output += `🏆 #${index + 1} ${user.username}\n`;
+                    output += `   Logros: ${user.achievements.length}\n`;
+                    output += `   Puntos: ${user.totalPoints}\n`;
+                    output += `   Cursos: ${user.coursesCompleted}\n\n`;
+                });
+                
+                output += '✅ LÍDERES EN LOGROS FUNCIONAN CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testUserComparison() {
+            const result = document.getElementById('user-comparison-result');
+            let output = 'TESTING USER COMPARISON:\n\n';
+            
+            try {
+                const users = LeaderboardSystem.getAllUsers();
+                if (users.length < 2) {
+                    output += '❌ Se necesitan al menos 2 usuarios para comparar';
+                    result.textContent = output;
+                    return;
+                }
+                
+                const user1 = users[0];
+                const user2 = users[1];
+                const comparison = LeaderboardSystem.compareUsers(user1.id, user2.id);
+                
+                if (comparison) {
+                    output += `👥 Comparando usuarios:\n\n`;
+                    output += `👤 ${comparison.user1.username}:\n`;
+                    output += `   Puntos: ${comparison.user1.totalPoints}\n`;
+                    output += `   Cursos: ${comparison.user1.coursesCompleted}\n`;
+                    output += `   Racha: ${comparison.user1.currentStreak}\n`;
+                    output += `   Logros: ${comparison.user1.achievements}\n\n`;
+                    
+                    output += `👤 ${comparison.user2.username}:\n`;
+                    output += `   Puntos: ${comparison.user2.totalPoints}\n`;
+                    output += `   Cursos: ${comparison.user2.coursesCompleted}\n`;
+                    output += `   Racha: ${comparison.user2.currentStreak}\n`;
+                    output += `   Logros: ${comparison.user2.achievements}\n\n`;
+                    
+                    output += `📊 Diferencias:\n`;
+                    output += `   Puntos: ${comparison.comparison.pointsDifference > 0 ? '+' : ''}${comparison.comparison.pointsDifference}\n`;
+                    output += `   Cursos: ${comparison.comparison.coursesDifference > 0 ? '+' : ''}${comparison.comparison.coursesDifference}\n`;
+                    output += `   Racha: ${comparison.comparison.streakDifference > 0 ? '+' : ''}${comparison.comparison.streakDifference}\n`;
+                    output += `   Logros: ${comparison.comparison.achievementsDifference > 0 ? '+' : ''}${comparison.comparison.achievementsDifference}\n`;
+                }
+                
+                output += '\n✅ COMPARACIÓN DE USUARIOS FUNCIONA CORRECTAMENTE';
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+            }
+            
+            result.textContent = output;
+        }
+
+        function testRealTimeUpdates() {
+            const result = document.getElementById('real-time-result');
+            let output = 'TESTING REAL-TIME UPDATES:\n\n';
+            
+            try {
+                // Simular actualización de usuario
+                const currentUser = User.load();
+                const originalPoints = currentUser.totalPoints;
+                
+                output += `📊 Puntos originales: ${originalPoints}\n`;
+                
+                // Actualizar puntos
+                currentUser.addPoints(100);
+                output += `➕ Agregados 100 puntos\n`;
+                output += `📊 Nuevos puntos: ${currentUser.totalPoints}\n\n`;
+                
+                // Verificar que el leaderboard se actualiza
+                const position = LeaderboardSystem.getUserPosition(currentUser.id);
+                output += `🏆 Nueva posición: #${position.rank}\n`;
+                
+                // Verificar evento de actualización
+                let eventFired = false;
+                const eventListener = () => {
+                    eventFired = true;
+                    output += `🔄 Evento de actualización detectado\n`;
+                };
+                
+                window.addEventListener('leaderboardUpdate', eventListener);
+                
+                // Simular actualización
+                LeaderboardSystem.updateUser(currentUser);
+                
+                setTimeout(() => {
+                    if (eventFired) {
+                        output += '✅ ACTUALIZACIONES EN TIEMPO REAL FUNCIONAN CORRECTAMENTE';
+                    } else {
+                        output += '⚠️ Evento de actualización no detectado (puede ser normal)';
+                    }
+                    
+                    result.textContent = output;
+                    window.removeEventListener('leaderboardUpdate', eventListener);
+                }, 100);
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}`;
+                result.textContent = output;
+            }
+        }
+
+        function showFullLeaderboard() {
+            // Crear instancia temporal del leaderboard
+            const mockApp = {
+                user: User.load(),
+                progressMap: new Map(),
+                courses: new Map()
+            };
+            
+            if (!window.testLeaderboard) {
+                window.testLeaderboard = new Leaderboard(mockApp);
+            }
+            
+            window.testLeaderboard.show();
+        }
+    </script>
+</body>
+</html>

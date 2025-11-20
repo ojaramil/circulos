@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actuador de Poder - Mentalidad de Abundancia</title>
+    <link rel="stylesheet" href="../juegos-style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Actuador de Poder</h1>
+            <p>Activa tu Poder Interior</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 Sobre el Actuador de Poder</h3>
+                <p>El poder está dentro de ti, solo necesitas activarlo. Este juego te ayuda a identificar y activar las
+                    fuentes de poder en tu vida.</p>
+            </div>
+
+            <div class="power-display">
+                <h3>Nivel de Poder Actual</h3>
+                <div class="power-meter" id="powerMeter">0%</div>
+            </div>
+
+            <div class="power-sources" id="powerSources"></div>
+
+            <div class="actions">
+                <button class="btn" onclick="activateAll()">Activar Todo</button>
+                <button class="btn" onclick="reset()">Reiniciar</button>
+            </div>
+
+            <div id="achievements"></div>
+        </div>
+    </div>
+
+    <script>
+        const powerSources = [
+            { id: 1, name: 'Fe en Dios', power: 25 },
+            { id: 2, name: 'Oración', power: 20 },
+            { id: 3, name: 'Palabra de Dios', power: 20 },
+            { id: 4, name: 'Comunidad', power: 15 },
+            { id: 5, name: 'Propósito Claro', power: 20 }
+        ];
+
+        let activePower = 0;
+
+        function initGame() {
+            const container = document.getElementById('powerSources');
+            container.innerHTML = powerSources.map(source => `
+                <div class="power-source" onclick="togglePower(${source.id}, ${source.power})">
+                    <h4>${source.name}</h4>
+                    <p>+${source.power}% Poder</p>
+                </div>
+            `).join('');
+        }
+
+        function togglePower(id, power) {
+            activePower = Math.min(100, activePower + power);
+            updateDisplay();
+        }
+
+        function activateAll() {
+            activePower = 100;
+            updateDisplay();
+            showAchievement('⚡ Poder Máximo', 'Has activado todo tu poder');
+        }
+
+        function reset() {
+            activePower = 0;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('powerMeter').textContent = activePower + '%';
+            document.getElementById('powerMeter').style.width = activePower + '%';
+        }
+
+        function showAchievement(title, desc) {
+            const div = document.createElement('div');
+            div.className = 'achievement';
+            div.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+            document.getElementById('achievements').appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

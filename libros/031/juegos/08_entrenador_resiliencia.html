@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Resiliencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .exercise-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exercise-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .scenario-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .scenario-card h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .scenario-card p {
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .resilience-tip {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .resilience-tip h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .reflection {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .reflection h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Entrenador de Resiliencia</h1>
+            <p>Desarrolla la capacidad de recuperarte y crecer ante los desafíos</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este entrenador te ayuda a desarrollar la resiliencia a través de ejercicios prácticos y reflexiones. Aprende a enfrentar los desafíos con fortaleza, adaptabilidad y una mentalidad de crecimiento.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Resiliencia</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Ejercicios Completados</h4>
+                        <div class="stat-number" id="exercises-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Estrategias Aprendidas</h4>
+                        <div class="stat-number" id="strategies-learned">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Nivel de Resiliencia</h4>
+                        <div class="stat-number" id="resilience-level">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exercise-container">
+                <div class="exercise-card">
+                    <h3>🏔️ Ejercicio 1: Enfrentando un Desafío</h3>
+                    <p>Imagina que estás enfrentando un desafío significativo en tu vida. ¿Cómo responderías para demostrar resiliencia?</p>
+                    
+                    <div class="scenario-card">
+                        <h4>📝 Escenario</h4>
+                        <p>Has estado trabajando en un proyecto importante durante meses. Justo cuando estás a punto de completarlo, recibes noticias de que el proyecto ha sido cancelado. Esto representa una gran pérdida de tiempo y esfuerzo, y puede afectar tu carrera.</p>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'aceptar')">
+                            <h4>Aceptar y Adaptar</h4>
+                            <p>Reconocer la situación, procesar las emociones y buscar nuevas oportunidades</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'aprender')">
+                            <h4>Aprender de la Experiencia</h4>
+                            <p>Reflexionar sobre lo que aprendiste y cómo puedes aplicar esas lecciones en el futuro</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'buscar_apoyo')">
+                            <h4>Buscar Apoyo</h4>
+                            <p>Conectarte con otros para obtener perspectiva y apoyo emocional</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'redefinir')">
+                            <h4>Redefinir el Éxito</h4>
+                            <p>Reconsiderar qué significa el éxito y cómo puedes lograrlo de manera diferente</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'mantener_perspectiva')">
+                            <h4>Mantener Perspectiva</h4>
+                            <p>Recordar que los contratiempos son temporales y que tienes la capacidad de superarlos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'crecer')">
+                            <h4>Verlo como Oportunidad</h4>
+                            <p>Considerar este cambio como una oportunidad para crecer y desarrollar nuevas habilidades</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzeResponse()" disabled>Analizar Respuesta</button>
+                <button class="btn" onclick="nextExercise()">Siguiente Ejercicio</button>
+            </div>
+
+            <div id="analysis-container" style="display: none;">
+                <div class="resilience-tip">
+                    <h4>💡 Estrategia de Resiliencia</h4>
+                    <div id="tip-content"></div>
+                </div>
+
+                <div class="reflection">
+                    <h4>🤔 Pregunta de Reflexión</h4>
+                    <div id="reflection-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let selectedResponse = null;
+        let exercisesCompleted = 0;
+        let strategiesLearned = 0;
+        let resilienceLevel = 0;
+
+        const exercises = [
+            {
+                title: "Enfrentando un Desafío",
+                description: "Imagina que estás enfrentando un desafío significativo en tu vida. ¿Cómo responderías para demostrar resiliencia?",
+                scenario: "Has estado trabajando en un proyecto importante durante meses. Justo cuando estás a punto de completarlo, recibes noticias de que el proyecto ha sido cancelado. Esto representa una gran pérdida de tiempo y esfuerzo, y puede afectar tu carrera.",
+                options: [
+                    { id: 'aceptar', title: 'Aceptar y Adaptar', description: 'Reconocer la situación, procesar las emociones y buscar nuevas oportunidades' },
+                    { id: 'aprender', title: 'Aprender de la Experiencia', description: 'Reflexionar sobre lo que aprendiste y cómo puedes aplicar esas lecciones en el futuro' },
+                    { id: 'buscar_apoyo', title: 'Buscar Apoyo', description: 'Conectarte con otros para obtener perspectiva y apoyo emocional' },
+                    { id: 'redefinir', title: 'Redefinir el Éxito', description: 'Reconsiderar qué significa el éxito y cómo puedes lograrlo de manera diferente' },
+                    { id: 'mantener_perspectiva', title: 'Mantener Perspectiva', description: 'Recordar que los contratiempos son temporales y que tienes la capacidad de superarlos' },
+                    { id: 'crecer', title: 'Verlo como Oportunidad', description: 'Considerar este cambio como una oportunidad para crecer y desarrollar nuevas habilidades' }
+                ],
+                tips: {
+                    'aceptar': 'La aceptación es el primer paso hacia la resiliencia. Al reconocer la realidad de la situación, puedes comenzar a procesar las emociones y buscar soluciones constructivas.',
+                    'aprender': 'Aprender de las experiencias difíciles es una característica clave de la resiliencia. Cada desafío puede ser una oportunidad de crecimiento si estás dispuesto a reflexionar sobre él.',
+                    'buscar_apoyo': 'Buscar apoyo es una estrategia muy efectiva para desarrollar resiliencia. Las conexiones sociales pueden proporcionar perspectiva, recursos y apoyo emocional.',
+                    'redefinir': 'Redefinir el éxito puede ser una estrategia poderosa para mantener la motivación y encontrar nuevas formas de lograr tus objetivos.',
+                    'mantener_perspectiva': 'Mantener la perspectiva es crucial para la resiliencia. Recordar que los contratiempos son temporales puede ayudarte a mantener la esperanza y la determinación.',
+                    'crecer': 'Ver los desafíos como oportunidades de crecimiento es una mentalidad muy resiliente. Esta perspectiva puede ayudarte a encontrar valor incluso en las situaciones más difíciles.'
+                }
+            },
+            {
+                title: "Manejo del Estrés",
+                description: "¿Cómo manejas el estrés y la presión en situaciones difíciles?",
+                scenario: "Estás enfrentando múltiples responsabilidades y presiones simultáneas. Tu trabajo, relaciones personales y salud están siendo afectados por el estrés.",
+                options: [
+                    { id: 'priorizar', title: 'Priorizar', description: 'Identificar qué es más importante y enfocarte en eso primero' },
+                    { id: 'delegar', title: 'Delegar', description: 'Pedir ayuda a otros y distribuir las responsabilidades' },
+                    { id: 'autocuidado', title: 'Autocuidado', description: 'Priorizar tu bienestar físico y mental' },
+                    { id: 'organizar', title: 'Organizar', description: 'Crear un plan estructurado para manejar todas las responsabilidades' },
+                    { id: 'comunicar', title: 'Comunicar', description: 'Expresar tus necesidades y límites a otros' },
+                    { id: 'flexibilidad', title: 'Flexibilidad', description: 'Adaptarte a los cambios y ser flexible con tus expectativas' }
+                ],
+                tips: {
+                    'priorizar': 'Priorizar es una estrategia muy efectiva para manejar el estrés. Al identificar qué es más importante, puedes enfocar tu energía en lo que realmente importa.',
+                    'delegar': 'Delegar es una estrategia importante para la resiliencia. Reconocer que no puedes hacer todo solo y pedir ayuda cuando la necesitas es una señal de fortaleza.',
+                    'autocuidado': 'El autocuidado es fundamental para la resiliencia. No puedes cuidar de otros o manejar responsabilidades si no te cuidas a ti mismo primero.',
+                    'organizar': 'La organización puede reducir significativamente el estrés. Un plan estructurado puede ayudarte a sentirte más en control y menos abrumado.',
+                    'comunicar': 'La comunicación efectiva es crucial para manejar el estrés. Expresar tus necesidades y límites puede prevenir el agotamiento y mejorar las relaciones.',
+                    'flexibilidad': 'La flexibilidad es una característica clave de la resiliencia. Ser capaz de adaptarte a los cambios puede ayudarte a manejar mejor las situaciones estresantes.'
+                }
+            },
+            {
+                title: "Recuperación Emocional",
+                description: "¿Cómo te recuperas emocionalmente después de una experiencia difícil?",
+                scenario: "Has experimentado una pérdida significativa o un fracaso importante. Te sientes abrumado por las emociones y no estás seguro de cómo seguir adelante.",
+                options: [
+                    { id: 'procesar', title: 'Procesar Emociones', description: 'Permitirte sentir y procesar las emociones de manera saludable' },
+                    { id: 'buscar_significado', title: 'Buscar Significado', description: 'Reflexionar sobre la experiencia para encontrar lecciones y significado' },
+                    { id: 'conectar', title: 'Conectar con Otros', description: 'Buscar apoyo y conexión con personas que te entienden' },
+                    { id: 'autocompasion', title: 'Autocompasión', description: 'Tratarte con amabilidad y comprensión durante el proceso de recuperación' },
+                    { id: 'rituales', title: 'Crear Rituales', description: 'Establecer rituales o prácticas que te ayuden a procesar y sanar' },
+                    { id: 'nuevos_objetivos', title: 'Nuevos Objetivos', description: 'Establecer nuevos objetivos y metas que te den dirección y propósito' }
+                ],
+                tips: {
+                    'procesar': 'Procesar las emociones es fundamental para la recuperación. Permitirte sentir y expresar las emociones de manera saludable puede acelerar el proceso de sanación.',
+                    'buscar_significado': 'Buscar significado en las experiencias difíciles puede ayudarte a encontrar propósito y dirección. Esta búsqueda puede ser un proceso transformador.',
+                    'conectar': 'La conexión con otros es crucial para la recuperación emocional. El apoyo social puede proporcionar consuelo, perspectiva y recursos para la sanación.',
+                    'autocompasion': 'La autocompasión es fundamental para la recuperación. Tratarte con amabilidad y comprensión puede ayudarte a sanar más efectivamente.',
+                    'rituales': 'Los rituales pueden ser muy poderosos para la sanación. Establecer prácticas que te ayuden a procesar y sanar puede acelerar el proceso de recuperación.',
+                    'nuevos_objetivos': 'Establecer nuevos objetivos puede darte dirección y propósito después de una experiencia difícil. Esto puede ayudarte a encontrar significado y motivación para seguir adelante.'
+                }
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Remove previous selection
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            selectedResponse = optionId;
+            
+            // Enable analyze button
+            document.getElementById('analyze-btn').disabled = false;
+        }
+
+        function analyzeResponse() {
+            if (!selectedResponse) return;
+
+            const exercise = exercises[currentExercise];
+            const tip = exercise.tips[selectedResponse];
+            
+            if (!tip) return;
+
+            // Update stats
+            exercisesCompleted++;
+            strategiesLearned++;
+            resilienceLevel += 10;
+
+            // Show tip
+            document.getElementById('tip-content').innerHTML = `
+                <p><strong>Estrategia seleccionada:</strong> ${exercise.options.find(opt => opt.id === selectedResponse)?.title}</p>
+                <p><strong>Explicación:</strong> ${tip}</p>
+            `;
+
+            // Show reflection
+            document.getElementById('reflection-content').innerHTML = `
+                <p><strong>Preguntas para reflexionar:</strong></p>
+                <ul>
+                    <li>¿Cómo puedes aplicar esta estrategia en tu vida diaria?</li>
+                    <li>¿Qué obstáculos podrías enfrentar al implementar esta estrategia?</li>
+                    <li>¿Cómo puedes desarrollar esta habilidad de manera más efectiva?</li>
+                    <li>¿Qué recursos o apoyo necesitas para implementar esta estrategia?</li>
+                </ul>
+            `;
+
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'block';
+            
+            // Update stats display
+            updateStats();
+        }
+
+        function nextExercise() {
+            currentExercise = (currentExercise + 1) % exercises.length;
+            loadExercise();
+        }
+
+        function loadExercise() {
+            const exercise = exercises[currentExercise];
+            
+            document.querySelector('.exercise-card h3').textContent = `🏔️ Ejercicio ${currentExercise + 1}: ${exercise.title}`;
+            document.querySelector('.exercise-card p').textContent = exercise.description;
+            document.querySelector('.scenario-card p').textContent = exercise.scenario;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            exercise.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedResponse = null;
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('analysis-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('exercises-completed').textContent = exercisesCompleted;
+            document.getElementById('strategies-learned').textContent = strategiesLearned;
+            document.getElementById('resilience-level').textContent = resilienceLevel;
+            
+            // Update progress bar
+            const progress = (exercisesCompleted / exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExercise();
+        });
+    </script>
+</body>
+</html>
+

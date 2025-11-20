@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Riqueza - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .calculator-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .bar {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 20px;
+            margin: 5px 0;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .scenario {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Calculadora de Riqueza</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Calcula cuánto dinero necesitas para alcanzar tus objetivos financieros y proyecta cómo llegar allí con diferentes estrategias de inversión.</p>
+        </div>
+
+        <div class="calculator-box">
+            <h3>📊 Configuración de tu Plan</h3>
+            
+            <div class="input-group">
+                <label for="currentAge">Edad Actual:</label>
+                <input type="number" id="currentAge" value="30" min="18" max="80">
+            </div>
+            
+            <div class="input-group">
+                <label for="retirementAge">Edad de Jubilación Deseada:</label>
+                <input type="number" id="retirementAge" value="65" min="50" max="80">
+            </div>
+            
+            <div class="input-group">
+                <label for="currentIncome">Ingresos Anuales Actuales:</label>
+                <input type="number" id="currentIncome" value="50000" min="10000" step="1000">
+            </div>
+            
+            <div class="input-group">
+                <label for="monthlyExpenses">Gastos Mensuales:</label>
+                <input type="number" id="monthlyExpenses" value="3000" min="500" step="100">
+            </div>
+            
+            <div class="input-group">
+                <label for="expectedReturn">Rendimiento Anual Esperado (%):</label>
+                <input type="range" id="expectedReturn" min="3" max="12" value="7" step="0.5">
+                <span id="returnValue">7%</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="inflation">Inflación Anual Esperada (%):</label>
+                <input type="range" id="inflation" min="1" max="5" value="3" step="0.1">
+                <span id="inflationValue">3%</span>
+            </div>
+            
+            <button class="btn" onclick="calculateWealth()">Calcular Riqueza</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>💰 Resultados de tu Plan</h3>
+                <div id="wealthResults"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📈 Proyección de Crecimiento</h3>
+                <div id="wealthChart"></div>
+            </div>
+            
+            <div class="scenario">
+                <h3>🎯 Escenarios de Inversión</h3>
+                <div id="scenarios"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Consejos para Maximizar tu Riqueza</h2>
+            <ul>
+                <li><strong>Comienza temprano:</strong> Cada año de retraso es costoso</li>
+                <li><strong>Invierte consistentemente:</strong> Contribuciones automáticas</li>
+                <li><strong>Maximiza rendimientos:</strong> Diversifica y minimiza costos</li>
+                <li><strong>Controla gastos:</strong> Cada dólar ahorrado puede invertirse</li>
+                <li><strong>Revisa regularmente:</strong> Ajusta tu plan según cambien las circunstancias</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar valores de los sliders
+        document.getElementById('expectedReturn').addEventListener('input', function() {
+            document.getElementById('returnValue').textContent = this.value + '%';
+        });
+        
+        document.getElementById('inflation').addEventListener('input', function() {
+            document.getElementById('inflationValue').textContent = this.value + '%';
+        });
+
+        function calculateWealth() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const currentIncome = parseInt(document.getElementById('currentIncome').value);
+            const monthlyExpenses = parseInt(document.getElementById('monthlyExpenses').value);
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100;
+            const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+            
+            const yearsToRetirement = retirementAge - currentAge;
+            const annualExpenses = monthlyExpenses * 12;
+            
+            // Calcular necesidades de jubilación (regla del 4%)
+            const retirementNeeds = annualExpenses * 25; // 4% withdrawal rate
+            
+            // Calcular cuánto necesitas ahorrar mensualmente
+            const monthlySavingsNeeded = calculateMonthlySavings(retirementNeeds, yearsToRetirement, expectedReturn);
+            
+            // Calcular diferentes escenarios
+            const scenarios = calculateScenarios(currentAge, retirementAge, expectedReturn, inflation);
+            
+            // Mostrar resultados
+            displayResults(retirementNeeds, monthlySavingsNeeded, yearsToRetirement, scenarios);
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function calculateMonthlySavings(targetAmount, years, annualReturn) {
+            const monthlyReturn = annualReturn / 12;
+            const months = years * 12;
+            
+            if (monthlyReturn === 0) {
+                return targetAmount / months;
+            }
+            
+            return targetAmount * monthlyReturn / (Math.pow(1 + monthlyReturn, months) - 1);
+        }
+        
+        function calculateScenarios(currentAge, retirementAge, returnRate, inflation) {
+            const scenarios = [];
+            const years = retirementAge - currentAge;
+            
+            // Escenario conservador (5% anual)
+            const conservativeReturn = 0.05;
+            const conservativeSavings = calculateMonthlySavings(1000000, years, conservativeReturn);
+            scenarios.push({
+                name: 'Conservador (5%)',
+                monthlySavings: conservativeSavings,
+                finalAmount: 1000000
+            });
+            
+            // Escenario moderado (7% anual)
+            const moderateReturn = 0.07;
+            const moderateSavings = calculateMonthlySavings(1000000, years, moderateReturn);
+            scenarios.push({
+                name: 'Moderado (7%)',
+                monthlySavings: moderateSavings,
+                finalAmount: 1000000
+            });
+            
+            // Escenario agresivo (9% anual)
+            const aggressiveReturn = 0.09;
+            const aggressiveSavings = calculateMonthlySavings(1000000, years, aggressiveReturn);
+            scenarios.push({
+                name: 'Agresivo (9%)',
+                monthlySavings: aggressiveSavings,
+                finalAmount: 1000000
+            });
+            
+            return scenarios;
+        }
+        
+        function displayResults(retirementNeeds, monthlySavings, years, scenarios) {
+            const resultsDiv = document.getElementById('wealthResults');
+            resultsDiv.innerHTML = `
+                <p><strong>Necesidades de Jubilación:</strong> $${retirementNeeds.toLocaleString()}</p>
+                <p><strong>Ahorro Mensual Necesario:</strong> $${monthlySavings.toFixed(2)}</p>
+                <p><strong>Años hasta Jubilación:</strong> ${years}</p>
+                <p><strong>Total a Invertir:</strong> $${(monthlySavings * years * 12).toLocaleString()}</p>
+            `;
+            
+            // Mostrar escenarios
+            const scenariosDiv = document.getElementById('scenarios');
+            scenariosDiv.innerHTML = scenarios.map(scenario => `
+                <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 5px;">
+                    <strong>${scenario.name}:</strong> $${scenario.monthlySavings.toFixed(2)} mensuales
+                </div>
+            `).join('');
+            
+            // Crear gráfico simple
+            const chartDiv = document.getElementById('wealthChart');
+            chartDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; align-items: center; margin: 10px 0;">
+                        <div style="width: 100px; text-align: right; margin-right: 10px;">Conservador:</div>
+                        <div class="bar" style="width: 60%;"></div>
+                        <div style="margin-left: 10px;">$${scenarios[0].monthlySavings.toFixed(0)}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin: 10px 0;">
+                        <div style="width: 100px; text-align: right; margin-right: 10px;">Moderado:</div>
+                        <div class="bar" style="width: 80%;"></div>
+                        <div style="margin-left: 10px;">$${scenarios[1].monthlySavings.toFixed(0)}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin: 10px 0;">
+                        <div style="width: 100px; text-align: right; margin-right: 10px;">Agresivo:</div>
+                        <div class="bar" style="width: 100%;"></div>
+                        <div style="margin-left: 10px;">$${scenarios[2].monthlySavings.toFixed(0)}</div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

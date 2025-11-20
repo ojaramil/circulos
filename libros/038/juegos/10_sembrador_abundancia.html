@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sembrador de Abundancia - Mentalidad de Abundancia</title>
+    <link rel="stylesheet" href="../juegos-style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Sembrador de Abundancia</h1>
+            <p>Siembra para Cosechar Abundancia</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 Sobre el Sembrador</h3>
+                <p>La ley de la siembra y la cosecha es fundamental. Este juego te ayuda a entender y practicar el
+                    principio de sembrar para cosechar abundancia.</p>
+            </div>
+
+            <div class="sowing-area">
+                <h3>🌱 Áreas de Siembra</h3>
+                <div id="sowingGrid"></div>
+            </div>
+
+            <div class="harvest-display">
+                <h3>🌾 Cosecha Esperada</h3>
+                <div id="harvestMeter">0x</div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="sow()">Sembrar</button>
+                <button class="btn" onclick="viewReport()">Ver Reporte</button>
+            </div>
+
+            <div id="achievements"></div>
+        </div>
+    </div>
+
+    <script>
+        const sowingAreas = [
+            { id: 1, name: 'Generosidad Financiera', multiplier: 30 },
+            { id: 2, name: 'Tiempo y Servicio', multiplier: 20 },
+            { id: 3, name: 'Amor y Bondad', multiplier: 25 },
+            { id: 4, name: 'Palabras de Ánimo', multiplier: 15 },
+            { id: 5, name: 'Oración por Otros', multiplier: 25 }
+        ];
+
+        let totalSown = 0;
+        let harvestMultiplier = 0;
+
+        function initGame() {
+            const grid = document.getElementById('sowingGrid');
+            grid.innerHTML = sowingAreas.map(area => `
+                <div class="sowing-card" onclick="selectArea(${area.id}, ${area.multiplier})">
+                    <h4>${area.name}</h4>
+                    <p>Multiplicador: ${area.multiplier}x</p>
+                </div>
+            `).join('');
+        }
+
+        function selectArea(id, multiplier) {
+            harvestMultiplier += multiplier;
+            updateDisplay();
+        }
+
+        function sow() {
+            if (harvestMultiplier > 0) {
+                totalSown++;
+                showAchievement('🌱 Semilla Sembrada', 'Has sembrado para tu futuro');
+                updateDisplay();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('harvestMeter').textContent = harvestMultiplier + 'x';
+        }
+
+        function viewReport() {
+            alert(`Reporte de Siembra\n\nTotal Sembrado: ${totalSown}\nMultiplicador de Cosecha: ${harvestMultiplier}x`);
+        }
+
+        function showAchievement(title, desc) {
+            const div = document.createElement('div');
+            div.className = 'achievement';
+            div.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+            document.getElementById('achievements').appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

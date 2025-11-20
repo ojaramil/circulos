@@ -1,0 +1,841 @@
+/**
+ * Responsive Design - Mobile-first approach for EduQuest
+ */
+
+/* ==========================================================================
+   MOBILE FIRST APPROACH - Base styles for mobile devices
+   ========================================================================== */
+
+/* Base mobile styles (320px and up) */
+:root {
+    --mobile-padding: 16px;
+    --mobile-margin: 12px;
+    --mobile-font-size: 14px;
+    --mobile-header-height: 60px;
+    --mobile-button-height: 44px;
+    --mobile-touch-target: 44px;
+    
+    /* Responsive breakpoints */
+    --mobile-small: 320px;
+    --mobile-large: 480px;
+    --tablet: 768px;
+    --desktop: 1024px;
+    --desktop-large: 1200px;
+}
+
+/* Touch-friendly base styles */
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    -webkit-touch-callout: none;
+}
+
+button, .btn, .clickable {
+    min-height: var(--mobile-touch-target);
+    min-width: var(--mobile-touch-target);
+    touch-action: manipulation;
+    cursor: pointer;
+}
+
+/* Prevent zoom on input focus (iOS) */
+input, select, textarea {
+    font-size: 16px;
+}
+
+/* ==========================================================================
+   DASHBOARD RESPONSIVE STYLES
+   ========================================================================== */
+
+/* Mobile Dashboard */
+.dashboard {
+    padding: var(--mobile-padding);
+}
+
+.dashboard-header {
+    flex-direction: column;
+    gap: var(--mobile-margin);
+    padding: var(--mobile-padding);
+    text-align: center;
+}
+
+.user-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+}
+
+.user-name {
+    font-size: 20px;
+    margin: 8px 0 4px 0;
+}
+
+.user-subtitle {
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.user-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    min-width: 60px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+}
+
+.stat-label {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Mobile Navigation */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    overflow-x: auto;
+    padding: 0 var(--mobile-padding);
+}
+
+.nav-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    font-size: 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.nav-icon {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+/* Mobile Course Grid */
+.courses-section {
+    padding: var(--mobile-padding);
+}
+
+.section-header {
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.search-filters {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.filter-select {
+    min-width: 120px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.view-controls {
+    justify-content: center;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+/* Mobile Course Cards */
+.courses-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
+}
+
+.course-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.course-thumbnail {
+    height: 120px;
+    position: relative;
+}
+
+.course-info {
+    padding: 16px;
+}
+
+.course-title {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.course-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.course-meta {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.meta-item {
+    font-size: 12px;
+}
+
+.course-progress {
+    margin-bottom: 16px;
+}
+
+.progress-bar {
+    height: 6px;
+    border-radius: 3px;
+}
+
+.course-actions {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    min-height: var(--mobile-touch-target);
+}
+
+/* ==========================================================================
+   COURSE VIEWER RESPONSIVE STYLES
+   ========================================================================== */
+
+/* Mobile Course Viewer */
+.course-viewer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.course-header {
+    padding: var(--mobile-padding);
+    border-bottom: 1px solid #eee;
+}
+
+.course-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.course-meta {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.course-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Mobile Three-Panel Layout becomes stacked */
+.content-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content-main {
+    flex: 1;
+    order: 1;
+    min-height: 60vh;
+}
+
+.content-sidebar {
+    order: 2;
+    max-height: 40vh;
+    overflow-y: auto;
+    border-top: 1px solid #eee;
+}
+
+.sidebar-section {
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-header {
+    padding: 12px var(--mobile-padding);
+    background: #f8f9fa;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.content-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.content-item {
+    padding: 12px var(--mobile-padding);
+    border-bottom: 1px solid #f0f0f0;
+    min-height: var(--mobile-touch-target);
+    display: flex;
+    align-items: center;
+}
+
+.item-icon {
+    font-size: 18px;
+    margin-right: 12px;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.item-meta {
+    font-size: 11px;
+    opacity: 0.6;
+}
+
+/* Mobile Content Display */
+.content-display {
+    padding: var(--mobile-padding);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.content-iframe {
+    width: 100%;
+    height: calc(100vh - 200px);
+    border: none;
+    border-radius: 8px;
+}
+
+/* Mobile Controls */
+.content-controls {
+    padding: var(--mobile-padding);
+    border-top: 1px solid #eee;
+    background: white;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.control-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    min-height: var(--mobile-touch-target);
+}
+
+/* ==========================================================================
+   MODAL RESPONSIVE STYLES
+   ========================================================================== */
+
+/* Mobile Modals */
+.modal, .leaderboard-modal, .profile-modal, .certificate-modal {
+    padding: 10px;
+}
+
+.modal-content, .leaderboard-content, .profile-content, .certificate-container {
+    width: 100%;
+    max-width: none;
+    max-height: 95vh;
+    margin: 0;
+    border-radius: 12px 12px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-content,
+.leaderboard-modal.show .leaderboard-content,
+.profile-modal.show .profile-content,
+.certificate-modal.show .certificate-container {
+    transform: translateY(0);
+}
+
+.modal-header, .leaderboard-header, .profile-header, .certificate-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-body, .leaderboard-body, .profile-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Mobile Tabs */
+.tabs, .leaderboard-tabs, .profile-tabs {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn, .profile-tab-btn {
+    flex: none;
+    min-width: 100px;
+    padding: 12px 16px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.tab-content, .profile-tab-content {
+    padding: 16px 20px;
+}
+
+/* Mobile Stats Grid */
+.stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat-card {
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.stat-card-value {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.stat-card-label {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Mobile Achievements Grid */
+.achievements-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.achievement-card {
+    padding: 12px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.achievement-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.achievement-name {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.achievement-description {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+.achievement-points {
+    font-size: 10px;
+    padding: 2px 6px;
+}
+
+/* Mobile Rankings */
+.ranking-item, .history-item {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.rank-number {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.user-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
+.user-details h4 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.user-details p {
+    font-size: 11px;
+}
+
+.user-stats {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.primary-stat {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.secondary-stats {
+    font-size: 10px;
+}
+
+/* ==========================================================================
+   TABLET STYLES (768px and up)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+    :root {
+        --mobile-padding: 24px;
+        --mobile-margin: 16px;
+    }
+
+    /* Tablet Dashboard */
+    .dashboard-header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .user-info {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+
+    .main-nav {
+        justify-content: flex-end;
+        margin-top: 0;
+    }
+
+    .nav-btn {
+        flex: none;
+        min-width: 100px;
+        padding: 12px 16px;
+    }
+
+    /* Tablet Course Grid */
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .section-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .search-filters {
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+    }
+
+    /* Tablet Course Viewer */
+    .content-layout {
+        flex-direction: row;
+    }
+
+    .content-main {
+        flex: 2;
+        order: 1;
+    }
+
+    .content-sidebar {
+        flex: 1;
+        order: 2;
+        max-height: none;
+        border-top: none;
+        border-left: 1px solid #eee;
+    }
+
+    /* Tablet Modals */
+    .modal-content, .leaderboard-content, .profile-content {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        transform: none;
+        max-width: 600px;
+        margin: 20px auto;
+        border-radius: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .achievements-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .ranking-item, .history-item {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .user-info {
+        flex-direction: row;
+    }
+
+    .user-stats {
+        text-align: right;
+        margin-top: 0;
+    }
+}
+
+/* ==========================================================================
+   DESKTOP STYLES (1024px and up)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+    :root {
+        --mobile-padding: 32px;
+        --mobile-margin: 20px;
+    }
+
+    /* Desktop Course Grid */
+    .courses-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .course-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Desktop Modals */
+    .modal-content, .leaderboard-content, .profile-content {
+        max-width: 800px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .achievements-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==========================================================================
+   LARGE DESKTOP STYLES (1200px and up)
+   ========================================================================== */
+
+@media (min-width: 1200px) {
+    .courses-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .modal-content, .leaderboard-content, .profile-content {
+        max-width: 900px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .achievements-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* ==========================================================================
+   TOUCH OPTIMIZATIONS
+   ========================================================================== */
+
+/* Improve touch targets */
+@media (hover: none) and (pointer: coarse) {
+    .course-card {
+        padding: 4px;
+    }
+
+    .course-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    .btn:active, .nav-btn:active, .tab-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+
+    .content-item:active {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Larger touch targets for small elements */
+    .close-btn, .control-btn {
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    /* Better spacing for touch */
+    .filter-controls {
+        gap: 12px;
+    }
+
+    .action-buttons {
+        gap: 12px;
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .course-card {
+        border: 2px solid #000;
+    }
+
+    .btn {
+        border: 2px solid currentColor;
+    }
+
+    .progress-bar {
+        border: 1px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .course-card:hover {
+        transform: none;
+    }
+
+    .btn:active {
+        transform: none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --card-bg: #2d2d2d;
+        --border-color: #404040;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .course-card {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+    }
+
+    .modal-content, .leaderboard-content, .profile-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+    .nav-btn, .btn, .modal, .notification {
+        display: none !important;
+    }
+
+    .course-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

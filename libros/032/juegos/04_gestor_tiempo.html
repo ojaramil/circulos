@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tiempo - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #a8edea;
+        }
+
+        .game-section h3 {
+            color: #a8edea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .time-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .time-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .activities-list {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .activities-list h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .activity-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .activity-item h5 {
+            color: #a8edea;
+            margin-bottom: 10px;
+        }
+
+        .activity-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #a8edea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .timer {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #a8edea;
+            margin: 20px 0;
+        }
+
+        .priority-high {
+            border-left-color: #f44336;
+        }
+
+        .priority-medium {
+            border-left-color: #ff9800;
+        }
+
+        .priority-low {
+            border-left-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Gestor de Tiempo</h1>
+            <p>Optimiza tu Tiempo y Maximiza tu Productividad</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>⏰ ¿Qué es el Gestor de Tiempo?</h3>
+                <p>El Gestor de Tiempo es una herramienta interactiva que te ayuda a organizar, planificar y optimizar tu tiempo de manera efectiva. A través de técnicas de gestión del tiempo y seguimiento de actividades, aprenderás a ser más productivo y eficiente.</p>
+            </div>
+
+            <div class="time-tracker">
+                <h4>📝 Registrar Actividad</h4>
+                <form id="activityForm">
+                    <div class="form-group">
+                        <label for="activityName">Nombre de la Actividad:</label>
+                        <input type="text" id="activityName" placeholder="Ej: Estudiar matemáticas" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityDescription">Descripción:</label>
+                        <textarea id="activityDescription" placeholder="Describe la actividad..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityPriority">Prioridad:</label>
+                        <select id="activityPriority" required>
+                            <option value="">Selecciona prioridad</option>
+                            <option value="high">Alta</option>
+                            <option value="medium">Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityDuration">Duración Estimada (minutos):</label>
+                        <input type="number" id="activityDuration" min="1" max="480" placeholder="60" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityTime">Hora de Inicio:</label>
+                        <input type="time" id="activityTime" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Actividad</button>
+                </form>
+            </div>
+
+            <div class="timer" id="timerSection" style="display: none;">
+                <h4 id="timerTitle">Actividad en Progreso</h4>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <button class="btn" onclick="startTimer()">Iniciar</button>
+                <button class="btn" onclick="pauseTimer()">Pausar</button>
+                <button class="btn" onclick="stopTimer()">Detener</button>
+            </div>
+
+            <div class="activities-list">
+                <h4>📋 Mis Actividades</h4>
+                <div id="activitiesList">
+                    <!-- Las actividades se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Actividades Registradas:</span>
+                    <span class="stat-value" id="totalActivities">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tiempo Total Trabajado:</span>
+                    <span class="stat-value" id="totalTime">0 min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Actividades Completadas:</span>
+                    <span class="stat-value" id="completedActivities">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Eficiencia Promedio:</span>
+                    <span class="stat-value" id="efficiency">0%</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">⏰</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primera Actividad</div>
+                            <div class="achievement-desc">Registra tu primera actividad</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Racha de Productividad</div>
+                            <div class="achievement-desc">Completa 10 actividades consecutivas</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro del Tiempo</div>
+                            <div class="achievement-desc">Trabaja 100 horas en total</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Eficiencia Máxima</div>
+                            <div class="achievement-desc">Alcanza 90% de eficiencia</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let activities = JSON.parse(localStorage.getItem('activities')) || [];
+        let stats = JSON.parse(localStorage.getItem('timeStats')) || {
+            totalActivities: 0,
+            totalTime: 0,
+            completedActivities: 0,
+            efficiency: 0
+        };
+
+        let currentActivity = null;
+        let timer = null;
+        let startTime = null;
+        let elapsedTime = 0;
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            renderActivities();
+            updateAchievements();
+        }
+
+        // Registrar nueva actividad
+        document.getElementById('activityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const activity = {
+                id: Date.now(),
+                name: document.getElementById('activityName').value,
+                description: document.getElementById('activityDescription').value,
+                priority: document.getElementById('activityPriority').value,
+                duration: parseInt(document.getElementById('activityDuration').value),
+                time: document.getElementById('activityTime').value,
+                createdAt: new Date().toISOString(),
+                isCompleted: false,
+                actualTime: 0,
+                efficiency: 0
+            };
+            
+            activities.push(activity);
+            saveData();
+            updateStats();
+            renderActivities();
+            updateAchievements();
+            
+            // Limpiar formulario
+            document.getElementById('activityForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Actividad registrada exitosamente!');
+        });
+
+        // Renderizar actividades
+        function renderActivities() {
+            const activitiesList = document.getElementById('activitiesList');
+            activitiesList.innerHTML = '';
+            
+            if (activities.length === 0) {
+                activitiesList.innerHTML = '<p>No tienes actividades registradas aún. ¡Registra tu primera actividad!</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = `activity-item priority-${activity.priority}`;
+                activityItem.innerHTML = `
+                    <h5>${activity.name}</h5>
+                    <p><strong>Descripción:</strong> ${activity.description}</p>
+                    <p><strong>Prioridad:</strong> ${getPriorityText(activity.priority)}</p>
+                    <p><strong>Duración Estimada:</strong> ${activity.duration} minutos</p>
+                    <p><strong>Hora:</strong> ${activity.time}</p>
+                    <p><strong>Tiempo Real:</strong> ${activity.actualTime} minutos</p>
+                    <p><strong>Eficiencia:</strong> ${activity.efficiency}%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(activity.actualTime / activity.duration) * 100}%"></div>
+                    </div>
+                    <button class="btn" onclick="startActivity(${activity.id})">Iniciar</button>
+                    <button class="btn" onclick="completeActivity(${activity.id})" style="background: #4caf50; margin-left: 10px;">
+                        Completar
+                    </button>
+                    <button class="btn" onclick="deleteActivity(${activity.id})" style="background: #f44336; margin-left: 10px;">
+                        Eliminar
+                    </button>
+                `;
+                activitiesList.appendChild(activityItem);
+            });
+        }
+
+        // Iniciar actividad
+        function startActivity(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            if (activity && !activity.isCompleted) {
+                currentActivity = activity;
+                startTime = new Date();
+                elapsedTime = 0;
+                
+                document.getElementById('timerSection').style.display = 'block';
+                document.getElementById('timerTitle').textContent = activity.name;
+                
+                timer = setInterval(() => {
+                    elapsedTime++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        // Pausar temporizador
+        function pauseTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        // Detener temporizador
+        function stopTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
+            if (currentActivity) {
+                currentActivity.actualTime += elapsedTime;
+                currentActivity.efficiency = Math.round((currentActivity.duration / currentActivity.actualTime) * 100);
+                currentActivity = null;
+                elapsedTime = 0;
+            }
+            
+            document.getElementById('timerSection').style.display = 'none';
+            saveData();
+            updateStats();
+            renderActivities();
+        }
+
+        // Actualizar display del temporizador
+        function updateTimerDisplay() {
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Completar actividad
+        function completeActivity(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            if (activity) {
+                activity.isCompleted = true;
+                if (activity.actualTime === 0) {
+                    activity.actualTime = activity.duration;
+                    activity.efficiency = 100;
+                }
+                saveData();
+                updateStats();
+                renderActivities();
+                updateAchievements();
+                alert('¡Actividad completada! ¡Buen trabajo!');
+            }
+        }
+
+        // Eliminar actividad
+        function deleteActivity(activityId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta actividad?')) {
+                activities = activities.filter(a => a.id !== activityId);
+                saveData();
+                updateStats();
+                renderActivities();
+            }
+        }
+
+        // Obtener texto de prioridad
+        function getPriorityText(priority) {
+            const priorities = {
+                'high': 'Alta',
+                'medium': 'Media',
+                'low': 'Baja'
+            };
+            return priorities[priority] || priority;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalActivities = activities.length;
+            stats.totalTime = activities.reduce((sum, a) => sum + a.actualTime, 0);
+            stats.completedActivities = activities.filter(a => a.isCompleted).length;
+            stats.efficiency = activities.length > 0 ? Math.round(activities.reduce((sum, a) => sum + a.efficiency, 0) / activities.length) : 0;
+            
+            document.getElementById('totalActivities').textContent = stats.totalActivities;
+            document.getElementById('totalTime').textContent = stats.totalTime + ' min';
+            document.getElementById('completedActivities').textContent = stats.completedActivities;
+            document.getElementById('efficiency').textContent = stats.efficiency + '%';
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primera Actividad
+            if (stats.totalActivities >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Racha de Productividad
+            if (stats.completedActivities >= 10) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro del Tiempo
+            if (stats.totalTime >= 6000) { // 100 horas en minutos
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Eficiencia Máxima
+            if (stats.efficiency >= 90) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('activities', JSON.stringify(activities));
+            localStorage.setItem('timeStats', JSON.stringify(stats));
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

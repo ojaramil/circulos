@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Decisiones - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9a9e;
+        }
+
+        .game-section h3 {
+            color: #ff9a9e;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .decision-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .decision-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .decision-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .decision-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ff9a9e;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .decision-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .decision-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9a9e;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #ff9a9e;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .decisions-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .decisions-list h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .decision-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9a9e;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .decision-item h5 {
+            color: #ff9a9e;
+            margin-bottom: 10px;
+        }
+
+        .decision-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #ff9a9e;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .decision-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #ff9a9e;
+        }
+
+        .decision-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .priority-high {
+            border-left-color: #f44336;
+        }
+
+        .priority-medium {
+            border-left-color: #ff9800;
+        }
+
+        .priority-low {
+            border-left-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Simulador de Decisiones</h1>
+            <p>Mejora tu Capacidad de Toma de Decisiones</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 ¿Qué es el Simulador de Decisiones?</h3>
+                <p>El Simulador de Decisiones es una herramienta interactiva que te ayuda a mejorar tu capacidad de toma de decisiones. A través de ejercicios, simulaciones y análisis de escenarios, aprenderás a tomar decisiones más efectivas y conscientes.</p>
+            </div>
+
+            <div class="decision-level">
+                <h4>📊 Tu Nivel de Toma de Decisiones</h4>
+                <div class="level-display">
+                    <div class="level-number" id="decisionLevel">50</div>
+                    <div class="level-text" id="decisionText">Decisiones Medias</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="decisionProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de toma de decisiones actual se basa en la calidad y efectividad de tus decisiones.</p>
+            </div>
+
+            <div class="decision-tracker">
+                <h4>📝 Registrar Decisión</h4>
+                <form id="decisionForm">
+                    <div class="form-group">
+                        <label for="decisionName">Nombre de la Decisión:</label>
+                        <input type="text" id="decisionName" placeholder="Ej: Cambiar de trabajo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decisionDescription">Descripción:</label>
+                        <textarea id="decisionDescription" placeholder="Describe la decisión que tomaste..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decisionQuality">Calidad de la Decisión (1-10):</label>
+                        <select id="decisionQuality" required>
+                            <option value="">Selecciona calidad</option>
+                            <option value="1">1 - Muy Mala</option>
+                            <option value="2">2 - Mala</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Buena</option>
+                            <option value="5">5 - Muy Buena</option>
+                            <option value="6">6 - Excelente</option>
+                            <option value="7">7 - Fantástica</option>
+                            <option value="8">8 - Increíble</option>
+                            <option value="9">9 - Extraordinaria</option>
+                            <option value="10">10 - Épica</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decisionType">Tipo de Decisión:</label>
+                        <select id="decisionType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="personal">Personal</option>
+                            <option value="work">Trabajo</option>
+                            <option value="financial">Financiera</option>
+                            <option value="health">Salud</option>
+                            <option value="relationships">Relaciones</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decisionOutcome">Resultado:</label>
+                        <textarea id="decisionOutcome" placeholder="Describe el resultado de tu decisión..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Decisión</button>
+                </form>
+            </div>
+
+            <div class="decision-exercises">
+                <h4>🏋️ Ejercicios de Decisiones</h4>
+                
+                <div class="exercise">
+                    <h5>1. Análisis de Opciones</h5>
+                    <p>Analiza diferentes opciones y evalúa sus pros y contras para tomar mejores decisiones.</p>
+                    <button class="btn" onclick="startOptionsAnalysis()">Iniciar Análisis</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Simulación de Escenarios</h5>
+                    <p>Simula diferentes escenarios y practica tu respuesta de toma de decisiones.</p>
+                    <button class="btn" onclick="startScenarioSimulation()">Iniciar Simulación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Priorización</h5>
+                    <p>Practica la priorización de opciones para tomar decisiones más efectivas.</p>
+                    <button class="btn" onclick="startPrioritizationExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Meditación de Decisiones</h5>
+                    <p>Medita sobre tus decisiones pasadas para mejorar tu capacidad futura.</p>
+                    <button class="btn" onclick="startDecisionMeditation()">Iniciar Meditación</button>
+                </div>
+            </div>
+
+            <div class="decisions-list">
+                <h4>📋 Mis Decisiones</h4>
+                <div id="decisionsList">
+                    <!-- Las decisiones se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="decision-quote">
+                <h4>💬 Cita de Decisiones del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La calidad de nuestras decisiones determina la calidad de nuestra vida."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Decisiones Registradas:</span>
+                    <span class="stat-value" id="totalDecisions">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Calidad Promedio:</span>
+                    <span class="stat-value" id="averageQuality">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mejor Decisión:</span>
+                    <span class="stat-value" id="bestDecision">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel de Mejora:</span>
+                    <span class="stat-value" id="improvementLevel">0%</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primera Decisión</div>
+                            <div class="achievement-desc">Registra tu primera decisión</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Decisión Excelente</div>
+                            <div class="achievement-desc">Toma una decisión de calidad 8 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de Decisiones</div>
+                            <div class="achievement-desc">Registra 50 decisiones</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Campeón de Decisiones</div>
+                            <div class="achievement-desc">Alcanza 90% de nivel de mejora</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let decisions = JSON.parse(localStorage.getItem('decisions')) || [];
+        let stats = JSON.parse(localStorage.getItem('decisionStats')) || {
+            totalDecisions: 0,
+            averageQuality: 0,
+            bestDecision: 0,
+            improvementLevel: 0
+        };
+
+        let currentDecisionLevel = parseInt(localStorage.getItem('currentDecisionLevel')) || 50;
+
+        // Citas de decisiones
+        const quotes = [
+            { text: "La calidad de nuestras decisiones determina la calidad de nuestra vida.", author: "Anónimo" },
+            { text: "No hay decisiones correctas o incorrectas, solo decisiones que tomamos y las consecuencias que enfrentamos.", author: "Anónimo" },
+            { text: "La mejor decisión es la que tomas con la información que tienes en el momento.", author: "Anónimo" },
+            { text: "Las decisiones difíciles requieren valor, pero son las que más nos hacen crecer.", author: "Anónimo" },
+            { text: "No importa cuánto tiempo tomes para decidir, lo importante es que tomes la decisión correcta.", author: "Anónimo" },
+            { text: "La indecisión es la peor decisión que puedes tomar.", author: "Anónimo" },
+            { text: "Cada decisión que tomas es un paso hacia tu futuro.", author: "Anónimo" },
+            { text: "La confianza en tus decisiones viene de la experiencia y el aprendizaje.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateDecisionLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderDecisions();
+        }
+
+        // Registrar nueva decisión
+        document.getElementById('decisionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const decision = {
+                id: Date.now(),
+                name: document.getElementById('decisionName').value,
+                description: document.getElementById('decisionDescription').value,
+                quality: parseInt(document.getElementById('decisionQuality').value),
+                type: document.getElementById('decisionType').value,
+                outcome: document.getElementById('decisionOutcome').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            decisions.push(decision);
+            currentDecisionLevel = Math.min(100, currentDecisionLevel + decision.quality);
+            
+            saveData();
+            updateStats();
+            updateDecisionLevel();
+            updateAchievements();
+            renderDecisions();
+            
+            // Limpiar formulario
+            document.getElementById('decisionForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Decisión registrada exitosamente!');
+        });
+
+        // Actualizar nivel de decisiones
+        function updateDecisionLevel() {
+            document.getElementById('decisionLevel').textContent = currentDecisionLevel;
+            document.getElementById('decisionProgress').style.width = currentDecisionLevel + '%';
+            
+            let levelText = '';
+            if (currentDecisionLevel < 20) levelText = 'Decisiones Muy Malas';
+            else if (currentDecisionLevel < 40) levelText = 'Decisiones Malas';
+            else if (currentDecisionLevel < 60) levelText = 'Decisiones Medias';
+            else if (currentDecisionLevel < 80) levelText = 'Decisiones Buenas';
+            else levelText = 'Decisiones Excelentes';
+            
+            document.getElementById('decisionText').textContent = levelText;
+        }
+
+        // Iniciar análisis de opciones
+        function startOptionsAnalysis() {
+            alert('Ejercicio de Análisis de Opciones:\n\n1. Identifica todas las opciones disponibles\n2. Evalúa los pros y contras de cada una\n3. Considera las consecuencias a corto y largo plazo\n4. Toma la decisión basada en tu análisis\n\n¡Ejercicio completado!');
+            currentDecisionLevel = Math.min(100, currentDecisionLevel + 5);
+            updateDecisionLevel();
+            saveData();
+        }
+
+        // Iniciar simulación de escenarios
+        function startScenarioSimulation() {
+            alert('Ejercicio de Simulación de Escenarios:\n\n1. Imagina diferentes escenarios posibles\n2. Practica tu respuesta a cada uno\n3. Considera las variables que podrían cambiar\n4. Desarrolla estrategias de afrontamiento\n\n¡Ejercicio completado!');
+            currentDecisionLevel = Math.min(100, currentDecisionLevel + 5);
+            updateDecisionLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de priorización
+        function startPrioritizationExercise() {
+            alert('Ejercicio de Priorización:\n\n1. Lista todas las opciones disponibles\n2. Asigna prioridades basadas en importancia\n3. Considera el tiempo y los recursos disponibles\n4. Toma la decisión basada en tus prioridades\n\n¡Ejercicio completado!');
+            currentDecisionLevel = Math.min(100, currentDecisionLevel + 5);
+            updateDecisionLevel();
+            saveData();
+        }
+
+        // Iniciar meditación de decisiones
+        function startDecisionMeditation() {
+            alert('Ejercicio de Meditación de Decisiones:\n\n1. Reflexiona sobre decisiones pasadas\n2. Analiza qué funcionó y qué no\n3. Identifica patrones en tu toma de decisiones\n4. Desarrolla estrategias para mejorar\n\n¡Ejercicio completado!');
+            currentDecisionLevel = Math.min(100, currentDecisionLevel + 5);
+            updateDecisionLevel();
+            saveData();
+        }
+
+        // Renderizar decisiones
+        function renderDecisions() {
+            const decisionsList = document.getElementById('decisionsList');
+            decisionsList.innerHTML = '';
+            
+            if (decisions.length === 0) {
+                decisionsList.innerHTML = '<p>No tienes decisiones registradas aún. ¡Registra tu primera decisión!</p>';
+                return;
+            }
+            
+            decisions.forEach(decision => {
+                const decisionItem = document.createElement('div');
+                decisionItem.className = 'decision-item';
+                decisionItem.innerHTML = `
+                    <h5>${decision.name}</h5>
+                    <p><strong>Descripción:</strong> ${decision.description}</p>
+                    <p><strong>Tipo:</strong> ${getDecisionTypeText(decision.type)}</p>
+                    <p><strong>Calidad:</strong> ${decision.quality}/10</p>
+                    <p><strong>Resultado:</strong> ${decision.outcome}</p>
+                    <p><strong>Fecha:</strong> ${new Date(decision.createdAt).toLocaleDateString()}</p>
+                `;
+                decisionsList.appendChild(decisionItem);
+            });
+        }
+
+        // Obtener texto del tipo de decisión
+        function getDecisionTypeText(type) {
+            const types = {
+                'personal': 'Personal',
+                'work': 'Trabajo',
+                'financial': 'Financiera',
+                'health': 'Salud',
+                'relationships': 'Relaciones',
+                'other': 'Otro'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalDecisions = decisions.length;
+            stats.averageQuality = decisions.length > 0 ? Math.round(decisions.reduce((sum, d) => sum + d.quality, 0) / decisions.length) : 0;
+            stats.bestDecision = decisions.length > 0 ? Math.max(...decisions.map(d => d.quality)) : 0;
+            stats.improvementLevel = Math.min(100, Math.round((currentDecisionLevel / 100) * 100));
+            
+            document.getElementById('totalDecisions').textContent = stats.totalDecisions;
+            document.getElementById('averageQuality').textContent = stats.averageQuality;
+            document.getElementById('bestDecision').textContent = stats.bestDecision;
+            document.getElementById('improvementLevel').textContent = stats.improvementLevel + '%';
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primera Decisión
+            if (stats.totalDecisions >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Decisión Excelente
+            if (stats.bestDecision >= 8) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de Decisiones
+            if (stats.totalDecisions >= 50) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Campeón de Decisiones
+            if (stats.improvementLevel >= 90) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('decisions', JSON.stringify(decisions));
+            localStorage.setItem('decisionStats', JSON.stringify(stats));
+            localStorage.setItem('currentDecisionLevel', currentDecisionLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Perseverancia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+
+        .options {
+            margin: 15px 0;
+        }
+
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            background: #e8f5e9;
+            border-color: #28a745;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background: #218838;
+        }
+
+        .result {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .result h2 {
+            color: #28a745;
+            margin-top: 0;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Test de Perseverancia</h1>
+
+        <p style="text-align: center; font-size: 1.2em; color: #666; margin-bottom: 30px;">
+            Descubre tu nivel actual de perseverancia y obtén recomendaciones personalizadas
+        </p>
+
+        <form id="testForm">
+            <div class="question">
+                <h3>1. ¿Con qué frecuencia completas los proyectos que inicias?</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q1" value="5"> Siempre los completo</label>
+                    <label class="option"><input type="radio" name="q1" value="4"> La mayoría de las veces</label>
+                    <label class="option"><input type="radio" name="q1" value="3"> A veces</label>
+                    <label class="option"><input type="radio" name="q1" value="2"> Raramente</label>
+                    <label class="option"><input type="radio" name="q1" value="1"> Casi nunca</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>2. ¿Qué tan bien manejas las distracciones?</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q2" value="5"> Excelente, me mantengo
+                        enfocado</label>
+                    <label class="option"><input type="radio" name="q2" value="4"> Bien, con esfuerzo</label>
+                    <label class="option"><input type="radio" name="q2" value="3"> Regular</label>
+                    <label class="option"><input type="radio" name="q2" value="2"> Mal, me distraigo fácilmente</label>
+                    <label class="option"><input type="radio" name="q2" value="1"> Muy mal, constantemente
+                        distraído</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>3. ¿Cómo reaccionas ante los obstáculos?</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q3" value="5"> Los veo como oportunidades de
+                        aprendizaje</label>
+                    <label class="option"><input type="radio" name="q3" value="4"> Los supero con determinación</label>
+                    <label class="option"><input type="radio" name="q3" value="3"> Me frustro pero continúo</label>
+                    <label class="option"><input type="radio" name="q3" value="2"> Considero rendirme</label>
+                    <label class="option"><input type="radio" name="q3" value="1"> Generalmente me rindo</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>4. ¿Qué tan organizado eres con tu tiempo?</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q4" value="5"> Muy organizado, planifico
+                        todo</label>
+                    <label class="option"><input type="radio" name="q4" value="4"> Bastante organizado</label>
+                    <label class="option"><input type="radio" name="q4" value="3"> Moderadamente organizado</label>
+                    <label class="option"><input type="radio" name="q4" value="2"> Poco organizado</label>
+                    <label class="option"><input type="radio" name="q4" value="1"> Desorganizado</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>5. ¿Mantienes tu motivación a largo plazo?</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q5" value="5"> Sí, siempre motivado</label>
+                    <label class="option"><input type="radio" name="q5" value="4"> La mayoría del tiempo</label>
+                    <label class="option"><input type="radio" name="q5" value="3"> A veces</label>
+                    <label class="option"><input type="radio" name="q5" value="2"> Raramente</label>
+                    <label class="option"><input type="radio" name="q5" value="1"> Pierdo motivación rápidamente</label>
+                </div>
+            </div>
+
+            <button type="button" class="button" onclick="calculateScore()">Calcular Mi Nivel de Perseverancia</button>
+        </form>
+
+        <div id="results" class="result">
+            <h2>📈 Tus Resultados</h2>
+            <div class="score-display" id="scoreDisplay">0/25</div>
+            <div id="interpretation"></div>
+            <div id="recommendations"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateScore() {
+            const form = document.getElementById('testForm');
+            let total = 0;
+            let answered = 0;
+
+            for (let i = 1; i <= 5; i++) {
+                const question = form.elements['q' + i];
+                for (let j = 0; j < question.length; j++) {
+                    if (question[j].checked) {
+                        total += parseInt(question[j].value);
+                        answered++;
+                        break;
+                    }
+                }
+            }
+
+            if (answered < 5) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            document.getElementById('scoreDisplay').textContent = total + '/25';
+
+            let interpretation = '';
+            let recommendations = '';
+
+            if (total >= 21) {
+                interpretation = '<h3 style="color: #28a745;">🏆 Nivel Excelente</h3><p>Tienes un nivel excepcional de perseverancia. Eres capaz de completar proyectos y mantener el enfoque.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Comparte tus estrategias con otros</li><li>Asume proyectos más desafiantes</li><li>Mantén tus buenos hábitos</li></ul>';
+            } else if (total >= 16) {
+                interpretation = '<h3 style="color: #28a745;">✅ Nivel Bueno</h3><p>Tienes buena capacidad de perseverancia, pero hay áreas de mejora.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Trabaja en tu gestión de distracciones</li><li>Establece un manifiesto personal</li><li>Usa la regla de 10-10-10</li></ul>';
+            } else if (total >= 11) {
+                interpretation = '<h3 style="color: #ffc107;">⚠️ Nivel Moderado</h3><p>Tu perseverancia es moderada. Necesitas desarrollar mejores estrategias.</p>';
+                recommendations = '<h4>Recomendaciones:</h4><ul><li>Crea un sistema de rendición de cuentas</li><li>Divide proyectos en tareas pequeñas</li><li>Practica la regla de "10 minutos más"</li><li>Identifica tus obstáculos psicológicos</li></ul>';
+            } else {
+                interpretation = '<h3 style="color: #dc3545;">❌ Nivel Bajo</h3><p>Necesitas trabajar significativamente en tu perseverancia.</p>';
+                recommendations = '<h4>Recomendaciones Urgentes:</h4><ul><li>Comienza con proyectos muy pequeños</li><li>Busca un compañero de rendición de cuentas</li><li>Elimina distracciones de tu entorno</li><li>Lee el libro completo con atención</li><li>Considera buscar apoyo profesional</li></ul>';
+            }
+
+            document.getElementById('interpretation').innerHTML = interpretation;
+            document.getElementById('recommendations').innerHTML = recommendations;
+            document.getElementById('results').style.display = 'block';
+
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

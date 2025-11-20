@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Sesgos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .scenario {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .scenario h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .scenario p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .option h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .feedback {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .feedback p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .score .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .achievements {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .achievements.show {
+            display: block;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .achievement .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .game-area {
+                padding: 20px;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Detector de Sesgos</h1>
+            <p>Identifica los sesgos cognitivos en diferentes situaciones</p>
+        </div>
+
+        <div class="game-area">
+            <div class="score">
+                <h3>Puntuación</h3>
+                <div class="score-value" id="score">0</div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div id="scenario-container">
+                <!-- Los escenarios se cargarán dinámicamente -->
+            </div>
+
+            <div class="feedback" id="feedback">
+                <h4>Explicación</h4>
+                <p id="feedback-text"></p>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="next-btn" onclick="nextScenario()" disabled>Siguiente</button>
+                <button class="btn" id="restart-btn" onclick="restartGame()">Reiniciar</button>
+            </div>
+
+            <div class="achievements" id="achievements">
+                <h3>🏆 Logros Desbloqueados</h3>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = 0;
+        let selectedOption = null;
+        let scenarios = [
+            {
+                title: "Decisión de Inversión",
+                description: "María está considerando invertir en una nueva empresa. Su amigo le dice que 'todas las empresas de tecnología son una buena inversión' y le muestra solo los casos exitosos que conoce.",
+                options: [
+                    {
+                        text: "Sesgo de Confirmación",
+                        description: "Solo busca información que confirme su creencia",
+                        correct: true,
+                        explanation: "María está buscando solo información que confirme su creencia sobre las empresas de tecnología, ignorando casos de fracaso."
+                    },
+                    {
+                        text: "Sesgo de Autoridad",
+                        description: "Confía en la opinión de expertos sin cuestionar",
+                        correct: false,
+                        explanation: "Aunque su amigo puede ser una autoridad, el problema aquí es la búsqueda selectiva de información."
+                    },
+                    {
+                        text: "Sesgo de Disponibilidad",
+                        description: "Sobreestima la probabilidad basándose en ejemplos recientes",
+                        correct: false,
+                        explanation: "El sesgo de disponibilidad se refiere a sobreestimar probabilidades basándose en ejemplos que vienen fácilmente a la mente."
+                    }
+                ]
+            },
+            {
+                title: "Evaluación de Empleado",
+                description: "Un gerente está evaluando a un empleado. Recuerda claramente el error que cometió la semana pasada, pero tiene dificultad para recordar los logros del mes anterior.",
+                options: [
+                    {
+                        text: "Sesgo de Negatividad",
+                        description: "Da más peso a la información negativa",
+                        correct: true,
+                        explanation: "El gerente está dando más peso al error reciente que a los logros pasados, un ejemplo clásico del sesgo de negatividad."
+                    },
+                    {
+                        text: "Sesgo de Recencia",
+                        description: "Da más peso a la información más reciente",
+                        correct: false,
+                        explanation: "Aunque hay un elemento de recencia, el sesgo principal es la negatividad, no solo el tiempo."
+                    },
+                    {
+                        text: "Sesgo de Confirmación",
+                        description: "Busca información que confirme sus creencias",
+                        correct: false,
+                        explanation: "No hay evidencia de que el gerente esté buscando confirmar una creencia específica sobre el empleado."
+                    }
+                ]
+            },
+            {
+                title: "Compra de Producto",
+                description: "Ana está comprando un teléfono. Ve uno que cuesta $800 y otro que cuesta $1200. Decide comprar el de $1200 porque 'no es mucho más caro' comparado con el de $800.",
+                options: [
+                    {
+                        text: "Sesgo de Anclaje",
+                        description: "Se basa en el primer precio que vio como referencia",
+                        correct: true,
+                        explanation: "Ana está usando el precio de $800 como ancla para evaluar el precio de $1200, haciendo que parezca más razonable."
+                    },
+                    {
+                        text: "Sesgo de Escasez",
+                        description: "Valora más lo que es limitado",
+                        correct: false,
+                        explanation: "No hay evidencia de que el producto sea limitado o escaso."
+                    },
+                    {
+                        text: "Sesgo de Autoridad",
+                        description: "Confía en la opinión de expertos",
+                        correct: false,
+                        explanation: "No hay evidencia de que Ana esté siguiendo la opinión de expertos."
+                    }
+                ]
+            },
+            {
+                title: "Planificación de Proyecto",
+                description: "Un equipo de desarrollo estima que un proyecto tomará 3 meses. Cuando se les pregunta por qué, dicen que 'siempre hemos completado proyectos similares en ese tiempo'.",
+                options: [
+                    {
+                        text: "Sesgo de Planificación",
+                        description: "Subestima el tiempo y recursos necesarios",
+                        correct: true,
+                        explanation: "El equipo está subestimando el tiempo necesario basándose en experiencias pasadas, un sesgo común en la planificación."
+                    },
+                    {
+                        text: "Sesgo de Optimismo",
+                        description: "Sobreestima la probabilidad de resultados positivos",
+                        correct: false,
+                        explanation: "Aunque hay optimismo, el sesgo principal es la planificación, no solo el optimismo."
+                    },
+                    {
+                        text: "Sesgo de Confirmación",
+                        description: "Busca información que confirme sus creencias",
+                        correct: false,
+                        explanation: "No hay evidencia de que estén buscando información específica para confirmar sus creencias."
+                    }
+                ]
+            },
+            {
+                title: "Evaluación de Riesgo",
+                description: "Carlos está considerando cambiar de trabajo. Piensa en todos los casos de personas que cambiaron de trabajo y les fue mal, pero ignora los casos exitosos.",
+                options: [
+                    {
+                        text: "Sesgo de Disponibilidad",
+                        description: "Sobreestima la probabilidad basándose en ejemplos que vienen a la mente",
+                        correct: true,
+                        explanation: "Carlos está sobreestimando el riesgo basándose en ejemplos negativos que vienen fácilmente a su mente."
+                    },
+                    {
+                        text: "Sesgo de Negatividad",
+                        description: "Da más peso a la información negativa",
+                        correct: false,
+                        explanation: "Aunque hay negatividad, el sesgo principal es la disponibilidad de ejemplos negativos."
+                    },
+                    {
+                        text: "Sesgo de Confirmación",
+                        description: "Busca información que confirme sus creencias",
+                        correct: false,
+                        explanation: "No hay evidencia de que Carlos esté buscando activamente información para confirmar una creencia específica."
+                    }
+                ]
+            }
+        ];
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+            
+            container.innerHTML = `
+                <div class="scenario">
+                    <h3>${scenario.title}</h3>
+                    <p>${scenario.description}</p>
+                    <div class="options">
+                        ${scenario.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})">
+                                <h4>${option.text}</h4>
+                                <p>${option.description}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('feedback').classList.remove('show');
+            document.getElementById('next-btn').disabled = true;
+            selectedOption = null;
+        }
+
+        function selectOption(index) {
+            if (selectedOption !== null) return;
+            
+            selectedOption = index;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextScenario() {
+            if (selectedOption === null) return;
+            
+            const scenario = scenarios[currentScenario];
+            const selected = scenario.options[selectedOption];
+            const options = document.querySelectorAll('.option');
+            
+            // Mostrar respuestas correctas/incorrectas
+            options.forEach((option, index) => {
+                const optionData = scenario.options[index];
+                if (optionData.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedOption) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            feedbackText.textContent = selected.explanation;
+            feedback.classList.add('show');
+            
+            // Actualizar puntuación
+            if (selected.correct) {
+                score += 20;
+                document.getElementById('score').textContent = score;
+            }
+            
+            // Actualizar progreso
+            const progress = ((currentScenario + 1) / scenarios.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Verificar logros
+            checkAchievements();
+            
+            // Preparar siguiente escenario
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                document.getElementById('next-btn').textContent = 'Siguiente';
+            } else {
+                document.getElementById('next-btn').textContent = 'Finalizar';
+                document.getElementById('next-btn').onclick = finishGame;
+            }
+        }
+
+        function checkAchievements() {
+            const achievements = document.getElementById('achievements');
+            const achievementsList = document.getElementById('achievements-list');
+            let newAchievements = [];
+            
+            if (score >= 60 && !localStorage.getItem('achievement_60')) {
+                newAchievements.push('🎯 Detector Novato: Obtuviste 60 puntos');
+                localStorage.setItem('achievement_60', 'true');
+            }
+            
+            if (score >= 80 && !localStorage.getItem('achievement_80')) {
+                newAchievements.push('🧠 Analista de Sesgos: Obtuviste 80 puntos');
+                localStorage.setItem('achievement_80', 'true');
+            }
+            
+            if (score >= 100 && !localStorage.getItem('achievement_100')) {
+                newAchievements.push('🏆 Maestro de Sesgos: Obtuviste 100 puntos');
+                localStorage.setItem('achievement_100', 'true');
+            }
+            
+            if (newAchievements.length > 0) {
+                achievementsList.innerHTML = newAchievements.map(achievement => 
+                    `<div class="achievement">
+                        <span class="icon">${achievement.split(' ')[0]}</span>
+                        <span>${achievement}</span>
+                    </div>`
+                ).join('');
+                achievements.classList.add('show');
+            }
+        }
+
+        function finishGame() {
+            alert(`¡Juego completado! Tu puntuación final es: ${score} puntos`);
+            restartGame();
+        }
+
+        function restartGame() {
+            currentScenario = 0;
+            score = 0;
+            selectedOption = null;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('next-btn').textContent = 'Siguiente';
+            document.getElementById('next-btn').onclick = nextScenario;
+            document.getElementById('achievements').classList.remove('show');
+            loadScenario();
+        }
+
+        // Cargar el primer escenario
+        loadScenario();
+    </script>
+</body>
+</html>

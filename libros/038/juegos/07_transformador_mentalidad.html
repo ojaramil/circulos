@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformador de Mentalidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .transformation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .transformation-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .transformation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .transformation-card.transformed {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+        }
+
+        .before {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .after {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+
+        .transformation-card.transformed .after {
+            display: block;
+        }
+
+        .transformation-card.transformed .before {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-panel {
+            background: #e8f4f8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Transformador de Mentalidad</h1>
+            <p>De Escasez a Abundancia</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 ¿Qué es el Transformador de Mentalidad?</h3>
+                <p>Este juego te ayuda a identificar y transformar pensamientos de escasez en pensamientos de
+                    abundancia. Haz clic en cada tarjeta para transformar la mentalidad limitada en una mentalidad de
+                    abundancia.</p>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-number" id="transformedCount">0/12</div>
+                <div class="stat-label">Mentalidades Transformadas</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%;">0%</div>
+                </div>
+            </div>
+
+            <div class="transformation-grid" id="transformationGrid">
+                <!-- Las tarjetas se generarán dinámicamente -->
+            </div>
+
+            <div class="game-section">
+                <h3>🎮 Acciones</h3>
+                <button class="btn" onclick="transformAll()">Transformar Todas</button>
+                <button class="btn" onclick="resetTransformations()">Reiniciar</button>
+                <button class="btn" onclick="viewReport()">Ver Reporte</button>
+            </div>
+
+            <div id="achievements" class="game-section">
+                <h3>🏆 Logros</h3>
+                <p>Transforma mentalidades para desbloquear logros especiales.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const transformations = [
+            {
+                id: 1,
+                before: "No tengo suficiente",
+                after: "Dios suple todas mis necesidades según Sus riquezas en gloria"
+            },
+            {
+                id: 2,
+                before: "Nunca tendré éxito",
+                after: "Soy más que vencedor en Cristo"
+            },
+            {
+                id: 3,
+                before: "No merezco bendiciones",
+                after: "Soy heredero de Dios y coheredero con Cristo"
+            },
+            {
+                id: 4,
+                before: "Los tiempos están difíciles",
+                after: "En toda circunstancia, Dios hace que todas las cosas ayuden para bien"
+            },
+            {
+                id: 5,
+                before: "No puedo permitirme eso",
+                after: "Mi Dios proveerá todo lo que necesito"
+            },
+            {
+                id: 6,
+                before: "Siempre estaré en deuda",
+                after: "El deudor se hace siervo del acreedor, pero yo seré libre"
+            },
+            {
+                id: 7,
+                before: "No hay suficientes oportunidades",
+                after: "Dios abre puertas que nadie puede cerrar"
+            },
+            {
+                id: 8,
+                before: "Soy un fracaso",
+                after: "Soy una nueva criatura en Cristo, las cosas viejas pasaron"
+            },
+            {
+                id: 9,
+                before: "No tengo talento",
+                after: "Dios me ha dado dones y talentos únicos para Su propósito"
+            },
+            {
+                id: 10,
+                before: "Es demasiado tarde para mí",
+                after: "Con Dios nunca es demasiado tarde, Él hace nuevas todas las cosas"
+            },
+            {
+                id: 11,
+                before: "No soy lo suficientemente bueno",
+                after: "Soy acepto en el Amado y perfeccionado en Cristo"
+            },
+            {
+                id: 12,
+                before: "Siempre seré pobre",
+                after: "Aunque Cristo era rico, por amor a mí se hizo pobre, para que yo fuera enriquecido"
+            }
+        ];
+
+        let gameState = {
+            transformed: [],
+            totalTransformations: 0
+        };
+
+        function initGame() {
+            const grid = document.getElementById('transformationGrid');
+            grid.innerHTML = '';
+
+            transformations.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'transformation-card';
+                card.id = `card-${t.id}`;
+                card.innerHTML = `
+                    <div class="before">
+                        <strong>Escasez:</strong><br>
+                        "${t.before}"
+                    </div>
+                    <div class="after">
+                        <strong>Abundancia:</strong><br>
+                        "${t.after}"
+                    </div>
+                `;
+                card.onclick = () => transformCard(t.id);
+                grid.appendChild(card);
+            });
+
+            updateDisplay();
+        }
+
+        function transformCard(id) {
+            const card = document.getElementById(`card-${id}`);
+
+            if (!card.classList.contains('transformed')) {
+                card.classList.add('transformed');
+                gameState.transformed.push(id);
+                gameState.totalTransformations++;
+
+                updateDisplay();
+                showAchievement('✨ Mentalidad Transformada', 'Has transformado un pensamiento de escasez en abundancia');
+
+                // Logros especiales
+                if (gameState.totalTransformations === 1) {
+                    showAchievement('🌟 Primera Transformación', '¡Has comenzado tu viaje de transformación!');
+                }
+                if (gameState.totalTransformations === 6) {
+                    showAchievement('💪 Medio Camino', '¡Has transformado la mitad de las mentalidades!');
+                }
+                if (gameState.totalTransformations === 12) {
+                    showAchievement('👑 Maestro de la Transformación', '¡Has transformado todas las mentalidades!');
+                }
+            }
+        }
+
+        function transformAll() {
+            transformations.forEach(t => {
+                const card = document.getElementById(`card-${t.id}`);
+                if (!card.classList.contains('transformed')) {
+                    card.classList.add('transformed');
+                    if (!gameState.transformed.includes(t.id)) {
+                        gameState.transformed.push(t.id);
+                        gameState.totalTransformations++;
+                    }
+                }
+            });
+
+            updateDisplay();
+            showAchievement('🏆 Transformación Completa', 'Has transformado todas las mentalidades de una vez');
+        }
+
+        function resetTransformations() {
+            if (confirm('¿Estás seguro de que quieres reiniciar? Se perderá todo tu progreso.')) {
+                gameState.transformed = [];
+                gameState.totalTransformations = 0;
+
+                transformations.forEach(t => {
+                    const card = document.getElementById(`card-${t.id}`);
+                    card.classList.remove('transformed');
+                });
+
+                updateDisplay();
+                showAchievement('🔄 Reiniciado', 'Has reiniciado el transformador');
+            }
+        }
+
+        function updateDisplay() {
+            const count = gameState.transformed.length;
+            const total = transformations.length;
+            const percentage = (count / total) * 100;
+
+            document.getElementById('transformedCount').textContent = `${count}/${total}`;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = Math.round(percentage) + '%';
+        }
+
+        function viewReport() {
+            const count = gameState.transformed.length;
+            const total = transformations.length;
+            const percentage = Math.round((count / total) * 100);
+
+            let level;
+            if (percentage === 100) level = 'Maestro de la Abundancia';
+            else if (percentage >= 75) level = 'Avanzado';
+            else if (percentage >= 50) level = 'Intermedio';
+            else if (percentage >= 25) level = 'Principiante';
+            else level = 'Iniciando';
+
+            const report = `
+Reporte de Transformación de Mentalidad
+
+Mentalidades Transformadas: ${count}/${total}
+Porcentaje Completado: ${percentage}%
+Nivel Alcanzado: ${level}
+
+"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento, para que comprobéis cuál sea la buena voluntad de Dios, agradable y perfecta." - Romanos 12:2
+            `;
+            alert(report);
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `<h4>${title}</h4><p>${description}</p>`;
+
+            document.getElementById('achievements').appendChild(achievement);
+
+            setTimeout(() => achievement.remove(), 3000);
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+
+</html>

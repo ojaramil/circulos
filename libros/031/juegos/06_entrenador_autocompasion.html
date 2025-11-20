@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Autocompasión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .exercise-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exercise-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .prompt-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .prompt-card h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .reflection-area {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 150px;
+            font-family: inherit;
+            font-size: 1em;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .reflection-area:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .technique-card {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .technique-card h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .technique-card p {
+            margin-bottom: 15px;
+        }
+
+        .technique-card ul {
+            margin-left: 20px;
+        }
+
+        .technique-card li {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤗 Entrenador de Autocompasión</h1>
+            <p>Desarrolla la capacidad de tratarte con amabilidad y comprensión</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este entrenador te guiará a través de ejercicios de autocompasión diseñados para ayudarte a desarrollar una relación más amable y comprensiva contigo mismo. Aprende a tratarte con la misma bondad que mostrarías a un buen amigo.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Autocompasión</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Ejercicios Completados</h4>
+                        <div class="stat-number" id="exercises-completed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Reflexiones Escritas</h4>
+                        <div class="stat-number" id="reflections-written">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Técnicas Aprendidas</h4>
+                        <div class="stat-number" id="techniques-learned">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exercise-container">
+                <div class="exercise-card">
+                    <h3>💝 Ejercicio 1: La Carta de Autocompasión</h3>
+                    <p>Escribe una carta a ti mismo como si fueras un amigo muy querido que está pasando por un momento difícil. Sé amable, comprensivo y alentador.</p>
+                    
+                    <div class="prompt-card">
+                        <h4>📝 Prompts para Reflexionar</h4>
+                        <p>Considera estas preguntas mientras escribes tu carta:</p>
+                        <ul>
+                            <li>¿Qué le dirías a un amigo que está pasando por lo mismo que tú?</li>
+                            <li>¿Cómo le mostrarías comprensión y apoyo?</li>
+                            <li>¿Qué palabras de aliento le darías?</li>
+                            <li>¿Cómo le recordarías sus fortalezas y cualidades?</li>
+                        </ul>
+                    </div>
+
+                    <textarea class="reflection-area" id="reflection-text" placeholder="Escribe tu carta de autocompasión aquí..."></textarea>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="save-btn" onclick="saveReflection()">Guardar Reflexión</button>
+                <button class="btn" onclick="nextExercise()">Siguiente Ejercicio</button>
+            </div>
+
+            <div id="technique-container" style="display: none;">
+                <div class="technique-card">
+                    <h4>🧠 Técnica de Autocompasión</h4>
+                    <div id="technique-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let exercisesCompleted = 0;
+        let reflectionsWritten = 0;
+        let techniquesLearned = 0;
+
+        const exercises = [
+            {
+                title: "La Carta de Autocompasión",
+                description: "Escribe una carta a ti mismo como si fueras un amigo muy querido que está pasando por un momento difícil. Sé amable, comprensivo y alentador.",
+                prompts: [
+                    "¿Qué le dirías a un amigo que está pasando por lo mismo que tú?",
+                    "¿Cómo le mostrarías comprensión y apoyo?",
+                    "¿Qué palabras de aliento le darías?",
+                    "¿Cómo le recordarías sus fortalezas y cualidades?"
+                ],
+                technique: "La carta de autocompasión es una técnica poderosa que te ayuda a desarrollar una perspectiva más amable hacia ti mismo. Al escribir como si fueras un amigo, puedes acceder a la compasión que naturalmente sientes por otros y dirigirla hacia ti mismo."
+            },
+            {
+                title: "El Diálogo Interno Compasivo",
+                description: "Identifica y transforma tu diálogo interno crítico en un diálogo más compasivo y alentador.",
+                prompts: [
+                    "¿Qué te dices a ti mismo cuando cometes un error?",
+                    "¿Cómo podrías reformular esos pensamientos de manera más amable?",
+                    "¿Qué le dirías a un amigo en la misma situación?",
+                    "¿Cómo puedes ser más comprensivo contigo mismo?"
+                ],
+                technique: "El diálogo interno compasivo implica reconocer cuando te estás criticando y conscientemente cambiar ese diálogo por uno más amable y comprensivo. Esto ayuda a desarrollar una relación más positiva contigo mismo."
+            },
+            {
+                title: "La Meditación de Autocompasión",
+                description: "Practica una meditación guiada de autocompasión para cultivar sentimientos de bondad hacia ti mismo.",
+                prompts: [
+                    "¿Qué sensaciones surgen cuando piensas en ti mismo con compasión?",
+                    "¿Cómo puedes cultivar estos sentimientos de bondad?",
+                    "¿Qué frases de autocompasión te resuenan más?",
+                    "¿Cómo puedes integrar esta práctica en tu vida diaria?"
+                ],
+                technique: "La meditación de autocompasión es una práctica formal que te ayuda a cultivar sentimientos de bondad, comprensión y aceptación hacia ti mismo. Esta técnica puede reducir la autocrítica y aumentar el bienestar emocional."
+            },
+            {
+                title: "El Ejercicio de los Tres Componentes",
+                description: "Explora los tres componentes de la autocompasión: bondad hacia uno mismo, humanidad común y mindfulness.",
+                prompts: [
+                    "¿Cómo puedes ser más amable contigo mismo?",
+                    "¿Qué te conecta con la humanidad común?",
+                    "¿Cómo puedes practicar mindfulness en momentos difíciles?",
+                    "¿Cómo puedes integrar estos tres componentes en tu vida?"
+                ],
+                technique: "La autocompasión tiene tres componentes: bondad hacia uno mismo (ser amable en lugar de crítico), humanidad común (reconocer que el sufrimiento es parte de la experiencia humana), y mindfulness (estar presente con tus emociones sin juzgarlas)."
+            }
+        ];
+
+        function saveReflection() {
+            const reflectionText = document.getElementById('reflection-text').value.trim();
+            
+            if (reflectionText.length === 0) {
+                alert('Por favor, escribe tu reflexión antes de guardar.');
+                return;
+            }
+
+            // Save to localStorage
+            const savedReflections = JSON.parse(localStorage.getItem('autocompassion_reflections') || '[]');
+            savedReflections.push({
+                exercise: exercises[currentExercise].title,
+                reflection: reflectionText,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('autocompassion_reflections', JSON.stringify(savedReflections));
+
+            // Update stats
+            reflectionsWritten++;
+            updateStats();
+
+            // Show technique
+            showTechnique();
+        }
+
+        function showTechnique() {
+            const exercise = exercises[currentExercise];
+            
+            document.getElementById('technique-content').innerHTML = `
+                <p><strong>${exercise.technique}</p>
+                <h5>💡 Consejos para Practicar:</h5>
+                <ul>
+                    <li>Practica regularmente, incluso por unos minutos al día</li>
+                    <li>Sé paciente contigo mismo mientras desarrollas esta habilidad</li>
+                    <li>Recuerda que la autocompasión es una práctica, no una perfección</li>
+                    <li>Observa cómo cambia tu relación contigo mismo con el tiempo</li>
+                </ul>
+            `;
+
+            document.getElementById('technique-container').style.display = 'block';
+        }
+
+        function nextExercise() {
+            currentExercise = (currentExercise + 1) % exercises.length;
+            loadExercise();
+        }
+
+        function loadExercise() {
+            const exercise = exercises[currentExercise];
+            
+            document.querySelector('.exercise-card h3').textContent = `💝 Ejercicio ${currentExercise + 1}: ${exercise.title}`;
+            document.querySelector('.exercise-card p').textContent = exercise.description;
+            
+            const promptsList = document.querySelector('.prompt-card ul');
+            promptsList.innerHTML = '';
+            exercise.prompts.forEach(prompt => {
+                const li = document.createElement('li');
+                li.textContent = prompt;
+                promptsList.appendChild(li);
+            });
+            
+            // Clear reflection area
+            document.getElementById('reflection-text').value = '';
+            
+            // Hide technique container
+            document.getElementById('technique-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('exercises-completed').textContent = exercisesCompleted;
+            document.getElementById('reflections-written').textContent = reflectionsWritten;
+            document.getElementById('techniques-learned').textContent = techniquesLearned;
+            
+            // Update progress bar
+            const progress = (exercisesCompleted / exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExercise();
+        });
+    </script>
+</body>
+</html>
+

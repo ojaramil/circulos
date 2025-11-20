@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Sueño</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .sleep-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .sleep-tracker {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0056b3;
+        }
+        .sleep-tracker h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .sleep-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .sleep-quality {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .sleep-quality h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .sleep-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tip-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .tip-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .tip-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tip-card.completed {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+        .tip-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .tip-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .tip-duration {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .control-buttons {
+            margin: 20px 0;
+        }
+        .sleep-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .sleep-btn:hover {
+            background: #5a6fd8;
+        }
+        .sleep-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .sleep-btn.active {
+            background: #28a745;
+        }
+        .sleep-btn.pause {
+            background: #ffc107;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .sleep-stats {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .sleep-stats h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .sleep-routine {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .sleep-routine h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .routine-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .routine-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        .routine-text {
+            flex: 1;
+        }
+        .routine-time {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .level-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .level-poor { background: #f8d7da; color: #721c24; }
+        .level-fair { background: #fff3cd; color: #856404; }
+        .level-good { background: #d4edda; color: #155724; }
+        .level-excellent { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>😴 Optimizador de Sueño</h1>
+            <p>Mejora la calidad de tu sueño con técnicas efectivas</p>
+        </div>
+
+        <div class="sleep-area">
+            <div class="sleep-tracker">
+                <h3>📊 Calidad del Sueño</h3>
+                <div class="sleep-score" id="sleep-score">75</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sleep-progress" style="width: 75%"></div>
+                </div>
+                <p id="sleep-status">Bueno - Continúa con tus hábitos saludables</p>
+            </div>
+
+            <div class="sleep-quality">
+                <h3>😴 Nivel de Calidad</h3>
+                <div class="level-indicator" id="sleep-level">Bueno</div>
+                <div id="sleep-tips-completed"></div>
+            </div>
+
+            <div class="sleep-tips" id="sleep-tips">
+                <div class="tip-card" onclick="selectTip('bedtime')">
+                    <div class="tip-icon">🕘</div>
+                    <div class="tip-title">Hora de Dormir Fija</div>
+                    <div class="tip-description">Ve a dormir a la misma hora cada noche</div>
+                    <div class="tip-duration">Diario</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('screen')">
+                    <div class="tip-icon">📱</div>
+                    <div class="tip-title">Sin Pantallas</div>
+                    <div class="tip-description">Evita pantallas 1 hora antes de dormir</div>
+                    <div class="tip-duration">1 hora</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('temperature')">
+                    <div class="tip-icon">🌡️</div>
+                    <div class="tip-title">Temperatura Fresca</div>
+                    <div class="tip-description">Mantén tu habitación entre 18-22°C</div>
+                    <div class="tip-duration">Constante</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('caffeine')">
+                    <div class="tip-icon">☕</div>
+                    <div class="tip-title">Sin Cafeína</div>
+                    <div class="tip-description">No consumas cafeína después de las 2 PM</div>
+                    <div class="tip-duration">Diario</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('exercise')">
+                    <div class="tip-icon">🏃</div>
+                    <div class="tip-title">Ejercicio Regular</div>
+                    <div class="tip-description">Haz ejercicio regularmente, pero no antes de dormir</div>
+                    <div class="tip-duration">30 min</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('meditation')">
+                    <div class="tip-icon">🧘</div>
+                    <div class="tip-title">Meditación</div>
+                    <div class="tip-description">Medita antes de dormir para relajarte</div>
+                    <div class="tip-duration">10 min</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('darkness')">
+                    <div class="tip-icon">🌙</div>
+                    <div class="tip-title">Oscuridad Total</div>
+                    <div class="tip-description">Usa cortinas opacas o antifaz</div>
+                    <div class="tip-duration">Constante</div>
+                </div>
+                <div class="tip-card" onclick="selectTip('routine')">
+                    <div class="tip-icon">🔄</div>
+                    <div class="tip-title">Rutina Relajante</div>
+                    <div class="tip-description">Crea una rutina de relajación antes de dormir</div>
+                    <div class="tip-duration">30 min</div>
+                </div>
+            </div>
+
+            <div class="sleep-routine" id="sleep-routine" style="display: none;">
+                <h3>🔄 Rutina de Sueño Recomendada</h3>
+                <div class="routine-step">
+                    <div class="routine-icon">🕘</div>
+                    <div class="routine-text">1 hora antes de dormir: Evita pantallas</div>
+                    <div class="routine-time">21:00</div>
+                </div>
+                <div class="routine-step">
+                    <div class="routine-icon">🛁</div>
+                    <div class="routine-text">30 minutos antes: Ducha o baño relajante</div>
+                    <div class="routine-time">21:30</div>
+                </div>
+                <div class="routine-step">
+                    <div class="routine-icon">🧘</div>
+                    <div class="routine-text">15 minutos antes: Meditación o respiración</div>
+                    <div class="routine-time">21:45</div>
+                </div>
+                <div class="routine-step">
+                    <div class="routine-icon">📚</div>
+                    <div class="routine-text">10 minutos antes: Lectura ligera</div>
+                    <div class="routine-time">21:50</div>
+                </div>
+                <div class="routine-step">
+                    <div class="routine-icon">😴</div>
+                    <div class="routine-text">Hora de dormir</div>
+                    <div class="routine-time">22:00</div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button class="sleep-btn" onclick="startOptimization()" id="startBtn">🚀 Iniciar Optimización</button>
+                <button class="sleep-btn" onclick="showRoutine()" id="routineBtn">🔄 Ver Rutina</button>
+                <button class="sleep-btn" onclick="showStats()" id="statsBtn">📊 Estadísticas</button>
+            </div>
+
+            <div id="sleep-stats" style="display: none;">
+                <div class="sleep-stats">
+                    <h3>📊 Estadísticas de Sueño</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="avg-score">75</div>
+                            <div class="stat-label">Puntuación Promedio</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tips-completed">0</div>
+                            <div class="stat-label">Tips Completados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="sleep-streak">0</div>
+                            <div class="stat-label">Racha (días)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="improvement">0</div>
+                            <div class="stat-label">Mejora Total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSleep = {
+            score: 75,
+            tips: [],
+            completedTips: 0,
+            totalTips: 8,
+            avgScore: 75,
+            sleepStreak: 0,
+            improvement: 0
+        };
+
+        const sleepTips = {
+            'bedtime': { 
+                name: 'Hora de Dormir Fija',
+                points: 10,
+                description: 'Ve a dormir a la misma hora cada noche'
+            },
+            'screen': { 
+                name: 'Sin Pantallas',
+                points: 15,
+                description: 'Evita pantallas 1 hora antes de dormir'
+            },
+            'temperature': { 
+                name: 'Temperatura Fresca',
+                points: 8,
+                description: 'Mantén tu habitación entre 18-22°C'
+            },
+            'caffeine': { 
+                name: 'Sin Cafeína',
+                points: 12,
+                description: 'No consumas cafeína después de las 2 PM'
+            },
+            'exercise': { 
+                name: 'Ejercicio Regular',
+                points: 10,
+                description: 'Haz ejercicio regularmente, pero no antes de dormir'
+            },
+            'meditation': { 
+                name: 'Meditación',
+                points: 15,
+                description: 'Medita antes de dormir para relajarte'
+            },
+            'darkness': { 
+                name: 'Oscuridad Total',
+                points: 8,
+                description: 'Usa cortinas opacas o antifaz'
+            },
+            'routine': { 
+                name: 'Rutina Relajante',
+                points: 12,
+                description: 'Crea una rutina de relajación antes de dormir'
+            }
+        };
+
+        function selectTip(tipType) {
+            if (currentSleep.tips.includes(tipType)) return;
+            
+            currentSleep.tips.push(tipType);
+            currentSleep.completedTips++;
+            currentSleep.score += sleepTips[tipType].points;
+            currentSleep.score = Math.min(100, currentSleep.score);
+            
+            // Actualizar visual
+            const card = event.target.closest('.tip-card');
+            card.classList.add('completed');
+            card.onclick = null;
+            
+            // Actualizar puntuación
+            updateSleepDisplay();
+            
+            // Mostrar logro
+            showAchievement(sleepTips[tipType].points);
+        }
+
+        function startOptimization() {
+            // Simular optimización automática
+            const tips = Object.keys(sleepTips);
+            let completed = 0;
+            
+            const interval = setInterval(() => {
+                if (completed >= 3) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const randomTip = tips[Math.floor(Math.random() * tips.length)];
+                if (!currentSleep.tips.includes(randomTip)) {
+                    currentSleep.tips.push(randomTip);
+                    currentSleep.completedTips++;
+                    currentSleep.score += sleepTips[randomTip].points;
+                    currentSleep.score = Math.min(100, currentSleep.score);
+                    
+                    // Actualizar visual
+                    const cards = document.querySelectorAll('.tip-card');
+                    cards.forEach(card => {
+                        if (card.textContent.includes(sleepTips[randomTip].name)) {
+                            card.classList.add('completed');
+                            card.onclick = null;
+                        }
+                    });
+                    
+                    updateSleepDisplay();
+                    showAchievement(sleepTips[randomTip].points);
+                    completed++;
+                }
+            }, 2000);
+        }
+
+        function showRoutine() {
+            const routine = document.getElementById('sleep-routine');
+            if (routine.style.display === 'none') {
+                routine.style.display = 'block';
+                document.getElementById('routineBtn').textContent = '🔄 Ocultar Rutina';
+            } else {
+                routine.style.display = 'none';
+                document.getElementById('routineBtn').textContent = '🔄 Ver Rutina';
+            }
+        }
+
+        function updateSleepDisplay() {
+            const score = currentSleep.score;
+            document.getElementById('sleep-score').textContent = score;
+            document.getElementById('sleep-progress').style.width = `${score}%`;
+            
+            let status, level, levelClass;
+            if (score >= 90) {
+                status = 'Excelente - ¡Tu sueño es óptimo!';
+                level = 'Excelente';
+                levelClass = 'level-excellent';
+            } else if (score >= 75) {
+                status = 'Bueno - Continúa con tus hábitos saludables';
+                level = 'Bueno';
+                levelClass = 'level-good';
+            } else if (score >= 50) {
+                status = 'Regular - Considera implementar más tips';
+                level = 'Regular';
+                levelClass = 'level-fair';
+            } else {
+                status = 'Pobre - Necesitas mejorar tus hábitos de sueño';
+                level = 'Pobre';
+                levelClass = 'level-poor';
+            }
+            
+            document.getElementById('sleep-status').textContent = status;
+            document.getElementById('sleep-level').textContent = level;
+            document.getElementById('sleep-level').className = `level-indicator ${levelClass}`;
+            
+            // Actualizar tips completados
+            document.getElementById('sleep-tips-completed').innerHTML = 
+                `<p>Tips completados: ${currentSleep.completedTips}/${currentSleep.totalTips}</p>`;
+        }
+
+        function showAchievement(points) {
+            // Crear notificación de logro
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            achievement.textContent = '😴 ¡Sueño mejorado! +' + points + ' puntos';
+            document.body.appendChild(achievement);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showStats() {
+            loadStats();
+            
+            // Calcular estadísticas
+            currentSleep.avgScore = Math.round((currentSleep.avgScore + currentSleep.score) / 2);
+            currentSleep.improvement = currentSleep.score - 75;
+            currentSleep.sleepStreak = currentSleep.completedTips > 0 ? currentSleep.sleepStreak + 1 : 0;
+            
+            document.getElementById('avg-score').textContent = currentSleep.avgScore;
+            document.getElementById('tips-completed').textContent = currentSleep.completedTips;
+            document.getElementById('sleep-streak').textContent = currentSleep.sleepStreak;
+            document.getElementById('improvement').textContent = currentSleep.improvement > 0 ? '+' + currentSleep.improvement : currentSleep.improvement;
+            
+            document.getElementById('sleep-stats').style.display = 'block';
+        }
+
+        function saveStats() {
+            const stats = {
+                score: currentSleep.score,
+                tips: currentSleep.tips,
+                completedTips: currentSleep.completedTips,
+                avgScore: currentSleep.avgScore,
+                sleepStreak: currentSleep.sleepStreak,
+                improvement: currentSleep.improvement
+            };
+            localStorage.setItem('sleepStats', JSON.stringify(stats));
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('sleepStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                currentSleep.score = stats.score || 75;
+                currentSleep.tips = stats.tips || [];
+                currentSleep.completedTips = stats.completedTips || 0;
+                currentSleep.avgScore = stats.avgScore || 75;
+                currentSleep.sleepStreak = stats.sleepStreak || 0;
+                currentSleep.improvement = stats.improvement || 0;
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        loadStats();
+        updateSleepDisplay();
+        
+        // Guardar estadísticas cada 30 segundos
+        setInterval(saveStats, 30000);
+    </script>
+</body>
+</html>

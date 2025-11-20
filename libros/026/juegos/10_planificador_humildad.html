@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Humildad - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .planner-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .planner-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .calendar-header {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .calendar-day {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .calendar-day:hover {
+            background: #f0f4ff;
+        }
+        .calendar-day.selected {
+            background: #667eea;
+            color: white;
+        }
+        .calendar-day.has-activity {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        .activity-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .activity-item.completed {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .activity-item h4 {
+            color: #667eea;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .activity-item .time {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .activity-item .priority {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .priority-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .priority-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #667eea;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #000;
+        }
+        .activity-form {
+            display: none;
+        }
+        .activity-form.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Planificador de Humildad</h1>
+            <p>Organiza tu crecimiento personal y desarrollo de la humildad</p>
+        </div>
+
+        <div class="planner-section">
+            <h3>📅 Calendario de Actividades</h3>
+            <div class="calendar" id="calendar">
+                <!-- Calendar will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="planner-section">
+            <h3>➕ Agregar Nueva Actividad</h3>
+            <div class="activity-form" id="activity-form">
+                <div class="form-group">
+                    <label for="activity-title">Título de la Actividad</label>
+                    <input type="text" id="activity-title" placeholder="Ej: Meditación matutina, Ejercicio de gratitud...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity-description">Descripción</label>
+                    <textarea id="activity-description" placeholder="Describe la actividad en detalle..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity-date">Fecha</label>
+                    <input type="date" id="activity-date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity-time">Hora</label>
+                    <input type="time" id="activity-time">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity-priority">Prioridad</label>
+                    <select id="activity-priority">
+                        <option value="low">Baja</option>
+                        <option value="medium">Media</option>
+                        <option value="high">Alta</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity-category">Categoría</label>
+                    <select id="activity-category">
+                        <option value="meditation">Meditación</option>
+                        <option value="reflection">Reflexión</option>
+                        <option value="learning">Aprendizaje</option>
+                        <option value="service">Servicio</option>
+                        <option value="gratitude">Gratitud</option>
+                        <option value="humility">Humildad</option>
+                    </select>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="saveActivity()">💾 Guardar Actividad</button>
+                    <button class="btn btn-secondary" onclick="cancelActivity()">❌ Cancelar</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="showActivityForm()">➕ Agregar Actividad</button>
+            </div>
+        </div>
+
+        <div class="planner-section">
+            <h3>📋 Actividades del Día</h3>
+            <div id="daily-activities">
+                <p>Selecciona una fecha en el calendario para ver las actividades.</p>
+            </div>
+        </div>
+
+        <div class="planner-section">
+            <h3>🎯 Objetivos de Humildad</h3>
+            <div class="form-group">
+                <label for="weekly-goal">Objetivo Semanal</label>
+                <textarea id="weekly-goal" placeholder="¿Qué quieres lograr esta semana en términos de humildad?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="monthly-goal">Objetivo Mensual</label>
+                <textarea id="monthly-goal" placeholder="¿Cuál es tu objetivo mensual para desarrollar la humildad?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="yearly-goal">Objetivo Anual</label>
+                <textarea id="yearly-goal" placeholder="¿Dónde quieres estar en un año en términos de humildad y crecimiento personal?"></textarea>
+            </div>
+        </div>
+
+        <div class="planner-section">
+            <h3>📊 Progreso y Estadísticas</h3>
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <h4>Actividades Completadas</h4>
+                    <div class="number" id="completed-activities">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Actividades Pendientes</h4>
+                    <div class="number" id="pending-activities">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Días de Práctica</h4>
+                    <div class="number" id="practice-days">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Racha Actual</h4>
+                    <div class="number" id="current-streak">0 días</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <p>Progreso semanal: <span id="weekly-progress">0%</span></p>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Consejo de Planificación</h4>
+            <p>La humildad se desarrolla a través de la práctica constante. Planifica actividades pequeñas pero regulares que te ayuden a mantener una mentalidad humilde y abierta al aprendizaje.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="saveGoals()">💾 Guardar Objetivos</button>
+            <button class="btn btn-success" onclick="exportData()">📤 Exportar Datos</button>
+            <button class="btn btn-secondary" onclick="importData()">📥 Importar Datos</button>
+            <button class="btn btn-danger" onclick="resetData()">🔄 Reiniciar Todo</button>
+        </div>
+    </div>
+
+    <!-- Modal para editar actividad -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Actividad</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div id="edit-form"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let selectedDate = null;
+        let activities = JSON.parse(localStorage.getItem('humilityActivities') || '[]');
+        let goals = JSON.parse(localStorage.getItem('humilityGoals') || '{}');
+
+        // Generar calendario
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Headers de días
+            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+            
+            // Días del mes
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+            
+            // Días del mes anterior
+            for (let i = startingDay - 1; i >= 0; i--) {
+                const day = new Date(year, month, -i);
+                const dayElement = createDayElement(day, true);
+                calendar.appendChild(dayElement);
+            }
+            
+            // Días del mes actual
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayElement = createDayElement(date, false);
+                calendar.appendChild(dayElement);
+            }
+            
+            // Días del mes siguiente
+            const remainingDays = 42 - (startingDay + daysInMonth);
+            for (let day = 1; day <= remainingDays; day++) {
+                const date = new Date(year, month + 1, day);
+                const dayElement = createDayElement(date, true);
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(date, isOtherMonth) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            if (isOtherMonth) dayElement.classList.add('other-month');
+            
+            dayElement.textContent = date.getDate();
+            dayElement.onclick = () => selectDate(date);
+            
+            // Verificar si hay actividades en esta fecha
+            const dateString = date.toISOString().split('T')[0];
+            const dayActivities = activities.filter(activity => 
+                activity.date === dateString
+            );
+            
+            if (dayActivities.length > 0) {
+                dayElement.classList.add('has-activity');
+                dayElement.title = `${dayActivities.length} actividad(es) programada(s)`;
+            }
+            
+            return dayElement;
+        }
+
+        function selectDate(date) {
+            // Remover selección anterior
+            document.querySelectorAll('.calendar-day').forEach(day => {
+                day.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva fecha
+            event.currentTarget.classList.add('selected');
+            selectedDate = date;
+            
+            // Mostrar actividades del día
+            showDailyActivities(date);
+        }
+
+        function showDailyActivities(date) {
+            const dateString = date.toISOString().split('T')[0];
+            const dayActivities = activities.filter(activity => 
+                activity.date === dateString
+            );
+            
+            const container = document.getElementById('daily-activities');
+            
+            if (dayActivities.length === 0) {
+                container.innerHTML = '<p>No hay actividades programadas para este día.</p>';
+                return;
+            }
+            
+            const activitiesHtml = dayActivities.map(activity => `
+                <div class="activity-item ${activity.completed ? 'completed' : ''}">
+                    <input type="checkbox" ${activity.completed ? 'checked' : ''} 
+                           onchange="toggleActivity(${activity.id})">
+                    <h4>${activity.title}</h4>
+                    <span class="time">${activity.time}</span>
+                    <span class="priority priority-${activity.priority}">${activity.priority}</span>
+                    <button class="btn btn-secondary" onclick="editActivity(${activity.id})">✏️</button>
+                    <button class="btn btn-danger" onclick="deleteActivity(${activity.id})">🗑️</button>
+                </div>
+            `).join('');
+            
+            container.innerHTML = activitiesHtml;
+        }
+
+        function showActivityForm() {
+            document.getElementById('activity-form').classList.add('show');
+        }
+
+        function cancelActivity() {
+            document.getElementById('activity-form').classList.remove('show');
+            // Limpiar formulario
+            document.getElementById('activity-form').reset();
+        }
+
+        function saveActivity() {
+            const title = document.getElementById('activity-title').value;
+            const description = document.getElementById('activity-description').value;
+            const date = document.getElementById('activity-date').value;
+            const time = document.getElementById('activity-time').value;
+            const priority = document.getElementById('activity-priority').value;
+            const category = document.getElementById('activity-category').value;
+            
+            if (!title || !date) {
+                alert('Por favor completa al menos el título y la fecha.');
+                return;
+            }
+            
+            const activity = {
+                id: Date.now(),
+                title,
+                description,
+                date,
+                time,
+                priority,
+                category,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            activities.push(activity);
+            localStorage.setItem('humilityActivities', JSON.stringify(activities));
+            
+            // Limpiar formulario y ocultar
+            document.getElementById('activity-form').reset();
+            document.getElementById('activity-form').classList.remove('show');
+            
+            // Regenerar calendario
+            regenerateCalendar();
+            
+            alert('¡Actividad guardada exitosamente!');
+        }
+
+        function toggleActivity(id) {
+            const activity = activities.find(a => a.id === id);
+            if (activity) {
+                activity.completed = !activity.completed;
+                localStorage.setItem('humilityActivities', JSON.stringify(activities));
+                updateStats();
+            }
+        }
+
+        function editActivity(id) {
+            const activity = activities.find(a => a.id === id);
+            if (!activity) return;
+            
+            const editForm = document.getElementById('edit-form');
+            editForm.innerHTML = `
+                <div class="form-group">
+                    <label for="edit-title">Título</label>
+                    <input type="text" id="edit-title" value="${activity.title}">
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Descripción</label>
+                    <textarea id="edit-description">${activity.description}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-date">Fecha</label>
+                    <input type="date" id="edit-date" value="${activity.date}">
+                </div>
+                <div class="form-group">
+                    <label for="edit-time">Hora</label>
+                    <input type="time" id="edit-time" value="${activity.time}">
+                </div>
+                <div class="form-group">
+                    <label for="edit-priority">Prioridad</label>
+                    <select id="edit-priority">
+                        <option value="low" ${activity.priority === 'low' ? 'selected' : ''}>Baja</option>
+                        <option value="medium" ${activity.priority === 'medium' ? 'selected' : ''}>Media</option>
+                        <option value="high" ${activity.priority === 'high' ? 'selected' : ''}>Alta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-category">Categoría</label>
+                    <select id="edit-category">
+                        <option value="meditation" ${activity.category === 'meditation' ? 'selected' : ''}>Meditación</option>
+                        <option value="reflection" ${activity.category === 'reflection' ? 'selected' : ''}>Reflexión</option>
+                        <option value="learning" ${activity.category === 'learning' ? 'selected' : ''}>Aprendizaje</option>
+                        <option value="service" ${activity.category === 'service' ? 'selected' : ''}>Servicio</option>
+                        <option value="gratitude" ${activity.category === 'gratitude' ? 'selected' : ''}>Gratitud</option>
+                        <option value="humility" ${activity.category === 'humility' ? 'selected' : ''}>Humildad</option>
+                    </select>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="updateActivity(${id})">💾 Actualizar</button>
+                    <button class="btn btn-secondary" onclick="closeEditModal()">❌ Cancelar</button>
+                </div>
+            `;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function updateActivity(id) {
+            const activity = activities.find(a => a.id === id);
+            if (!activity) return;
+            
+            activity.title = document.getElementById('edit-title').value;
+            activity.description = document.getElementById('edit-description').value;
+            activity.date = document.getElementById('edit-date').value;
+            activity.time = document.getElementById('edit-time').value;
+            activity.priority = document.getElementById('edit-priority').value;
+            activity.category = document.getElementById('edit-category').value;
+            
+            localStorage.setItem('humilityActivities', JSON.stringify(activities));
+            closeEditModal();
+            regenerateCalendar();
+            
+            if (selectedDate) {
+                showDailyActivities(selectedDate);
+            }
+            
+            alert('¡Actividad actualizada exitosamente!');
+        }
+
+        function deleteActivity(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta actividad?')) {
+                activities = activities.filter(a => a.id !== id);
+                localStorage.setItem('humilityActivities', JSON.stringify(activities));
+                regenerateCalendar();
+                
+                if (selectedDate) {
+                    showDailyActivities(selectedDate);
+                }
+                
+                updateStats();
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function regenerateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            generateCalendar();
+        }
+
+        function saveGoals() {
+            goals = {
+                weekly: document.getElementById('weekly-goal').value,
+                monthly: document.getElementById('monthly-goal').value,
+                yearly: document.getElementById('yearly-goal').value
+            };
+            
+            localStorage.setItem('humilityGoals', JSON.stringify(goals));
+            alert('¡Objetivos guardados exitosamente!');
+        }
+
+        function updateStats() {
+            const completed = activities.filter(a => a.completed).length;
+            const pending = activities.filter(a => !a.completed).length;
+            const practiceDays = new Set(activities.map(a => a.date)).size;
+            
+            // Calcular racha
+            const today = new Date().toISOString().split('T')[0];
+            let currentStreak = 0;
+            const sortedActivities = activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            for (let i = 0; i < sortedActivities.length; i++) {
+                const activityDate = sortedActivities[i].date;
+                if (activityDate <= today) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+            
+            document.getElementById('completed-activities').textContent = completed;
+            document.getElementById('pending-activities').textContent = pending;
+            document.getElementById('practice-days').textContent = practiceDays;
+            document.getElementById('current-streak').textContent = `${currentStreak} días`;
+            
+            // Calcular progreso semanal
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            const weekActivities = activities.filter(a => {
+                const activityDate = new Date(a.date);
+                return activityDate >= weekStart && activityDate <= weekEnd;
+            });
+            
+            const weekCompleted = weekActivities.filter(a => a.completed).length;
+            const weekProgress = weekActivities.length > 0 ? (weekCompleted / weekActivities.length) * 100 : 0;
+            
+            document.getElementById('weekly-progress').textContent = `${Math.round(weekProgress)}%`;
+            document.getElementById('progress-fill').style.width = `${weekProgress}%`;
+        }
+
+        function exportData() {
+            const data = {
+                activities: activities,
+                goals: goals,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `humility-planner-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.activities) {
+                                activities = data.activities;
+                                localStorage.setItem('humilityActivities', JSON.stringify(activities));
+                            }
+                            if (data.goals) {
+                                goals = data.goals;
+                                localStorage.setItem('humilityGoals', JSON.stringify(goals));
+                                document.getElementById('weekly-goal').value = goals.weekly || '';
+                                document.getElementById('monthly-goal').value = goals.monthly || '';
+                                document.getElementById('yearly-goal').value = goals.yearly || '';
+                            }
+                            regenerateCalendar();
+                            updateStats();
+                            alert('¡Datos importados exitosamente!');
+                        } catch (error) {
+                            alert('Error al importar los datos. Verifica que el archivo sea válido.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function resetData() {
+            if (confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.')) {
+                activities = [];
+                goals = {};
+                localStorage.removeItem('humilityActivities');
+                localStorage.removeItem('humilityGoals');
+                regenerateCalendar();
+                updateStats();
+                document.getElementById('weekly-goal').value = '';
+                document.getElementById('monthly-goal').value = '';
+                document.getElementById('yearly-goal').value = '';
+                alert('¡Datos eliminados exitosamente!');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+            updateStats();
+            
+            // Cargar objetivos guardados
+            if (goals.weekly) document.getElementById('weekly-goal').value = goals.weekly;
+            if (goals.monthly) document.getElementById('monthly-goal').value = goals.monthly;
+            if (goals.yearly) document.getElementById('yearly-goal').value = goals.yearly;
+        });
+    </script>
+</body>
+</html>

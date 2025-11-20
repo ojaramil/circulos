@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificador de Autosabotaje</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .question {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #e3f2fd;
+            border: 2px solid #bbdefb;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #bbdefb;
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .results h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .score-display h3 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .score-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .achievement {
+            background: #fff8e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .achievement h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Identificador de Autosabotaje</h1>
+            <p>Descubre tus patrones de autosabotaje y aprende a transformarlos</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Este juego te ayudará a identificar tus patrones de autosabotaje a través de una serie de preguntas reflexivas. Al final, recibirás un análisis personalizado con recomendaciones para transformar estos patrones.</p>
+            </div>
+
+            <div id="game-container">
+                <div class="score-display">
+                    <h3>Progreso</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-text">Pregunta 1 de 10</p>
+                </div>
+
+                <div id="question-container">
+                    <div class="question">
+                        <h3 id="question-text">¿Con qué frecuencia te encuentras postergando tareas importantes?</h3>
+                        <div class="options">
+                            <div class="option" data-value="0">Nunca</div>
+                            <div class="option" data-value="1">Raramente</div>
+                            <div class="option" data-value="2">A veces</div>
+                            <div class="option" data-value="3">Frecuentemente</div>
+                            <div class="option" data-value="4">Siempre</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Siguiente</button>
+                </div>
+            </div>
+
+            <div id="results-container" style="display: none;">
+                <div class="results">
+                    <h3>🎯 Análisis de Autosabotaje</h3>
+                    <div id="analysis-content"></div>
+                </div>
+
+                <div class="achievement">
+                    <h4>🏆 Logros Desbloqueados</h4>
+                    <div id="achievements-content"></div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn" onclick="restartGame()">🔄 Reiniciar Juego</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        
+        const questions = [
+            {
+                text: "¿Con qué frecuencia te encuentras postergando tareas importantes?",
+                category: "procrastinacion"
+            },
+            {
+                text: "¿Qué tan seguido te criticas a ti mismo por tus errores?",
+                category: "autocritica"
+            },
+            {
+                text: "¿Con qué frecuencia evitas situaciones que te hacen sentir incómodo?",
+                category: "evitacion"
+            },
+            {
+                text: "¿Qué tan seguido sientes que no eres lo suficientemente bueno?",
+                category: "perfeccionismo"
+            },
+            {
+                text: "¿Con qué frecuencia te sientes abrumado por tus emociones?",
+                category: "emociones"
+            },
+            {
+                text: "¿Qué tan seguido te comparas negativamente con otros?",
+                category: "comparacion"
+            },
+            {
+                text: "¿Con qué frecuencia evitas tomar decisiones importantes?",
+                category: "decisiones"
+            },
+            {
+                text: "¿Qué tan seguido te sientes ansioso o preocupado?",
+                category: "ansiedad"
+            },
+            {
+                text: "¿Con qué frecuencia te sientes triste o desmotivado?",
+                category: "depresion"
+            },
+            {
+                text: "¿Qué tan seguido te sientes atrapado en patrones que no te gustan?",
+                category: "patrones"
+            }
+        ];
+
+        function selectOption(element) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('.option.selected');
+            if (!selectedOption) return;
+
+            const value = parseInt(selectedOption.dataset.value);
+            answers.push(value);
+            score += value;
+
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                updateQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.text;
+            
+            // Clear selections
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('next-btn').disabled = true;
+            
+            // Update progress
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+        }
+
+        function showResults() {
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+            
+            const analysis = generateAnalysis();
+            document.getElementById('analysis-content').innerHTML = analysis;
+            
+            const achievements = generateAchievements();
+            document.getElementById('achievements-content').innerHTML = achievements;
+        }
+
+        function generateAnalysis() {
+            const averageScore = score / questions.length;
+            let analysis = '';
+            
+            if (averageScore <= 1) {
+                analysis = `
+                    <h4>🎉 ¡Excelente! Tienes muy pocos patrones de autosabotaje</h4>
+                    <p>Tu puntuación indica que tienes una relación saludable contigo mismo. Continúa manteniendo estas prácticas positivas.</p>
+                    <ul>
+                        <li>Mantén tu rutina de autocuidado</li>
+                        <li>Continúa practicando la autocompasión</li>
+                        <li>Celebra tus logros regularmente</li>
+                    </ul>
+                `;
+            } else if (averageScore <= 2) {
+                analysis = `
+                    <h4>👍 Buen trabajo, con algunas áreas de mejora</h4>
+                    <p>Tienes algunos patrones de autosabotaje, pero están bajo control. Hay oportunidades para crecer aún más.</p>
+                    <ul>
+                        <li>Practica la meditación diaria</li>
+                        <li>Desarrolla rutinas de autocuidado</li>
+                        <li>Trabaja en la autocompasión</li>
+                    </ul>
+                `;
+            } else if (averageScore <= 3) {
+                analysis = `
+                    <h4>⚠️ Patrones moderados de autosabotaje</h4>
+                    <p>Tienes algunos patrones de autosabotaje que pueden estar limitando tu potencial. Es un buen momento para trabajar en ellos.</p>
+                    <ul>
+                        <li>Identifica tus desencadenantes específicos</li>
+                        <li>Practica técnicas de regulación emocional</li>
+                        <li>Busca apoyo profesional si es necesario</li>
+                    </ul>
+                `;
+            } else {
+                analysis = `
+                    <h4>🔄 Patrones significativos de autosabotaje</h4>
+                    <p>Tienes patrones de autosabotaje que pueden estar afectando significativamente tu bienestar. Es importante trabajar en ellos.</p>
+                    <ul>
+                        <li>Considera buscar apoyo profesional</li>
+                        <li>Desarrolla estrategias de afrontamiento</li>
+                        <li>Practica la autocompasión diariamente</li>
+                    </ul>
+                `;
+            }
+            
+            return analysis;
+        }
+
+        function generateAchievements() {
+            const achievements = [];
+            
+            if (score <= 10) {
+                achievements.push('🏆 Maestro del Autodominio');
+            }
+            if (score <= 20) {
+                achievements.push('💎 Experto en Autocompasión');
+            }
+            if (score <= 30) {
+                achievements.push('🌟 Guía de Transformación');
+            }
+            
+            achievements.push('🎯 Explorador del Autoconocimiento');
+            achievements.push('🦋 Transformador Personal');
+            
+            return achievements.map(achievement => `<div style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px;">${achievement}</div>`).join('');
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            
+            updateQuestion();
+        }
+
+        // Add event listeners to options
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectOption(this);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

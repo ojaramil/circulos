@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Mindset - Interactivo</title>
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+    }
+
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+
+    .sidebar-left,
+    .main-content-area,
+    .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30, 34, 51, 0.08);
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #f0f0f0;
+    }
+
+    .main-content-area iframe::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .main-content-area iframe::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+
+    .main-content-area iframe::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+
+    .main-content-area iframe::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+
+    .sidebar-left::-webkit-scrollbar,
+    .sidebar-right::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .sidebar-left::-webkit-scrollbar-track,
+    .sidebar-right::-webkit-scrollbar-track {
+      background: #142b47;
+      border-radius: 4px;
+    }
+
+    .sidebar-left::-webkit-scrollbar-thumb,
+    .sidebar-right::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+
+    .sidebar-left::-webkit-scrollbar-thumb:hover,
+    .sidebar-right::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      padding-bottom: 20px;
+    }
+
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+
+    .sidebar-list li a:hover .icon-placeholder {
+      color: #9cc2ff;
+    }
+
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 992px) {
+
+      .sidebar-left,
+      .sidebar-right {
+        width: 30%;
+        min-width: 180px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+
+      .sidebar-left,
+      .main-content-area,
+      .sidebar-right {
+        width: 100%;
+        min-width: auto;
+        height: auto;
+        order: unset;
+      }
+
+      .sidebar-left {
+        border-right: none;
+        border-bottom: 1px solid #0D1F33;
+      }
+
+      .sidebar-right {
+        border-left: none;
+        border-top: 1px solid #0D1F33;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">💰</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Desarrollo Personal</span>
+        <span class="content-title">Money Mindset - Jacob H. Gold</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+    </nav>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_introduccion.html" class="active-lesson"><span
+                class="icon-placeholder">📖</span>Introducción</a></li>
+          <li><a href="#" data-src="lecciones/02_el_dinero_es_energia.html"><span class="icon-placeholder">⚡</span>El
+              Dinero es Energía</a></li>
+          <li><a href="#" data-src="lecciones/03_no_hay_balas_de_plata.html"><span class="icon-placeholder">🎯</span>No
+              Hay Balas de Plata</a></li>
+          <li><a href="#" data-src="lecciones/04_construyendo_fundacion_financiera.html"><span
+                class="icon-placeholder">🏗️</span>Construyendo tu Fundación Financiera</a></li>
+          <li><a href="#" data-src="lecciones/05_psicologia_del_dinero.html"><span class="icon-placeholder">🧠</span>La
+              Psicología del Dinero</a></li>
+          <li><a href="#" data-src="lecciones/06_ciencia_miedo_codicia.html"><span class="icon-placeholder">😨</span>La
+              Ciencia del Miedo y la Codicia</a></li>
+          <li><a href="#" data-src="lecciones/07_nuevo_paradigma_jubilacion.html"><span
+                class="icon-placeholder">🏖️</span>Nuevo Paradigma de Jubilación</a></li>
+          <li><a href="#" data-src="lecciones/08_crisis_planificacion_jubilacion.html"><span
+                class="icon-placeholder">⚠️</span>La Crisis Venidera en la Planificación de Jubilación</a></li>
+          <li><a href="#" data-src="lecciones/09_por_que_jubilacion_diferente.html"><span
+                class="icon-placeholder">🔄</span>¿Por Qué la Jubilación es Tan Diferente Hoy?</a></li>
+          <li><a href="#" data-src="lecciones/10_sistema_sin_energia.html"><span class="icon-placeholder">🔋</span>El
+              Sistema se Queda Sin Energía</a></li>
+          <li><a href="#" data-src="lecciones/11_por_que_gestion_financiera.html"><span
+                class="icon-placeholder">❓</span>El "Por Qué" de la Gestión Financiera</a></li>
+          <li><a href="#" data-src="lecciones/12_cual_es_tu_por_que.html"><span class="icon-placeholder">🎯</span>¿Cuál
+              es tu "Por Qué"?</a></li>
+          <li><a href="#" data-src="lecciones/13_no_planificar_es_planificar_fallar.html"><span
+                class="icon-placeholder">📋</span>No Planificar es lo Mismo que Planificar Fallar</a></li>
+          <li><a href="#" data-src="lecciones/14_prepararse_tormentas.html"><span
+                class="icon-placeholder">⛈️</span>Prepárate para las Tormentas</a></li>
+          <li><a href="#" data-src="lecciones/15_poder_interes_compuesto.html"><span
+                class="icon-placeholder">📈</span>El Poder del Interés Compuesto</a></li>
+          <li><a href="#" data-src="lecciones/16_efecto_erosivo_inflacion.html"><span
+                class="icon-placeholder">📉</span>El Efecto Erosivo de la Inflación</a></li>
+          <li><a href="#" data-src="lecciones/17_hacer_tiempo_trabajar.html"><span
+                class="icon-placeholder">⏰</span>Hacer que el Tiempo Trabaje para Ti</a></li>
+          <li><a href="#" data-src="lecciones/18_costo_procrastinacion.html"><span class="icon-placeholder">⏳</span>El
+              Costo de la Procrastinación</a></li>
+          <li><a href="#" data-src="lecciones/19_construyendo_riqueza.html"><span
+                class="icon-placeholder">💎</span>Construyendo tu Riqueza</a></li>
+          <li><a href="#" data-src="lecciones/20_motor_financiero.html"><span class="icon-placeholder">🚗</span>El Motor
+              Financiero de tu Creación de Riqueza</a></li>
+          <li><a href="#" data-src="lecciones/21_asignacion_activos.html"><span
+                class="icon-placeholder">⚖️</span>Asignación de Activos</a></li>
+          <li><a href="#" data-src="lecciones/22_rebalanceo_portafolio.html"><span
+                class="icon-placeholder">🔄</span>Rebalanceo de tu Portafolio</a></li>
+          <li><a href="#" data-src="lecciones/23_impuestos_seguros.html"><span
+                class="icon-placeholder">📊</span>Impuestos y Seguros</a></li>
+          <li><a href="#" data-src="lecciones/24_planificacion_patrimonial.html"><span
+                class="icon-placeholder">🏛️</span>Planificación Patrimonial</a></li>
+          <li><a href="#" data-src="lecciones/25_necesitas_planificador_financiero.html"><span
+                class="icon-placeholder">👨‍💼</span>¿Necesitas un Planificador Financiero?</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_calculadora_riqueza.html"><span
+                class="icon-placeholder">🧮</span>Calculadora de Riqueza</a></li>
+          <li><a href="#" data-src="juegos/02_simulador_inversiones.html"><span
+                class="icon-placeholder">📊</span>Simulador de Inversiones</a></li>
+          <li><a href="#" data-src="juegos/03_planificador_jubilacion.html"><span
+                class="icon-placeholder">🏖️</span>Planificador de Jubilación</a></li>
+          <li><a href="#" data-src="juegos/04_analizador_riesgo.html"><span class="icon-placeholder">⚠️</span>Analizador
+              de Riesgo</a></li>
+          <li><a href="#" data-src="juegos/05_constructor_portafolio.html"><span
+                class="icon-placeholder">🏗️</span>Constructor de Portafolio</a></li>
+          <li><a href="#" data-src="juegos/06_entrenador_money_mindset.html"><span
+                class="icon-placeholder">🧠</span>Entrenador de Money Mindset</a></li>
+          <li><a href="#" data-src="juegos/07_simulador_inflacion.html"><span
+                class="icon-placeholder">📈</span>Simulador de Inflación</a></li>
+          <li><a href="#" data-src="juegos/08_optimizador_impuestos.html"><span
+                class="icon-placeholder">💰</span>Optimizador de Impuestos</a></li>
+          <li><a href="#" data-src="juegos/09_planificador_seguros.html"><span
+                class="icon-placeholder">🛡️</span>Planificador de Seguros</a></li>
+          <li><a href="#" data-src="juegos/10_constructor_patrimonio.html"><span
+                class="icon-placeholder">🏛️</span>Constructor de Patrimonio</a></li>
+          <li><a href="#" data-src="juegos/11_maestro_finanzas.html"><span class="icon-placeholder">👑</span>Maestro de
+              Finanzas</a></li>
+          <li><a href="#" data-src="juegos/12_guia_libertad_financiera.html"><span
+                class="icon-placeholder">🕊️</span>Guía de Libertad Financiera</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Equipo - Los Líderes Comen de Último</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Planificador de Equipo</h1>
+        <p class="game-description">Herramienta interactiva para planificar y organizar tu equipo basándote en los principios del Círculo de Seguridad</p>
+        
+        <div class="planner-container">
+            <div class="planner-section">
+                <h2>🏗️ Estructura del Equipo</h2>
+                <div class="team-structure">
+                    <div class="member-card" id="leaderCard">
+                        <h3>👑 Líder del Equipo</h3>
+                        <input type="text" id="leaderName" placeholder="Tu nombre" class="member-input">
+                        <textarea id="leaderRole" placeholder="Describe tu rol y responsabilidades como líder..." class="role-textarea"></textarea>
+                    </div>
+                    
+                    <div class="team-members" id="teamMembers">
+                        <h3>👥 Miembros del Equipo</h3>
+                        <div id="membersList">
+                            <!-- Los miembros se agregarán dinámicamente -->
+                        </div>
+                        <button id="addMember" class="btn-secondary">+ Agregar Miembro</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-section">
+                <h2>🎯 Objetivos y Metas</h2>
+                <div class="goals-container">
+                    <div class="goal-item">
+                        <h4>Objetivo Principal del Equipo</h4>
+                        <textarea id="mainGoal" placeholder="¿Cuál es el objetivo principal que quieres lograr con tu equipo?" class="goal-textarea"></textarea>
+                    </div>
+                    
+                    <div class="goal-item">
+                        <h4>Metas Específicas</h4>
+                        <div id="specificGoals">
+                            <div class="goal-input-group">
+                                <input type="text" placeholder="Meta específica 1" class="goal-input">
+                                <button class="remove-goal" onclick="removeGoal(this)">×</button>
+                            </div>
+                        </div>
+                        <button id="addGoal" class="btn-secondary">+ Agregar Meta</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-section">
+                <h2>🛡️ Círculo de Seguridad</h2>
+                <div class="circle-planning">
+                    <div class="circle-item">
+                        <h4>¿Cómo crearás seguridad en tu equipo?</h4>
+                        <textarea id="securityPlan" placeholder="Describe las estrategias específicas que usarás para crear un entorno seguro..." class="plan-textarea"></textarea>
+                    </div>
+                    
+                    <div class="circle-item">
+                        <h4>¿Qué amenazas internas identificas?</h4>
+                        <textarea id="threats" placeholder="Identifica posibles amenazas internas y cómo las abordarás..." class="plan-textarea"></textarea>
+                    </div>
+                    
+                    <div class="circle-item">
+                        <h4>¿Cómo fomentarás la confianza?</h4>
+                        <textarea id="trustBuilding" placeholder="Describe actividades y comportamientos que fomenten la confianza..." class="plan-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-section">
+                <h2>💝 Estrategias de Empatía</h2>
+                <div class="empathy-strategies">
+                    <div class="strategy-item">
+                        <h4>¿Cómo practicarás la empatía con cada miembro?</h4>
+                        <div id="empathyStrategies">
+                            <!-- Las estrategias se agregarán dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <h4>¿Qué harás para entender mejor a tu equipo?</h4>
+                        <textarea id="understandingTeam" placeholder="Describe cómo te conectarás emocionalmente con tu equipo..." class="plan-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-section">
+                <h2>📊 Métricas de Seguimiento</h2>
+                <div class="metrics-container">
+                    <div class="metric-item">
+                        <h4>Indicadores de Seguridad Psicológica</h4>
+                        <div class="metric-checkboxes">
+                            <label><input type="checkbox" value="open_communication"> Comunicación abierta</label>
+                            <label><input type="checkbox" value="error_reporting"> Reporte de errores</label>
+                            <label><input type="checkbox" value="idea_sharing"> Compartir ideas</label>
+                            <label><input type="checkbox" value="conflict_resolution"> Resolución de conflictos</label>
+                            <label><input type="checkbox" value="team_support"> Apoyo del equipo</label>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <h4>Frecuencia de Evaluación</h4>
+                        <select id="evaluationFrequency" class="metric-select">
+                            <option value="weekly">Semanal</option>
+                            <option value="biweekly">Quincenal</option>
+                            <option value="monthly">Mensual</option>
+                            <option value="quarterly">Trimestral</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-section">
+                <h2>📅 Plan de Acción</h2>
+                <div class="action-plan">
+                    <div class="timeline-item">
+                        <h4>Primera Semana</h4>
+                        <textarea id="week1Plan" placeholder="¿Qué acciones específicas tomarás en la primera semana?" class="plan-textarea"></textarea>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4>Primer Mes</h4>
+                        <textarea id="month1Plan" placeholder="¿Qué quieres lograr en el primer mes?" class="plan-textarea"></textarea>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4>Primer Trimestre</h4>
+                        <textarea id="quarter1Plan" placeholder="¿Cuáles son tus objetivos para el primer trimestre?" class="plan-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-actions">
+                <button id="savePlan" class="btn-primary">💾 Guardar Plan</button>
+                <button id="exportPlan" class="btn-secondary">📄 Exportar PDF</button>
+                <button id="clearPlan" class="btn-secondary">🗑️ Limpiar Plan</button>
+            </div>
+        </div>
+
+        <div id="planSummary" class="plan-summary" style="display: none;">
+            <h2>📋 Resumen de tu Plan de Equipo</h2>
+            <div id="summaryContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let teamMembers = [];
+        let memberCounter = 1;
+
+        // Inicializar el planificador
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePlanner();
+            loadSavedPlan();
+        });
+
+        function initializePlanner() {
+            // Agregar primer miembro
+            addTeamMember();
+            
+            // Event listeners
+            document.getElementById('addMember').addEventListener('click', addTeamMember);
+            document.getElementById('addGoal').addEventListener('click', addGoal);
+            document.getElementById('savePlan').addEventListener('click', savePlan);
+            document.getElementById('exportPlan').addEventListener('click', exportPlan);
+            document.getElementById('clearPlan').addEventListener('click', clearPlan);
+        }
+
+        function addTeamMember() {
+            const memberId = `member${memberCounter}`;
+            const memberHTML = `
+                <div class="member-item" id="${memberId}">
+                    <div class="member-header">
+                        <h4>Miembro ${memberCounter}</h4>
+                        <button class="remove-member" onclick="removeMember('${memberId}')">×</button>
+                    </div>
+                    <input type="text" placeholder="Nombre del miembro" class="member-input" data-field="name">
+                    <textarea placeholder="Rol y responsabilidades..." class="role-textarea" data-field="role"></textarea>
+                    <textarea placeholder="¿Cómo puedes apoyar a esta persona?" class="support-textarea" data-field="support"></textarea>
+                </div>
+            `;
+            
+            document.getElementById('membersList').insertAdjacentHTML('beforeend', memberHTML);
+            memberCounter++;
+            
+            // Actualizar estrategias de empatía
+            updateEmpathyStrategies();
+        }
+
+        function removeMember(memberId) {
+            document.getElementById(memberId).remove();
+            updateEmpathyStrategies();
+        }
+
+        function addGoal() {
+            const goalHTML = `
+                <div class="goal-input-group">
+                    <input type="text" placeholder="Meta específica" class="goal-input">
+                    <button class="remove-goal" onclick="removeGoal(this)">×</button>
+                </div>
+            `;
+            document.getElementById('specificGoals').insertAdjacentHTML('beforeend', goalHTML);
+        }
+
+        function removeGoal(button) {
+            button.parentElement.remove();
+        }
+
+        function updateEmpathyStrategies() {
+            const members = document.querySelectorAll('.member-item');
+            const strategiesContainer = document.getElementById('empathyStrategies');
+            
+            strategiesContainer.innerHTML = '';
+            
+            members.forEach((member, index) => {
+                const memberName = member.querySelector('[data-field="name"]').value || `Miembro ${index + 1}`;
+                const strategyHTML = `
+                    <div class="empathy-strategy">
+                        <h5>${memberName}:</h5>
+                        <textarea placeholder="¿Cómo practicarás la empatía con esta persona?" class="empathy-textarea" data-member="${index}"></textarea>
+                    </div>
+                `;
+                strategiesContainer.insertAdjacentHTML('beforeend', strategyHTML);
+            });
+        }
+
+        function savePlan() {
+            const plan = {
+                leader: {
+                    name: document.getElementById('leaderName').value,
+                    role: document.getElementById('leaderRole').value
+                },
+                teamMembers: getTeamMembersData(),
+                goals: {
+                    main: document.getElementById('mainGoal').value,
+                    specific: getSpecificGoals()
+                },
+                circleOfSecurity: {
+                    securityPlan: document.getElementById('securityPlan').value,
+                    threats: document.getElementById('threats').value,
+                    trustBuilding: document.getElementById('trustBuilding').value
+                },
+                empathyStrategies: getEmpathyStrategies(),
+                metrics: getMetricsData(),
+                actionPlan: {
+                    week1: document.getElementById('week1Plan').value,
+                    month1: document.getElementById('month1Plan').value,
+                    quarter1: document.getElementById('quarter1Plan').value
+                },
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('teamPlan', JSON.stringify(plan));
+            showNotification('Plan guardado exitosamente!', 'success');
+            showPlanSummary(plan);
+        }
+
+        function getTeamMembersData() {
+            const members = [];
+            document.querySelectorAll('.member-item').forEach(member => {
+                members.push({
+                    name: member.querySelector('[data-field="name"]').value,
+                    role: member.querySelector('[data-field="role"]').value,
+                    support: member.querySelector('[data-field="support"]').value
+                });
+            });
+            return members;
+        }
+
+        function getSpecificGoals() {
+            const goals = [];
+            document.querySelectorAll('.goal-input').forEach(input => {
+                if (input.value.trim()) {
+                    goals.push(input.value.trim());
+                }
+            });
+            return goals;
+        }
+
+        function getEmpathyStrategies() {
+            const strategies = [];
+            document.querySelectorAll('.empathy-textarea').forEach(textarea => {
+                if (textarea.value.trim()) {
+                    strategies.push(textarea.value.trim());
+                }
+            });
+            return strategies;
+        }
+
+        function getMetricsData() {
+            const metrics = {
+                indicators: [],
+                frequency: document.getElementById('evaluationFrequency').value
+            };
+            
+            document.querySelectorAll('.metric-checkboxes input:checked').forEach(checkbox => {
+                metrics.indicators.push(checkbox.value);
+            });
+            
+            return metrics;
+        }
+
+        function loadSavedPlan() {
+            const savedPlan = localStorage.getItem('teamPlan');
+            if (savedPlan) {
+                const plan = JSON.parse(savedPlan);
+                populatePlan(plan);
+            }
+        }
+
+        function populatePlan(plan) {
+            // Líder
+            document.getElementById('leaderName').value = plan.leader.name || '';
+            document.getElementById('leaderRole').value = plan.leader.role || '';
+            
+            // Metas
+            document.getElementById('mainGoal').value = plan.goals.main || '';
+            
+            // Círculo de Seguridad
+            document.getElementById('securityPlan').value = plan.circleOfSecurity.securityPlan || '';
+            document.getElementById('threats').value = plan.circleOfSecurity.threats || '';
+            document.getElementById('trustBuilding').value = plan.circleOfSecurity.threats || '';
+            
+            // Plan de Acción
+            document.getElementById('week1Plan').value = plan.actionPlan.week1 || '';
+            document.getElementById('month1Plan').value = plan.actionPlan.month1 || '';
+            document.getElementById('quarter1Plan').value = plan.actionPlan.quarter1 || '';
+            
+            // Frecuencia de evaluación
+            if (plan.metrics && plan.metrics.frequency) {
+                document.getElementById('evaluationFrequency').value = plan.metrics.frequency;
+            }
+        }
+
+        function clearPlan() {
+            if (confirm('¿Estás seguro de que quieres limpiar todo el plan? Esta acción no se puede deshacer.')) {
+                document.querySelectorAll('input, textarea').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Limpiar miembros del equipo
+                document.getElementById('membersList').innerHTML = '';
+                memberCounter = 1;
+                addTeamMember();
+                
+                // Limpiar metas específicas
+                document.getElementById('specificGoals').innerHTML = `
+                    <div class="goal-input-group">
+                        <input type="text" placeholder="Meta específica 1" class="goal-input">
+                        <button class="remove-goal" onclick="removeGoal(this)">×</button>
+                    </div>
+                `;
+                
+                // Limpiar checkboxes
+                document.querySelectorAll('.metric-checkboxes input').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Limpiar localStorage
+                localStorage.removeItem('teamPlan');
+                
+                showNotification('Plan limpiado exitosamente!', 'info');
+            }
+        }
+
+        function exportPlan() {
+            const plan = {
+                leader: {
+                    name: document.getElementById('leaderName').value,
+                    role: document.getElementById('leaderRole').value
+                },
+                teamMembers: getTeamMembersData(),
+                goals: {
+                    main: document.getElementById('mainGoal').value,
+                    specific: getSpecificGoals()
+                },
+                circleOfSecurity: {
+                    securityPlan: document.getElementById('securityPlan').value,
+                    threats: document.getElementById('threats').value,
+                    trustBuilding: document.getElementById('trustBuilding').value
+                },
+                empathyStrategies: getEmpathyStrategies(),
+                metrics: getMetricsData(),
+                actionPlan: {
+                    week1: document.getElementById('week1Plan').value,
+                    month1: document.getElementById('month1Plan').value,
+                    quarter1: document.getElementById('quarter1Plan').value
+                }
+            };
+            
+            // Crear contenido para exportar
+            let exportContent = 'PLAN DE EQUIPO - LOS LÍDERES COMEN DE ÚLTIMO\n';
+            exportContent += '================================================\n\n';
+            
+            exportContent += `LÍDER DEL EQUIPO\n`;
+            exportContent += `Nombre: ${plan.leader.name || 'No especificado'}\n`;
+            exportContent += `Rol: ${plan.leader.role || 'No especificado'}\n\n`;
+            
+            exportContent += `MIEMBROS DEL EQUIPO\n`;
+            plan.teamMembers.forEach((member, index) => {
+                exportContent += `${index + 1}. ${member.name || 'Miembro ' + (index + 1)}\n`;
+                exportContent += `   Rol: ${member.role || 'No especificado'}\n`;
+                exportContent += `   Apoyo: ${member.support || 'No especificado'}\n\n`;
+            });
+            
+            exportContent += `OBJETIVOS\n`;
+            exportContent += `Principal: ${plan.goals.main || 'No especificado'}\n`;
+            exportContent += `Específicos:\n`;
+            plan.goals.specific.forEach((goal, index) => {
+                exportContent += `  ${index + 1}. ${goal}\n`;
+            });
+            exportContent += '\n';
+            
+            exportContent += `CÍRCULO DE SEGURIDAD\n`;
+            exportContent += `Plan de Seguridad: ${plan.circleOfSecurity.securityPlan || 'No especificado'}\n`;
+            exportContent += `Amenazas Identificadas: ${plan.circleOfSecurity.threats || 'No especificado'}\n`;
+            exportContent += `Construcción de Confianza: ${plan.circleOfSecurity.trustBuilding || 'No especificado'}\n\n`;
+            
+            exportContent += `PLAN DE ACCIÓN\n`;
+            exportContent += `Primera Semana: ${plan.actionPlan.week1 || 'No especificado'}\n`;
+            exportContent += `Primer Mes: ${plan.actionPlan.month1 || 'No especificado'}\n`;
+            exportContent += `Primer Trimestre: ${plan.actionPlan.quarter1 || 'No especificado'}\n\n`;
+            
+            exportContent += `Frecuencia de Evaluación: ${plan.metrics.frequency}\n`;
+            exportContent += `Indicadores: ${plan.metrics.indicators.join(', ') || 'Ninguno seleccionado'}\n`;
+            
+            // Crear y descargar archivo
+            const blob = new Blob([exportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'plan_equipo.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Plan exportado exitosamente!', 'success');
+        }
+
+        function showPlanSummary(plan) {
+            const summaryHTML = `
+                <div class="summary-section">
+                    <h3>👑 Líder del Equipo</h3>
+                    <p><strong>Nombre:</strong> ${plan.leader.name || 'No especificado'}</p>
+                    <p><strong>Rol:</strong> ${plan.leader.role || 'No especificado'}</p>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>👥 Miembros del Equipo</h3>
+                    <p><strong>Total:</strong> ${plan.teamMembers.length} miembros</p>
+                    ${plan.teamMembers.map((member, index) => `
+                        <div class="summary-member">
+                            <p><strong>${index + 1}. ${member.name || 'Miembro ' + (index + 1)}</strong></p>
+                            <p>Rol: ${member.role || 'No especificado'}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="summary-section">
+                    <h3>🎯 Objetivos</h3>
+                    <p><strong>Principal:</strong> ${plan.goals.main || 'No especificado'}</p>
+                    <p><strong>Específicos:</strong> ${plan.goals.specific.length} metas definidas</p>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>🛡️ Círculo de Seguridad</h3>
+                    <p><strong>Plan de Seguridad:</strong> ${plan.circleOfSecurity.securityPlan ? 'Definido' : 'No definido'}</p>
+                    <p><strong>Amenazas Identificadas:</strong> ${plan.circleOfSecurity.threats ? 'Sí' : 'No'}</p>
+                    <p><strong>Construcción de Confianza:</strong> ${plan.circleOfSecurity.trustBuilding ? 'Definido' : 'No definido'}</p>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>📅 Plan de Acción</h3>
+                    <p><strong>Primera Semana:</strong> ${plan.actionPlan.week1 ? 'Definido' : 'No definido'}</p>
+                    <p><strong>Primer Mes:</strong> ${plan.actionPlan.month1 ? 'Definido' : 'No definido'}</p>
+                    <p><strong>Primer Trimestre:</strong> ${plan.actionPlan.quarter1 ? 'Definido' : 'No definido'}</p>
+                </div>
+            `;
+            
+            document.getElementById('summaryContent').innerHTML = summaryHTML;
+            document.getElementById('planSummary').style.display = 'block';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Event listeners para actualizar estrategias de empatía cuando cambien los nombres
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('member-input') && e.target.dataset.field === 'name') {
+                updateEmpathyStrategies();
+            }
+        });
+    </script>
+
+    <style>
+        .planner-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .planner-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .planner-section h2 {
+            color: #1e3a5c;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .team-structure {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .member-card, .team-members {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .member-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .remove-member, .remove-goal {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .member-input, .goal-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .role-textarea, .support-textarea, .goal-textarea, .plan-textarea, .empathy-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .goals-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .goal-item h4 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+        }
+
+        .goal-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .goal-input-group input {
+            flex: 1;
+        }
+
+        .circle-planning, .empathy-strategies {
+            display: grid;
+            gap: 20px;
+        }
+
+        .circle-item, .strategy-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .circle-item h4, .strategy-item h4 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+        }
+
+        .empathy-strategy {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .empathy-strategy h5 {
+            color: #1e3a5c;
+            margin-bottom: 10px;
+        }
+
+        .metrics-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .metric-item h4 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+        }
+
+        .metric-checkboxes {
+            display: grid;
+            gap: 10px;
+        }
+
+        .metric-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .metric-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .action-plan {
+            display: grid;
+            gap: 20px;
+        }
+
+        .timeline-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .timeline-item h4 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+        }
+
+        .planner-actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #1e3a5c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #274472;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .plan-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-section:last-child {
+            border-bottom: none;
+        }
+
+        .summary-section h3 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+        }
+
+        .summary-member {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background-color: #4caf50;
+        }
+
+        .notification.info {
+            background-color: #2196f3;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .team-structure, .metrics-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .planner-container {
+                padding: 10px;
+            }
+            
+            .planner-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</body>
+</html>

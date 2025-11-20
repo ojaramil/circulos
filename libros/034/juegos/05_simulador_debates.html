@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Debates - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .debate-topic {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .response-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .response-option {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .response-option:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .response-option.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .response-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .response-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .debate-context {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💬 Simulador de Debates</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar el debate constructivo seleccionando las respuestas más apropiadas en diferentes situaciones de debate. Aprende a mantener el respeto, usar evidencia sólida y buscar puntos en común.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Respuestas Correctas: <span id="correct">0</span> | Respuestas Incorrectas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada situación de debate y selecciona la respuesta que consideres más constructiva y efectiva para mantener un diálogo respetuoso y productivo.</p>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextDebate()" id="next-btn" style="display: none;">Siguiente Debate</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentDebate = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedResponse = null;
+
+        const debateScenarios = [
+            {
+                topic: "Trabajo Remoto vs. Presencial",
+                context: "Estás en una reunión donde tu colega argumenta que el trabajo remoto es menos productivo porque 'la gente no trabaja cuando está en casa'. Tú crees que el trabajo remoto puede ser igual de productivo con las herramientas adecuadas.",
+                opponentStatement: "La gente no trabaja cuando está en casa. Necesitamos que todos regresen a la oficina para mantener la productividad.",
+                responses: [
+                    {
+                        text: "Eso es una generalización. ¿Tienes datos específicos sobre la productividad en nuestro equipo?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta busca evidencia específica y cuestiona la generalización, manteniendo un tono respetuoso."
+                    },
+                    {
+                        text: "Estás equivocado. El trabajo remoto es mejor.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es confrontacional y no busca entender la perspectiva del otro."
+                    },
+                    {
+                        text: "¿Podríamos revisar los datos de productividad de los últimos meses para ver si hay diferencias?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta propone buscar evidencia objetiva para resolver la diferencia de opinión."
+                    },
+                    {
+                        text: "Eso es ridículo. Claramente no entiendes cómo funciona el trabajo moderno.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es despectiva y no contribuye al diálogo constructivo."
+                    }
+                ]
+            },
+            {
+                topic: "Inversión en Tecnología",
+                context: "Tu jefe está considerando una inversión costosa en nueva tecnología. Tú tienes dudas sobre la necesidad y el costo-beneficio.",
+                opponentStatement: "Esta tecnología es esencial para el futuro de la empresa. No podemos permitirnos quedarnos atrás.",
+                responses: [
+                    {
+                        text: "Entiendo tu preocupación por mantenernos competitivos. ¿Podríamos analizar el ROI esperado y comparar con alternativas?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta reconoce la preocupación del otro y propone un análisis objetivo."
+                    },
+                    {
+                        text: "Eso es demasiado caro y no lo necesitamos.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es demasiado directa y no considera la perspectiva del otro."
+                    },
+                    {
+                        text: "¿Qué evidencia tenemos de que esta tecnología específica sea la mejor opción para nuestras necesidades?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta busca evidencia específica y relevante para la decisión."
+                    },
+                    {
+                        text: "Siempre quieres gastar dinero en cosas innecesarias.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta ataca personalmente y no se enfoca en el tema."
+                    }
+                ]
+            },
+            {
+                topic: "Política de Vacaciones",
+                context: "Hay una discusión sobre cambiar la política de vacaciones. Algunos quieren más flexibilidad, otros quieren mantener la estructura actual.",
+                opponentStatement: "La flexibilidad total en vacaciones causará caos en la planificación de proyectos.",
+                responses: [
+                    {
+                        text: "Entiendo tu preocupación por la planificación. ¿Cómo podríamos estructurar la flexibilidad para mantener la coordinación?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta reconoce la preocupación y busca una solución colaborativa."
+                    },
+                    {
+                        text: "Eso es una excusa para mantener el control.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta asume motivos negativos y no contribuye al diálogo."
+                    },
+                    {
+                        text: "¿Podríamos revisar cómo otras empresas manejan este balance entre flexibilidad y planificación?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta propone buscar evidencia externa para informar la decisión."
+                    },
+                    {
+                        text: "No entiendes las necesidades de los empleados.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta es despectiva y no busca entender la perspectiva del otro."
+                    }
+                ]
+            }
+        ];
+
+        function loadDebate() {
+            const scenario = debateScenarios[currentDebate];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Tema del Debate: ${scenario.topic}</h3>
+                    <div class="debate-context">
+                        <p><strong>Contexto:</strong> ${scenario.context}</p>
+                    </div>
+                    <div class="debate-topic">
+                        <p><strong>Tu oponente dice:</strong> "${scenario.opponentStatement}"</p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>💭 ¿Cómo responderías?</h3>
+                    <div class="response-options">
+                        ${scenario.responses.map((response, index) => `
+                            <div class="response-option" onclick="selectResponse(${index})" data-index="${index}">
+                                ${response.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedResponse = null;
+        }
+
+        function selectResponse(index) {
+            selectedResponse = index;
+            document.querySelectorAll('.response-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function checkAnswer() {
+            if (selectedResponse === null) {
+                alert('Por favor, selecciona una respuesta antes de verificar.');
+                return;
+            }
+
+            const scenario = debateScenarios[currentDebate];
+            const response = scenario.responses[selectedResponse];
+            const isCorrect = response.isCorrect;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.response-option').forEach((option, index) => {
+                option.classList.remove('selected');
+                if (scenario.responses[index].isCorrect) {
+                    option.classList.add('correct');
+                } else if (index === selectedResponse && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente respuesta!' : '❌ Revisa tu respuesta'}</h3>
+                <p><strong>Tu respuesta:</strong> ${response.text}</p>
+                <p><strong>Explicación:</strong> ${response.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextDebate() {
+            currentDebate++;
+            if (currentDebate < debateScenarios.length) {
+                loadDebate();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el simulador de debates.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentDebate = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadDebate();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadDebate();
+    </script>
+</body>
+</html>

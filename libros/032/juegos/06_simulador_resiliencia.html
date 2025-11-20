@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Resiliencia - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .game-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .resilience-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .resilience-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .resilience-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .resilience-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .resilience-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .resilience-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .challenges-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .challenges-list h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .challenge-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .challenge-item h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .challenge-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .resilience-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .resilience-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Simulador de Resiliencia</h1>
+            <p>Fortalece tu Capacidad de Recuperación y Superación</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>💪 ¿Qué es el Simulador de Resiliencia?</h3>
+                <p>El Simulador de Resiliencia es una herramienta interactiva que te ayuda a desarrollar y fortalecer tu capacidad de resiliencia. A través de ejercicios, simulaciones de desafíos y técnicas de superación, aprenderás a enfrentar las adversidades con fortaleza y determinación.</p>
+            </div>
+
+            <div class="resilience-level">
+                <h4>📊 Tu Nivel de Resiliencia</h4>
+                <div class="level-display">
+                    <div class="level-number" id="resilienceLevel">50</div>
+                    <div class="level-text" id="resilienceText">Resiliencia Media</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="resilienceProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de resiliencia actual se basa en cómo enfrentas y superas los desafíos.</p>
+            </div>
+
+            <div class="resilience-tracker">
+                <h4>📝 Registrar Experiencia de Superación</h4>
+                <form id="resilienceForm">
+                    <div class="form-group">
+                        <label for="challengeName">Nombre del Desafío:</label>
+                        <input type="text" id="challengeName" placeholder="Ej: Superar una dificultad en el trabajo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="challengeDescription">Descripción del Desafío:</label>
+                        <textarea id="challengeDescription" placeholder="Describe el desafío que enfrentaste..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resilienceLevel">Nivel de Resiliencia Demostrado (1-10):</label>
+                        <select id="resilienceLevel" required>
+                            <option value="">Selecciona nivel</option>
+                            <option value="1">1 - Muy Bajo</option>
+                            <option value="2">2 - Bajo</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="5">5 - Muy Bueno</option>
+                            <option value="6">6 - Excelente</option>
+                            <option value="7">7 - Fantástico</option>
+                            <option value="8">8 - Increíble</option>
+                            <option value="9">9 - Extraordinario</option>
+                            <option value="10">10 - Épico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="challengeType">Tipo de Desafío:</label>
+                        <select id="challengeType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="work">Trabajo</option>
+                            <option value="personal">Personal</option>
+                            <option value="health">Salud</option>
+                            <option value="relationships">Relaciones</option>
+                            <option value="financial">Financiero</option>
+                            <option value="academic">Académico</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Experiencia</button>
+                </form>
+            </div>
+
+            <div class="resilience-exercises">
+                <h4>🏋️ Ejercicios de Resiliencia</h4>
+                
+                <div class="exercise">
+                    <h5>1. Meditación de Fortaleza</h5>
+                    <p>Medita sobre tu capacidad de superar obstáculos y enfrentar desafíos.</p>
+                    <button class="btn" onclick="startStrengthMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Visualización de Superación</h5>
+                    <p>Visualiza cómo superarías diferentes tipos de desafíos.</p>
+                    <button class="btn" onclick="startOvercomingVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Gratitud</h5>
+                    <p>Reflexiona sobre las dificultades que has superado y las lecciones aprendidas.</p>
+                    <button class="btn" onclick="startGratitudeExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Simulación de Desafíos</h5>
+                    <p>Simula diferentes escenarios desafiantes y practica tu respuesta.</p>
+                    <button class="btn" onclick="startChallengeSimulation()">Iniciar Simulación</button>
+                </div>
+            </div>
+
+            <div class="challenges-list">
+                <h4>🎯 Desafíos de Resiliencia</h4>
+                <div id="challengesList">
+                    <!-- Los desafíos se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="resilience-quote">
+                <h4>💬 Cita de Resiliencia del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La resiliencia no es la capacidad de evitar el dolor, sino la capacidad de recuperarse de él."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Desafíos Registrados:</span>
+                    <span class="stat-value" id="totalChallenges">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel Promedio:</span>
+                    <span class="stat-value" id="averageLevel">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Días de Entrenamiento:</span>
+                    <span class="stat-value" id="trainingDays">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mejor Nivel:</span>
+                    <span class="stat-value" id="bestLevel">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Desafío</div>
+                            <div class="achievement-desc">Registra tu primer desafío de resiliencia</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Resiliencia Alta</div>
+                            <div class="achievement-desc">Alcanza un nivel de resiliencia de 80 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Superador de Desafíos</div>
+                            <div class="achievement-desc">Supera 10 desafíos diferentes</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de la Resiliencia</div>
+                            <div class="achievement-desc">Registra 50 experiencias de superación</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let challenges = JSON.parse(localStorage.getItem('resilienceChallenges')) || [];
+        let stats = JSON.parse(localStorage.getItem('resilienceStats')) || {
+            totalChallenges: 0,
+            averageLevel: 0,
+            trainingDays: 0,
+            bestLevel: 0
+        };
+
+        let currentResilienceLevel = parseInt(localStorage.getItem('currentResilienceLevel')) || 50;
+
+        // Citas de resiliencia
+        const quotes = [
+            { text: "La resiliencia no es la capacidad de evitar el dolor, sino la capacidad de recuperarse de él.", author: "Anónimo" },
+            { text: "No es la fuerza del viento, sino la resistencia del bambú lo que determina su supervivencia.", author: "Proverbio Japonés" },
+            { text: "La vida no se trata de esperar a que pase la tormenta, sino de aprender a bailar bajo la lluvia.", author: "Vivian Greene" },
+            { text: "La resiliencia es la capacidad de recuperarse de los fracasos y seguir adelante.", author: "Anónimo" },
+            { text: "No hay nada imposible para quien se atreve a intentarlo.", author: "Anónimo" },
+            { text: "La adversidad es la madre de la invención.", author: "Benjamin Franklin" },
+            { text: "Lo que no te mata, te hace más fuerte.", author: "Friedrich Nietzsche" },
+            { text: "La resiliencia es la capacidad de adaptarse y crecer ante la adversidad.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateResilienceLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderChallenges();
+        }
+
+        // Registrar nuevo desafío
+        document.getElementById('resilienceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const challenge = {
+                id: Date.now(),
+                name: document.getElementById('challengeName').value,
+                description: document.getElementById('challengeDescription').value,
+                resilienceLevel: parseInt(document.getElementById('resilienceLevel').value),
+                type: document.getElementById('challengeType').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            challenges.push(challenge);
+            currentResilienceLevel = Math.min(100, currentResilienceLevel + challenge.resilienceLevel);
+            
+            saveData();
+            updateStats();
+            updateResilienceLevel();
+            updateAchievements();
+            renderChallenges();
+            
+            // Limpiar formulario
+            document.getElementById('resilienceForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Desafío registrado exitosamente!');
+        });
+
+        // Actualizar nivel de resiliencia
+        function updateResilienceLevel() {
+            document.getElementById('resilienceLevel').textContent = currentResilienceLevel;
+            document.getElementById('resilienceProgress').style.width = currentResilienceLevel + '%';
+            
+            let levelText = '';
+            if (currentResilienceLevel < 20) levelText = 'Resiliencia Muy Baja';
+            else if (currentResilienceLevel < 40) levelText = 'Resiliencia Baja';
+            else if (currentResilienceLevel < 60) levelText = 'Resiliencia Media';
+            else if (currentResilienceLevel < 80) levelText = 'Resiliencia Alta';
+            else levelText = 'Resiliencia Máxima';
+            
+            document.getElementById('resilienceText').textContent = levelText;
+        }
+
+        // Iniciar meditación de fortaleza
+        function startStrengthMeditation() {
+            alert('Ejercicio de Meditación de Fortaleza:\n\n1. Siéntate cómodamente\n2. Respira profundamente\n3. Visualiza tu fortaleza interior\n4. Medita sobre tu capacidad de superar obstáculos\n\n¡Ejercicio completado!');
+            currentResilienceLevel = Math.min(100, currentResilienceLevel + 5);
+            updateResilienceLevel();
+            saveData();
+        }
+
+        // Iniciar visualización de superación
+        function startOvercomingVisualization() {
+            alert('Ejercicio de Visualización de Superación:\n\n1. Cierra los ojos\n2. Imagina un desafío que enfrentas\n3. Visualiza cómo lo superas exitosamente\n4. Siente la satisfacción de la superación\n\n¡Ejercicio completado!');
+            currentResilienceLevel = Math.min(100, currentResilienceLevel + 5);
+            updateResilienceLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de gratitud
+        function startGratitudeExercise() {
+            alert('Ejercicio de Gratitud:\n\n1. Piensa en una dificultad que hayas superado\n2. Reflexiona sobre las lecciones aprendidas\n3. Agradece por la fortaleza que desarrollaste\n4. Visualiza cómo puedes ayudar a otros\n\n¡Ejercicio completado!');
+            currentResilienceLevel = Math.min(100, currentResilienceLevel + 5);
+            updateResilienceLevel();
+            saveData();
+        }
+
+        // Iniciar simulación de desafíos
+        function startChallengeSimulation() {
+            alert('Ejercicio de Simulación de Desafíos:\n\n1. Imagina diferentes escenarios desafiantes\n2. Practica tu respuesta mental\n3. Visualiza cómo los superarías\n4. Desarrolla estrategias de afrontamiento\n\n¡Ejercicio completado!');
+            currentResilienceLevel = Math.min(100, currentResilienceLevel + 5);
+            updateResilienceLevel();
+            saveData();
+        }
+
+        // Renderizar desafíos
+        function renderChallenges() {
+            const challengesList = document.getElementById('challengesList');
+            challengesList.innerHTML = '';
+            
+            if (challenges.length === 0) {
+                challengesList.innerHTML = '<p>No tienes desafíos registrados aún. ¡Registra tu primer desafío!</p>';
+                return;
+            }
+            
+            challenges.forEach(challenge => {
+                const challengeItem = document.createElement('div');
+                challengeItem.className = 'challenge-item';
+                challengeItem.innerHTML = `
+                    <h5>${challenge.name}</h5>
+                    <p><strong>Descripción:</strong> ${challenge.description}</p>
+                    <p><strong>Tipo:</strong> ${getChallengeTypeText(challenge.type)}</p>
+                    <p><strong>Nivel de Resiliencia:</strong> ${challenge.resilienceLevel}/10</p>
+                    <p><strong>Fecha:</strong> ${new Date(challenge.createdAt).toLocaleDateString()}</p>
+                `;
+                challengesList.appendChild(challengeItem);
+            });
+        }
+
+        // Obtener texto del tipo de desafío
+        function getChallengeTypeText(type) {
+            const types = {
+                'work': 'Trabajo',
+                'personal': 'Personal',
+                'health': 'Salud',
+                'relationships': 'Relaciones',
+                'financial': 'Financiero',
+                'academic': 'Académico'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalChallenges = challenges.length;
+            stats.averageLevel = challenges.length > 0 ? Math.round(challenges.reduce((sum, c) => sum + c.resilienceLevel, 0) / challenges.length) : 0;
+            stats.trainingDays = Math.floor(challenges.length / 2); // Aproximación
+            stats.bestLevel = Math.max(stats.bestLevel, currentResilienceLevel);
+            
+            document.getElementById('totalChallenges').textContent = stats.totalChallenges;
+            document.getElementById('averageLevel').textContent = stats.averageLevel;
+            document.getElementById('trainingDays').textContent = stats.trainingDays;
+            document.getElementById('bestLevel').textContent = stats.bestLevel;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Desafío
+            if (stats.totalChallenges >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Resiliencia Alta
+            if (currentResilienceLevel >= 80) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Superador de Desafíos
+            if (stats.totalChallenges >= 10) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de la Resiliencia
+            if (stats.totalChallenges >= 50) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('resilienceChallenges', JSON.stringify(challenges));
+            localStorage.setItem('resilienceStats', JSON.stringify(stats));
+            localStorage.setItem('currentResilienceLevel', currentResilienceLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

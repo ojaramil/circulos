@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Jubilación - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .planner-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .retirement-scenario {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏖️ Planificador de Jubilación</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Planifica tu jubilación ideal calculando cuánto necesitas ahorrar, cuándo puedes jubilarte y cómo mantener tu estilo de vida durante la jubilación.</p>
+        </div>
+
+        <div class="planner-box">
+            <h3>👤 Información Personal</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="currentAge">Edad Actual:</label>
+                    <input type="number" id="currentAge" value="35" min="18" max="80">
+                </div>
+                <div class="input-group">
+                    <label for="retirementAge">Edad de Jubilación Deseada:</label>
+                    <input type="number" id="retirementAge" value="65" min="50" max="80">
+                </div>
+                <div class="input-group">
+                    <label for="lifeExpectancy">Expectativa de Vida:</label>
+                    <input type="number" id="lifeExpectancy" value="85" min="70" max="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="planner-box">
+            <h3>💰 Situación Financiera Actual</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="currentIncome">Ingresos Anuales:</label>
+                    <input type="number" id="currentIncome" value="60000" min="10000" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="currentSavings">Ahorros Actuales:</label>
+                    <input type="number" id="currentSavings" value="50000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="monthlyExpenses">Gastos Mensuales:</label>
+                    <input type="number" id="monthlyExpenses" value="4000" min="500" step="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="planner-box">
+            <h3>🎯 Objetivos de Jubilación</h3>
+            
+            <div class="input-group">
+                <label for="retirementIncome">Ingresos Deseados en Jubilación (% del ingreso actual):</label>
+                <input type="range" id="retirementIncome" min="50" max="100" value="80" step="5">
+                <span id="retirementIncomeValue">80%</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="expectedReturn">Rendimiento Anual Esperado:</label>
+                <select id="expectedReturn">
+                    <option value="0.05">Conservador (5%)</option>
+                    <option value="0.07" selected>Moderado (7%)</option>
+                    <option value="0.09">Agresivo (9%)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="inflation">Inflación Anual:</label>
+                <input type="range" id="inflation" min="1" max="5" value="3" step="0.1">
+                <span id="inflationValue">3%</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="calculateRetirement()">📊 Calcular Plan de Jubilación</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Resumen de tu Plan de Jubilación</h3>
+                <div id="retirementSummary"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Progreso hacia la Jubilación</h3>
+                <div id="retirementProgress"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>💰 Proyección de Ahorros</h3>
+                <div id="savingsProjection"></div>
+            </div>
+            
+            <div class="retirement-scenario">
+                <h3>🎯 Escenarios de Jubilación</h3>
+                <div id="retirementScenarios"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Estrategias para Maximizar tu Jubilación</h2>
+            <ul>
+                <li><strong>Maximiza contribuciones:</strong> Aprovecha los límites de 401(k) e IRA</li>
+                <li><strong>Contribución del empleador:</strong> Asegúrate de obtener el match completo</li>
+                <li><strong>Invierte temprano:</strong> El interés compuesto es tu mejor aliado</li>
+                <li><strong>Diversifica:</strong> No dependas de una sola fuente de ingresos</li>
+                <li><strong>Considera HSA:</strong> Triple beneficio fiscal para gastos médicos</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar valores de los sliders
+        document.getElementById('retirementIncome').addEventListener('input', function() {
+            document.getElementById('retirementIncomeValue').textContent = this.value + '%';
+        });
+        
+        document.getElementById('inflation').addEventListener('input', function() {
+            document.getElementById('inflationValue').textContent = this.value + '%';
+        });
+
+        function calculateRetirement() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const lifeExpectancy = parseInt(document.getElementById('lifeExpectancy').value);
+            const currentIncome = parseInt(document.getElementById('currentIncome').value);
+            const currentSavings = parseInt(document.getElementById('currentSavings').value);
+            const monthlyExpenses = parseInt(document.getElementById('monthlyExpenses').value);
+            const retirementIncomePercent = parseInt(document.getElementById('retirementIncome').value) / 100;
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value);
+            const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+            
+            const yearsToRetirement = retirementAge - currentAge;
+            const yearsInRetirement = lifeExpectancy - retirementAge;
+            
+            // Calcular necesidades de jubilación
+            const retirementIncomeNeeded = currentIncome * retirementIncomePercent;
+            const retirementSavingsNeeded = retirementIncomeNeeded * 25; // Regla del 4%
+            
+            // Calcular ahorro mensual necesario
+            const monthlySavingsNeeded = calculateMonthlySavings(
+                retirementSavingsNeeded, 
+                currentSavings, 
+                yearsToRetirement, 
+                expectedReturn
+            );
+            
+            // Calcular proyección de ahorros
+            const savingsProjection = calculateSavingsProjection(
+                currentSavings,
+                monthlySavingsNeeded,
+                yearsToRetirement,
+                expectedReturn
+            );
+            
+            // Mostrar resultados
+            displayResults({
+                yearsToRetirement,
+                yearsInRetirement,
+                retirementIncomeNeeded,
+                retirementSavingsNeeded,
+                monthlySavingsNeeded,
+                currentSavings,
+                savingsProjection
+            });
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function calculateMonthlySavings(targetAmount, currentSavings, years, annualReturn) {
+            const monthlyReturn = annualReturn / 12;
+            const months = years * 12;
+            
+            if (monthlyReturn === 0) {
+                return (targetAmount - currentSavings) / months;
+            }
+            
+            const futureValueOfCurrentSavings = currentSavings * Math.pow(1 + annualReturn, years);
+            const remainingNeeded = targetAmount - futureValueOfCurrentSavings;
+            
+            if (remainingNeeded <= 0) {
+                return 0;
+            }
+            
+            return remainingNeeded * monthlyReturn / (Math.pow(1 + monthlyReturn, months) - 1);
+        }
+        
+        function calculateSavingsProjection(currentSavings, monthlySavings, years, annualReturn) {
+            const projection = [];
+            let currentValue = currentSavings;
+            
+            for (let year = 0; year <= years; year++) {
+                if (year > 0) {
+                    // Agregar contribuciones anuales
+                    currentValue += monthlySavings * 12;
+                    // Aplicar rendimiento anual
+                    currentValue *= (1 + annualReturn);
+                }
+                
+                projection.push({
+                    year: year,
+                    age: parseInt(document.getElementById('currentAge').value) + year,
+                    value: currentValue
+                });
+            }
+            
+            return projection;
+        }
+        
+        function displayResults(data) {
+            const { yearsToRetirement, retirementIncomeNeeded, retirementSavingsNeeded, monthlySavingsNeeded, currentSavings, savingsProjection } = data;
+            
+            // Mostrar resumen
+            document.getElementById('retirementSummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>🎯 Meta de Jubilación</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">$${retirementSavingsNeeded.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>💰 Ahorro Mensual Necesario</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${monthlySavingsNeeded.toFixed(0)}</p>
+                    </div>
+                    <div>
+                        <h4>📅 Años Restantes</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">${yearsToRetirement}</p>
+                    </div>
+                    <div>
+                        <h4>💵 Ingresos en Jubilación</h4>
+                        <p style="font-size: 1.5em; color: #fd7e14;">$${retirementIncomeNeeded.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar progreso
+            const finalValue = savingsProjection[savingsProjection.length - 1].value;
+            const progressPercent = Math.min((currentSavings / retirementSavingsNeeded) * 100, 100);
+            
+            document.getElementById('retirementProgress').innerHTML = `
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><strong>Progreso Actual</strong></span>
+                        <span>${progressPercent.toFixed(1)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent}%;">
+                            ${progressPercent.toFixed(1)}%
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; color: #6c757d;">
+                        Ahorros actuales: $${currentSavings.toLocaleString()} de $${retirementSavingsNeeded.toLocaleString()} necesarios
+                    </p>
+                </div>
+            `;
+            
+            // Mostrar proyección de ahorros
+            const yearlyData = savingsProjection.filter((_, index) => index % 5 === 0 || index === savingsProjection.length - 1);
+            
+            document.getElementById('savingsProjection').innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${yearlyData.map(data => `
+                        <div style="margin: 10px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>Edad ${data.age}</strong></span>
+                                <span>$${data.value.toLocaleString()}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${(data.value / finalValue) * 100}%;">
+                                    Edad ${data.age}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Mostrar escenarios
+            const scenarios = calculateRetirementScenarios(data);
+            document.getElementById('retirementScenarios').innerHTML = scenarios.map(scenario => `
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
+                    <h4>${scenario.title}</h4>
+                    <p><strong>Ahorro mensual:</strong> $${scenario.monthlySavings.toFixed(0)}</p>
+                    <p><strong>Valor final:</strong> $${scenario.finalValue.toLocaleString()}</p>
+                    <p><strong>Ingresos mensuales:</strong> $${scenario.monthlyIncome.toFixed(0)}</p>
+                </div>
+            `).join('');
+        }
+        
+        function calculateRetirementScenarios(data) {
+            const scenarios = [];
+            const { retirementSavingsNeeded, currentSavings, yearsToRetirement } = data;
+            
+            // Escenario conservador
+            scenarios.push({
+                title: '🛡️ Conservador (5% anual)',
+                monthlySavings: calculateMonthlySavings(retirementSavingsNeeded, currentSavings, yearsToRetirement, 0.05),
+                finalValue: retirementSavingsNeeded,
+                monthlyIncome: retirementSavingsNeeded * 0.04 / 12
+            });
+            
+            // Escenario moderado
+            scenarios.push({
+                title: '⚖️ Moderado (7% anual)',
+                monthlySavings: calculateMonthlySavings(retirementSavingsNeeded, currentSavings, yearsToRetirement, 0.07),
+                finalValue: retirementSavingsNeeded,
+                monthlyIncome: retirementSavingsNeeded * 0.04 / 12
+            });
+            
+            // Escenario agresivo
+            scenarios.push({
+                title: '🚀 Agresivo (9% anual)',
+                monthlySavings: calculateMonthlySavings(retirementSavingsNeeded, currentSavings, yearsToRetirement, 0.09),
+                finalValue: retirementSavingsNeeded,
+                monthlyIncome: retirementSavingsNeeded * 0.04 / 12
+            });
+            
+            return scenarios;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Inflación - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .simulator-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .inflation-impact {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .purchasing-power {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Simulador de Inflación</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Comprende el impacto de la inflación en tu poder adquisitivo y aprende estrategias para proteger tu dinero del efecto erosivo de la inflación.</p>
+        </div>
+
+        <div class="simulator-box">
+            <h3>💰 Configuración del Simulador</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="input-group">
+                    <label for="currentAmount">Cantidad Actual:</label>
+                    <input type="number" id="currentAmount" value="10000" min="100" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="inflationRate">Tasa de Inflación Anual (%):</label>
+                    <input type="range" id="inflationRate" min="1" max="10" value="3" step="0.1">
+                    <span id="inflationValue">3%</span>
+                </div>
+                <div class="input-group">
+                    <label for="timePeriod">Período de Tiempo (años):</label>
+                    <input type="number" id="timePeriod" value="10" min="1" max="50">
+                </div>
+                <div class="input-group">
+                    <label for="investmentReturn">Rendimiento de Inversión (%):</label>
+                    <input type="range" id="investmentReturn" min="0" max="15" value="7" step="0.5">
+                    <span id="returnValue">7%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulator-box">
+            <h3>📊 Escenarios de Inflación</h3>
+            <p>Selecciona diferentes escenarios para comparar el impacto:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <button class="btn" onclick="setScenario('low')">🟢 Baja (1-2%)</button>
+                <button class="btn" onclick="setScenario('moderate')">🟡 Moderada (3-4%)</button>
+                <button class="btn" onclick="setScenario('high')">🟠 Alta (5-7%)</button>
+                <button class="btn" onclick="setScenario('hyper')">🔴 Hiperinflación (10%+)</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="simulateInflation()">📈 Simular Impacto de Inflación</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📊 Resultados de la Simulación</h3>
+                <div id="simulationResults"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📈 Comparación de Poder Adquisitivo</h3>
+                <div id="purchasingPowerChart"></div>
+            </div>
+            
+            <div class="inflation-impact">
+                <h3>⚠️ Impacto de la Inflación</h3>
+                <div id="inflationImpact"></div>
+            </div>
+            
+            <div class="purchasing-power">
+                <h3>💡 Estrategias de Protección</h3>
+                <div id="protectionStrategies"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Comparación de Escenarios</h3>
+                <div id="scenarioComparison"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Cómo Protegerte de la Inflación</h2>
+            <ul>
+                <li><strong>Invierte en activos reales:</strong> Bienes raíces, commodities, acciones</li>
+                <li><strong>Bonos indexados a inflación:</strong> TIPS y similares</li>
+                <li><strong>Diversifica internacionalmente:</strong> Reduce riesgo de inflación local</li>
+                <li><strong>Invierte en empresas sólidas:</strong> Pueden ajustar precios</li>
+                <li><strong>Mantén liquidez mínima:</strong> Solo para emergencias</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar valores de los sliders
+        document.getElementById('inflationRate').addEventListener('input', function() {
+            document.getElementById('inflationValue').textContent = this.value + '%';
+        });
+        
+        document.getElementById('investmentReturn').addEventListener('input', function() {
+            document.getElementById('returnValue').textContent = this.value + '%';
+        });
+
+        function setScenario(type) {
+            const scenarios = {
+                'low': { inflation: 1.5, return: 5 },
+                'moderate': { inflation: 3, return: 7 },
+                'high': { inflation: 6, return: 9 },
+                'hyper': { inflation: 12, return: 15 }
+            };
+            
+            const scenario = scenarios[type];
+            document.getElementById('inflationRate').value = scenario.inflation;
+            document.getElementById('investmentReturn').value = scenario.return;
+            document.getElementById('inflationValue').textContent = scenario.inflation + '%';
+            document.getElementById('returnValue').textContent = scenario.return + '%';
+        }
+
+        function simulateInflation() {
+            const currentAmount = parseFloat(document.getElementById('currentAmount').value);
+            const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
+            const timePeriod = parseInt(document.getElementById('timePeriod').value);
+            const investmentReturn = parseFloat(document.getElementById('investmentReturn').value) / 100;
+            
+            // Calcular diferentes escenarios
+            const scenarios = calculateScenarios(currentAmount, inflationRate, timePeriod, investmentReturn);
+            
+            displayResults(scenarios, currentAmount, inflationRate, timePeriod);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function calculateScenarios(amount, inflation, years, returnRate) {
+            const scenarios = [];
+            
+            // Escenario 1: Solo inflación (dinero bajo el colchón)
+            let cashValue = amount;
+            for (let year = 0; year <= years; year++) {
+                if (year > 0) {
+                    cashValue = cashValue / (1 + inflation);
+                }
+                scenarios.push({
+                    year: year,
+                    cash: cashValue,
+                    invested: 0,
+                    realReturn: 0
+                });
+            }
+            
+            // Escenario 2: Inversión con rendimiento
+            let investedValue = amount;
+            for (let year = 0; year <= years; year++) {
+                if (year > 0) {
+                    investedValue = investedValue * (1 + returnRate);
+                }
+                const realValue = investedValue / Math.pow(1 + inflation, year);
+                scenarios[year].invested = investedValue;
+                scenarios[year].realReturn = realValue;
+            }
+            
+            return scenarios;
+        }
+
+        function displayResults(scenarios, initialAmount, inflationRate, years) {
+            const finalCash = scenarios[years].cash;
+            const finalInvested = scenarios[years].invested;
+            const finalRealReturn = scenarios[years].realReturn;
+            
+            const cashLoss = initialAmount - finalCash;
+            const investmentGain = finalInvested - initialAmount;
+            const realGain = finalRealReturn - initialAmount;
+            
+            // Mostrar resultados principales
+            document.getElementById('simulationResults').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>💰 Valor Nominal</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${finalInvested.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>📉 Valor Real (Ajustado por Inflación)</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">$${finalRealReturn.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>💸 Pérdida por Inflación</h4>
+                        <p style="font-size: 1.5em; color: #dc3545;">$${cashLoss.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>📈 Ganancia Real</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">$${realGain.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Crear gráfico de poder adquisitivo
+            createPurchasingPowerChart(scenarios);
+            
+            // Mostrar impacto de inflación
+            displayInflationImpact(cashLoss, investmentGain, realGain, inflationRate);
+            
+            // Mostrar estrategias de protección
+            displayProtectionStrategies(inflationRate, years);
+            
+            // Mostrar comparación de escenarios
+            displayScenarioComparison(scenarios, initialAmount);
+        }
+
+        function createPurchasingPowerChart(scenarios) {
+            const chartDiv = document.getElementById('purchasingPowerChart');
+            const maxValue = Math.max(...scenarios.map(s => Math.max(s.cash, s.invested)));
+            
+            chartDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${scenarios.filter((_, index) => index % Math.ceil(scenarios.length / 10) === 0).map(scenario => `
+                        <div style="margin: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>Año ${scenario.year}</strong></span>
+                                <span>Efectivo: $${scenario.cash.toFixed(0)} | Invertido: $${scenario.invested.toFixed(0)}</span>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <div style="flex: 1; background: #dc3545; height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em;">
+                                    ${Math.round((scenario.cash / maxValue) * 100)}%
+                                </div>
+                                <div style="flex: 1; background: #28a745; height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em;">
+                                    ${Math.round((scenario.invested / maxValue) * 100)}%
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function displayInflationImpact(cashLoss, investmentGain, realGain, inflationRate) {
+            const impactDiv = document.getElementById('inflationImpact');
+            
+            let impactLevel, impactColor, impactMessage;
+            if (inflationRate <= 0.02) {
+                impactLevel = 'Bajo';
+                impactColor = '#28a745';
+                impactMessage = 'La inflación tiene un impacto mínimo en tu poder adquisitivo.';
+            } else if (inflationRate <= 0.05) {
+                impactLevel = 'Moderado';
+                impactColor = '#ffc107';
+                impactMessage = 'La inflación erosiona gradualmente tu poder adquisitivo.';
+            } else {
+                impactLevel = 'Alto';
+                impactColor = '#dc3545';
+                impactMessage = 'La inflación puede destruir significativamente tu riqueza.';
+            }
+            
+            impactDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    <h4 style="color: ${impactColor};">Nivel de Impacto: ${impactLevel}</h4>
+                    <p>${impactMessage}</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+                            <h5>💸 Dinero en Efectivo</h5>
+                            <p style="color: #dc3545; font-size: 1.2em; font-weight: bold;">-$${cashLoss.toLocaleString()}</p>
+                            <p style="font-size: 0.9em; color: #6c757d;">Pérdida de poder adquisitivo</p>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                            <h5>📈 Con Inversión</h5>
+                            <p style="color: #28a745; font-size: 1.2em; font-weight: bold;">+$${realGain.toLocaleString()}</p>
+                            <p style="font-size: 0.9em; color: #6c757d;">Ganancia real ajustada</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayProtectionStrategies(inflationRate, years) {
+            const strategiesDiv = document.getElementById('protectionStrategies');
+            
+            const strategies = [
+                {
+                    title: '🏠 Bienes Raíces',
+                    description: 'Los inmuebles tienden a mantener su valor real durante la inflación',
+                    effectiveness: inflationRate > 0.03 ? 'Alta' : 'Media',
+                    color: '#28a745'
+                },
+                {
+                    title: '📈 Acciones de Empresas Sólidas',
+                    description: 'Las empresas pueden ajustar precios y mantener márgenes',
+                    effectiveness: 'Media',
+                    color: '#007bff'
+                },
+                {
+                    title: '🥇 Commodities',
+                    description: 'Oro, plata y otros metales preciosos como cobertura',
+                    effectiveness: inflationRate > 0.05 ? 'Alta' : 'Media',
+                    color: '#ffc107'
+                },
+                {
+                    title: '🌍 Diversificación Internacional',
+                    description: 'Reduce exposición a inflación de un solo país',
+                    effectiveness: 'Media',
+                    color: '#6f42c1'
+                }
+            ];
+            
+            strategiesDiv.innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${strategies.map(strategy => `
+                        <div style="background: white; border: 2px solid ${strategy.color}; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                            <h4 style="color: ${strategy.color};">${strategy.title}</h4>
+                            <p>${strategy.description}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><strong>Efectividad:</strong> ${strategy.effectiveness}</span>
+                                <span style="background: ${strategy.color}; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8em;">
+                                    Recomendado
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function displayScenarioComparison(scenarios, initialAmount) {
+            const comparisonDiv = document.getElementById('scenarioComparison');
+            
+            const yearlyData = scenarios.filter((_, index) => index % Math.ceil(scenarios.length / 5) === 0);
+            
+            comparisonDiv.innerHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Año</th>
+                            <th>Valor Nominal</th>
+                            <th>Poder Adquisitivo Real</th>
+                            <th>Pérdida por Inflación</th>
+                            <th>Ganancia Real</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${yearlyData.map(scenario => `
+                            <tr>
+                                <td>${scenario.year}</td>
+                                <td>$${scenario.invested.toLocaleString()}</td>
+                                <td>$${scenario.realReturn.toLocaleString()}</td>
+                                <td style="color: #dc3545;">-$${(initialAmount - scenario.cash).toLocaleString()}</td>
+                                <td style="color: #28a745;">+$${(scenario.realReturn - initialAmount).toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+    </script>
+</body>
+</html>

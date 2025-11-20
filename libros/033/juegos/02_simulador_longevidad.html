@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Longevidad - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .factor {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .slider-container {
+            margin: 20px 0;
+        }
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            border: none;
+        }
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+        .result {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+            display: none;
+        }
+        .score-display {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .longevity-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .chart {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #e74c3c 0deg 60deg,
+                #f39c12 60deg 120deg,
+                #f1c40f 120deg 180deg,
+                #2ecc71 180deg 240deg,
+                #3498db 240deg 300deg,
+                #9b59b6 300deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .chart-center {
+            background: white;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .factor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .factor-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+        }
+        .factor-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .factor-description {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .impact-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .impact-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+        .impact-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .positive { background: #2ecc71; }
+        .negative { background: #e74c3c; }
+        .neutral { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏳ Simulador de Longevidad</h1>
+        
+        <div class="game-section">
+            <h2>🎯 ¿Cuánto tiempo vivirás?</h2>
+            <p>Este simulador te ayudará a estimar tu esperanza de vida basándose en factores de estilo de vida, hábitos y condiciones que influyen en la longevidad. Ajusta cada factor según tu situación actual.</p>
+        </div>
+
+        <div class="factor-grid">
+            <div class="factor-card">
+                <div class="factor-title">🍎 Alimentación</div>
+                <div class="factor-description">Calidad de tu dieta y hábitos alimentarios</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="dietSlider">
+                    <div class="slider-value" id="dietValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill positive" id="dietImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="dietImpactText">+5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🏃 Ejercicio</div>
+                <div class="factor-description">Nivel de actividad física regular</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="exerciseSlider">
+                    <div class="slider-value" id="exerciseValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill positive" id="exerciseImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="exerciseImpactText">+5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">😴 Sueño</div>
+                <div class="factor-description">Calidad y duración del sueño</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="sleepSlider">
+                    <div class="slider-value" id="sleepValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill positive" id="sleepImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="sleepImpactText">+5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🧘 Estrés</div>
+                <div class="factor-description">Nivel de estrés y manejo del mismo</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="stressSlider">
+                    <div class="slider-value" id="stressValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill negative" id="stressImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="stressImpactText">-5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🚭 Tabaco</div>
+                <div class="factor-description">Consumo de tabaco y productos relacionados</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="smokingSlider">
+                    <div class="slider-value" id="smokingValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill negative" id="smokingImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="smokingImpactText">-5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🍷 Alcohol</div>
+                <div class="factor-description">Consumo de alcohol</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="alcoholSlider">
+                    <div class="slider-value" id="alcoholValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill neutral" id="alcoholImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="alcoholImpactText">0 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🤝 Relaciones</div>
+                <div class="factor-description">Calidad de tus relaciones sociales</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="socialSlider">
+                    <div class="slider-value" id="socialValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill positive" id="socialImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="socialImpactText">+5 años</span>
+                </div>
+            </div>
+
+            <div class="factor-card">
+                <div class="factor-title">🧠 Actividad Mental</div>
+                <div class="factor-description">Estimulación mental y aprendizaje</div>
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="mentalSlider">
+                    <div class="slider-value" id="mentalValue">50%</div>
+                </div>
+                <div class="impact-indicator">
+                    <span>Impacto:</span>
+                    <div class="impact-bar">
+                        <div class="impact-fill positive" id="mentalImpact" style="width: 50%"></div>
+                    </div>
+                    <span id="mentalImpactText">+5 años</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result" id="result">
+            <h2>🎉 Tu Estimación de Longevidad</h2>
+            <div class="longevity-chart">
+                <div class="chart">
+                    <div class="chart-center">
+                        <div id="estimatedAge">85</div>
+                        <div style="font-size: 0.6em;">años</div>
+                    </div>
+                </div>
+            </div>
+            <div id="longevityResult"></div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay" style="display: none;">
+            <h3>📊 Análisis de Factores</h3>
+            <div id="scoreDetails"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" id="calculateBtn" onclick="calculateLongevity()">🧮 Calcular Longevidad</button>
+            <button class="btn" id="resetBtn" onclick="resetGame()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize sliders
+        const sliders = ['diet', 'exercise', 'sleep', 'stress', 'smoking', 'alcohol', 'social', 'mental'];
+        
+        sliders.forEach(sliderName => {
+            const slider = document.getElementById(sliderName + 'Slider');
+            const value = document.getElementById(sliderName + 'Value');
+            const impact = document.getElementById(sliderName + 'Impact');
+            const impactText = document.getElementById(sliderName + 'ImpactText');
+            
+            slider.addEventListener('input', function() {
+                const val = this.value;
+                value.textContent = val + '%';
+                
+                // Update impact visualization
+                let impactValue = 0;
+                let impactClass = 'neutral';
+                let impactSign = '';
+                
+                if (sliderName === 'stress' || sliderName === 'smoking') {
+                    // Negative factors
+                    impactValue = (100 - val) / 10; // Convert to years
+                    impactClass = 'negative';
+                    impactSign = '-';
+                } else if (sliderName === 'alcohol') {
+                    // Neutral factor
+                    if (val < 20) {
+                        impactValue = val / 20; // Small positive for low consumption
+                        impactClass = 'positive';
+                        impactSign = '+';
+                    } else if (val > 80) {
+                        impactValue = (val - 80) / 20; // Negative for high consumption
+                        impactClass = 'negative';
+                        impactSign = '-';
+                    } else {
+                        impactValue = 0;
+                        impactClass = 'neutral';
+                        impactSign = '';
+                    }
+                } else {
+                    // Positive factors
+                    impactValue = val / 10; // Convert to years
+                    impactClass = 'positive';
+                    impactSign = '+';
+                }
+                
+                impact.style.width = Math.abs(impactValue * 10) + '%';
+                impact.className = 'impact-fill ' + impactClass;
+                impactText.textContent = impactSign + Math.abs(impactValue).toFixed(1) + ' años';
+            });
+        });
+
+        function calculateLongevity() {
+            const baseAge = 75; // Base life expectancy
+            let totalImpact = 0;
+            let factors = [];
+            
+            sliders.forEach(sliderName => {
+                const slider = document.getElementById(sliderName + 'Slider');
+                const val = parseInt(slider.value);
+                let impact = 0;
+                
+                if (sliderName === 'stress' || sliderName === 'smoking') {
+                    impact = -(100 - val) / 10; // Negative impact
+                } else if (sliderName === 'alcohol') {
+                    if (val < 20) {
+                        impact = val / 20; // Small positive for low consumption
+                    } else if (val > 80) {
+                        impact = -(val - 80) / 20; // Negative for high consumption
+                    } else {
+                        impact = 0;
+                    }
+                } else {
+                    impact = val / 10; // Positive impact
+                }
+                
+                totalImpact += impact;
+                factors.push({
+                    name: sliderName,
+                    value: val,
+                    impact: impact
+                });
+            });
+            
+            const estimatedAge = Math.round(baseAge + totalImpact);
+            
+            // Show results
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('scoreDisplay').style.display = 'block';
+            document.getElementById('estimatedAge').textContent = estimatedAge;
+            
+            // Generate result text
+            let resultText = `<h3>🎯 Tu Esperanza de Vida Estimada: ${estimatedAge} años</h3>`;
+            
+            if (estimatedAge >= 90) {
+                resultText += `<p><strong>🌟 ¡Excelente!</strong> Tienes una excelente esperanza de vida. Tus hábitos y estilo de vida están muy bien alineados con la longevidad.</p>`;
+            } else if (estimatedAge >= 80) {
+                resultText += `<p><strong>👍 ¡Muy bien!</strong> Tienes una buena esperanza de vida. Hay algunas áreas donde puedes mejorar para vivir aún más tiempo.</p>`;
+            } else if (estimatedAge >= 70) {
+                resultText += `<p><strong>⚠️ Atención:</strong> Tu esperanza de vida está por debajo del promedio. Hay varias áreas donde puedes hacer mejoras significativas.</p>`;
+            } else {
+                resultText += `<p><strong>🚨 Acción necesaria:</strong> Tu esperanza de vida está significativamente por debajo del promedio. Es importante hacer cambios en tu estilo de vida.</p>`;
+            }
+            
+            // Add recommendations
+            resultText += `<h4>💡 Recomendaciones para Mejorar tu Longevidad:</h4><ul>`;
+            
+            factors.forEach(factor => {
+                const factorNames = {
+                    'diet': 'Alimentación',
+                    'exercise': 'Ejercicio',
+                    'sleep': 'Sueño',
+                    'stress': 'Estrés',
+                    'smoking': 'Tabaco',
+                    'alcohol': 'Alcohol',
+                    'social': 'Relaciones',
+                    'mental': 'Actividad Mental'
+                };
+                
+                if (factor.impact < -2) {
+                    resultText += `<li><strong>${factorNames[factor.name]}:</strong> Este es un factor crítico que está reduciendo significativamente tu longevidad. Considera hacer cambios importantes.</li>`;
+                } else if (factor.impact < 0) {
+                    resultText += `<li><strong>${factorNames[factor.name]}:</strong> Este factor está afectando negativamente tu longevidad. Hay margen de mejora.</li>`;
+                } else if (factor.impact > 5) {
+                    resultText += `<li><strong>${factorNames[factor.name]}:</strong> ¡Excelente! Este factor está contribuyendo positivamente a tu longevidad.</li>`;
+                }
+            });
+            
+            resultText += `</ul>`;
+            
+            document.getElementById('longevityResult').innerHTML = resultText;
+            
+            // Show detailed analysis
+            let detailsHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">';
+            
+            factors.forEach(factor => {
+                const factorNames = {
+                    'diet': 'Alimentación',
+                    'exercise': 'Ejercicio',
+                    'sleep': 'Sueño',
+                    'stress': 'Estrés',
+                    'smoking': 'Tabaco',
+                    'alcohol': 'Alcohol',
+                    'social': 'Relaciones',
+                    'mental': 'Actividad Mental'
+                };
+                
+                const color = factor.impact > 0 ? '#2ecc71' : factor.impact < 0 ? '#e74c3c' : '#f39c12';
+                const sign = factor.impact > 0 ? '+' : '';
+                
+                detailsHTML += `
+                    <div style="background: ${color}20; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid ${color};">
+                        <h4>${factorNames[factor.name]}</h4>
+                        <div style="font-size: 2em; color: ${color};">${sign}${factor.impact.toFixed(1)}</div>
+                        <div style="font-size: 0.8em; color: #666;">años</div>
+                    </div>
+                `;
+            });
+            
+            detailsHTML += '</div>';
+            document.getElementById('scoreDetails').innerHTML = detailsHTML;
+        }
+
+        function resetGame() {
+            sliders.forEach(sliderName => {
+                const slider = document.getElementById(sliderName + 'Slider');
+                slider.value = 50;
+                
+                const value = document.getElementById(sliderName + 'Value');
+                const impact = document.getElementById(sliderName + 'Impact');
+                const impactText = document.getElementById(sliderName + 'ImpactText');
+                
+                value.textContent = '50%';
+                impact.style.width = '50%';
+                impact.className = 'impact-fill positive';
+                impactText.textContent = '+5.0 años';
+            });
+            
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('scoreDisplay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

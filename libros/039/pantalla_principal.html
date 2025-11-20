@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Millonario Automático Dueño de Casa - Interactivo</title>
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #f0f0f0;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    
+    .sidebar-left::-webkit-scrollbar,
+    .sidebar-right::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-track,
+    .sidebar-right::-webkit-scrollbar-track {
+      background: #142b47;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb,
+    .sidebar-right::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb:hover,
+    .sidebar-right::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      padding-bottom: 20px;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+      }
+      .main-content-area iframe {
+        min-height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">🏠</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Finanzas Personales</span>
+        <span class="content-title">El Millonario Automático Dueño de Casa - David Bach</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Ver Otros Libros</a>
+      <a href="#">Siguiente Libro <span class="arrow-down">▼</span></a>
+    </nav>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_la_historia_martin.html" frameborder="0"></iframe>
+    </main>
+    
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_la_historia_martin.html" class="active-lesson"><span class="icon-placeholder">📖</span>La Historia de los Martin</a></li>
+          <li><a href="#" data-src="lecciones/02_por_que_ser_dueno_casa.html"><span class="icon-placeholder">💡</span>Por Qué Ser Dueño de Casa</a></li>
+          <li><a href="#" data-src="lecciones/03_quieres_comprar_casa.html"><span class="icon-placeholder">🏘️</span>¿Quieres Comprar una Casa?</a></li>
+          <li><a href="#" data-src="lecciones/04_banquero_correcto.html"><span class="icon-placeholder">🏦</span>El Banquero Correcto</a></li>
+          <li><a href="#" data-src="lecciones/05_hipoteca_correcta.html"><span class="icon-placeholder">📋</span>La Hipoteca Correcta</a></li>
+          <li><a href="#" data-src="lecciones/06_mejor_precio_hipoteca.html"><span class="icon-placeholder">💰</span>El Mejor Precio de la Hipoteca</a></li>
+          <li><a href="#" data-src="lecciones/07_buscar_casa.html"><span class="icon-placeholder">🔍</span>Buscar la Casa Perfecta</a></li>
+          <li><a href="#" data-src="lecciones/08_cerrar_trato.html"><span class="icon-placeholder">✍️</span>Cerrar el Trato</a></li>
+          <li><a href="#" data-src="lecciones/09_saldar_hipoteca.html"><span class="icon-placeholder">📊</span>Saldar la Hipoteca Antes de Tiempo</a></li>
+          <li><a href="#" data-src="lecciones/10_plan_expansion.html"><span class="icon-placeholder">📈</span>El Plan de Expansión</a></li>
+          <li><a href="#" data-src="lecciones/11_maximizar_riqueza.html"><span class="icon-placeholder">💎</span>Maximizar tu Riqueza</a></li>
+          <li><a href="#" data-src="lecciones/12_conclusion.html"><span class="icon-placeholder">🏁</span>Conclusión</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_calculadora_riesgo_financiero.html"><span class="icon-placeholder">🧮</span>Calculadora de Riesgo Financiero</a></li>
+          <li><a href="#" data-src="juegos/02_planificador_pago_inicial.html"><span class="icon-placeholder">💵</span>Planificador de Pago Inicial</a></li>
+          <li><a href="#" data-src="juegos/03_simulador_hipoteca.html"><span class="icon-placeholder">🏦</span>Simulador de Hipoteca</a></li>
+          <li><a href="#" data-src="juegos/04_comparador_hipotecas.html"><span class="icon-placeholder">📊</span>Comparador de Hipotecas</a></li>
+          <li><a href="#" data-src="juegos/05_calculadora_riqueza_inmobiliaria.html"><span class="icon-placeholder">🏠</span>Calculadora de Riqueza Inmobiliaria</a></li>
+          <li><a href="#" data-src="juegos/06_planificador_pagos_anticipados.html"><span class="icon-placeholder">⚡</span>Planificador de Pagos Anticipados</a></li>
+          <li><a href="#" data-src="juegos/07_simulador_expansion.html"><span class="icon-placeholder">📈</span>Simulador de Expansión</a></li>
+          <li><a href="#" data-src="juegos/08_planificador_financiero.html"><span class="icon-placeholder">📋</span>Planificador Financiero</a></li>
+          <li><a href="#" data-src="juegos/09_calculadora_deducciones.html"><span class="icon-placeholder">📑</span>Calculadora de Deducciones</a></li>
+          <li><a href="#" data-src="juegos/10_simulador_renta.html"><span class="icon-placeholder">💼</span>Simulador de Propiedad en Renta</a></li>
+          <li><a href="#" data-src="juegos/11_planificador_diversificacion.html"><span class="icon-placeholder">🌟</span>Planificador de Diversificación</a></li>
+          <li><a href="#" data-src="juegos/12_maestro_inmobiliario.html"><span class="icon-placeholder">👑</span>Maestro Inmobiliario</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
+          frame.src = this.getAttribute('data-src');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

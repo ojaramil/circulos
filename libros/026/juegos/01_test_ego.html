@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Nivel de Ego - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .question h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .options {
+            margin: 15px 0;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+        .option.selected {
+            border-color: #667eea;
+            background: #e7f3ff;
+        }
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .results.low-ego {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .results.moderate-ego {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .results.high-ego {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .score {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .recommendations {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .recommendations h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .recommendations ul {
+            margin: 10px 0;
+        }
+        .recommendations li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎭 Test: Tu Nivel de Ego</h1>
+        <p>Evalúa tu relación con el ego</p>
+    </div>
+
+    <div class="content">
+        <div id="test-container">
+            <h2>Instrucciones</h2>
+            <p>Responde honestamente a cada pregunta. No hay respuestas correctas o incorrectas, solo una evaluación honesta de tu comportamiento actual.</p>
+
+            <form id="ego-test">
+                <div class="question">
+                    <h3>1. Cuando logras algo importante, ¿qué haces primero?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q1" value="1">
+                            Lo compartes inmediatamente en redes sociales
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="2">
+                            Se lo cuentas a tu familia y amigos cercanos
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="3">
+                            Te enfocas en el siguiente paso o proyecto
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="4">
+                            Reflexionas sobre lo que aprendiste del proceso
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>2. En una reunión de trabajo, ¿cómo te comportas?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q2" value="1">
+                            Hablas más que todos los demás
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="2">
+                            Interrumpes para dar tu opinión
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="3">
+                            Escuchas y hablas cuando es relevante
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="4">
+                            Prefieres escuchar y tomar notas
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>3. Cuando alguien critica tu trabajo, ¿cuál es tu reacción inicial?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q3" value="1">
+                            Te defiendes inmediatamente y atacas su credibilidad
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="2">
+                            Te sientes molesto pero escuchas
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="3">
+                            Escuchas y consideras si hay verdad en la crítica
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="4">
+                            Agradeces la retroalimentación y pides más detalles
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>4. ¿Cómo manejas el reconocimiento y los elogios?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q4" value="1">
+                            Los esperas y te sientes decepcionado si no llegan
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="2">
+                            Los disfrutas pero no los buscas activamente
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="3">
+                            Los aceptas con humildad y los compartes con tu equipo
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="4">
+                            Prefieres que tu trabajo hable por sí mismo
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>5. Cuando cometes un error, ¿qué haces?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q5" value="1">
+                            Buscas excusas o culpas a otros
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="2">
+                            Minimizas el error y sigues adelante
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="3">
+                            Admites el error y aprendes de él
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="4">
+                            Te disculpas públicamente y tomas medidas para corregirlo
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>6. ¿Cómo te sientes cuando otros tienen éxito?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q6" value="1">
+                            Te sientes amenazado y envidioso
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="2">
+                            Te comparas y te sientes inferior
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="3">
+                            Te alegras genuinamente por ellos
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="4">
+                            Buscas aprender de su éxito
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>7. En situaciones de conflicto, ¿cómo reaccionas?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q7" value="1">
+                            Te vuelves defensivo y atacas
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="2">
+                            Te retiras para evitar el conflicto
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="3">
+                            Escuchas y buscas una solución
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="4">
+                            Te enfocas en los hechos y buscas el bien común
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h3>8. ¿Cómo manejas la incertidumbre y lo desconocido?</h3>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q8" value="1">
+                            Finges que sabes más de lo que realmente sabes
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="2">
+                            Evitas situaciones donde no tienes control
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="3">
+                            Admites lo que no sabes y buscas ayuda
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="4">
+                            Te sientes cómodo con la incertidumbre y aprendes
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="submit-btn">Calcular Mi Nivel de Ego</button>
+            </form>
+        </div>
+
+        <div id="results" class="results">
+            <h2>Resultados</h2>
+            <div class="score" id="score"></div>
+            <div id="description"></div>
+            <div class="recommendations" id="recommendations"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('ego-test').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            let totalScore = 0;
+            let answeredQuestions = 0;
+            
+            for (let i = 1; i <= 8; i++) {
+                const answer = formData.get(`q${i}`);
+                if (answer) {
+                    totalScore += parseInt(answer);
+                    answeredQuestions++;
+                }
+            }
+            
+            if (answeredQuestions < 8) {
+                alert('Por favor responde todas las preguntas antes de continuar.');
+                return;
+            }
+            
+            const averageScore = totalScore / 8;
+            const percentage = Math.round((averageScore / 4) * 100);
+            
+            displayResults(percentage, averageScore);
+        });
+
+        function displayResults(percentage, averageScore) {
+            const resultsDiv = document.getElementById('results');
+            const scoreDiv = document.getElementById('score');
+            const descriptionDiv = document.getElementById('description');
+            const recommendationsDiv = document.getElementById('recommendations');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            scoreDiv.textContent = `${percentage}%`;
+            
+            if (averageScore <= 1.5) {
+                resultsDiv.className = 'results low-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>🎉 ¡Excelente! Ego Bajo</h3>
+                    <p>Tienes un nivel muy saludable de humildad y autoconciencia. Mantienes un buen equilibrio entre confianza y humildad.</p>
+                `;
+                recommendationsDiv.innerHTML = `
+                    <h4>💡 Recomendaciones para Mantenerte:</h4>
+                    <ul>
+                        <li>Continúa practicando la escucha activa</li>
+                        <li>Mantén tu enfoque en el crecimiento personal</li>
+                        <li>Sigue siendo generoso con el reconocimiento a otros</li>
+                        <li>No te vuelvas complaciente - el ego puede aparecer en cualquier momento</li>
+                    </ul>
+                `;
+            } else if (averageScore <= 2.5) {
+                resultsDiv.className = 'results moderate-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>⚠️ Ego Moderado</h3>
+                    <p>Tienes algunas tendencias egoístas pero también muestras humildad. Hay espacio para mejorar tu autoconciencia.</p>
+                `;
+                recommendationsDiv.innerHTML = `
+                    <h4>💡 Recomendaciones para Mejorar:</h4>
+                    <ul>
+                        <li>Practica más la escucha antes de hablar</li>
+                        <li>Busca feedback regular de personas de confianza</li>
+                        <li>Reflexiona sobre tus motivaciones antes de actuar</li>
+                        <li>Celebra más los éxitos de otros</li>
+                        <li>Admite más fácilmente cuando no sabes algo</li>
+                    </ul>
+                `;
+            } else {
+                resultsDiv.className = 'results high-ego';
+                descriptionDiv.innerHTML = `
+                    <h3>🚨 Ego Alto - Necesitas Atención</h3>
+                    <p>Tu ego está interfiriendo significativamente con tu crecimiento y relaciones. Es hora de hacer cambios serios.</p>
+                `;
+                recommendationsDiv.innerHTML = `
+                    <h4>💡 Recomendaciones Urgentes:</h4>
+                    <ul>
+                        <li>Comienza un diario de reflexión diaria sobre tu comportamiento</li>
+                        <li>Busca un mentor o coach que te dé feedback honesto</li>
+                        <li>Practica la meditación o mindfulness para aumentar la autoconciencia</li>
+                        <li>Haz un esfuerzo consciente para escuchar más y hablar menos</li>
+                        <li>Busca oportunidades para servir a otros sin reconocimiento</li>
+                        <li>Lee libros sobre humildad y desarrollo personal</li>
+                        <li>Considera trabajar con un terapeuta si el problema es severo</li>
+                    </ul>
+                `;
+            }
+        }
+
+        // Add click handlers for radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove selected class from all options in this question
+                const question = this.closest('.question');
+                question.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                // Add selected class to the current option
+                this.closest('.option').classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>

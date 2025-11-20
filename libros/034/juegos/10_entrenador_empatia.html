@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Empatía - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .situation-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .empathy-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .empathy-option {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .empathy-option:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .empathy-option.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .empathy-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .empathy-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .empathy-principles {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>❤️ Entrenador de Empatía</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar la empatía en diferentes situaciones. Aprende a ponerte en el lugar de otros, entender sus perspectivas y responder de manera que demuestre comprensión y compasión.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Respuestas Empáticas: <span id="correct">0</span> | Respuestas No Empáticas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada situación y selecciona la respuesta que demuestre mayor empatía. La empatía incluye entender las emociones del otro, validar sus sentimientos y responder con compasión.</p>
+        </div>
+
+        <div class="empathy-principles">
+            <h3>📋 Principios de Empatía:</h3>
+            <ul>
+                <li>Ponerse en el lugar del otro</li>
+                <li>Reconocer y validar las emociones</li>
+                <li>Mostrar comprensión sin juzgar</li>
+                <li>Responder con compasión y cuidado</li>
+                <li>Buscar entender antes de ser entendido</li>
+            </ul>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextSituation()" id="next-btn" style="display: none;">Siguiente Situación</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentSituation = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedResponse = null;
+
+        const situations = [
+            {
+                title: "Colega Estresado",
+                description: "Un colega se acerca a ti y dice: 'Estoy realmente abrumado con este proyecto. Siento que no puedo hacer nada bien y que estoy decepcionando a todo el equipo. No sé qué hacer.'",
+                responses: [
+                    {
+                        text: "Entiendo que te sientes abrumado y que estás preocupado por el equipo. Es normal sentirse así cuando hay mucha presión. ¿Te gustaría hablar sobre qué aspectos específicos te están causando más estrés?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al reconocer las emociones del colega, validar sus sentimientos y ofrecer apoyo específico."
+                    },
+                    {
+                        text: "Todos tenemos días difíciles. Solo tienes que trabajar más duro.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta minimiza los sentimientos del colega y no demuestra empatía."
+                    },
+                    {
+                        text: "Me preocupa saber que te sientes así. ¿Hay algo específico que pueda hacer para ayudarte con el proyecto?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al mostrar preocupación genuina y ofrecer ayuda concreta."
+                    },
+                    {
+                        text: "Probablemente estás exagerando. No puede ser tan malo.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta invalida los sentimientos del colega y no demuestra empatía."
+                    }
+                ]
+            },
+            {
+                title: "Amigo con Problemas Familiares",
+                description: "Un amigo te cuenta: 'Mi familia está pasando por un momento muy difícil. Mi padre perdió su trabajo y mis padres están discutiendo constantemente. Me siento atrapado en el medio y no sé cómo ayudar.'",
+                responses: [
+                    {
+                        text: "Debe ser muy difícil para ti estar en esa situación. Es comprensible que te sientas atrapado. ¿Te gustaría hablar sobre cómo te está afectando esto?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al reconocer la dificultad de la situación y validar los sentimientos del amigo."
+                    },
+                    {
+                        text: "Eso es problema de tus padres. Tú no tienes que involucrarte.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta no demuestra empatía y no reconoce el impacto emocional en el amigo."
+                    },
+                    {
+                        text: "Entiendo que esto debe ser muy estresante para ti. Es normal sentirse así cuando la familia está pasando por dificultades. ¿Hay algo que pueda hacer para apoyarte?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al validar los sentimientos, normalizar la experiencia y ofrecer apoyo."
+                    },
+                    {
+                        text: "Todos los padres discuten. No es gran cosa.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta minimiza la experiencia del amigo y no demuestra empatía."
+                    }
+                ]
+            },
+            {
+                title: "Estudiante Ansioso",
+                description: "Un estudiante se acerca a ti y dice: 'Estoy muy nervioso por el examen final. He estudiado mucho pero siento que no sé nada. Tengo miedo de fallar y decepcionar a mi familia.'",
+                responses: [
+                    {
+                        text: "Entiendo que te sientes nervioso y que tienes miedo de decepcionar a tu familia. Es normal sentirse así antes de un examen importante. ¿Te gustaría repasar algunos conceptos juntos?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al reconocer las emociones del estudiante, validar sus sentimientos y ofrecer ayuda práctica."
+                    },
+                    {
+                        text: "Solo relájate. El estrés no te ayuda.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta no demuestra empatía y no reconoce la validez de los sentimientos del estudiante."
+                    },
+                    {
+                        text: "Me parece que estás siendo demasiado duro contigo mismo. Has estudiado mucho y eso cuenta. ¿Qué aspectos específicos te preocupan más?",
+                        isCorrect: true,
+                        explanation: "Esta respuesta demuestra empatía al reconocer el esfuerzo del estudiante, validar sus preocupaciones y buscar entender mejor la situación."
+                    },
+                    {
+                        text: "Todos están nerviosos. No es especial.",
+                        isCorrect: false,
+                        explanation: "Esta respuesta no demuestra empatía y minimiza la experiencia del estudiante."
+                    }
+                ]
+            }
+        ];
+
+        function loadSituation() {
+            const situation = situations[currentSituation];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Situación: ${situation.title}</h3>
+                    <div class="situation-box">
+                        <p><strong>Contexto:</strong> ${situation.description}</p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>❤️ ¿Cómo responderías con empatía?</h3>
+                    <div class="empathy-options">
+                        ${situation.responses.map((response, index) => `
+                            <div class="empathy-option" onclick="selectResponse(${index})" data-index="${index}">
+                                ${response.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedResponse = null;
+        }
+
+        function selectResponse(index) {
+            selectedResponse = index;
+            document.querySelectorAll('.empathy-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function checkAnswer() {
+            if (selectedResponse === null) {
+                alert('Por favor, selecciona una respuesta antes de verificar.');
+                return;
+            }
+
+            const situation = situations[currentSituation];
+            const response = situation.responses[selectedResponse];
+            const isCorrect = response.isCorrect;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.empathy-option').forEach((option, index) => {
+                option.classList.remove('selected');
+                if (situation.responses[index].isCorrect) {
+                    option.classList.add('correct');
+                } else if (index === selectedResponse && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente empatía!' : '❌ Revisa tu respuesta'}</h3>
+                <p><strong>Tu respuesta:</strong> ${response.text}</p>
+                <p><strong>Explicación:</strong> ${response.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextSituation() {
+            currentSituation++;
+            if (currentSituation < situations.length) {
+                loadSituation();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el entrenador de empatía.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentSituation = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadSituation();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadSituation();
+    </script>
+</body>
+</html>

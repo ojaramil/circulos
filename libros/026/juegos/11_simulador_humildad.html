@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Humildad - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .simulator-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .simulator-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .scenario-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .scenario-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .scenario-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .scenario-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .scenario-card p {
+            margin: 10px 0;
+        }
+        .scenario-card .difficulty {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .response-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .response-option {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .response-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .response-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .response-option h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .response-option p {
+            margin: 10px 0;
+        }
+        .response-option .consequence {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .results {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        .results h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .score-display {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-display h2 {
+            color: #667eea;
+            margin: 0;
+        }
+        .score-display .score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        .score-display .level {
+            font-size: 1.2em;
+            color: #666;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .feedback {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .feedback h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .scenario-progress {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .scenario-progress h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .scenario-progress .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .scenario-progress .progress-fill {
+            background: #667eea;
+            height: 100%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Simulador de Humildad</h1>
+            <p>Practica la humildad en situaciones reales de manera segura</p>
+        </div>
+
+        <div class="simulator-section">
+            <h3>🎯 Selecciona un Escenario</h3>
+            <p>Elige una situación para practicar tu humildad:</p>
+            
+            <div class="scenario-card" onclick="selectScenario('work-success')">
+                <h4>🏆 Éxito en el Trabajo</h4>
+                <p>Acabas de recibir un reconocimiento importante por tu trabajo. Tu jefe te felicitó públicamente y otros compañeros te están pidiendo consejos.</p>
+                <div class="difficulty">Dificultad: Media</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('criticism')">
+                <h4>💬 Recibir Críticas</h4>
+                <p>Recibiste feedback negativo sobre tu desempeño en una presentación importante. Tu supervisor mencionó que tu enfoque fue demasiado agresivo.</p>
+                <div class="difficulty">Dificultad: Alta</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('team-conflict')">
+                <h4>⚔️ Conflicto en el Equipo</h4>
+                <p>Tienes un desacuerdo con un compañero de trabajo sobre la dirección de un proyecto. Tu compañero cuestiona tu enfoque y sugiere un método diferente.</p>
+                <div class="difficulty">Dificultad: Alta</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('project-failure')">
+                <h4>💥 Fracaso en un Proyecto</h4>
+                <p>Un proyecto importante en el que trabajaste durante meses no logró los resultados esperados. Tu jefe está decepcionado y otros están señalando errores.</p>
+                <div class="difficulty">Dificultad: Muy Alta</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('competition')">
+                <h4>🏁 Competencia con Otros</h4>
+                <p>Estás compitiendo por una promoción con un compañero de trabajo. Ambos tienen habilidades similares, pero tu compañero ha estado recibiendo más reconocimiento.</p>
+                <div class="difficulty">Dificultad: Media</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('mistake')">
+                <h4>❌ Cometer un Error</h4>
+                <p>Cometiste un error importante que afectó a todo el equipo. El error fue costoso y ahora otros están cuestionando tu competencia.</p>
+                <div class="difficulty">Dificultad: Muy Alta</div>
+            </div>
+        </div>
+
+        <div class="simulator-section" id="scenario-details" style="display: none;">
+            <h3>📋 Detalles del Escenario</h3>
+            <div id="scenario-description"></div>
+            
+            <div class="scenario-progress">
+                <h4>Progreso del Escenario</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="scenario-progress" style="width: 0%"></div>
+                </div>
+                <p>Pregunta <span id="current-question">1</span> de <span id="total-questions">5</span></p>
+            </div>
+        </div>
+
+        <div class="simulator-section" id="question-section" style="display: none;">
+            <h3>❓ Pregunta</h3>
+            <div id="question-text"></div>
+            
+            <div class="response-options" id="response-options">
+                <!-- Options will be generated by JavaScript -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="submitResponse()" id="submit-btn" style="display: none;">✅ Enviar Respuesta</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h3>📊 Resultados del Simulador</h3>
+            <div id="results-content"></div>
+        </div>
+
+        <div class="score-display" id="score-display" style="display: none;">
+            <h2>Tu Puntuación</h2>
+            <div class="score" id="final-score">0</div>
+            <div class="level" id="humility-level">Nivel de Humildad</div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Escenarios Completados</h4>
+                <div class="number" id="completed-scenarios">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Puntuación Promedio</h4>
+                <div class="number" id="average-score">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Mejor Puntuación</h4>
+                <div class="number" id="best-score">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Nivel Actual</h4>
+                <div class="number" id="current-level">Principiante</div>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Consejo del Simulador</h4>
+            <p>La humildad no es debilidad, es fortaleza. Te permite aprender, crecer y conectar mejor con otros. Usa este simulador para practicar respuestas humildes en situaciones desafiantes.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="startSimulation()" id="start-btn" style="display: none;">🚀 Comenzar Simulación</button>
+            <button class="btn btn-success" onclick="saveResults()" id="save-btn" style="display: none;">💾 Guardar Resultados</button>
+            <button class="btn btn-secondary" onclick="viewStats()" id="stats-btn" style="display: none;">📊 Ver Estadísticas</button>
+            <button class="btn btn-danger" onclick="resetSimulator()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = null;
+        let currentQuestion = 0;
+        let selectedResponse = null;
+        let score = 0;
+        let simulationData = JSON.parse(localStorage.getItem('humilitySimulation') || '[]');
+
+        const scenarios = {
+            'work-success': {
+                title: 'Éxito en el Trabajo',
+                description: 'Acabas de recibir un reconocimiento importante por tu trabajo. Tu jefe te felicitó públicamente y otros compañeros te están pidiendo consejos.',
+                questions: [
+                    {
+                        question: '¿Cómo reaccionas cuando tu jefe te felicita públicamente?',
+                        options: [
+                            {
+                                text: 'Aceptas el reconocimiento con gratitud y reconoces el trabajo del equipo',
+                                score: 10,
+                                feedback: 'Excelente! Reconocer el trabajo del equipo muestra humildad genuina.'
+                            },
+                            {
+                                text: 'Te sientes orgulloso pero mantienes la compostura',
+                                score: 7,
+                                feedback: 'Bien! Mantener la compostura es importante, pero considera reconocer a otros también.'
+                            },
+                            {
+                                text: 'Te sientes un poco incómodo con la atención',
+                                score: 5,
+                                feedback: 'Entendible, pero recuerda que es importante aceptar el reconocimiento con gracia.'
+                            },
+                            {
+                                text: 'Te sientes muy orgulloso y quieres que todos lo sepan',
+                                score: 2,
+                                feedback: 'Cuidado! El orgullo excesivo puede alejar a las personas.'
+                            }
+                        ]
+                    },
+                    {
+                        question: 'Un compañero te pide consejos sobre cómo mejorar su trabajo. ¿Qué haces?',
+                        options: [
+                            {
+                                text: 'Compartes tus conocimientos y también pides consejos a cambio',
+                                score: 10,
+                                feedback: 'Perfecto! La humildad incluye estar abierto a aprender de otros.'
+                            },
+                            {
+                                text: 'Compartes tus conocimientos y le sugieres recursos adicionales',
+                                score: 8,
+                                feedback: 'Muy bien! Ayudar a otros es una muestra de humildad.'
+                            },
+                            {
+                                text: 'Le das algunos consejos básicos',
+                                score: 5,
+                                feedback: 'Está bien, pero considera ser más generoso con tu conocimiento.'
+                            },
+                            {
+                                text: 'Le dices que no tienes tiempo para ayudarle',
+                                score: 1,
+                                feedback: 'Esto no es humilde. Ayudar a otros es parte del crecimiento personal.'
+                            }
+                        ]
+                    }
+                ]
+            },
+            'criticism': {
+                title: 'Recibir Críticas',
+                description: 'Recibiste feedback negativo sobre tu desempeño en una presentación importante. Tu supervisor mencionó que tu enfoque fue demasiado agresivo.',
+                questions: [
+                    {
+                        question: '¿Cómo reaccionas al recibir esta crítica?',
+                        options: [
+                            {
+                                text: 'Escuchas atentamente y pides ejemplos específicos para mejorar',
+                                score: 10,
+                                feedback: 'Excelente! La humildad te permite aprender de las críticas constructivas.'
+                            },
+                            {
+                                text: 'Aceptas la crítica pero te sientes un poco herido',
+                                score: 7,
+                                feedback: 'Es normal sentirse herido, pero es importante no dejar que eso te impida aprender.'
+                            },
+                            {
+                                text: 'Defiendes tu enfoque y explicas por qué crees que fue correcto',
+                                score: 4,
+                                feedback: 'Defender tu posición está bien, pero asegúrate de escuchar realmente la crítica.'
+                            },
+                            {
+                                text: 'Te sientes atacado y rechazas la crítica',
+                                score: 1,
+                                feedback: 'Rechazar la crítica no te permite crecer. La humildad incluye aceptar que no siempre tienes razón.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function selectScenario(scenarioId) {
+            currentScenario = scenarioId;
+            const scenario = scenarios[scenarioId];
+            
+            // Remover selección anterior
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo escenario
+            event.currentTarget.classList.add('selected');
+            
+            // Mostrar detalles
+            document.getElementById('scenario-details').style.display = 'block';
+            document.getElementById('scenario-description').innerHTML = `
+                <h4>${scenario.title}</h4>
+                <p>${scenario.description}</p>
+            `;
+            
+            document.getElementById('total-questions').textContent = scenario.questions.length;
+            document.getElementById('start-btn').style.display = 'inline-block';
+        }
+
+        function startSimulation() {
+            if (!currentScenario) return;
+            
+            currentQuestion = 0;
+            score = 0;
+            selectedResponse = null;
+            
+            document.getElementById('question-section').style.display = 'block';
+            document.getElementById('start-btn').style.display = 'none';
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const scenario = scenarios[currentScenario];
+            const question = scenario.questions[currentQuestion];
+            
+            document.getElementById('question-text').innerHTML = `
+                <h4>Pregunta ${currentQuestion + 1}</h4>
+                <p>${question.question}</p>
+            `;
+            
+            const optionsHtml = question.options.map((option, index) => `
+                <div class="response-option" onclick="selectResponse(${index})">
+                    <h4>Opción ${index + 1}</h4>
+                    <p>${option.text}</p>
+                    <div class="consequence">Puntuación: ${option.score} puntos</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('response-options').innerHTML = optionsHtml;
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            // Actualizar progreso
+            const progress = ((currentQuestion + 1) / scenario.questions.length) * 100;
+            document.getElementById('scenario-progress').style.width = `${progress}%`;
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+        }
+
+        function selectResponse(index) {
+            // Remover selección anterior
+            document.querySelectorAll('.response-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.currentTarget.classList.add('selected');
+            selectedResponse = index;
+            
+            document.getElementById('submit-btn').style.display = 'inline-block';
+        }
+
+        function submitResponse() {
+            if (selectedResponse === null) {
+                alert('Por favor selecciona una respuesta.');
+                return;
+            }
+            
+            const scenario = scenarios[currentScenario];
+            const question = scenario.questions[currentQuestion];
+            const selectedOption = question.options[selectedResponse];
+            
+            score += selectedOption.score;
+            
+            // Mostrar feedback
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            feedback.innerHTML = `
+                <h4>Feedback</h4>
+                <p>${selectedOption.feedback}</p>
+            `;
+            document.getElementById('question-text').appendChild(feedback);
+            
+            // Ocultar opciones y botón
+            document.getElementById('response-options').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            // Mostrar siguiente pregunta o resultados
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < scenario.questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }, 2000);
+        }
+
+        function showResults() {
+            const scenario = scenarios[currentScenario];
+            const maxScore = scenario.questions.reduce((sum, q) => sum + Math.max(...q.options.map(o => o.score)), 0);
+            const percentage = (score / maxScore) * 100;
+            
+            let level = 'Principiante';
+            if (percentage >= 90) level = 'Maestro de la Humildad';
+            else if (percentage >= 80) level = 'Experto en Humildad';
+            else if (percentage >= 70) level = 'Avanzado en Humildad';
+            else if (percentage >= 60) level = 'Intermedio en Humildad';
+            else if (percentage >= 50) level = 'Principiante en Humildad';
+            else level = 'Necesita Práctica';
+            
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('humility-level').textContent = level;
+            document.getElementById('score-display').style.display = 'block';
+            
+            const results = `
+                <div class="score-display">
+                    <h2>Resultados del Escenario: ${scenario.title}</h2>
+                    <div class="score">${score}/${maxScore}</div>
+                    <div class="level">${level}</div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+                <p>Puntuación: ${Math.round(percentage)}%</p>
+                
+                <div class="feedback">
+                    <h4>Análisis de tu Desempeño</h4>
+                    <p>${getPerformanceAnalysis(percentage)}</p>
+                </div>
+                
+                <div class="feedback">
+                    <h4>Recomendaciones</h4>
+                    <p>${getRecommendations(percentage)}</p>
+                </div>
+            `;
+            
+            document.getElementById('results-content').innerHTML = results;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            
+            // Guardar resultado
+            saveSimulationResult(scenario.title, score, maxScore, percentage, level);
+        }
+
+        function getPerformanceAnalysis(percentage) {
+            if (percentage >= 90) {
+                return 'Excelente! Demuestras una comprensión profunda de la humildad y la aplicas de manera consistente.';
+            } else if (percentage >= 80) {
+                return 'Muy bien! Tienes una buena comprensión de la humildad y la practicas regularmente.';
+            } else if (percentage >= 70) {
+                return 'Bien! Entiendes los conceptos de humildad, pero hay espacio para mejorar en la práctica.';
+            } else if (percentage >= 60) {
+                return 'Regular. Tienes algunas ideas sobre la humildad, pero necesitas practicar más.';
+            } else {
+                return 'Necesitas trabajar más en desarrollar la humildad. Considera leer más sobre el tema y practicar regularmente.';
+            }
+        }
+
+        function getRecommendations(percentage) {
+            if (percentage >= 80) {
+                return 'Continúa practicando la humildad en situaciones reales. Considera enseñar a otros sobre lo que has aprendido.';
+            } else if (percentage >= 60) {
+                return 'Practica la humildad diariamente. Busca oportunidades para ser más humilde en tu vida cotidiana.';
+            } else {
+                return 'Lee más sobre la humildad, practica la meditación y busca mentores que puedan guiarte en tu desarrollo personal.';
+            }
+        }
+
+        function saveSimulationResult(title, score, maxScore, percentage, level) {
+            const result = {
+                scenario: title,
+                score: score,
+                maxScore: maxScore,
+                percentage: percentage,
+                level: level,
+                timestamp: new Date().toISOString()
+            };
+            
+            simulationData.push(result);
+            localStorage.setItem('humilitySimulation', JSON.stringify(simulationData));
+        }
+
+        function saveResults() {
+            alert('¡Resultados guardados exitosamente!');
+        }
+
+        function viewStats() {
+            const totalScenarios = simulationData.length;
+            const averageScore = simulationData.length > 0 ? 
+                Math.round(simulationData.reduce((sum, r) => sum + r.percentage, 0) / simulationData.length) : 0;
+            const bestScore = simulationData.length > 0 ? 
+                Math.max(...simulationData.map(r => r.percentage)) : 0;
+            const currentLevel = simulationData.length > 0 ? 
+                simulationData[simulationData.length - 1].level : 'Principiante';
+            
+            document.getElementById('completed-scenarios').textContent = totalScenarios;
+            document.getElementById('average-score').textContent = `${averageScore}%`;
+            document.getElementById('best-score').textContent = `${bestScore}%`;
+            document.getElementById('current-level').textContent = currentLevel;
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function resetSimulator() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el simulador?')) {
+                currentScenario = null;
+                currentQuestion = 0;
+                selectedResponse = null;
+                score = 0;
+                
+                document.getElementById('scenario-details').style.display = 'none';
+                document.getElementById('question-section').style.display = 'none';
+                document.getElementById('results').style.display = 'none';
+                document.getElementById('score-display').style.display = 'none';
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('start-btn').style.display = 'none';
+                document.getElementById('save-btn').style.display = 'none';
+                document.getElementById('stats-btn').style.display = 'none';
+                
+                // Remover selecciones
+                document.querySelectorAll('.scenario-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

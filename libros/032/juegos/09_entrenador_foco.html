@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Foco - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .game-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .focus-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .focus-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .focus-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .focus-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .focus-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .focus-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .focus-sessions {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .focus-sessions h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .session-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .session-item h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .session-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .focus-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .focus-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .timer {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Entrenador de Foco</h1>
+            <p>Desarrolla tu Concentración y Enfoque Mental</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 ¿Qué es el Entrenador de Foco?</h3>
+                <p>El Entrenador de Foco es una herramienta interactiva que te ayuda a desarrollar y fortalecer tu capacidad de concentración y enfoque mental. A través de ejercicios específicos y técnicas de mindfulness, aprenderás a mantener tu atención en lo que realmente importa.</p>
+            </div>
+
+            <div class="focus-level">
+                <h4>📊 Tu Nivel de Foco</h4>
+                <div class="level-display">
+                    <div class="level-number" id="focusLevel">50</div>
+                    <div class="level-text" id="focusText">Foco Medio</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="focusProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de foco actual se basa en tu capacidad de concentración y atención.</p>
+            </div>
+
+            <div class="focus-tracker">
+                <h4>📝 Registrar Sesión de Foco</h4>
+                <form id="focusForm">
+                    <div class="form-group">
+                        <label for="sessionName">Nombre de la Sesión:</label>
+                        <input type="text" id="sessionName" placeholder="Ej: Estudio de matemáticas" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sessionDescription">Descripción:</label>
+                        <textarea id="sessionDescription" placeholder="Describe la actividad en la que te enfocaste..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="focusLevel">Nivel de Foco (1-10):</label>
+                        <select id="focusLevel" required>
+                            <option value="">Selecciona nivel</option>
+                            <option value="1">1 - Muy Bajo</option>
+                            <option value="2">2 - Bajo</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="5">5 - Muy Bueno</option>
+                            <option value="6">6 - Excelente</option>
+                            <option value="7">7 - Fantástico</option>
+                            <option value="8">8 - Increíble</option>
+                            <option value="9">9 - Extraordinario</option>
+                            <option value="10">10 - Épico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sessionDuration">Duración (minutos):</label>
+                        <input type="number" id="sessionDuration" min="1" max="480" placeholder="30" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sessionType">Tipo de Sesión:</label>
+                        <select id="sessionType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="study">Estudio</option>
+                            <option value="work">Trabajo</option>
+                            <option value="creative">Creatividad</option>
+                            <option value="meditation">Meditación</option>
+                            <option value="exercise">Ejercicio</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Sesión</button>
+                </form>
+            </div>
+
+            <div class="timer" id="timerSection" style="display: none;">
+                <h4 id="timerTitle">Sesión de Foco en Progreso</h4>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <button class="btn" onclick="startTimer()">Iniciar</button>
+                <button class="btn" onclick="pauseTimer()">Pausar</button>
+                <button class="btn" onclick="stopTimer()">Detener</button>
+            </div>
+
+            <div class="focus-exercises">
+                <h4>🏋️ Ejercicios de Foco</h4>
+                
+                <div class="exercise">
+                    <h5>1. Meditación de Atención</h5>
+                    <p>Medita enfocando tu atención en un objeto específico para mejorar tu concentración.</p>
+                    <button class="btn" onclick="startAttentionMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Ejercicio de Respiración</h5>
+                    <p>Practica la respiración consciente para calmar tu mente y aumentar tu foco.</p>
+                    <button class="btn" onclick="startBreathingExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Visualización de Foco</h5>
+                    <p>Visualiza tu objetivo y mantén tu atención enfocada en él.</p>
+                    <button class="btn" onclick="startFocusVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Ejercicio de Concentración</h5>
+                    <p>Practica la concentración en una tarea específica durante un tiempo determinado.</p>
+                    <button class="btn" onclick="startConcentrationExercise()">Iniciar Ejercicio</button>
+                </div>
+            </div>
+
+            <div class="focus-sessions">
+                <h4>📋 Mis Sesiones de Foco</h4>
+                <div id="sessionsList">
+                    <!-- Las sesiones se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="focus-quote">
+                <h4>💬 Cita de Foco del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La concentración es la clave del éxito. No importa cuánto talento tengas, si no puedes concentrarte, no podrás aprovecharlo."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Sesiones Registradas:</span>
+                    <span class="stat-value" id="totalSessions">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tiempo Total de Foco:</span>
+                    <span class="stat-value" id="totalTime">0 min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel Promedio:</span>
+                    <span class="stat-value" id="averageLevel">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mejor Nivel:</span>
+                    <span class="stat-value" id="bestLevel">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primera Sesión</div>
+                            <div class="achievement-desc">Registra tu primera sesión de foco</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Foco Alto</div>
+                            <div class="achievement-desc">Alcanza un nivel de foco de 8 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro del Foco</div>
+                            <div class="achievement-desc">Registra 50 sesiones de foco</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Campeón de la Concentración</div>
+                            <div class="achievement-desc">Alcanza 100 horas de foco total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let sessions = JSON.parse(localStorage.getItem('focusSessions')) || [];
+        let stats = JSON.parse(localStorage.getItem('focusStats')) || {
+            totalSessions: 0,
+            totalTime: 0,
+            averageLevel: 0,
+            bestLevel: 0
+        };
+
+        let currentFocusLevel = parseInt(localStorage.getItem('currentFocusLevel')) || 50;
+        let currentSession = null;
+        let sessionTimer = null;
+        let sessionStartTime = null;
+        let sessionElapsedTime = 0;
+
+        // Citas de foco
+        const quotes = [
+            { text: "La concentración es la clave del éxito. No importa cuánto talento tengas, si no puedes concentrarte, no podrás aprovecharlo.", author: "Anónimo" },
+            { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier" },
+            { text: "No importa lo lento que vayas, siempre y cuando no te detengas.", author: "Confucio" },
+            { text: "La concentración es la capacidad de mantener la atención en un objetivo específico.", author: "Anónimo" },
+            { text: "El foco es la diferencia entre el éxito y el fracaso.", author: "Anónimo" },
+            { text: "La atención es el recurso más valioso que tenemos.", author: "Anónimo" },
+            { text: "La concentración es la clave de la productividad.", author: "Anónimo" },
+            { text: "El foco es la capacidad de ignorar las distracciones y mantener la atención en lo importante.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateFocusLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderSessions();
+        }
+
+        // Registrar nueva sesión
+        document.getElementById('focusForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const session = {
+                id: Date.now(),
+                name: document.getElementById('sessionName').value,
+                description: document.getElementById('sessionDescription').value,
+                focusLevel: parseInt(document.getElementById('focusLevel').value),
+                duration: parseInt(document.getElementById('sessionDuration').value),
+                type: document.getElementById('sessionType').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            sessions.push(session);
+            currentFocusLevel = Math.min(100, currentFocusLevel + session.focusLevel);
+            
+            saveData();
+            updateStats();
+            updateFocusLevel();
+            updateAchievements();
+            renderSessions();
+            
+            // Limpiar formulario
+            document.getElementById('focusForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Sesión registrada exitosamente!');
+        });
+
+        // Actualizar nivel de foco
+        function updateFocusLevel() {
+            document.getElementById('focusLevel').textContent = currentFocusLevel;
+            document.getElementById('focusProgress').style.width = currentFocusLevel + '%';
+            
+            let levelText = '';
+            if (currentFocusLevel < 20) levelText = 'Foco Muy Bajo';
+            else if (currentFocusLevel < 40) levelText = 'Foco Bajo';
+            else if (currentFocusLevel < 60) levelText = 'Foco Medio';
+            else if (currentFocusLevel < 80) levelText = 'Foco Alto';
+            else levelText = 'Foco Máximo';
+            
+            document.getElementById('focusText').textContent = levelText;
+        }
+
+        // Iniciar meditación de atención
+        function startAttentionMeditation() {
+            alert('Ejercicio de Meditación de Atención:\n\n1. Siéntate cómodamente\n2. Enfoca tu atención en un objeto específico\n3. Mantén tu atención en ese objeto\n4. Cuando tu mente divague, regresa suavemente al objeto\n\n¡Ejercicio completado!');
+            currentFocusLevel = Math.min(100, currentFocusLevel + 5);
+            updateFocusLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de respiración
+        function startBreathingExercise() {
+            alert('Ejercicio de Respiración:\n\n1. Siéntate cómodamente\n2. Respira profundamente por la nariz\n3. Exhala lentamente por la boca\n4. Mantén tu atención en la respiración\n\n¡Ejercicio completado!');
+            currentFocusLevel = Math.min(100, currentFocusLevel + 5);
+            updateFocusLevel();
+            saveData();
+        }
+
+        // Iniciar visualización de foco
+        function startFocusVisualization() {
+            alert('Ejercicio de Visualización de Foco:\n\n1. Cierra los ojos\n2. Imagina tu objetivo claramente\n3. Mantén tu atención enfocada en él\n4. Visualiza el éxito que alcanzarás\n\n¡Ejercicio completado!');
+            currentFocusLevel = Math.min(100, currentFocusLevel + 5);
+            updateFocusLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de concentración
+        function startConcentrationExercise() {
+            alert('Ejercicio de Concentración:\n\n1. Elige una tarea específica\n2. Enfoca toda tu atención en esa tarea\n3. Evita las distracciones\n4. Mantén tu concentración durante el tiempo establecido\n\n¡Ejercicio completado!');
+            currentFocusLevel = Math.min(100, currentFocusLevel + 5);
+            updateFocusLevel();
+            saveData();
+        }
+
+        // Iniciar temporizador
+        function startTimer() {
+            if (!currentSession) {
+                currentSession = {
+                    id: Date.now(),
+                    name: 'Sesión de Foco',
+                    startTime: new Date()
+                };
+            }
+            
+            sessionStartTime = new Date();
+            sessionElapsedTime = 0;
+            
+            sessionTimer = setInterval(() => {
+                sessionElapsedTime++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Pausar temporizador
+        function pauseTimer() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+        }
+
+        // Detener temporizador
+        function stopTimer() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+            
+            if (currentSession) {
+                const session = {
+                    id: currentSession.id,
+                    name: currentSession.name,
+                    description: 'Sesión de foco completada',
+                    focusLevel: Math.min(10, Math.floor(sessionElapsedTime / 60) + 1),
+                    duration: Math.floor(sessionElapsedTime / 60),
+                    type: 'meditation',
+                    createdAt: new Date().toISOString()
+                };
+                
+                sessions.push(session);
+                currentSession = null;
+                sessionElapsedTime = 0;
+            }
+            
+            document.getElementById('timerSection').style.display = 'none';
+            saveData();
+            updateStats();
+            renderSessions();
+        }
+
+        // Actualizar display del temporizador
+        function updateTimerDisplay() {
+            const minutes = Math.floor(sessionElapsedTime / 60);
+            const seconds = sessionElapsedTime % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Renderizar sesiones
+        function renderSessions() {
+            const sessionsList = document.getElementById('sessionsList');
+            sessionsList.innerHTML = '';
+            
+            if (sessions.length === 0) {
+                sessionsList.innerHTML = '<p>No tienes sesiones registradas aún. ¡Registra tu primera sesión!</p>';
+                return;
+            }
+            
+            sessions.forEach(session => {
+                const sessionItem = document.createElement('div');
+                sessionItem.className = 'session-item';
+                sessionItem.innerHTML = `
+                    <h5>${session.name}</h5>
+                    <p><strong>Descripción:</strong> ${session.description}</p>
+                    <p><strong>Tipo:</strong> ${getSessionTypeText(session.type)}</p>
+                    <p><strong>Nivel de Foco:</strong> ${session.focusLevel}/10</p>
+                    <p><strong>Duración:</strong> ${session.duration} minutos</p>
+                    <p><strong>Fecha:</strong> ${new Date(session.createdAt).toLocaleDateString()}</p>
+                `;
+                sessionsList.appendChild(sessionItem);
+            });
+        }
+
+        // Obtener texto del tipo de sesión
+        function getSessionTypeText(type) {
+            const types = {
+                'study': 'Estudio',
+                'work': 'Trabajo',
+                'creative': 'Creatividad',
+                'meditation': 'Meditación',
+                'exercise': 'Ejercicio',
+                'other': 'Otro'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalSessions = sessions.length;
+            stats.totalTime = sessions.reduce((sum, s) => sum + s.duration, 0);
+            stats.averageLevel = sessions.length > 0 ? Math.round(sessions.reduce((sum, s) => sum + s.focusLevel, 0) / sessions.length) : 0;
+            stats.bestLevel = Math.max(stats.bestLevel, ...sessions.map(s => s.focusLevel));
+            
+            document.getElementById('totalSessions').textContent = stats.totalSessions;
+            document.getElementById('totalTime').textContent = stats.totalTime + ' min';
+            document.getElementById('averageLevel').textContent = stats.averageLevel;
+            document.getElementById('bestLevel').textContent = stats.bestLevel;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primera Sesión
+            if (stats.totalSessions >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Foco Alto
+            if (stats.bestLevel >= 8) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro del Foco
+            if (stats.totalSessions >= 50) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Campeón de la Concentración
+            if (stats.totalTime >= 6000) { // 100 horas en minutos
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('focusSessions', JSON.stringify(sessions));
+            localStorage.setItem('focusStats', JSON.stringify(stats));
+            localStorage.setItem('currentFocusLevel', currentFocusLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

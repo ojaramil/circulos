@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Course Discovery</title>
+</head>
+<body>
+    <h1>Test Course Discovery</h1>
+    <div id="results"></div>
+
+    <script src="js/models/User.js"></script>
+    <script src="js/models/Course.js"></script>
+    <script src="js/models/Progress.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/courseMetadata.js"></script>
+    <script src="js/utils/courseDiscovery.js"></script>
+
+    <script>
+        async function testCourseDiscovery() {
+            console.log('Testing course discovery...');
+            
+            try {
+                const course = await Course.fromFolder('001');
+                console.log('Course loaded:', course);
+                
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `
+                    <h2>Course: ${course.title}</h2>
+                    <p>Description: ${course.description}</p>
+                    <p>Category: ${course.category}</p>
+                    <h3>Lessons (${course.lessons.length}):</h3>
+                    <ul>
+                        ${course.lessons.map(lesson => `<li>${lesson.icon} ${lesson.title} (${lesson.filePath})</li>`).join('')}
+                    </ul>
+                    <h3>Games (${course.games.length}):</h3>
+                    <ul>
+                        ${course.games.map(game => `<li>${game.icon} ${game.title} (${game.filePath})</li>`).join('')}
+                    </ul>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Run test when page loads
+        document.addEventListener('DOMContentLoaded', testCourseDiscovery);
+    </script>
+</body>
+</html>

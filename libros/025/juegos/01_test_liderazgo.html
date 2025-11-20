@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Estilo de Liderazgo - Los Líderes Comen de Último</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <style>
+        .question-container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .question {
+            font-size: 1.1em;
+            color: #1e3a5c;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .option:hover {
+            border-color: #ff9800;
+            background: #fff3e0;
+        }
+        .option.selected {
+            border-color: #ff9800;
+            background: #fff3e0;
+        }
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9800, #ffb74d);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .results-container {
+            display: none;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .result-type {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-type h3 {
+            color: #1e3a5c;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .result-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .strengths, .areas-improvement {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .strengths h4, .areas-improvement h4 {
+            color: #1e3a5c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .strengths h4::before {
+            content: "✅ ";
+            margin-right: 8px;
+        }
+        .areas-improvement h4::before {
+            content: "🎯 ";
+            margin-right: 8px;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: #ff9800;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Test: Tu Estilo de Liderazgo</h1>
+        <p class="game-description">
+            Descubre tu estilo de liderazgo actual y cómo se alinea con los principios de "Los Líderes Comen de Último". 
+            Este test te ayudará a identificar tus fortalezas y áreas de mejora.
+        </p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="questionContainer">
+            <!-- Las preguntas se generarán dinámicamente -->
+        </div>
+
+        <div class="game-controls">
+            <button class="btn btn-secondary" id="prevBtn" style="display: none;">← Anterior</button>
+            <button class="btn" id="nextBtn">Siguiente →</button>
+            <button class="btn btn-success" id="finishBtn" style="display: none;">Ver Resultados</button>
+        </div>
+
+        <div id="resultsContainer" class="results-container">
+            <!-- Los resultados se mostrarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Cuando un miembro de tu equipo comete un error, tu primera reacción es:",
+                options: [
+                    { text: "Reprenderlo inmediatamente para que no se repita", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Documentar el error para futuras evaluaciones", score: { authoritarian: 2, transactional: 3, transformational: 1, servant: 0 } },
+                    { text: "Ayudarle a entender qué salió mal y cómo solucionarlo", score: { authoritarian: 0, transactional: 1, transformational: 2, servant: 3 } },
+                    { text: "Preguntarle cómo se siente y qué necesita para mejorar", score: { authoritarian: 0, transactional: 0, transformational: 3, servant: 2 } }
+                ]
+            },
+            {
+                question: "En una crisis, tu prioridad principal es:",
+                options: [
+                    { text: "Mantener el control y dar órdenes claras", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Asegurar que se cumplan los procedimientos establecidos", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 0 } },
+                    { text: "Inspirar al equipo para superar el desafío juntos", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Proteger y apoyar a tu equipo durante la crisis", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Cómo manejas las decisiones importantes en tu equipo?",
+                options: [
+                    { text: "Las tomo yo solo, soy el responsable", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Las delego según las responsabilidades de cada uno", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Las discuto con el equipo y tomo la decisión final", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Facilito que el equipo llegue a un consenso", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Qué te motiva más como líder?",
+                options: [
+                    { text: "Mantener el orden y la disciplina en el equipo", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Alcanzar los objetivos y metas establecidas", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Ver crecer y desarrollarse a tu equipo", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Servir y apoyar a tu equipo para que tengan éxito", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Cómo te comunicas con tu equipo?",
+                options: [
+                    { text: "Principalmente dando órdenes y directrices", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "A través de reuniones estructuradas y reportes", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Compartiendo visiones y inspirando con historias", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Escuchando activamente y respondiendo a sus necesidades", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Qué haces cuando un miembro del equipo tiene un problema personal?",
+                options: [
+                    { text: "Le recuerdo que debe mantener la separación entre vida personal y trabajo", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Le doy tiempo libre si es necesario según las políticas", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Le ofrezco apoyo y flexibilidad para que pueda resolverlo", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Le ayudo activamente a encontrar soluciones y recursos", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Cómo manejas el reconocimiento y la recompensa?",
+                options: [
+                    { text: "Solo reconozco a quienes cumplen exactamente con lo esperado", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Uso un sistema de recompensas basado en resultados", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Celebro los logros y reconozco el esfuerzo del equipo", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Me enfoco en el crecimiento personal y la contribución al equipo", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            },
+            {
+                question: "¿Qué es más importante para ti en el trabajo?",
+                options: [
+                    { text: "Mantener el control y la autoridad", score: { authoritarian: 3, transactional: 2, transformational: 1, servant: 0 } },
+                    { text: "Cumplir con los objetivos y métricas establecidas", score: { authoritarian: 1, transactional: 3, transformational: 2, servant: 1 } },
+                    { text: "Inspirar y motivar a tu equipo", score: { authoritarian: 0, transactional: 1, transformational: 3, servant: 2 } },
+                    { text: "Servir y apoyar a tu equipo", score: { authoritarian: 0, transactional: 0, transformational: 2, servant: 3 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { authoritarian: 0, transactional: 0, transformational: 0, servant: 0 };
+
+        function initializeTest() {
+            showQuestion();
+            updateProgress();
+        }
+
+        function showQuestion() {
+            const container = document.getElementById('questionContainer');
+            const question = questions[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="question-container">
+                    <div class="question">Pregunta ${currentQuestion + 1} de ${questions.length}: ${question.question}</div>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option ${answers[currentQuestion] === index ? 'selected' : ''}" onclick="selectOption(${index})">
+                                <input type="radio" name="q${currentQuestion}" value="${index}" ${answers[currentQuestion] === index ? 'checked' : ''}>
+                                <label>${option.text}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(optionIndex) {
+            answers[currentQuestion] = optionIndex;
+            
+            // Actualizar la visualización
+            document.querySelectorAll('.option').forEach((opt, index) => {
+                opt.classList.toggle('selected', index === optionIndex);
+            });
+            
+            document.querySelectorAll('input[type="radio"]').forEach((input, index) => {
+                input.checked = index === optionIndex;
+            });
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showResults() {
+            calculateScores();
+            const container = document.getElementById('resultsContainer');
+            const dominantStyle = getDominantStyle();
+            
+            container.innerHTML = `
+                <div class="result-type">
+                    <h3>${dominantStyle.title}</h3>
+                    <p class="result-description">${dominantStyle.description}</p>
+                </div>
+                
+                <div class="score-display">
+                    ${Math.round(dominantStyle.score)}%
+                </div>
+                
+                <div class="strengths">
+                    <h4>Fortalezas de tu Estilo</h4>
+                    <ul>
+                        ${dominantStyle.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="areas-improvement">
+                    <h4>Áreas de Mejora</h4>
+                    <ul>
+                        ${dominantStyle.improvements.map(improvement => `<li>${improvement}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="game-controls">
+                    <button class="btn" onclick="restartTest()">Hacer el Test Nuevamente</button>
+                </div>
+            `;
+            
+            container.style.display = 'block';
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+        }
+
+        function calculateScores() {
+            scores = { authoritarian: 0, transactional: 0, transformational: 0, servant: 0 };
+            
+            answers.forEach((answer, questionIndex) => {
+                if (answer !== undefined) {
+                    const question = questions[questionIndex];
+                    const selectedOption = question.options[answer];
+                    
+                    Object.keys(selectedOption.score).forEach(style => {
+                        scores[style] += selectedOption.score[style];
+                    });
+                }
+            });
+            
+            // Convertir a porcentajes
+            const maxPossibleScore = questions.length * 3;
+            Object.keys(scores).forEach(style => {
+                scores[style] = (scores[style] / maxPossibleScore) * 100;
+            });
+        }
+
+        function getDominantStyle() {
+            const styles = [
+                {
+                    name: 'authoritarian',
+                    title: 'Líder Autoritario',
+                    score: scores.authoritarian,
+                    description: 'Prefieres mantener el control y la autoridad, dando órdenes claras y esperando obediencia.',
+                    strengths: [
+                        'Toma decisiones rápidas en crisis',
+                        'Mantiene el orden y la disciplina',
+                        'Es directo y claro en sus expectativas'
+                    ],
+                    improvements: [
+                        'Desarrollar empatía hacia tu equipo',
+                        'Involucrar al equipo en las decisiones',
+                        'Crear un entorno de confianza y seguridad'
+                    ]
+                },
+                {
+                    name: 'transactional',
+                    title: 'Líder Transaccional',
+                    score: scores.transactional,
+                    description: 'Te enfocas en intercambios claros: recompensas por buen desempeño y consecuencias por bajo rendimiento.',
+                    strengths: [
+                        'Maneja bien los objetivos y métricas',
+                        'Es justo y consistente',
+                        'Estructura bien los procesos'
+                    ],
+                    improvements: [
+                        'Desarrollar una visión inspiradora',
+                        'Conectar con las emociones de tu equipo',
+                        'Crear un sentido de propósito más profundo'
+                    ]
+                },
+                {
+                    name: 'transformational',
+                    title: 'Líder Transformacional',
+                    score: scores.transformational,
+                    description: 'Inspiras y motivas a tu equipo para que superen sus expectativas y crezcan personalmente.',
+                    strengths: [
+                        'Inspira y motiva a tu equipo',
+                        'Fomenta la innovación y creatividad',
+                        'Ayuda a tu equipo a crecer'
+                    ],
+                    improvements: [
+                        'Desarrollar habilidades de servicio',
+                        'Enfocarte más en las necesidades individuales',
+                        'Crear un Círculo de Seguridad más fuerte'
+                    ]
+                },
+                {
+                    name: 'servant',
+                    title: 'Líder Servidor',
+                    score: scores.servant,
+                    description: 'Tu prioridad es servir a tu equipo, ayudándoles a crecer y tener éxito.',
+                    strengths: [
+                        'Prioriza el bienestar de tu equipo',
+                        'Crea un entorno de confianza',
+                        'Desarrolla fuertemente a las personas'
+                    ],
+                    improvements: [
+                        'Mantener el equilibrio entre servir y dirigir',
+                        'Asegurar que se cumplan los objetivos',
+                        'Tomar decisiones difíciles cuando sea necesario'
+                    ]
+                }
+            ];
+            
+            return styles.reduce((prev, current) => 
+                (current.score > prev.score) ? current : prev
+            );
+        }
+
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+                updateProgress();
+                document.getElementById('prevBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'inline-block';
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+                updateProgress();
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('finishBtn').style.display = 'none';
+            }
+            
+            if (currentQuestion === 0) {
+                document.getElementById('prevBtn').style.display = 'none';
+            }
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            answers = [];
+            scores = { authoritarian: 0, transactional: 0, transformational: 0, servant: 0 };
+            
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            
+            showQuestion();
+            updateProgress();
+        }
+
+        // Event listeners
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+        document.getElementById('prevBtn').addEventListener('click', prevQuestion);
+        document.getElementById('finishBtn').addEventListener('click', showResults);
+
+        // Inicializar el test
+        initializeTest();
+    </script>
+</body>
+</html>

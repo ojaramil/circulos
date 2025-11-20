@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro del Ikigai - Juego Interactivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .ikigai-exercise {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .ikigai-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .circle {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 5px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffe6e6 0%, #f0f8ff 100%);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .circle.active {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .circle-center {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .circle-quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .quadrant-1 { top: 0; left: 0; }
+        .quadrant-2 { top: 0; right: 0; }
+        .quadrant-3 { bottom: 0; left: 0; }
+        .quadrant-4 { bottom: 0; right: 0; }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .exercise-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .exercise-card.active {
+            border-left-color: #27ae60;
+            background: #e8f5e8;
+        }
+        .exercise-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .exercise-description {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .exercise-duration {
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #666;
+            display: inline-block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn.start {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        .btn.stop {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        .result {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .ikigai-tips {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .ikigai-tips h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .ikigai-tips ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .ikigai-tips li {
+            margin: 5px 0;
+            color: #856404;
+        }
+        .ikigai-assessment {
+            background: #f8d7da;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
+            margin: 20px 0;
+        }
+        .assessment-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #721c24;
+            margin-bottom: 10px;
+        }
+        .assessment-description {
+            color: #721c24;
+            margin-bottom: 15px;
+        }
+        .assessment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .assessment-option {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .assessment-option:hover {
+            border-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .assessment-option.selected {
+            border-color: #e74c3c;
+            background: #ffe6e6;
+        }
+        .ikigai-level {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .level-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+        }
+        .level-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .level-1 { background: #e74c3c; }
+        .level-2 { background: #f39c12; }
+        .level-3 { background: #f1c40f; }
+        .level-4 { background: #2ecc71; }
+        .level-5 { background: #27ae60; }
+        .level-label {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+        }
+        .ikigai-score {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-level {
+            font-size: 2em;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .score-label {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Maestro del Ikigai</h1>
+        
+        <div class="game-section">
+            <h2>🎯 ¿Qué es el Ikigai?</h2>
+            <p>El Ikigai es un concepto japonés que significa "razón de ser" o "propósito de vida". Es la intersección entre lo que amas, en lo que eres bueno, lo que el mundo necesita y por lo que te pueden pagar. Es tu razón para levantarte cada mañana.</p>
+        </div>
+
+        <div class="ikigai-circle">
+            <div class="circle" id="ikigaiCircle">
+                <div class="circle-center">TU IKIGAI</div>
+                <div class="circle-quadrant quadrant-1">PASIÓN</div>
+                <div class="circle-quadrant quadrant-2">MISIÓN</div>
+                <div class="circle-quadrant quadrant-3">PROFESIÓN</div>
+                <div class="circle-quadrant quadrant-4">VOCACIÓN</div>
+            </div>
+        </div>
+
+        <div class="ikigai-score">
+            <div class="score-level" id="scoreLevel">50%</div>
+            <div class="score-label">Nivel de Ikigai</div>
+        </div>
+
+        <div class="ikigai-tips">
+            <h4>💡 Elementos del Ikigai</h4>
+            <ul>
+                <li><strong>Pasión:</strong> Lo que amas hacer</li>
+                <li><strong>Misión:</strong> Lo que el mundo necesita</li>
+                <li><strong>Profesión:</strong> Por lo que te pueden pagar</li>
+                <li><strong>Vocación:</strong> En lo que eres bueno</li>
+            </ul>
+        </div>
+
+        <div class="exercise-grid">
+            <div class="exercise-card" onclick="selectExercise(this, 'passion_discovery')">
+                <div class="exercise-title">🔥 Descubrimiento de Pasión</div>
+                <div class="exercise-description">Explora lo que realmente amas hacer</div>
+                <div class="exercise-duration">15-30 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'mission_identification')">
+                <div class="exercise-title">🌍 Identificación de Misión</div>
+                <div class="exercise-description">Encuentra tu propósito en el mundo</div>
+                <div class="exercise-duration">10-25 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'profession_development')">
+                <div class="exercise-title">💼 Desarrollo Profesional</div>
+                <div class="exercise-description">Conecta tu pasión con tu profesión</div>
+                <div class="exercise-duration">20-40 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'vocation_skills')">
+                <div class="exercise-title">🎯 Habilidades y Vocación</div>
+                <div class="exercise-description">Desarrolla tus talentos naturales</div>
+                <div class="exercise-duration">15-35 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'ikigai_integration')">
+                <div class="exercise-title">🔄 Integración del Ikigai</div>
+                <div class="exercise-description">Combina todos los elementos</div>
+                <div class="exercise-duration">25-50 minutos</div>
+            </div>
+            
+            <div class="exercise-card" onclick="selectExercise(this, 'ikigai_assessment')">
+                <div class="exercise-title">📊 Evaluación de Ikigai</div>
+                <div class="exercise-description">Mide tu nivel actual de Ikigai</div>
+                <div class="exercise-duration">15-30 minutos</div>
+            </div>
+        </div>
+
+        <div class="ikigai-exercise" id="exerciseContent" style="display: none;">
+            <h3 id="exerciseTitle">Ejercicio Seleccionado</h3>
+            <div id="exerciseInstructions"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="ikigai-assessment" id="assessmentContent" style="display: none;">
+            <div class="assessment-title" id="assessmentTitle">Evaluación de Ikigai</div>
+            <div class="assessment-description" id="assessmentDescription"></div>
+            <div class="assessment-options" id="assessmentOptions"></div>
+        </div>
+
+        <div class="result" id="result">
+            <h2>🎉 ¡Ejercicio de Ikigai Completado!</h2>
+            <div id="ikigaiResult"></div>
+        </div>
+
+        <div class="ikigai-level" id="ikigaiLevels" style="display: none;">
+            <div class="level-indicator">
+                <div class="level-circle level-1">1</div>
+                <div class="level-label">Perdido</div>
+            </div>
+            <div class="level-indicator">
+                <div class="level-circle level-2">2</div>
+                <div class="level-label">Explorando</div>
+            </div>
+            <div class="level-indicator">
+                <div class="level-circle level-3">3</div>
+                <div class="level-label">Descubriendo</div>
+            </div>
+            <div class="level-indicator">
+                <div class="level-circle level-4">4</div>
+                <div class="level-label">Viviendo</div>
+            </div>
+            <div class="level-indicator">
+                <div class="level-circle level-5">5</div>
+                <div class="level-label">Maestro</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn start" id="startBtn" onclick="startExercise()" disabled>▶️ Iniciar Ejercicio</button>
+            <button class="btn stop" id="stopBtn" onclick="stopExercise()" style="display: none;">⏹️ Detener</button>
+            <button class="btn" id="resetBtn" onclick="resetExercise()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentExercise = null;
+        let isRunning = false;
+        let ikigaiScore = 50;
+        let exerciseStartTime = null;
+
+        const exercises = {
+            passion_discovery: {
+                title: "🔥 Descubrimiento de Pasión",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Reflexiona sobre las actividades que te hacen perder la noción del tiempo</li>
+                        <li>Identifica qué te emociona y te llena de energía</li>
+                        <li>Piensa en lo que harías aunque no te pagaran</li>
+                        <li>Considera tus intereses desde la infancia</li>
+                        <li>Escribe una lista de tus pasiones</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 15-30 minutos</p>
+                `,
+                duration: 30
+            },
+            mission_identification: {
+                title: "🌍 Identificación de Misión",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Reflexiona sobre los problemas del mundo que te preocupan</li>
+                        <li>Identifica cómo puedes contribuir a solucionarlos</li>
+                        <li>Considera qué legado quieres dejar</li>
+                        <li>Piensa en cómo puedes servir a otros</li>
+                        <li>Define tu misión personal</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 10-25 minutos</p>
+                `,
+                duration: 25
+            },
+            profession_development: {
+                title: "💼 Desarrollo Profesional",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Evalúa tu carrera actual y su alineación con tu Ikigai</li>
+                        <li>Identifica oportunidades de crecimiento profesional</li>
+                        <li>Considera cómo monetizar tus pasiones</li>
+                        <li>Desarrolla habilidades que te acerquen a tu Ikigai</li>
+                        <li>Crea un plan de desarrollo profesional</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 20-40 minutos</p>
+                `,
+                duration: 40
+            },
+            vocation_skills: {
+                title: "🎯 Habilidades y Vocación",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Identifica tus talentos naturales</li>
+                        <li>Reflexiona sobre en qué eres realmente bueno</li>
+                        <li>Considera qué habilidades quieres desarrollar</li>
+                        <li>Piensa en cómo puedes usar tus habilidades para servir</li>
+                        <li>Desarrolla un plan de desarrollo de habilidades</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 15-35 minutos</p>
+                `,
+                duration: 35
+            },
+            ikigai_integration: {
+                title: "🔄 Integración del Ikigai",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Combina todos los elementos del Ikigai</li>
+                        <li>Encuentra la intersección entre pasión, misión, profesión y vocación</li>
+                        <li>Desarrolla un plan de vida alineado con tu Ikigai</li>
+                        <li>Establece objetivos que reflejen tu Ikigai</li>
+                        <li>Crea un plan de acción para vivir tu Ikigai</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 25-50 minutos</p>
+                `,
+                duration: 50
+            },
+            ikigai_assessment: {
+                title: "📊 Evaluación de Ikigai",
+                instructions: `
+                    <h4>Instrucciones:</h4>
+                    <ol>
+                        <li>Evalúa tu nivel actual en cada elemento del Ikigai</li>
+                        <li>Identifica áreas de mejora</li>
+                        <li>Reflexiona sobre tu satisfacción con la vida</li>
+                        <li>Considera cómo puedes fortalecer tu Ikigai</li>
+                        <li>Desarrolla un plan de mejora continua</li>
+                    </ol>
+                    <p><strong>Duración:</strong> 15-30 minutos</p>
+                `,
+                duration: 30
+            }
+        };
+
+        const assessments = [
+            {
+                title: "🔥 Pasión",
+                description: "¿Qué tan alineada está tu vida con lo que realmente amas hacer?",
+                options: [
+                    { text: "No estoy haciendo lo que amo", ikigaiScore: -20 },
+                    { text: "A veces hago lo que amo", ikigaiScore: 0 },
+                    { text: "Frecuentemente hago lo que amo", ikigaiScore: 15 },
+                    { text: "Siempre hago lo que amo", ikigaiScore: 25 }
+                ]
+            },
+            {
+                title: "🌍 Misión",
+                description: "¿Qué tan clara tienes tu misión en la vida?",
+                options: [
+                    { text: "No tengo una misión clara", ikigaiScore: -15 },
+                    { text: "Tengo una idea vaga de mi misión", ikigaiScore: 0 },
+                    { text: "Tengo una misión bastante clara", ikigaiScore: 15 },
+                    { text: "Tengo una misión muy clara y la vivo", ikigaiScore: 25 }
+                ]
+            },
+            {
+                title: "💼 Profesión",
+                description: "¿Qué tan alineada está tu profesión con tu Ikigai?",
+                options: [
+                    { text: "Mi profesión no está alineada", ikigaiScore: -15 },
+                    { text: "Mi profesión está parcialmente alineada", ikigaiScore: 5 },
+                    { text: "Mi profesión está bastante alineada", ikigaiScore: 15 },
+                    { text: "Mi profesión está perfectamente alineada", ikigaiScore: 25 }
+                ]
+            }
+        ];
+
+        function selectExercise(card, exerciseType) {
+            // Remove previous selection
+            document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('active'));
+            
+            // Add selection to current card
+            card.classList.add('active');
+            
+            // Set current exercise
+            currentExercise = exerciseType;
+            
+            // Show exercise content
+            const exercise = exercises[exerciseType];
+            document.getElementById('exerciseContent').style.display = 'block';
+            document.getElementById('exerciseTitle').textContent = exercise.title;
+            document.getElementById('exerciseInstructions').innerHTML = exercise.instructions;
+            
+            // Show assessment if it's the ikigai assessment exercise
+            if (exerciseType === 'ikigai_assessment') {
+                showAssessment();
+            } else {
+                document.getElementById('assessmentContent').style.display = 'none';
+            }
+            
+            // Enable start button
+            document.getElementById('startBtn').disabled = false;
+        }
+
+        function showAssessment() {
+            const assessment = assessments[Math.floor(Math.random() * assessments.length)];
+            document.getElementById('assessmentContent').style.display = 'block';
+            document.getElementById('assessmentTitle').textContent = assessment.title;
+            document.getElementById('assessmentDescription').textContent = assessment.description;
+            
+            const optionsContainer = document.getElementById('assessmentOptions');
+            optionsContainer.innerHTML = assessment.options.map((option, index) => 
+                `<div class="assessment-option" onclick="selectAssessment(this, ${option.ikigaiScore})">${option.text}</div>`
+            ).join('');
+        }
+
+        function selectAssessment(element, ikigaiScoreChange) {
+            // Remove previous selection
+            document.querySelectorAll('.assessment-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to current option
+            element.classList.add('selected');
+            
+            // Update score
+            ikigaiScore = Math.max(0, Math.min(100, ikigaiScore + ikigaiScoreChange));
+            
+            updateMeters();
+        }
+
+        function startExercise() {
+            if (!currentExercise) return;
+            
+            isRunning = true;
+            exerciseStartTime = Date.now();
+            
+            // Update UI
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            
+            // Start simulation
+            simulateIkigaiDevelopment();
+        }
+
+        function stopExercise() {
+            isRunning = false;
+            
+            // Update UI
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+            
+            // Show results
+            showResults();
+        }
+
+        function simulateIkigaiDevelopment() {
+            if (!isRunning) return;
+            
+            const elapsed = (Date.now() - exerciseStartTime) / 1000;
+            const exercise = exercises[currentExercise];
+            const maxDuration = exercise.duration * 60;
+            
+            // Update progress
+            const progress = Math.min((elapsed / maxDuration) * 100, 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Simulate ikigai development
+            if (elapsed % 30 < 1) { // Every 30 seconds
+                ikigaiScore = Math.min(100, ikigaiScore + 3);
+                updateMeters();
+            }
+            
+            // Continue simulation
+            setTimeout(simulateIkigaiDevelopment, 1000);
+        }
+
+        function updateMeters() {
+            const ikigaiCircle = document.getElementById('ikigaiCircle');
+            const scoreLevel = document.getElementById('scoreLevel');
+            
+            scoreLevel.textContent = Math.round(ikigaiScore) + '%';
+            
+            if (ikigaiScore >= 80) {
+                ikigaiCircle.classList.add('active');
+            } else {
+                ikigaiCircle.classList.remove('active');
+            }
+        }
+
+        function showResults() {
+            const elapsed = Math.floor((Date.now() - exerciseStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            let resultText = `
+                <h3>📊 Resumen de tu Ejercicio de Ikigai</h3>
+                <p><strong>Duración:</strong> ${minutes}:${seconds.toString().padStart(2, '0')}</p>
+                <p><strong>Nivel de Ikigai:</strong> ${Math.round(ikigaiScore)}%</p>
+            `;
+            
+            if (ikigaiScore >= 80) {
+                resultText += `
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>🌟 ¡Excelente! Eres un Maestro del Ikigai</h4>
+                        <p>Has alcanzado un nivel excepcional de alineación con tu Ikigai. Continúa viviendo tu propósito para mantener este nivel.</p>
+                    </div>
+                `;
+            } else if (ikigaiScore >= 60) {
+                resultText += `
+                    <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>👍 ¡Bien! Estás viviendo tu Ikigai</h4>
+                        <p>Tu nivel de Ikigai está en un buen nivel. Con más práctica, puedes alcanzar niveles aún más altos.</p>
+                    </div>
+                `;
+            } else if (ikigaiScore >= 40) {
+                resultText += `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>💡 Sigue desarrollando tu Ikigai</h4>
+                        <p>Tu Ikigai está en desarrollo. Continúa practicando estos ejercicios para fortalecerlo.</p>
+                    </div>
+                `;
+            } else {
+                resultText += `
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>🔄 Enfócate en descubrir tu Ikigai</h4>
+                        <p>Tu Ikigai necesita desarrollo. Practica estos ejercicios regularmente para descubrirlo y fortalecerlo.</p>
+                    </div>
+                `;
+            }
+            
+            resultText += `
+                <h4>💡 Consejos para Fortalecer tu Ikigai:</h4>
+                <ul>
+                    <li>Explora constantemente tus pasiones</li>
+                    <li>Identifica cómo puedes servir al mundo</li>
+                    <li>Desarrolla habilidades que te acerquen a tu propósito</li>
+                    <li>Busca formas de monetizar tu Ikigai</li>
+                    <li>Vive cada día con intención y propósito</li>
+                </ul>
+            `;
+            
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('ikigaiResult').innerHTML = resultText;
+            
+            // Show ikigai levels
+            document.getElementById('ikigaiLevels').style.display = 'flex';
+        }
+
+        function resetExercise() {
+            isRunning = false;
+            currentExercise = null;
+            ikigaiScore = 50;
+            
+            // Reset UI
+            document.getElementById('exerciseContent').style.display = 'none';
+            document.getElementById('assessmentContent').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('ikigaiLevels').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Remove selections
+            document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.assessment-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Reset meters
+            updateMeters();
+        }
+
+        // Initialize
+        updateMeters();
+    </script>
+</body>
+</html>

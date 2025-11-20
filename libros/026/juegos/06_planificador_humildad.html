@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Humildad - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .planning-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .planning-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .plans-list {
+            margin-top: 30px;
+        }
+        .plan-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .plan-title {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .plan-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .plan-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        .plan-content {
+            margin: 10px 0;
+        }
+        .plan-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-in-progress {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state h3 {
+            color: #999;
+        }
+        .humility-practices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .practice-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .practice-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .practice-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .practice-card .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Planificador de Humildad</h1>
+        <p>Organiza tu viaje hacia la humildad</p>
+    </div>
+
+    <div class="content">
+        <div id="planning-form">
+            <h2>Crear Nuevo Plan de Humildad</h2>
+            
+            <form id="humility-plan-form">
+                <div class="planning-section">
+                    <h3>📋 Información del Plan</h3>
+                    
+                    <div class="form-group">
+                        <label for="plan-title">Título del Plan:</label>
+                        <input type="text" id="plan-title" name="plan-title" required placeholder="Ej: Practicar la escucha activa">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-category">Categoría:</label>
+                        <select id="plan-category" name="plan-category" required>
+                            <option value="">Selecciona una categoría</option>
+                            <option value="comunicacion">Comunicación</option>
+                            <option value="aprendizaje">Aprendizaje</option>
+                            <option value="servicio">Servicio</option>
+                            <option value="autocontrol">Autocontrol</option>
+                            <option value="perspectiva">Perspectiva</option>
+                            <option value="trabajo">Trabajo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-description">Descripción:</label>
+                        <textarea id="plan-description" name="plan-description" placeholder="Describe qué vas a hacer y por qué es importante para tu desarrollo de humildad..."></textarea>
+                    </div>
+                </div>
+
+                <div class="planning-section">
+                    <h3>⏰ Cronograma</h3>
+                    
+                    <div class="form-group">
+                        <label for="start-date">Fecha de Inicio:</label>
+                        <input type="date" id="start-date" name="start-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="end-date">Fecha de Finalización:</label>
+                        <input type="date" id="end-date" name="end-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="frequency">Frecuencia:</label>
+                        <select id="frequency" name="frequency" required>
+                            <option value="">Selecciona frecuencia</option>
+                            <option value="daily">Diario</option>
+                            <option value="weekly">Semanal</option>
+                            <option value="monthly">Mensual</option>
+                            <option value="one-time">Una sola vez</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="planning-section">
+                    <h3>🎯 Objetivos y Métricas</h3>
+                    
+                    <div class="form-group">
+                        <label for="objectives">Objetivos Específicos:</label>
+                        <textarea id="objectives" name="objectives" placeholder="¿Qué quieres lograr específicamente? ¿Cómo sabrás que has tenido éxito?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metrics">Métricas de Éxito:</label>
+                        <textarea id="metrics" name="metrics" placeholder="¿Cómo vas a medir tu progreso? ¿Qué indicadores usarás?"></textarea>
+                    </div>
+                </div>
+
+                <div class="planning-section">
+                    <h3>🛠️ Recursos y Apoyo</h3>
+                    
+                    <div class="form-group">
+                        <label for="resources">Recursos Necesarios:</label>
+                        <textarea id="resources" name="resources" placeholder="¿Qué recursos necesitas? ¿Libros, cursos, herramientas, personas?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="support">Sistema de Apoyo:</label>
+                        <textarea id="support" name="support" placeholder="¿Quién te puede ayudar? ¿Cómo vas a mantenerte responsable?"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Crear Plan</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Limpiar Formulario</button>
+            </form>
+        </div>
+
+        <div class="planning-section">
+            <h3>💡 Prácticas de Humildad Sugeridas</h3>
+            <p>Haz clic en una práctica para agregarla como plan:</p>
+            
+            <div class="humility-practices">
+                <div class="practice-card" onclick="addPractice('Escucha Activa', 'Escuchar completamente antes de responder en las conversaciones', 'comunicacion')">
+                    <div class="icon">👂</div>
+                    <h4>Escucha Activa</h4>
+                    <p>Practicar escuchar completamente antes de responder</p>
+                </div>
+                
+                <div class="practice-card" onclick="addPractice('Preguntas de Clarificación', 'Hacer preguntas para entender mejor antes de dar opiniones', 'comunicacion')">
+                    <div class="icon">❓</div>
+                    <h4>Preguntas de Clarificación</h4>
+                    <p>Hacer preguntas para entender mejor</p>
+                </div>
+                
+                <div class="practice-card" onclick="addPractice('Reconocimiento a Otros', 'Dar crédito específico a otros por sus contribuciones', 'servicio')">
+                    <div class="icon">👏</div>
+                    <h4>Reconocimiento a Otros</h4>
+                    <p>Dar crédito específico a otros</p>
+                </div>
+                
+                <div class="practice-card" onclick="addPractice('Admitir Ignorancia', 'Decir "No sé" cuando no sabes algo', 'aprendizaje')">
+                    <div class="icon">🤷</div>
+                    <h4>Admitir Ignorancia</h4>
+                    <p>Decir "No sé" cuando no sabes algo</p>
+                </div>
+                
+                <div class="practice-card" onclick="addPractice('Servicio Desinteresado', 'Hacer algo bueno para otros sin esperar nada a cambio', 'servicio')">
+                    <div class="icon">🤝</div>
+                    <h4>Servicio Desinteresado</h4>
+                    <p>Ayudar a otros sin esperar recompensa</p>
+                </div>
+                
+                <div class="practice-card" onclick="addPractice('Reflexión Diaria', 'Reflexionar sobre tu comportamiento y decisiones del día', 'perspectiva')">
+                    <div class="icon">🧘</div>
+                    <h4>Reflexión Diaria</h4>
+                    <p>Reflexionar sobre tu comportamiento</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="plans-section" class="plans-list" style="display: none;">
+            <h2>📚 Mis Planes de Humildad</h2>
+            <div id="plans-container"></div>
+        </div>
+
+        <div id="stats-section" class="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="total-plans">0</div>
+                <div class="stat-label">Planes Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completed-plans">0</div>
+                <div class="stat-label">Completados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="in-progress-plans">0</div>
+                <div class="stat-label">En Progreso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pending-plans">0</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+            <h3>📝 Comienza tu Plan de Humildad</h3>
+            <p>No tienes planes aún. Usa el formulario de arriba o selecciona una práctica sugerida para comenzar tu viaje hacia la humildad.</p>
+        </div>
+    </div>
+
+    <script>
+        let plans = JSON.parse(localStorage.getItem('humilityPlans')) || [];
+        let editingIndex = -1;
+
+        // Set today's date as default
+        document.getElementById('start-date').value = new Date().toISOString().split('T')[0];
+
+        document.getElementById('humility-plan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const plan = {
+                id: Date.now(),
+                title: formData.get('plan-title'),
+                category: formData.get('plan-category'),
+                description: formData.get('plan-description'),
+                startDate: formData.get('start-date'),
+                endDate: formData.get('end-date'),
+                frequency: formData.get('frequency'),
+                objectives: formData.get('objectives'),
+                metrics: formData.get('metrics'),
+                resources: formData.get('resources'),
+                support: formData.get('support'),
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            if (editingIndex >= 0) {
+                plans[editingIndex] = plan;
+                editingIndex = -1;
+            } else {
+                plans.unshift(plan);
+            }
+
+            localStorage.setItem('humilityPlans', JSON.stringify(plans));
+            displayPlans();
+            displayStats();
+            this.reset();
+            document.getElementById('start-date').value = new Date().toISOString().split('T')[0];
+        });
+
+        function addPractice(title, description, category) {
+            document.getElementById('plan-title').value = title;
+            document.getElementById('plan-description').value = description;
+            document.getElementById('plan-category').value = category;
+            document.getElementById('frequency').value = 'daily';
+            
+            // Scroll to form
+            document.getElementById('planning-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayPlans() {
+            const container = document.getElementById('plans-container');
+            const plansSection = document.getElementById('plans-section');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (plans.length === 0) {
+                plansSection.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            plansSection.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = '';
+            
+            plans.forEach((plan, index) => {
+                const planDiv = document.createElement('div');
+                planDiv.className = 'plan-item';
+                
+                const statusClass = plan.status === 'completed' ? 'status-completed' : 
+                                  plan.status === 'in-progress' ? 'status-in-progress' : 'status-pending';
+                const statusText = plan.status === 'completed' ? 'Completado' : 
+                                 plan.status === 'in-progress' ? 'En Progreso' : 'Pendiente';
+                
+                planDiv.innerHTML = `
+                    <div class="plan-header">
+                        <div class="plan-title">${plan.title}</div>
+                        <div class="plan-actions">
+                            <span class="plan-status ${statusClass}">${statusText}</span>
+                            <button class="edit-btn" onclick="editPlan(${index})">Editar</button>
+                            <button class="delete-btn" onclick="deletePlan(${index})">Eliminar</button>
+                        </div>
+                    </div>
+                    <div class="plan-content">
+                        <p><strong>Categoría:</strong> ${getCategoryName(plan.category)}</p>
+                        <p><strong>Frecuencia:</strong> ${getFrequencyName(plan.frequency)}</p>
+                        <p><strong>Fecha de inicio:</strong> ${new Date(plan.startDate).toLocaleDateString()}</p>
+                        ${plan.endDate ? `<p><strong>Fecha de finalización:</strong> ${new Date(plan.endDate).toLocaleDateString()}</p>` : ''}
+                        <p><strong>Descripción:</strong> ${plan.description}</p>
+                        ${plan.objectives ? `<p><strong>Objetivos:</strong> ${plan.objectives}</p>` : ''}
+                        ${plan.metrics ? `<p><strong>Métricas:</strong> ${plan.metrics}</p>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(planDiv);
+            });
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'comunicacion': 'Comunicación',
+                'aprendizaje': 'Aprendizaje',
+                'servicio': 'Servicio',
+                'autocontrol': 'Autocontrol',
+                'perspectiva': 'Perspectiva',
+                'trabajo': 'Trabajo'
+            };
+            return categories[category] || category;
+        }
+
+        function getFrequencyName(frequency) {
+            const frequencies = {
+                'daily': 'Diario',
+                'weekly': 'Semanal',
+                'monthly': 'Mensual',
+                'one-time': 'Una sola vez'
+            };
+            return frequencies[frequency] || frequency;
+        }
+
+        function editPlan(index) {
+            const plan = plans[index];
+            editingIndex = index;
+            
+            // Fill form with plan data
+            document.getElementById('plan-title').value = plan.title;
+            document.getElementById('plan-category').value = plan.category;
+            document.getElementById('plan-description').value = plan.description;
+            document.getElementById('start-date').value = plan.startDate;
+            document.getElementById('end-date').value = plan.endDate || '';
+            document.getElementById('frequency').value = plan.frequency;
+            document.getElementById('objectives').value = plan.objectives || '';
+            document.getElementById('metrics').value = plan.metrics || '';
+            document.getElementById('resources').value = plan.resources || '';
+            document.getElementById('support').value = plan.support || '';
+            
+            // Scroll to form
+            document.getElementById('planning-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deletePlan(index) {
+            if (confirm('¿Estás seguro de que quieres eliminar este plan?')) {
+                plans.splice(index, 1);
+                localStorage.setItem('humilityPlans', JSON.stringify(plans));
+                displayPlans();
+                displayStats();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('humility-plan-form').reset();
+            document.getElementById('start-date').value = new Date().toISOString().split('T')[0];
+            editingIndex = -1;
+        }
+
+        function displayStats() {
+            if (plans.length === 0) {
+                document.getElementById('stats-section').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('stats-section').style.display = 'grid';
+            
+            const totalPlans = plans.length;
+            const completedPlans = plans.filter(plan => plan.status === 'completed').length;
+            const inProgressPlans = plans.filter(plan => plan.status === 'in-progress').length;
+            const pendingPlans = plans.filter(plan => plan.status === 'pending').length;
+            
+            document.getElementById('total-plans').textContent = totalPlans;
+            document.getElementById('completed-plans').textContent = completedPlans;
+            document.getElementById('in-progress-plans').textContent = inProgressPlans;
+            document.getElementById('pending-plans').textContent = pendingPlans;
+        }
+
+        // Initialize display
+        displayPlans();
+        displayStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: ¿Eres David o Goliat? - David y Goliat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .question h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .option {
+            background: white;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        .option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            display: none;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+            border-left: 5px solid #ff6b6b;
+        }
+        .results h2 {
+            color: #d63384;
+            margin-top: 0;
+        }
+        .david-result {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left-color: #28a745;
+        }
+        .david-result h2 {
+            color: #155724;
+        }
+        .goliat-result {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left-color: #dc3545;
+        }
+        .goliat-result h2 {
+            color: #721c24;
+        }
+        .balanced-result {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left-color: #2196f3;
+        }
+        .balanced-result h2 {
+            color: #1976d2;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover {
+            background: #0056b3;
+        }
+        .highlight-box {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .highlight-box h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚔️ Test: ¿Eres David o Goliat?</h1>
+        <p>Descubre tu estilo de enfrentar los desafíos</p>
+    </div>
+
+    <div class="content">
+        <div class="highlight-box">
+            <h3>🎯 Instrucciones</h3>
+            <p>Este test te ayudará a identificar si tiendes a enfrentar los desafíos como <strong>David</strong> (usando estrategias no convencionales y aprovechando las desventajas) o como <strong>Goliat</strong> (confiando en la fuerza y los recursos tradicionales).</p>
+            <p>Responde honestamente a cada pregunta según cómo te comportarías en situaciones reales.</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <form id="testForm">
+            <div class="question" id="question1">
+                <h3>Pregunta 1: En una competencia de trabajo, tu oponente tiene más experiencia y recursos que tú. ¿Qué haces?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="goliat" required>
+                        <strong>A)</strong> Me preparo más intensamente y trabajo más horas para compensar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="david" required>
+                        <strong>B)</strong> Busco un enfoque completamente diferente que aproveche mis fortalezas únicas
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="balanced" required>
+                        <strong>C)</strong> Combino trabajo duro con estrategias innovadoras
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question2" style="display: none;">
+                <h3>Pregunta 2: Tu empresa pequeña compite contra una corporación gigante. ¿Cuál es tu estrategia?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="goliat" required>
+                        <strong>A)</strong> Intento replicar sus procesos pero de manera más eficiente
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="david" required>
+                        <strong>B)</strong> Creo un mercado completamente nuevo donde no compito directamente
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="balanced" required>
+                        <strong>C)</strong> Me enfoco en nichos específicos donde puedo ser más ágil
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question3" style="display: none;">
+                <h3>Pregunta 3: Te enfrentas a un problema que parece imposible de resolver. ¿Cómo reaccionas?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="goliat" required>
+                        <strong>A)</strong> Busco más recursos y ayuda para resolverlo
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="david" required>
+                        <strong>B)</strong> Replanteo completamente el problema desde una nueva perspectiva
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="balanced" required>
+                        <strong>C)</strong> Analizo si realmente necesito resolver este problema o puedo evitarlo
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question4" style="display: none;">
+                <h3>Pregunta 4: En un conflicto, tu oponente es más fuerte y tiene más aliados. ¿Cuál es tu enfoque?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="goliat" required>
+                        <strong>A)</strong> Me fortalezco y busco más aliados para equilibrar la situación
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="david" required>
+                        <strong>B)</strong> Cambio completamente el terreno del conflicto a uno donde tengo ventaja
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="balanced" required>
+                        <strong>C)</strong> Busco un terreno neutral donde ambos podamos negociar
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question5" style="display: none;">
+                <h3>Pregunta 5: Te sientes en desventaja en una situación. ¿Qué piensas?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="goliat" required>
+                        <strong>A)</strong> Necesito trabajar más duro para superar esta desventaja
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="david" required>
+                        <strong>B)</strong> Esta desventaja podría ser mi mayor ventaja si la uso correctamente
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="balanced" required>
+                        <strong>C)</strong> Analizo si realmente es una desventaja o solo una diferencia
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question6" style="display: none;">
+                <h3>Pregunta 6: Cuando las cosas no salen según el plan, ¿qué haces?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="goliat" required>
+                        <strong>A)</strong> Me esfuerzo más para hacer que el plan funcione
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="david" required>
+                        <strong>B)</strong> Veo esto como una oportunidad para crear un plan completamente nuevo
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="balanced" required>
+                        <strong>C)</strong> Adapto el plan existente a las nuevas circunstancias
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question7" style="display: none;">
+                <h3>Pregunta 7: ¿Cómo te ves a ti mismo en relación con los demás?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="goliat" required>
+                        <strong>A)</strong> Como alguien que necesita ser más fuerte y competente
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="david" required>
+                        <strong>B)</strong> Como alguien único con fortalezas que otros no tienen
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="balanced" required>
+                        <strong>C)</strong> Como alguien con fortalezas y debilidades, como todos
+                    </label>
+                </div>
+            </div>
+
+            <div class="question" id="question8" style="display: none;">
+                <h3>Pregunta 8: ¿Qué te motiva más?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="goliat" required>
+                        <strong>A)</strong> Ser el mejor y más fuerte en mi campo
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="david" required>
+                        <strong>B)</strong> Crear algo completamente nuevo y diferente
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="balanced" required>
+                        <strong>C)</strong> Crecer y mejorar de manera constante
+                    </label>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button type="button" class="btn" id="prevBtn" style="display: none;">← Anterior</button>
+                <button type="button" class="btn" id="nextBtn">Siguiente →</button>
+                <button type="submit" class="btn" id="submitBtn" style="display: none;">Ver Resultados</button>
+            </div>
+        </form>
+
+        <div class="results" id="results">
+            <h2 id="resultTitle">Resultados del Test</h2>
+            <p id="resultDescription"></p>
+            <div id="resultDetails"></div>
+            <button class="btn" onclick="location.reload()">Hacer el Test de Nuevo</button>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="../pantalla_principal.html" class="nav-btn">← Volver al Inicio</a>
+        <a href="02_simulador_estrategias.html" class="nav-btn">Siguiente Juego →</a>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 8;
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showQuestion(questionNum) {
+            // Ocultar todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).style.display = 'none';
+            }
+            
+            // Mostrar la pregunta actual
+            document.getElementById(`question${questionNum}`).style.display = 'block';
+            
+            // Actualizar botones
+            document.getElementById('prevBtn').style.display = questionNum === 1 ? 'none' : 'inline-block';
+            document.getElementById('nextBtn').style.display = questionNum === totalQuestions ? 'none' : 'inline-block';
+            document.getElementById('submitBtn').style.display = questionNum === totalQuestions ? 'inline-block' : 'none';
+            
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+        document.getElementById('prevBtn').addEventListener('click', prevQuestion);
+
+        // Manejar selección de opciones
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remover selección previa en la misma pregunta
+                const questionDiv = this.closest('.question');
+                questionDiv.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Marcar la opción seleccionada
+                this.closest('.option').classList.add('selected');
+            });
+        });
+
+        // Manejar envío del formulario
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const answers = {};
+            let allAnswered = true;
+            
+            // Recopilar respuestas
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    answers[`q${i}`] = selected.value;
+                } else {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            if (!allAnswered) {
+                alert('Por favor responde todas las preguntas antes de ver los resultados.');
+                return;
+            }
+            
+            // Calcular resultados
+            const scores = { david: 0, goliat: 0, balanced: 0 };
+            
+            Object.values(answers).forEach(answer => {
+                scores[answer]++;
+            });
+            
+            // Determinar resultado
+            let resultType, resultTitle, resultDescription, resultDetails;
+            
+            if (scores.david > scores.goliat && scores.david > scores.balanced) {
+                resultType = 'david';
+                resultTitle = '🎯 ¡Eres un David!';
+                resultDescription = 'Tienes la mentalidad de un estratega que convierte las desventajas en ventajas.';
+                resultDetails = `
+                    <h3>Características de David:</h3>
+                    <ul>
+                        <li><strong>Pensamiento no convencional:</strong> Ves oportunidades donde otros ven problemas</li>
+                        <li><strong>Adaptabilidad:</strong> Cambias las reglas del juego cuando es necesario</li>
+                        <li><strong>Creatividad:</strong> Encuentras soluciones únicas a desafíos aparentemente imposibles</li>
+                        <li><strong>Valentía:</strong> No temes enfrentar gigantes con estrategias innovadoras</li>
+                    </ul>
+                    <h3>Fortalezas:</h3>
+                    <ul>
+                        <li>Excelente para situaciones donde los recursos tradicionales no están disponibles</li>
+                        <li>Capaz de crear ventajas competitivas únicas</li>
+                        <li>Innovador y disruptivo en su enfoque</li>
+                        <li>Muy efectivo contra oponentes más fuertes</li>
+                    </ul>
+                    <h3>Áreas de desarrollo:</h3>
+                    <ul>
+                        <li>Puedes beneficiarte de desarrollar más consistencia en la ejecución</li>
+                        <li>Considera cuándo las estrategias convencionales podrían ser más apropiadas</li>
+                        <li>Desarrolla la paciencia para implementar estrategias a largo plazo</li>
+                    </ul>
+                `;
+            } else if (scores.goliat > scores.david && scores.goliat > scores.balanced) {
+                resultType = 'goliat';
+                resultTitle = '⚔️ ¡Eres un Goliat!';
+                resultDescription = 'Tienes la mentalidad de un guerrero que confía en la fuerza y los recursos.';
+                resultDetails = `
+                    <h3>Características de Goliat:</h3>
+                    <ul>
+                        <li><strong>Fuerza y recursos:</strong> Confías en tus capacidades y herramientas</li>
+                        <li><strong>Consistencia:</strong> Prefieres métodos probados y confiables</li>
+                        <li><strong>Preparación:</strong> Te preparas exhaustivamente para los desafíos</li>
+                        <li><strong>Determinación:</strong> Persistes hasta lograr tus objetivos</li>
+                    </ul>
+                    <h3>Fortalezas:</h3>
+                    <ul>
+                        <li>Excelente para situaciones donde tienes ventajas claras</li>
+                        <li>Muy efectivo en entornos estables y predecibles</li>
+                        <li>Capaz de ejecutar estrategias complejas con precisión</li>
+                        <li>Inspira confianza y respeto en tu equipo</li>
+                    </ul>
+                    <h3>Áreas de desarrollo:</h3>
+                    <ul>
+                        <li>Puedes beneficiarte de ser más flexible en tus enfoques</li>
+                        <li>Considera cuándo las estrategias no convencionales podrían ser más efectivas</li>
+                        <li>Desarrolla la capacidad de adaptarte rápidamente a cambios inesperados</li>
+                    </ul>
+                `;
+            } else {
+                resultType = 'balanced';
+                resultTitle = '⚖️ ¡Eres Equilibrado!';
+                resultDescription = 'Tienes la capacidad de adaptarte según la situación, combinando lo mejor de ambos enfoques.';
+                resultDetails = `
+                    <h3>Características del Equilibrado:</h3>
+                    <ul>
+                        <li><strong>Adaptabilidad:</strong> Cambias tu enfoque según las circunstancias</li>
+                        <li><strong>Pragmatismo:</strong> Usas la herramienta más apropiada para cada situación</li>
+                        <li><strong>Perspectiva:</strong> Puedes ver tanto las ventajas como las desventajas de cada enfoque</li>
+                        <li><strong>Flexibilidad:</strong> No te aferras a un solo método</li>
+                    </ul>
+                    <h3>Fortalezas:</h3>
+                    <ul>
+                        <li>Capaz de enfrentar una amplia variedad de desafíos</li>
+                        <li>Puedes ser tanto David como Goliat según sea necesario</li>
+                        <li>Excelente para roles de liderazgo y mediación</li>
+                        <li>Muy efectivo en entornos cambiantes</li>
+                    </ul>
+                    <h3>Áreas de desarrollo:</h3>
+                    <ul>
+                        <li>Puedes beneficiarte de desarrollar más especialización en ciertas áreas</li>
+                        <li>Considera cuándo comprometerte más profundamente con un enfoque específico</li>
+                        <li>Desarrolla la capacidad de tomar decisiones más rápidas cuando sea necesario</li>
+                    </ul>
+                `;
+            }
+            
+            // Mostrar resultados
+            document.getElementById('resultTitle').textContent = resultTitle;
+            document.getElementById('resultDescription').textContent = resultDescription;
+            document.getElementById('resultDetails').innerHTML = resultDetails;
+            
+            // Aplicar clase de estilo según el resultado
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.className = 'results ' + resultType + '-result';
+            resultsDiv.style.display = 'block';
+            
+            // Ocultar formulario
+            document.getElementById('testForm').style.display = 'none';
+            
+            // Scroll a resultados
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Inicializar
+        showQuestion(1);
+    </script>
+</body>
+</html>

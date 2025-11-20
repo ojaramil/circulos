@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario de Neuroplasticidad - El Cerebro se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .diary-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .diary-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .entry-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .entry-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .entry-card .date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .entry-card .content {
+            margin: 15px 0;
+        }
+        .entry-card .category {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .category-learning {
+            background: #d4edda;
+            color: #155724;
+        }
+        .category-memory {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .category-attention {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .category-emotion {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .entry-card .actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        .entry-card .actions button {
+            margin-right: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .search-section h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .search-results {
+            margin-top: 20px;
+        }
+        .search-results .entry-card {
+            margin: 10px 0;
+        }
+        .filter-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .filter-section h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📔 Diario de Neuroplasticidad</h1>
+            <p>Registra tu viaje de transformación cerebral</p>
+        </div>
+
+        <div class="tip-box">
+            <h4>🧠 ¿Qué es la Neuroplasticidad?</h4>
+            <p>La neuroplasticidad es la capacidad del cerebro para cambiar y adaptarse a lo largo de la vida. Llevar un diario de tus experiencias de neuroplasticidad te ayuda a ser más consciente de los cambios en tu cerebro y a acelerar el proceso de transformación.</p>
+        </div>
+
+        <div class="diary-section">
+            <h3>✍️ Nueva Entrada del Diario</h3>
+            <form id="diary-form">
+                <div class="form-group">
+                    <label for="entry-date">Fecha</label>
+                    <input type="date" id="entry-date" value="" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-category">Categoría de Neuroplasticidad</label>
+                    <select id="entry-category" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="learning">Aprendizaje - Nuevas habilidades o conocimientos</option>
+                        <option value="memory">Memoria - Mejoras en la memoria o recuerdo</option>
+                        <option value="attention">Atención - Cambios en la concentración o enfoque</option>
+                        <option value="emotion">Emoción - Cambios en el estado emocional</option>
+                        <option value="perception">Percepción - Cambios en cómo percibes el mundo</option>
+                        <option value="behavior">Comportamiento - Nuevos hábitos o patrones</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-activity">¿Qué actividad realizaste?</label>
+                    <textarea id="entry-activity" placeholder="Describe la actividad que realizaste (ejercicio mental, meditación, aprendizaje, etc.)..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-changes">¿Qué cambios notaste en tu cerebro?</label>
+                    <textarea id="entry-changes" placeholder="Describe los cambios que notaste en tu funcionamiento cerebral..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-feelings">¿Cómo te sentiste durante la actividad?</label>
+                    <textarea id="entry-feelings" placeholder="Describe tus emociones y sensaciones..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-insights">¿Qué insights tuviste sobre tu cerebro?</label>
+                    <textarea id="entry-insights" placeholder="¿Qué aprendiste sobre cómo funciona tu cerebro?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-challenges">¿Qué desafíos enfrentaste?</label>
+                    <textarea id="entry-challenges" placeholder="Describe los desafíos que enfrentaste..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-breakthroughs">¿Hubo algún momento de claridad o avance?</label>
+                    <textarea id="entry-breakthroughs" placeholder="Describe cualquier momento de claridad o avance..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-gratitude">¿Por qué puedes estar agradecido por esta experiencia?</label>
+                    <textarea id="entry-gratitude" placeholder="¿Qué aspectos positivos puedes encontrar?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entry-tomorrow">¿Cómo quieres continuar desarrollando tu cerebro mañana?</label>
+                    <textarea id="entry-tomorrow" placeholder="¿Qué planes tienes para continuar tu desarrollo cerebral?"></textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn">💾 Guardar Entrada</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Limpiar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-section">
+            <h3>🔍 Buscar Entradas</h3>
+            <div class="form-group">
+                <label for="search-term">Buscar por palabra clave</label>
+                <input type="text" id="search-term" placeholder="Escribe una palabra clave...">
+            </div>
+            
+            <div class="filter-section">
+                <h4>Filtrar por categoría</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-learning" value="learning">
+                        <label for="filter-learning">Aprendizaje</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-memory" value="memory">
+                        <label for="filter-memory">Memoria</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-attention" value="attention">
+                        <label for="filter-attention">Atención</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-emotion" value="emotion">
+                        <label for="filter-emotion">Emoción</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-perception" value="perception">
+                        <label for="filter-perception">Percepción</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-behavior" value="behavior">
+                        <label for="filter-behavior">Comportamiento</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="searchEntries()">🔍 Buscar</button>
+                <button class="btn btn-secondary" onclick="clearSearch()">🗑️ Limpiar</button>
+            </div>
+            
+            <div class="search-results" id="search-results" style="display: none;">
+                <h4>Resultados de la Búsqueda</h4>
+                <div id="search-results-content"></div>
+            </div>
+        </div>
+
+        <div class="diary-section">
+            <h3>📚 Entradas Recientes</h3>
+            <div id="recent-entries">
+                <p>No hay entradas aún. ¡Comienza registrando tu primera experiencia de neuroplasticidad!</p>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Total de Entradas</h4>
+                <div class="number" id="total-entries">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Categoría Más Común</h4>
+                <div class="number" id="most-common-category">-</div>
+            </div>
+            <div class="stat-card">
+                <h4>Días de Práctica</h4>
+                <div class="number" id="practice-days">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Actual</h4>
+                <div class="number" id="current-streak">0 días</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()">📊 Ver Estadísticas</button>
+            <button class="btn btn-success" onclick="exportDiary()">📤 Exportar Diario</button>
+            <button class="btn btn-danger" onclick="resetDiary()">🔄 Reiniciar Diario</button>
+        </div>
+    </div>
+
+    <script>
+        let diaryEntries = JSON.parse(localStorage.getItem('neuroplasticityDiary') || '[]');
+
+        // Establecer fecha actual por defecto
+        document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
+
+        // Manejar envío del formulario
+        document.getElementById('diary-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveEntry();
+        });
+
+        function saveEntry() {
+            const entry = {
+                id: Date.now(),
+                date: document.getElementById('entry-date').value,
+                category: document.getElementById('entry-category').value,
+                activity: document.getElementById('entry-activity').value,
+                changes: document.getElementById('entry-changes').value,
+                feelings: document.getElementById('entry-feelings').value,
+                insights: document.getElementById('entry-insights').value,
+                challenges: document.getElementById('entry-challenges').value,
+                breakthroughs: document.getElementById('entry-breakthroughs').value,
+                gratitude: document.getElementById('entry-gratitude').value,
+                tomorrow: document.getElementById('entry-tomorrow').value,
+                timestamp: new Date().toISOString()
+            };
+
+            diaryEntries.push(entry);
+            localStorage.setItem('neuroplasticityDiary', JSON.stringify(diaryEntries));
+
+            alert('¡Entrada guardada exitosamente!');
+            clearForm();
+            loadRecentEntries();
+        }
+
+        function clearForm() {
+            document.getElementById('diary-form').reset();
+            document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
+        }
+
+        function loadRecentEntries() {
+            const recentEntries = diaryEntries
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            if (recentEntries.length === 0) {
+                document.getElementById('recent-entries').innerHTML = 
+                    '<p>No hay entradas aún. ¡Comienza registrando tu primera experiencia de neuroplasticidad!</p>';
+                return;
+            }
+
+            const entriesHtml = recentEntries.map(entry => `
+                <div class="entry-card">
+                    <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                    <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="content">
+                        <p><strong>Actividad:</strong> ${entry.activity || 'No especificada'}</p>
+                        <p><strong>Cambios:</strong> ${entry.changes || 'No especificados'}</p>
+                        <p><strong>Insights:</strong> ${entry.insights || 'No especificados'}</p>
+                    </div>
+                    <div class="category category-${entry.category}">${getCategoryText(entry.category)}</div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="viewEntry(${entry.id})">👁️ Ver</button>
+                        <button class="btn btn-danger" onclick="deleteEntry(${entry.id})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('recent-entries').innerHTML = entriesHtml;
+        }
+
+        function getCategoryText(category) {
+            const categories = {
+                'learning': 'Aprendizaje',
+                'memory': 'Memoria',
+                'attention': 'Atención',
+                'emotion': 'Emoción',
+                'perception': 'Percepción',
+                'behavior': 'Comportamiento'
+            };
+            return categories[category] || 'No especificada';
+        }
+
+        function viewEntry(id) {
+            const entry = diaryEntries.find(e => e.id === id);
+            if (!entry) return;
+
+            const entryHtml = `
+                <div class="entry-card">
+                    <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                    <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="content">
+                        <p><strong>Categoría:</strong> ${getCategoryText(entry.category)}</p>
+                        <p><strong>Actividad:</strong> ${entry.activity || 'No especificada'}</p>
+                        <p><strong>Cambios:</strong> ${entry.changes || 'No especificados'}</p>
+                        <p><strong>Sentimientos:</strong> ${entry.feelings || 'No especificados'}</p>
+                        <p><strong>Insights:</strong> ${entry.insights || 'No especificados'}</p>
+                        <p><strong>Desafíos:</strong> ${entry.challenges || 'No especificados'}</p>
+                        <p><strong>Avances:</strong> ${entry.breakthroughs || 'No especificados'}</p>
+                        <p><strong>Gratitud:</strong> ${entry.gratitude || 'No especificada'}</p>
+                        <p><strong>Para mañana:</strong> ${entry.tomorrow || 'No especificado'}</p>
+                    </div>
+                    <div class="category category-${entry.category}">${getCategoryText(entry.category)}</div>
+                </div>
+            `;
+
+            // Crear modal o mostrar en una nueva sección
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            modal.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; max-width: 80%; max-height: 80%; overflow-y: auto;">
+                    ${entryHtml}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="this.parentElement.parentElement.parentElement.remove()">Cerrar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function deleteEntry(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
+                diaryEntries = diaryEntries.filter(e => e.id !== id);
+                localStorage.setItem('neuroplasticityDiary', JSON.stringify(diaryEntries));
+                loadRecentEntries();
+                alert('¡Entrada eliminada exitosamente!');
+            }
+        }
+
+        function searchEntries() {
+            const searchTerm = document.getElementById('search-term').value.toLowerCase();
+            const filters = {
+                learning: document.getElementById('filter-learning').checked,
+                memory: document.getElementById('filter-memory').checked,
+                attention: document.getElementById('filter-attention').checked,
+                emotion: document.getElementById('filter-emotion').checked,
+                perception: document.getElementById('filter-perception').checked,
+                behavior: document.getElementById('filter-behavior').checked
+            };
+
+            let filteredEntries = diaryEntries;
+
+            // Filtrar por término de búsqueda
+            if (searchTerm) {
+                filteredEntries = filteredEntries.filter(entry => 
+                    entry.activity.toLowerCase().includes(searchTerm) ||
+                    entry.changes.toLowerCase().includes(searchTerm) ||
+                    entry.insights.toLowerCase().includes(searchTerm) ||
+                    entry.gratitude.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Filtrar por categoría
+            const categoryFilters = Object.keys(filters).filter(key => filters[key]);
+            if (categoryFilters.length > 0) {
+                filteredEntries = filteredEntries.filter(entry => categoryFilters.includes(entry.category));
+            }
+
+            displaySearchResults(filteredEntries);
+        }
+
+        function displaySearchResults(entries) {
+            const resultsContainer = document.getElementById('search-results');
+            const resultsContent = document.getElementById('search-results-content');
+
+            if (entries.length === 0) {
+                resultsContent.innerHTML = '<p>No se encontraron entradas que coincidan con los criterios de búsqueda.</p>';
+            } else {
+                const entriesHtml = entries.map(entry => `
+                    <div class="entry-card">
+                        <h4>Entrada del ${new Date(entry.date).toLocaleDateString()}</h4>
+                        <div class="date">${new Date(entry.timestamp).toLocaleString()}</div>
+                        <div class="content">
+                            <p><strong>Actividad:</strong> ${entry.activity || 'No especificada'}</p>
+                            <p><strong>Cambios:</strong> ${entry.changes || 'No especificados'}</p>
+                            <p><strong>Insights:</strong> ${entry.insights || 'No especificados'}</p>
+                        </div>
+                        <div class="category category-${entry.category}">${getCategoryText(entry.category)}</div>
+                        <div class="actions">
+                            <button class="btn btn-secondary" onclick="viewEntry(${entry.id})">👁️ Ver</button>
+                            <button class="btn btn-danger" onclick="deleteEntry(${entry.id})">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                resultsContent.innerHTML = entriesHtml;
+            }
+
+            resultsContainer.style.display = 'block';
+        }
+
+        function clearSearch() {
+            document.getElementById('search-term').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('search-results').style.display = 'none';
+        }
+
+        function viewStats() {
+            const totalEntries = diaryEntries.length;
+            const practiceDays = new Set(diaryEntries.map(entry => entry.date)).size;
+            
+            // Calcular categoría más común
+            const categoryCounts = {};
+            diaryEntries.forEach(entry => {
+                categoryCounts[entry.category] = (categoryCounts[entry.category] || 0) + 1;
+            });
+            const mostCommonCategory = Object.keys(categoryCounts).reduce((a, b) => 
+                categoryCounts[a] > categoryCounts[b] ? a : b, 'N/A');
+            
+            // Calcular racha
+            const today = new Date().toISOString().split('T')[0];
+            let currentStreak = 0;
+            const sortedEntries = diaryEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            for (let i = 0; i < sortedEntries.length; i++) {
+                const entryDate = sortedEntries[i].date;
+                if (entryDate <= today) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+
+            document.getElementById('total-entries').textContent = totalEntries;
+            document.getElementById('most-common-category').textContent = getCategoryText(mostCommonCategory);
+            document.getElementById('practice-days').textContent = practiceDays;
+            document.getElementById('current-streak').textContent = `${currentStreak} días`;
+
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function exportDiary() {
+            const data = {
+                entries: diaryEntries,
+                exportDate: new Date().toISOString(),
+                totalEntries: diaryEntries.length
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neuroplasticity-diary-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetDiary() {
+            if (confirm('¿Estás seguro de que quieres eliminar todas las entradas del diario? Esta acción no se puede deshacer.')) {
+                diaryEntries = [];
+                localStorage.removeItem('neuroplasticityDiary');
+                loadRecentEntries();
+                alert('¡Diario reiniciado exitosamente!');
+            }
+        }
+
+        // Cargar entradas al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentEntries();
+        });
+    </script>
+</body>
+</html>

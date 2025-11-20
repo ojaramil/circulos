@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario del Vendedor</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <link rel="stylesheet" href="../juegos-style.css">
+    <style>
+        .journal-section {
+            background: #142b47;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #2a4464;
+            border-radius: 6px;
+            background: #0D1F33;
+            color: #E0E7EF;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .metric-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+            align-items: center;
+        }
+        .metric-input input {
+            padding: 10px;
+            border: 2px solid #2a4464;
+            border-radius: 6px;
+            background: #0D1F33;
+            color: #E0E7EF;
+            font-size: 1.1em;
+        }
+        .save-btn {
+            background: #005BAA;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .save-btn:hover {
+            background: #0077CC;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📔 Diario del Vendedor</h1>
+        <h2>Registra, Reflexiona y Mejora</h2>
+        
+        <div class="quote">
+            "Lo que se mide, se mejora."
+            <br><strong>- Peter Drucker</strong>
+        </div>
+
+        <div class="highlight">
+            <p>Este diario te ayudará a registrar tus actividades diarias, reflexionar sobre tus éxitos y desafíos, y mejorar continuamente. Los vendedores exitosos llevan registro de sus números.</p>
+        </div>
+
+        <div class="journal-section">
+            <h3>📅 Fecha: <span id="today"></span></h3>
+        </div>
+
+        <div class="journal-section">
+            <h3>📊 Métricas del Día</h3>
+            <div class="metric-input">
+                <label>Llamadas realizadas:</label>
+                <input type="number" id="calls" placeholder="0">
+            </div>
+            <div class="metric-input">
+                <label>Citas conseguidas:</label>
+                <input type="number" id="meetings" placeholder="0">
+            </div>
+            <div class="metric-input">
+                <label>Presentaciones hechas:</label>
+                <input type="number" id="presentations" placeholder="0">
+            </div>
+            <div class="metric-input">
+                <label>Ventas cerradas:</label>
+                <input type="number" id="sales" placeholder="0">
+            </div>
+            <div class="metric-input">
+                <label>Ingresos generados ($):</label>
+                <input type="number" id="revenue" placeholder="0">
+            </div>
+            <div class="metric-input">
+                <label>Referencias obtenidas:</label>
+                <input type="number" id="referrals" placeholder="0">
+            </div>
+        </div>
+
+        <div class="journal-section">
+            <h3>🌟 3 Victorias del Día</h3>
+            <p>¿Qué hiciste bien hoy? (Por pequeño que sea, celébralo)</p>
+            <textarea id="wins" placeholder="1. 
+2. 
+3. "></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>📚 Lecciones Aprendidas</h3>
+            <p>¿Qué aprendiste hoy? ¿Qué funcionó? ¿Qué no funcionó?</p>
+            <textarea id="lessons" placeholder="Escribe tus lecciones del día..."></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>💪 Desafíos Enfrentados</h3>
+            <p>¿Qué obstáculos encontraste? ¿Cómo los manejaste?</p>
+            <textarea id="challenges" placeholder="Describe los desafíos y cómo los superaste..."></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>🎯 Mejor Momento del Día</h3>
+            <p>¿Cuál fue tu mejor momento en ventas hoy?</p>
+            <textarea id="bestMoment" placeholder="Describe ese momento..."></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>🔄 Mejoras para Mañana</h3>
+            <p>¿Qué harás diferente mañana? ¿Qué mejorarás?</p>
+            <textarea id="improvements" placeholder="Lista 3 cosas que mejorarás mañana..."></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>📝 Plan para Mañana</h3>
+            <p>¿Cuáles son tus 3 prioridades principales para mañana?</p>
+            <textarea id="tomorrow" placeholder="1. 
+2. 
+3. "></textarea>
+        </div>
+
+        <div class="journal-section">
+            <h3>💭 Reflexión Final</h3>
+            <p>¿Cómo te sientes sobre tu día? ¿Qué quieres recordar?</p>
+            <textarea id="reflection" placeholder="Escribe tus pensamientos finales del día..."></textarea>
+        </div>
+
+        <button class="save-btn" onclick="saveEntry()">💾 Guardar Entrada del Diario</button>
+
+        <div class="exercise">
+            <h3>📈 Por Qué Llevar un Diario de Ventas</h3>
+            <ul>
+                <li><strong>Responsabilidad:</strong> Te mantiene enfocado en tus números</li>
+                <li><strong>Mejora continua:</strong> Identificas patrones y áreas de mejora</li>
+                <li><strong>Motivación:</strong> Ver tu progreso te impulsa</li>
+                <li><strong>Aprendizaje:</strong> Capturas lecciones valiosas</li>
+                <li><strong>Celebración:</strong> Reconoces tus victorias diarias</li>
+            </ul>
+        </div>
+
+        <div class="highlight">
+            <h3>🔑 Consejos para tu Diario</h3>
+            <ol>
+                <li><strong>Hazlo diariamente:</strong> Al final de cada día laboral</li>
+                <li><strong>Sé honesto:</strong> Nadie más lo verá, sé sincero contigo mismo</li>
+                <li><strong>Enfócate en lo positivo:</strong> Siempre encuentra victorias</li>
+                <li><strong>Aprende de los errores:</strong> Pero no te quedes en ellos</li>
+                <li><strong>Planifica el mañana:</strong> Termina con un plan claro</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('today').textContent = today.toLocaleDateString('es-ES', options);
+
+        function saveEntry() {
+            const entry = {
+                date: today.toISOString(),
+                metrics: {
+                    calls: document.getElementById('calls').value,
+                    meetings: document.getElementById('meetings').value,
+                    presentations: document.getElementById('presentations').value,
+                    sales: document.getElementById('sales').value,
+                    revenue: document.getElementById('revenue').value,
+                    referrals: document.getElementById('referrals').value
+                },
+                wins: document.getElementById('wins').value,
+                lessons: document.getElementById('lessons').value,
+                challenges: document.getElementById('challenges').value,
+                bestMoment: document.getElementById('bestMoment').value,
+                improvements: document.getElementById('improvements').value,
+                tomorrow: document.getElementById('tomorrow').value,
+                reflection: document.getElementById('reflection').value
+            };
+
+            // Save to localStorage
+            const entries = JSON.parse(localStorage.getItem('salesJournal') || '[]');
+            entries.push(entry);
+            localStorage.setItem('salesJournal', JSON.stringify(entries));
+
+            alert('✅ Entrada guardada exitosamente!\n\n¡Excelente trabajo registrando tu día! Recuerda: lo que se mide, se mejora.');
+            
+            // Optional: Clear form for next day
+            if (confirm('¿Quieres limpiar el formulario para mañana?')) {
+                document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+            }
+        }
+
+        // Load today's entry if exists
+        window.onload = function() {
+            const entries = JSON.parse(localStorage.getItem('salesJournal') || '[]');
+            const todayEntry = entries.find(e => {
+                const entryDate = new Date(e.date);
+                return entryDate.toDateString() === today.toDateString();
+            });
+
+            if (todayEntry) {
+                if (confirm('Ya tienes una entrada para hoy. ¿Quieres cargarla?')) {
+                    document.getElementById('calls').value = todayEntry.metrics.calls;
+                    document.getElementById('meetings').value = todayEntry.metrics.meetings;
+                    document.getElementById('presentations').value = todayEntry.metrics.presentations;
+                    document.getElementById('sales').value = todayEntry.metrics.sales;
+                    document.getElementById('revenue').value = todayEntry.metrics.revenue;
+                    document.getElementById('referrals').value = todayEntry.metrics.referrals;
+                    document.getElementById('wins').value = todayEntry.wins;
+                    document.getElementById('lessons').value = todayEntry.lessons;
+                    document.getElementById('challenges').value = todayEntry.challenges;
+                    document.getElementById('bestMoment').value = todayEntry.bestMoment;
+                    document.getElementById('improvements').value = todayEntry.improvements;
+                    document.getElementById('tomorrow').value = todayEntry.tomorrow;
+                    document.getElementById('reflection').value = todayEntry.reflection;
+                }
+            }
+        };
+    </script>
+</body>
+</html>

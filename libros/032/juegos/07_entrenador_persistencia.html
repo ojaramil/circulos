@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Persistencia - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ffecd2;
+        }
+
+        .game-section h3 {
+            color: #ffecd2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .persistence-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .persistence-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .persistence-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .persistence-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ffecd2;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .persistence-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .persistence-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ffecd2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #ffecd2;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .goals-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .goals-list h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .goal-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ffecd2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .goal-item h5 {
+            color: #ffecd2;
+            margin-bottom: 10px;
+        }
+
+        .goal-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #ffecd2;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .persistence-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #ffecd2;
+        }
+
+        .persistence-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Entrenador de Persistencia</h1>
+            <p>Mantén tu Constancia y Alcanza tus Metas</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🔥 ¿Qué es el Entrenador de Persistencia?</h3>
+                <p>El Entrenador de Persistencia es una herramienta interactiva que te ayuda a desarrollar y mantener la constancia en tus objetivos. A través de ejercicios, seguimiento de progreso y técnicas de motivación, aprenderás a mantenerte enfocado y persistente en tus metas.</p>
+            </div>
+
+            <div class="persistence-level">
+                <h4>📊 Tu Nivel de Persistencia</h4>
+                <div class="level-display">
+                    <div class="level-number" id="persistenceLevel">50</div>
+                    <div class="level-text" id="persistenceText">Persistencia Media</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="persistenceProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de persistencia actual se basa en tu constancia y dedicación a tus objetivos.</p>
+            </div>
+
+            <div class="persistence-tracker">
+                <h4>📝 Registrar Objetivo de Persistencia</h4>
+                <form id="persistenceForm">
+                    <div class="form-group">
+                        <label for="goalName">Nombre del Objetivo:</label>
+                        <input type="text" id="goalName" placeholder="Ej: Ejercitarse diariamente" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goalDescription">Descripción del Objetivo:</label>
+                        <textarea id="goalDescription" placeholder="Describe tu objetivo en detalle..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="persistenceLevel">Nivel de Persistencia Requerido (1-10):</label>
+                        <select id="persistenceLevel" required>
+                            <option value="">Selecciona nivel</option>
+                            <option value="1">1 - Muy Bajo</option>
+                            <option value="2">2 - Bajo</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="5">5 - Muy Bueno</option>
+                            <option value="6">6 - Excelente</option>
+                            <option value="7">7 - Fantástico</option>
+                            <option value="8">8 - Increíble</option>
+                            <option value="9">9 - Extraordinario</option>
+                            <option value="10">10 - Épico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goalType">Tipo de Objetivo:</label>
+                        <select id="goalType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="health">Salud</option>
+                            <option value="work">Trabajo</option>
+                            <option value="study">Estudio</option>
+                            <option value="personal">Personal</option>
+                            <option value="creative">Creativo</option>
+                            <option value="social">Social</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Objetivo</button>
+                </form>
+            </div>
+
+            <div class="persistence-exercises">
+                <h4>🏋️ Ejercicios de Persistencia</h4>
+                
+                <div class="exercise">
+                    <h5>1. Meditación de Constancia</h5>
+                    <p>Medita sobre tu capacidad de mantener la constancia en tus objetivos.</p>
+                    <button class="btn" onclick="startConsistencyMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Visualización de Éxito</h5>
+                    <p>Visualiza el éxito que alcanzarás manteniendo la persistencia.</p>
+                    <button class="btn" onclick="startSuccessVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Motivación</h5>
+                    <p>Reflexiona sobre las razones por las que quieres alcanzar tu objetivo.</p>
+                    <button class="btn" onclick="startMotivationExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Simulación de Obstáculos</h5>
+                    <p>Simula diferentes obstáculos y practica tu respuesta de persistencia.</p>
+                    <button class="btn" onclick="startObstacleSimulation()">Iniciar Simulación</button>
+                </div>
+            </div>
+
+            <div class="goals-list">
+                <h4>🎯 Mis Objetivos de Persistencia</h4>
+                <div id="goalsList">
+                    <!-- Los objetivos se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="persistence-quote">
+                <h4>💬 Cita de Persistencia del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La persistencia es la clave del éxito. No importa cuántas veces falles, lo importante es que te levantes una vez más."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Objetivos Registrados:</span>
+                    <span class="stat-value" id="totalGoals">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel Promedio:</span>
+                    <span class="stat-value" id="averageLevel">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Días de Entrenamiento:</span>
+                    <span class="stat-value" id="trainingDays">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mejor Nivel:</span>
+                    <span class="stat-value" id="bestLevel">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Objetivo</div>
+                            <div class="achievement-desc">Registra tu primer objetivo de persistencia</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Persistencia Alta</div>
+                            <div class="achievement-desc">Alcanza un nivel de persistencia de 80 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Objetivo Alcanzado</div>
+                            <div class="achievement-desc">Alcanza tu primer objetivo de persistencia</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de la Persistencia</div>
+                            <div class="achievement-desc">Registra 50 objetivos de persistencia</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let goals = JSON.parse(localStorage.getItem('persistenceGoals')) || [];
+        let stats = JSON.parse(localStorage.getItem('persistenceStats')) || {
+            totalGoals: 0,
+            averageLevel: 0,
+            trainingDays: 0,
+            bestLevel: 0
+        };
+
+        let currentPersistenceLevel = parseInt(localStorage.getItem('currentPersistenceLevel')) || 50;
+
+        // Citas de persistencia
+        const quotes = [
+            { text: "La persistencia es la clave del éxito. No importa cuántas veces falles, lo importante es que te levantes una vez más.", author: "Anónimo" },
+            { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier" },
+            { text: "No importa lo lento que vayas, siempre y cuando no te detengas.", author: "Confucio" },
+            { text: "La persistencia es la diferencia entre el éxito y el fracaso.", author: "Anónimo" },
+            { text: "No hay nada imposible para quien se atreve a intentarlo.", author: "Anónimo" },
+            { text: "La constancia es la madre de la buena fortuna.", author: "Miguel de Cervantes" },
+            { text: "El éxito no es la clave de la felicidad. La felicidad es la clave del éxito.", author: "Herman Cain" },
+            { text: "La persistencia es la capacidad de mantener el esfuerzo a pesar de los obstáculos.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updatePersistenceLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderGoals();
+        }
+
+        // Registrar nuevo objetivo
+        document.getElementById('persistenceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const goal = {
+                id: Date.now(),
+                name: document.getElementById('goalName').value,
+                description: document.getElementById('goalDescription').value,
+                persistenceLevel: parseInt(document.getElementById('persistenceLevel').value),
+                type: document.getElementById('goalType').value,
+                createdAt: new Date().toISOString(),
+                isCompleted: false,
+                progress: 0
+            };
+            
+            goals.push(goal);
+            currentPersistenceLevel = Math.min(100, currentPersistenceLevel + goal.persistenceLevel);
+            
+            saveData();
+            updateStats();
+            updatePersistenceLevel();
+            updateAchievements();
+            renderGoals();
+            
+            // Limpiar formulario
+            document.getElementById('persistenceForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Objetivo registrado exitosamente!');
+        });
+
+        // Actualizar nivel de persistencia
+        function updatePersistenceLevel() {
+            document.getElementById('persistenceLevel').textContent = currentPersistenceLevel;
+            document.getElementById('persistenceProgress').style.width = currentPersistenceLevel + '%';
+            
+            let levelText = '';
+            if (currentPersistenceLevel < 20) levelText = 'Persistencia Muy Baja';
+            else if (currentPersistenceLevel < 40) levelText = 'Persistencia Baja';
+            else if (currentPersistenceLevel < 60) levelText = 'Persistencia Media';
+            else if (currentPersistenceLevel < 80) levelText = 'Persistencia Alta';
+            else levelText = 'Persistencia Máxima';
+            
+            document.getElementById('persistenceText').textContent = levelText;
+        }
+
+        // Iniciar meditación de constancia
+        function startConsistencyMeditation() {
+            alert('Ejercicio de Meditación de Constancia:\n\n1. Siéntate cómodamente\n2. Respira profundamente\n3. Visualiza tu constancia\n4. Medita sobre tu capacidad de mantener el esfuerzo\n\n¡Ejercicio completado!');
+            currentPersistenceLevel = Math.min(100, currentPersistenceLevel + 5);
+            updatePersistenceLevel();
+            saveData();
+        }
+
+        // Iniciar visualización de éxito
+        function startSuccessVisualization() {
+            alert('Ejercicio de Visualización de Éxito:\n\n1. Cierra los ojos\n2. Imagina tu objetivo claramente\n3. Visualiza el éxito que alcanzarás\n4. Siente la satisfacción del logro\n\n¡Ejercicio completado!');
+            currentPersistenceLevel = Math.min(100, currentPersistenceLevel + 5);
+            updatePersistenceLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de motivación
+        function startMotivationExercise() {
+            alert('Ejercicio de Motivación:\n\n1. Piensa en tu objetivo\n2. Reflexiona sobre las razones por las que lo quieres\n3. Visualiza los beneficios que obtendrás\n4. Fortalece tu determinación\n\n¡Ejercicio completado!');
+            currentPersistenceLevel = Math.min(100, currentPersistenceLevel + 5);
+            updatePersistenceLevel();
+            saveData();
+        }
+
+        // Iniciar simulación de obstáculos
+        function startObstacleSimulation() {
+            alert('Ejercicio de Simulación de Obstáculos:\n\n1. Imagina diferentes obstáculos que podrías enfrentar\n2. Practica tu respuesta mental\n3. Visualiza cómo los superarías\n4. Desarrolla estrategias de afrontamiento\n\n¡Ejercicio completado!');
+            currentPersistenceLevel = Math.min(100, currentPersistenceLevel + 5);
+            updatePersistenceLevel();
+            saveData();
+        }
+
+        // Renderizar objetivos
+        function renderGoals() {
+            const goalsList = document.getElementById('goalsList');
+            goalsList.innerHTML = '';
+            
+            if (goals.length === 0) {
+                goalsList.innerHTML = '<p>No tienes objetivos registrados aún. ¡Registra tu primer objetivo!</p>';
+                return;
+            }
+            
+            goals.forEach(goal => {
+                const goalItem = document.createElement('div');
+                goalItem.className = 'goal-item';
+                goalItem.innerHTML = `
+                    <h5>${goal.name}</h5>
+                    <p><strong>Descripción:</strong> ${goal.description}</p>
+                    <p><strong>Tipo:</strong> ${getGoalTypeText(goal.type)}</p>
+                    <p><strong>Nivel de Persistencia:</strong> ${goal.persistenceLevel}/10</p>
+                    <p><strong>Progreso:</strong> ${goal.progress}%</p>
+                    <p><strong>Fecha:</strong> ${new Date(goal.createdAt).toLocaleDateString()}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                    </div>
+                    <button class="btn" onclick="updateProgress(${goal.id})">Actualizar Progreso</button>
+                    <button class="btn" onclick="completeGoal(${goal.id})" style="background: #4caf50; margin-left: 10px;">
+                        Completar
+                    </button>
+                `;
+                goalsList.appendChild(goalItem);
+            });
+        }
+
+        // Actualizar progreso
+        function updateProgress(goalId) {
+            const goal = goals.find(g => g.id === goalId);
+            if (goal) {
+                const newProgress = prompt('Ingresa el nuevo progreso (0-100):');
+                if (newProgress !== null && !isNaN(newProgress)) {
+                    goal.progress = Math.max(0, Math.min(100, parseInt(newProgress)));
+                    saveData();
+                    renderGoals();
+                    updateStats();
+                }
+            }
+        }
+
+        // Completar objetivo
+        function completeGoal(goalId) {
+            const goal = goals.find(g => g.id === goalId);
+            if (goal) {
+                goal.isCompleted = true;
+                goal.progress = 100;
+                saveData();
+                updateStats();
+                renderGoals();
+                updateAchievements();
+                alert('¡Objetivo completado! ¡Felicidades!');
+            }
+        }
+
+        // Obtener texto del tipo de objetivo
+        function getGoalTypeText(type) {
+            const types = {
+                'health': 'Salud',
+                'work': 'Trabajo',
+                'study': 'Estudio',
+                'personal': 'Personal',
+                'creative': 'Creativo',
+                'social': 'Social'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalGoals = goals.length;
+            stats.averageLevel = goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + g.persistenceLevel, 0) / goals.length) : 0;
+            stats.trainingDays = Math.floor(goals.length / 2); // Aproximación
+            stats.bestLevel = Math.max(stats.bestLevel, currentPersistenceLevel);
+            
+            document.getElementById('totalGoals').textContent = stats.totalGoals;
+            document.getElementById('averageLevel').textContent = stats.averageLevel;
+            document.getElementById('trainingDays').textContent = stats.trainingDays;
+            document.getElementById('bestLevel').textContent = stats.bestLevel;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Objetivo
+            if (stats.totalGoals >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Persistencia Alta
+            if (currentPersistenceLevel >= 80) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Objetivo Alcanzado
+            if (goals.some(g => g.isCompleted)) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de la Persistencia
+            if (stats.totalGoals >= 50) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('persistenceGoals', JSON.stringify(goals));
+            localStorage.setItem('persistenceStats', JSON.stringify(stats));
+            localStorage.setItem('currentPersistenceLevel', currentPersistenceLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

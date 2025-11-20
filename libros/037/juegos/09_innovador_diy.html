@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovador DIY</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #6f42c1;
+        }
+        .workshop {
+            background: #e9ecef;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .workbench {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            background: #8b4513;
+            border: 3px solid #654321;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .workbench:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .workbench.active {
+            border-color: #28a745;
+            background: #228b22;
+        }
+        .tool {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #dee2e6;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tool:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .tool.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tool.unlocked {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .material {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .material:hover {
+            transform: scale(1.1);
+            border-color: #ff8c00;
+        }
+        .material.selected {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .invention {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #d4edda;
+            border: 3px solid #28a745;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .invention.show {
+            opacity: 1;
+            transform: scale(1);
+            animation: inventionAppear 0.5s ease;
+        }
+        @keyframes inventionAppear {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .invention-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .invention-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .invention-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .invention-card:hover {
+            border-color: #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .invention-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .invention-card.unlocked {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .invention-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .invention-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .invention-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .invention-requirements {
+            font-size: 0.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .tech-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .tech-card.unlocked {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #2196f3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5a2d91;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.info {
+            background: #17a2b8;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6f42c1, #28a745);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Innovador DIY</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Convierte materiales simples en inventos innovadores usando herramientas básicas y creatividad. Desarrolla soluciones prácticas para problemas cotidianos y crea tecnologías que mejoren la vida de las personas.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="inventionsCreated">0</div>
+                <div class="stat-label">Inventos Creados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="innovationScore">0</div>
+                <div class="stat-label">Puntuación de Innovación</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="toolsUnlocked">0</div>
+                <div class="stat-label">Herramientas Desbloqueadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="materialsUsed">0</div>
+                <div class="stat-label">Materiales Usados</div>
+            </div>
+        </div>
+
+        <div class="invention-panel">
+            <h3>💡 Inventos Disponibles</h3>
+            <div class="invention-grid">
+                <div class="invention-card unlocked" onclick="selectInvention('solar_charger')">
+                    <div class="invention-icon">☀️</div>
+                    <div class="invention-title">Cargador Solar</div>
+                    <div class="invention-description">Carga dispositivos con energía solar</div>
+                    <div class="invention-requirements">Materiales: Panel solar, cables, batería</div>
+                </div>
+                <div class="invention-card unlocked" onclick="selectInvention('water_filter')">
+                    <div class="invention-icon">💧</div>
+                    <div class="invention-title">Filtro de Agua</div>
+                    <div class="invention-description">Purifica agua usando materiales naturales</div>
+                    <div class="invention-requirements">Materiales: Arena, carbón, grava</div>
+                </div>
+                <div class="invention-card unlocked" onclick="selectInvention('compost_bin')">
+                    <div class="invention-icon">🌱</div>
+                    <div class="invention-title">Compostera</div>
+                    <div class="invention-description">Convierte desechos en fertilizante</div>
+                    <div class="invention-requirements">Materiales: Contenedor, ventilación</div>
+                </div>
+                <div class="invention-card unlocked" onclick="selectInvention('wind_turbine')">
+                    <div class="invention-icon">💨</div>
+                    <div class="invention-title">Turbina Eólica</div>
+                    <div class="invention-description">Genera electricidad con viento</div>
+                    <div class="invention-requirements">Materiales: Motor, aspas, estructura</div>
+                </div>
+                <div class="invention-card" onclick="selectInvention('aquaponics')">
+                    <div class="invention-icon">🐟</div>
+                    <div class="invention-title">Sistema Acuapónico</div>
+                    <div class="invention-description">Cultiva plantas y peces juntos</div>
+                    <div class="invention-requirements">Materiales: Tanque, bomba, plantas</div>
+                </div>
+                <div class="invention-card" onclick="selectInvention('biogas_digester')">
+                    <div class="invention-icon">🔥</div>
+                    <div class="invention-title">Digestor de Biogás</div>
+                    <div class="invention-description">Convierte desechos en combustible</div>
+                    <div class="invention-requirements">Materiales: Contenedor hermético, válvulas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="workshop" id="workshop">
+            <h3>🔨 Taller de Innovación</h3>
+            <div id="workbench" class="workbench" style="left: 50%; top: 50%; transform: translate(-50%, -50%);">
+                🔨
+            </div>
+            <div id="tools">
+                <!-- Las herramientas se generarán dinámicamente -->
+            </div>
+            <div id="materials">
+                <!-- Los materiales se generarán dinámicamente -->
+            </div>
+            <div id="inventions">
+                <!-- Los inventos se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías de Fabricación</h3>
+            <div class="tech-grid">
+                <div class="tech-card unlocked" onclick="selectTech('3d_printing')">
+                    <div class="tech-icon">🖨️</div>
+                    <div class="tech-title">Impresión 3D</div>
+                    <div class="tech-description">Crea piezas personalizadas</div>
+                    <div class="tech-cost">Costo: 200</div>
+                </div>
+                <div class="tech-card unlocked" onclick="selectTech('laser_cutting')">
+                    <div class="tech-icon">⚡</div>
+                    <div class="tech-title">Corte Láser</div>
+                    <div class="tech-description">Corte preciso de materiales</div>
+                    <div class="tech-cost">Costo: 300</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('cnc_milling')">
+                    <div class="tech-icon">⚙️</div>
+                    <div class="tech-title">Fresado CNC</div>
+                    <div class="tech-description">Mecanizado automatizado</div>
+                    <div class="tech-cost">Costo: 500</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('electronics')">
+                    <div class="tech-icon">🔌</div>
+                    <div class="tech-title">Electrónica</div>
+                    <div class="tech-description">Circuitos y sensores</div>
+                    <div class="tech-cost">Costo: 400</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('robotics')">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">Robótica</div>
+                    <div class="tech-description">Automatización inteligente</div>
+                    <div class="tech-cost">Costo: 600</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('ai_design')">
+                    <div class="tech-icon">🧠</div>
+                    <div class="tech-title">Diseño IA</div>
+                    <div class="tech-description">Optimización automática</div>
+                    <div class="tech-cost">Costo: 800</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Innovación</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="createInvention()">Crear Invento</button>
+                <button class="button" onclick="improveInvention()">Mejorar Invento</button>
+                <button class="button" onclick="researchTech()">Investigar</button>
+                <button class="button" onclick="optimizeWorkshop()">Optimizar Taller</button>
+                <button class="button" onclick="scaleProduction()">Escalar Producción</button>
+                <button class="button" onclick="shareInvention()">Compartir Invento</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Crea inventos innovadores para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            inventionsCreated: 0,
+            innovationScore: 0,
+            toolsUnlocked: 0,
+            materialsUsed: 0,
+            selectedInvention: null,
+            selectedTech: null,
+            resources: 1000,
+            inventions: {
+                solar_charger: { unlocked: true, materials: ['panel_solar', 'cables', 'bateria'], difficulty: 2 },
+                water_filter: { unlocked: true, materials: ['arena', 'carbon', 'grava'], difficulty: 1 },
+                compost_bin: { unlocked: true, materials: ['contenedor', 'ventilacion'], difficulty: 1 },
+                wind_turbine: { unlocked: true, materials: ['motor', 'aspas', 'estructura'], difficulty: 3 },
+                aquaponics: { unlocked: false, materials: ['tanque', 'bomba', 'plantas'], difficulty: 4 },
+                biogas_digester: { unlocked: false, materials: ['contenedor_hermetico', 'valvulas'], difficulty: 3 }
+            },
+            technologies: {
+                '3d_printing': { unlocked: true, cost: 200, efficiency: 0.2 },
+                laser_cutting: { unlocked: true, cost: 300, efficiency: 0.25 },
+                cnc_milling: { unlocked: false, cost: 500, efficiency: 0.35 },
+                electronics: { unlocked: false, cost: 400, efficiency: 0.3 },
+                robotics: { unlocked: false, cost: 600, efficiency: 0.4 },
+                ai_design: { unlocked: false, cost: 800, efficiency: 0.5 }
+            },
+            tools: [],
+            materials: [],
+            achievements: []
+        };
+
+        function initializeWorkshop() {
+            const toolsContainer = document.getElementById('tools');
+            const materialsContainer = document.getElementById('materials');
+            
+            toolsContainer.innerHTML = '';
+            materialsContainer.innerHTML = '';
+
+            // Crear herramientas
+            const toolTypes = [
+                { name: 'martillo', icon: '🔨', unlocked: true },
+                { name: 'destornillador', icon: '🔧', unlocked: true },
+                { name: 'taladro', icon: '⚡', unlocked: true },
+                { name: 'sierra', icon: '🪚', unlocked: false },
+                { name: 'soldador', icon: '🔥', unlocked: false },
+                { name: 'multimetro', icon: '📊', unlocked: false }
+            ];
+
+            toolTypes.forEach((tool, index) => {
+                const toolElement = document.createElement('div');
+                toolElement.className = `tool ${tool.unlocked ? 'unlocked' : ''}`;
+                toolElement.style.left = (10 + index * 15) + '%';
+                toolElement.style.top = '10%';
+                toolElement.innerHTML = tool.icon;
+                toolElement.onclick = () => selectTool(tool.name);
+                toolElement.dataset.toolName = tool.name;
+
+                toolsContainer.appendChild(toolElement);
+            });
+
+            // Crear materiales
+            const materialTypes = [
+                { name: 'madera', icon: '🪵', unlocked: true },
+                { name: 'metal', icon: '🔩', unlocked: true },
+                { name: 'plastico', icon: '🧱', unlocked: true },
+                { name: 'vidrio', icon: '🪟', unlocked: false },
+                { name: 'ceramica', icon: '🏺', unlocked: false },
+                { name: 'fibra_carbono', icon: '🕸️', unlocked: false }
+            ];
+
+            materialTypes.forEach((material, index) => {
+                const materialElement = document.createElement('div');
+                materialElement.className = `material ${material.unlocked ? 'unlocked' : ''}`;
+                materialElement.style.left = (10 + index * 15) + '%';
+                materialElement.style.top = '80%';
+                materialElement.innerHTML = material.icon;
+                materialElement.onclick = () => selectMaterial(material.name);
+                materialElement.dataset.materialName = material.name;
+
+                materialsContainer.appendChild(materialElement);
+            });
+        }
+
+        function selectTool(toolName) {
+            // Deseleccionar todas las herramientas
+            document.querySelectorAll('.tool').forEach(tool => {
+                tool.classList.remove('selected');
+            });
+            
+            // Seleccionar la herramienta actual
+            const toolElement = document.querySelector(`[data-tool-name="${toolName}"]`);
+            toolElement.classList.add('selected');
+        }
+
+        function selectMaterial(materialName) {
+            // Deseleccionar todos los materiales
+            document.querySelectorAll('.material').forEach(material => {
+                material.classList.remove('selected');
+            });
+            
+            // Seleccionar el material actual
+            const materialElement = document.querySelector(`[data-material-name="${materialName}"]`);
+            materialElement.classList.add('selected');
+        }
+
+        function selectInvention(invention) {
+            // Deseleccionar todos los inventos
+            document.querySelectorAll('.invention-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar el invento actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedInvention = invention;
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function createInvention() {
+            if (!gameState.selectedInvention) {
+                alert('Selecciona un invento primero.');
+                return;
+            }
+
+            const invention = gameState.inventions[gameState.selectedInvention];
+            if (!invention.unlocked) {
+                alert('Este invento no está desbloqueado.');
+                return;
+            }
+
+            const cost = invention.difficulty * 100;
+            if (gameState.resources < cost) {
+                alert('No tienes suficientes recursos para crear este invento.');
+                return;
+            }
+
+            gameState.resources -= cost;
+            gameState.inventionsCreated++;
+            gameState.innovationScore += invention.difficulty * 50;
+            gameState.materialsUsed += invention.materials.length;
+
+            // Crear invento en el taller
+            const inventionElement = document.createElement('div');
+            inventionElement.className = 'invention show';
+            inventionElement.style.left = (Math.random() * 60 + 20) + '%';
+            inventionElement.style.top = (Math.random() * 40 + 30) + '%';
+            inventionElement.innerHTML = getInventionIcon(gameState.selectedInvention);
+            inventionElement.onclick = () => selectInvention(gameState.selectedInvention);
+
+            document.getElementById('inventions').appendChild(inventionElement);
+
+            showAchievement('💡 Invento Creado', `Has creado un ${gameState.selectedInvention}`);
+            updateDisplay();
+        }
+
+        function improveInvention() {
+            if (gameState.inventionsCreated === 0) {
+                alert('No tienes inventos para mejorar.');
+                return;
+            }
+
+            const improveCost = 150;
+            if (gameState.resources >= improveCost) {
+                gameState.resources -= improveCost;
+                gameState.innovationScore += 25;
+
+                showAchievement('⬆️ Invento Mejorado', 'Has mejorado un invento existente');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para mejorar.');
+            }
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 400;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function optimizeWorkshop() {
+            const optimizeCost = 300;
+            if (gameState.resources >= optimizeCost) {
+                gameState.resources -= optimizeCost;
+                
+                // Optimizar todas las tecnologías
+                Object.keys(gameState.technologies).forEach(tech => {
+                    if (gameState.technologies[tech].unlocked) {
+                        gameState.technologies[tech].efficiency += 0.05;
+                    }
+                });
+
+                gameState.innovationScore += 30;
+                showAchievement('⚡ Taller Optimizado', 'Has optimizado tu taller');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para optimizar.');
+            }
+        }
+
+        function scaleProduction() {
+            const scaleCost = 500;
+            if (gameState.resources >= scaleCost) {
+                gameState.resources -= scaleCost;
+                
+                // Escalar producción
+                gameState.inventionsCreated *= 1.5;
+                gameState.innovationScore += 50;
+
+                showAchievement('📈 Producción Escalada', 'Has escalado tu producción');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para escalar.');
+            }
+        }
+
+        function shareInvention() {
+            if (gameState.inventionsCreated === 0) {
+                alert('No tienes inventos para compartir.');
+                return;
+            }
+
+            const shareCost = 100;
+            if (gameState.resources >= shareCost) {
+                gameState.resources -= shareCost;
+                gameState.innovationScore += 20;
+
+                showAchievement('🌍 Invento Compartido', 'Has compartido tu invento con el mundo');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para compartir.');
+            }
+        }
+
+        function getInventionIcon(invention) {
+            const icons = {
+                solar_charger: '☀️',
+                water_filter: '💧',
+                compost_bin: '🌱',
+                wind_turbine: '💨',
+                aquaponics: '🐟',
+                biogas_digester: '🔥'
+            };
+            return icons[invention] || '💡';
+        }
+
+        function updateDisplay() {
+            document.getElementById('inventionsCreated').textContent = gameState.inventionsCreated;
+            document.getElementById('innovationScore').textContent = gameState.innovationScore;
+            document.getElementById('toolsUnlocked').textContent = Object.keys(gameState.technologies).filter(tech => gameState.technologies[tech].unlocked).length;
+            document.getElementById('materialsUsed').textContent = gameState.materialsUsed;
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeWorkshop();
+        updateDisplay();
+    </script>
+</body>
+</html>

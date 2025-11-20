@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Manifest - EduQuest</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Simple del Manifest</h1>
+    <p>Verificación rápida del manifest.json</p>
+    
+    <button onclick="testManifest()">Test Manifest</button>
+    <button onclick="testIcons()">Test Iconos</button>
+    
+    <div id="result" class="test-result">Haz clic en "Test Manifest" para verificar...</div>
+
+    <script>
+        async function testManifest() {
+            const result = document.getElementById('result');
+            let output = 'TEST DEL MANIFEST:\n\n';
+            
+            try {
+                // Verificar link del manifest
+                const manifestLink = document.querySelector('link[rel="manifest"]');
+                if (!manifestLink) {
+                    output += '❌ No se encontró el link del manifest en el HTML\n';
+                    result.textContent = output;
+                    return;
+                }
+                
+                output += `✅ Link del manifest encontrado: ${manifestLink.href}\n\n`;
+                
+                // Cargar y verificar el manifest
+                const response = await fetch(manifestLink.href);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const manifest = await response.json();
+                output += 'CONTENIDO DEL MANIFEST:\n';
+                output += `📱 Nombre: ${manifest.name}\n`;
+                output += `🏷️ Nombre corto: ${manifest.short_name}\n`;
+                output += `🎨 Color tema: ${manifest.theme_color}\n`;
+                output += `📐 Display: ${manifest.display}\n`;
+                output += `🔗 Start URL: ${manifest.start_url}\n`;
+                output += `🌐 Scope: ${manifest.scope}\n`;
+                output += `🖼️ Iconos: ${manifest.icons ? manifest.icons.length : 0}\n\n`;
+                
+                // Verificar campos requeridos
+                const requiredFields = ['name', 'short_name', 'start_url', 'display'];
+                const missingFields = requiredFields.filter(field => !manifest[field]);
+                
+                if (missingFields.length === 0) {
+                    output += '✅ MANIFEST VÁLIDO - Todos los campos requeridos presentes\n';
+                } else {
+                    output += `⚠️ CAMPOS FALTANTES: ${missingFields.join(', ')}\n`;
+                }
+                
+                // Verificar iconos
+                if (manifest.icons && manifest.icons.length > 0) {
+                    output += '\nICONOS DEFINIDOS:\n';
+                    manifest.icons.forEach((icon, index) => {
+                        output += `${index + 1}. ${icon.src} (${icon.sizes})\n`;
+                    });
+                } else {
+                    output += '\n⚠️ No hay iconos definidos\n';
+                }
+                
+                result.textContent = output;
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}\n`;
+                output += `💡 Verifica que el archivo manifest.json existe y es válido JSON\n`;
+                result.textContent = output;
+            }
+        }
+        
+        async function testIcons() {
+            const result = document.getElementById('result');
+            let output = 'TEST DE ICONOS:\n\n';
+            
+            try {
+                const response = await fetch('manifest.json');
+                const manifest = await response.json();
+                
+                if (!manifest.icons || manifest.icons.length === 0) {
+                    output += '❌ No hay iconos definidos en el manifest\n';
+                    result.textContent = output;
+                    return;
+                }
+                
+                output += `Verificando ${manifest.icons.length} iconos...\n\n`;
+                
+                for (let i = 0; i < manifest.icons.length; i++) {
+                    const icon = manifest.icons[i];
+                    try {
+                        const iconResponse = await fetch(icon.src);
+                        if (iconResponse.ok) {
+                            output += `✅ ${icon.src} (${icon.sizes}) - OK\n`;
+                        } else {
+                            output += `❌ ${icon.src} (${icon.sizes}) - HTTP ${iconResponse.status}\n`;
+                        }
+                    } catch (error) {
+                        output += `❌ ${icon.src} (${icon.sizes}) - Error: ${error.message}\n`;
+                    }
+                }
+                
+                result.textContent = output;
+                
+            } catch (error) {
+                output += `❌ ERROR: ${error.message}\n`;
+                result.textContent = output;
+            }
+        }
+        
+        // Test automático al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(testManifest, 1000);
+        });
+    </script>
+</body>
+</html>

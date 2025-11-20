@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Autoconocimiento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-card p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .insight {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .insight h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .reflection {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .reflection h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Guía de Autoconocimiento</h1>
+            <p>Explora tu mundo interior y descubre quién eres realmente</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h2>¿Cómo Funciona?</h2>
+                <p>Esta guía te ayudará a explorar diferentes aspectos de tu personalidad, valores, fortalezas y áreas de crecimiento. A través de preguntas reflexivas y ejercicios, podrás conocerte mejor y desarrollar una mayor conciencia de ti mismo.</p>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Progreso de Autoconocimiento</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Preguntas Respondidas</h4>
+                        <div class="stat-number" id="questions-answered">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Áreas Exploradas</h4>
+                        <div class="stat-number" id="areas-explored">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Insights Obtenidos</h4>
+                        <div class="stat-number" id="insights-gained">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="question-container">
+                <div class="question-card">
+                    <h3>🎯 Pregunta 1: Valores Personales</h3>
+                    <p>¿Qué valores son más importantes para ti en la vida? Selecciona los que más te representen:</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectOption(this, 'honestidad')">
+                            <h4>Honestidad</h4>
+                            <p>Ser auténtico y transparente en todas las situaciones</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'crecimiento')">
+                            <h4>Crecimiento</h4>
+                            <p>Desarrollarse continuamente y aprender nuevas cosas</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'familia')">
+                            <h4>Familia</h4>
+                            <p>Priorizar las relaciones familiares y el bienestar de los seres queridos</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'libertad')">
+                            <h4>Libertad</h4>
+                            <p>Tener autonomía y capacidad de elección en la vida</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'servicio')">
+                            <h4>Servicio</h4>
+                            <p>Ayudar a otros y contribuir al bienestar de la comunidad</p>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'creatividad')">
+                            <h4>Creatividad</h4>
+                            <p>Expresarse de manera única y crear cosas nuevas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="analyze-btn" onclick="analyzeResponse()" disabled>Analizar Respuesta</button>
+                <button class="btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+            </div>
+
+            <div id="insight-container" style="display: none;">
+                <div class="insight">
+                    <h4>💡 Insight Personal</h4>
+                    <div id="insight-content"></div>
+                </div>
+
+                <div class="reflection">
+                    <h4>🤔 Pregunta de Reflexión</h4>
+                    <div id="reflection-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let selectedValues = [];
+        let questionsAnswered = 0;
+        let areasExplored = 0;
+        let insightsGained = 0;
+
+        const questions = [
+            {
+                title: "Valores Personales",
+                description: "¿Qué valores son más importantes para ti en la vida? Selecciona los que más te representen:",
+                options: [
+                    { id: 'honestidad', title: 'Honestidad', description: 'Ser auténtico y transparente en todas las situaciones' },
+                    { id: 'crecimiento', title: 'Crecimiento', description: 'Desarrollarse continuamente y aprender nuevas cosas' },
+                    { id: 'familia', title: 'Familia', description: 'Priorizar las relaciones familiares y el bienestar de los seres queridos' },
+                    { id: 'libertad', title: 'Libertad', description: 'Tener autonomía y capacidad de elección en la vida' },
+                    { id: 'servicio', title: 'Servicio', description: 'Ayudar a otros y contribuir al bienestar de la comunidad' },
+                    { id: 'creatividad', title: 'Creatividad', description: 'Expresarse de manera única y crear cosas nuevas' }
+                ],
+                insights: {
+                    'honestidad': 'Valoras la autenticidad y la transparencia. Esto sugiere que eres una persona que busca la verdad y la integridad en sus relaciones.',
+                    'crecimiento': 'El crecimiento personal es importante para ti. Esto indica que eres una persona orientada al desarrollo y la mejora continua.',
+                    'familia': 'La familia es fundamental en tu vida. Esto sugiere que valoras las relaciones cercanas y el apoyo mutuo.',
+                    'libertad': 'La libertad es un valor central para ti. Esto indica que valoras la autonomía y la capacidad de tomar tus propias decisiones.',
+                    'servicio': 'El servicio a otros es importante para ti. Esto sugiere que eres una persona orientada a ayudar y contribuir al bienestar de otros.',
+                    'creatividad': 'La creatividad es un valor fundamental para ti. Esto indica que valoras la expresión única y la innovación.'
+                }
+            },
+            {
+                title: "Fortalezas Personales",
+                description: "¿Cuáles son tus mayores fortalezas? Selecciona las que mejor te describan:",
+                options: [
+                    { id: 'liderazgo', title: 'Liderazgo', description: 'Capacidad para guiar e inspirar a otros' },
+                    { id: 'empatia', title: 'Empatía', description: 'Capacidad para entender y conectar con los sentimientos de otros' },
+                    { id: 'persistencia', title: 'Persistencia', description: 'Capacidad para mantener el esfuerzo a pesar de los obstáculos' },
+                    { id: 'creatividad', title: 'Creatividad', description: 'Capacidad para generar ideas nuevas e innovadoras' },
+                    { id: 'analisis', title: 'Análisis', description: 'Capacidad para examinar situaciones de manera lógica y detallada' },
+                    { id: 'comunicacion', title: 'Comunicación', description: 'Capacidad para expresar ideas de manera clara y efectiva' }
+                ],
+                insights: {
+                    'liderazgo': 'Tienes habilidades de liderazgo. Esto sugiere que eres capaz de guiar e inspirar a otros hacia objetivos comunes.',
+                    'empatia': 'La empatía es una de tus fortalezas. Esto indica que eres capaz de entender y conectar profundamente con otros.',
+                    'persistencia': 'La persistencia es una de tus fortalezas. Esto sugiere que eres capaz de mantener el esfuerzo a pesar de los desafíos.',
+                    'creatividad': 'La creatividad es una de tus fortalezas. Esto indica que eres capaz de generar ideas innovadoras y soluciones únicas.',
+                    'analisis': 'El análisis es una de tus fortalezas. Esto sugiere que eres capaz de examinar situaciones de manera lógica y detallada.',
+                    'comunicacion': 'La comunicación es una de tus fortalezas. Esto indica que eres capaz de expresar ideas de manera clara y efectiva.'
+                }
+            },
+            {
+                title: "Áreas de Crecimiento",
+                description: "¿En qué áreas te gustaría crecer más? Selecciona las que más te interesen:",
+                options: [
+                    { id: 'autocuidado', title: 'Autocuidado', description: 'Desarrollar hábitos de cuidado personal y bienestar' },
+                    { id: 'comunicacion', title: 'Comunicación', description: 'Mejorar las habilidades de comunicación interpersonal' },
+                    { id: 'gestion_tiempo', title: 'Gestión del Tiempo', description: 'Desarrollar mejores estrategias de organización y productividad' },
+                    { id: 'resiliencia', title: 'Resiliencia', description: 'Fortalecer la capacidad de recuperarse de los desafíos' },
+                    { id: 'creatividad', title: 'Creatividad', description: 'Desarrollar la capacidad de generar ideas innovadoras' },
+                    { id: 'liderazgo', title: 'Liderazgo', description: 'Desarrollar habilidades para guiar e inspirar a otros' }
+                ],
+                insights: {
+                    'autocuidado': 'El autocuidado es importante para ti. Esto sugiere que reconoces la importancia de cuidar tu bienestar físico y mental.',
+                    'comunicacion': 'Mejorar la comunicación es una prioridad para ti. Esto indica que valoras las relaciones interpersonales efectivas.',
+                    'gestion_tiempo': 'La gestión del tiempo es un área de interés para ti. Esto sugiere que buscas optimizar tu productividad y organización.',
+                    'resiliencia': 'Desarrollar la resiliencia es importante para ti. Esto indica que buscas fortalecer tu capacidad de enfrentar desafíos.',
+                    'creatividad': 'Desarrollar la creatividad es una prioridad para ti. Esto sugiere que valoras la innovación y la expresión única.',
+                    'liderazgo': 'Desarrollar el liderazgo es importante para ti. Esto indica que buscas influir positivamente en otros.'
+                }
+            }
+        ];
+
+        function selectOption(element, optionId) {
+            // Toggle selection
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                selectedValues = selectedValues.filter(id => id !== optionId);
+            } else {
+                element.classList.add('selected');
+                selectedValues.push(optionId);
+            }
+            
+            // Enable analyze button if at least one option is selected
+            document.getElementById('analyze-btn').disabled = selectedValues.length === 0;
+        }
+
+        function analyzeResponse() {
+            if (selectedValues.length === 0) return;
+
+            const question = questions[currentQuestion];
+            let insights = [];
+            let reflections = [];
+
+            selectedValues.forEach(valueId => {
+                if (question.insights[valueId]) {
+                    insights.push(question.insights[valueId]);
+                }
+            });
+
+            // Generate reflection questions based on selected values
+            if (currentQuestion === 0) {
+                reflections.push("¿Cómo estos valores influyen en tus decisiones diarias?");
+                reflections.push("¿Hay algún valor que te gustaría desarrollar más?");
+            } else if (currentQuestion === 1) {
+                reflections.push("¿Cómo puedes usar estas fortalezas para alcanzar tus objetivos?");
+                reflections.push("¿Hay alguna fortaleza que te gustaría desarrollar más?");
+            } else if (currentQuestion === 2) {
+                reflections.push("¿Qué pasos concretos puedes tomar para crecer en estas áreas?");
+                reflections.push("¿Cómo puedes integrar el desarrollo de estas áreas en tu rutina diaria?");
+            }
+
+            // Show insights
+            document.getElementById('insight-content').innerHTML = `
+                <p><strong>Insights sobre tu selección:</strong></p>
+                <ul>
+                    ${insights.map(insight => `<li>${insight}</li>`).join('')}
+                </ul>
+            `;
+
+            // Show reflection questions
+            document.getElementById('reflection-content').innerHTML = `
+                <p><strong>Preguntas para reflexionar:</strong></p>
+                <ul>
+                    ${reflections.map(reflection => `<li>${reflection}</li>`).join('')}
+                </ul>
+            `;
+
+            // Show insight container
+            document.getElementById('insight-container').style.display = 'block';
+            
+            // Update stats
+            questionsAnswered++;
+            areasExplored++;
+            insightsGained += insights.length;
+            updateStats();
+        }
+
+        function nextQuestion() {
+            currentQuestion = (currentQuestion + 1) % questions.length;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            
+            document.querySelector('.question-card h3').textContent = `🎯 Pregunta ${currentQuestion + 1}: ${question.title}`;
+            document.querySelector('.question-card p').textContent = question.description;
+            
+            const optionsGrid = document.querySelector('.options-grid');
+            optionsGrid.innerHTML = '';
+            
+            question.options.forEach(option => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.onclick = () => selectOption(optionCard, option.id);
+                optionCard.innerHTML = `
+                    <h4>${option.title}</h4>
+                    <p>${option.description}</p>
+                `;
+                optionsGrid.appendChild(optionCard);
+            });
+            
+            // Reset selection
+            selectedValues = [];
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('insight-container').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('questions-answered').textContent = questionsAnswered;
+            document.getElementById('areas-explored').textContent = areasExplored;
+            document.getElementById('insights-gained').textContent = insightsGained;
+            
+            // Update progress bar
+            const progress = (questionsAnswered / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Initialize first question
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestion();
+        });
+    </script>
+</body>
+</html>
+

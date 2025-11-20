@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conector de Mil Millones Emergentes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #6f42c1;
+        }
+        .connection-network {
+            background: #e9ecef;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .node {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #dee2e6;
+            border: 3px solid #6c757d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .node:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .node.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .node.connected {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        .node.fully_connected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .connection {
+            position: absolute;
+            height: 3px;
+            background: #007bff;
+            border-radius: 2px;
+            opacity: 0.7;
+            transform-origin: left center;
+        }
+        .connection.active {
+            background: #28a745;
+        }
+        .connection.strong {
+            background: #ffc107;
+            height: 5px;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .connection-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .connection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .connection-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .connection-card:hover {
+            border-color: #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .connection-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .connection-card.unlocked {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .connection-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .connection-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .connection-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .connection-impact {
+            font-size: 0.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .tech-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .tech-card.unlocked {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #2196f3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5a2d91;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.info {
+            background: #17a2b8;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6f42c1, #28a745);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Conector de Mil Millones Emergentes</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Conecta a mil millones de personas en mercados emergentes con oportunidades económicas, educación y tecnología. Crea redes de conexión que permitan el acceso a recursos y oportunidades que transformen vidas y comunidades.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="peopleConnected">0</div>
+                <div class="stat-label">Personas Conectadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="networksCreated">0</div>
+                <div class="stat-label">Redes Creadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="opportunitiesShared">0</div>
+                <div class="stat-label">Oportunidades Compartidas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="connectionStrength">0%</div>
+                <div class="stat-label">Fuerza de Conexión</div>
+            </div>
+        </div>
+
+        <div class="connection-panel">
+            <h3>🔗 Tipos de Conexión</h3>
+            <div class="connection-grid">
+                <div class="connection-card unlocked" onclick="selectConnection('education')">
+                    <div class="connection-icon">📚</div>
+                    <div class="connection-title">Educación</div>
+                    <div class="connection-description">Acceso a conocimiento y aprendizaje</div>
+                    <div class="connection-impact">Impacto: Alto | Beneficiarios: 50,000</div>
+                </div>
+                <div class="connection-card unlocked" onclick="selectConnection('employment')">
+                    <div class="connection-icon">💼</div>
+                    <div class="connection-title">Empleo</div>
+                    <div class="connection-description">Oportunidades laborales y emprendimiento</div>
+                    <div class="connection-impact">Impacto: Alto | Beneficiarios: 30,000</div>
+                </div>
+                <div class="connection-card unlocked" onclick="selectConnection('healthcare')">
+                    <div class="connection-icon">🏥</div>
+                    <div class="connection-title">Salud</div>
+                    <div class="connection-description">Acceso a servicios médicos</div>
+                    <div class="connection-impact">Impacto: Alto | Beneficiarios: 40,000</div>
+                </div>
+                <div class="connection-card unlocked" onclick="selectConnection('finance')">
+                    <div class="connection-icon">💰</div>
+                    <div class="connection-title">Finanzas</div>
+                    <div class="connection-description">Servicios financieros inclusivos</div>
+                    <div class="connection-impact">Impacto: Medio | Beneficiarios: 25,000</div>
+                </div>
+                <div class="connection-card" onclick="selectConnection('technology')">
+                    <div class="connection-icon">💻</div>
+                    <div class="connection-title">Tecnología</div>
+                    <div class="connection-description">Acceso a herramientas digitales</div>
+                    <div class="connection-impact">Impacto: Alto | Beneficiarios: 60,000</div>
+                </div>
+                <div class="connection-card" onclick="selectConnection('marketplace')">
+                    <div class="connection-icon">🛒</div>
+                    <div class="connection-title">Mercado</div>
+                    <div class="connection-description">Acceso a mercados globales</div>
+                    <div class="connection-impact">Impacto: Medio | Beneficiarios: 35,000</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="connection-network" id="connectionNetwork">
+            <h3>🌍 Red de Conexiones Globales</h3>
+            <div id="nodes">
+                <!-- Los nodos se generarán dinámicamente -->
+            </div>
+            <div id="connections">
+                <!-- Las conexiones se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías de Conexión</h3>
+            <div class="tech-grid">
+                <div class="tech-card unlocked" onclick="selectTech('mobile_networks')">
+                    <div class="tech-icon">📱</div>
+                    <div class="tech-title">Redes Móviles</div>
+                    <div class="tech-description">Conectividad básica en dispositivos móviles</div>
+                    <div class="tech-cost">Costo: 100</div>
+                </div>
+                <div class="tech-card unlocked" onclick="selectTech('satellite_internet')">
+                    <div class="tech-icon">🛰️</div>
+                    <div class="tech-title">Internet Satelital</div>
+                    <div class="tech-description">Conectividad en áreas remotas</div>
+                    <div class="tech-cost">Costo: 200</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('mesh_networks')">
+                    <div class="tech-icon">🕸️</div>
+                    <div class="tech-title">Redes Mesh</div>
+                    <div class="tech-description">Redes distribuidas y resilientes</div>
+                    <div class="tech-cost">Costo: 300</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('edge_computing')">
+                    <div class="tech-icon">⚡</div>
+                    <div class="tech-title">Computación Edge</div>
+                    <div class="tech-description">Procesamiento local eficiente</div>
+                    <div class="tech-cost">Costo: 250</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('ai_matching')">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">Emparejamiento IA</div>
+                    <div class="tech-description">Algoritmos de conexión inteligente</div>
+                    <div class="tech-cost">Costo: 400</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('blockchain_identity')">
+                    <div class="tech-icon">⛓️</div>
+                    <div class="tech-title">Identidad Blockchain</div>
+                    <div class="tech-description">Identidad digital segura</div>
+                    <div class="tech-cost">Costo: 350</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Conexión</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="createConnection()">Crear Conexión</button>
+                <button class="button" onclick="strengthenConnection()">Fortalecer Conexión</button>
+                <button class="button" onclick="researchTech()">Investigar</button>
+                <button class="button" onclick="optimizeNetwork()">Optimizar Red</button>
+                <button class="button" onclick="expandNetwork()">Expandir Red</button>
+                <button class="button" onclick="measureImpact()">Medir Impacto</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Crea conexiones para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            peopleConnected: 0,
+            networksCreated: 0,
+            opportunitiesShared: 0,
+            connectionStrength: 0,
+            selectedConnection: null,
+            selectedTech: null,
+            resources: 1000,
+            connections: {
+                education: { unlocked: true, impact: 1000, beneficiaries: 50000, cost: 150 },
+                employment: { unlocked: true, impact: 1200, beneficiaries: 30000, cost: 200 },
+                healthcare: { unlocked: true, impact: 1500, beneficiaries: 40000, cost: 180 },
+                finance: { unlocked: true, impact: 800, beneficiaries: 25000, cost: 120 },
+                technology: { unlocked: false, impact: 2000, beneficiaries: 60000, cost: 300 },
+                marketplace: { unlocked: false, impact: 1000, beneficiaries: 35000, cost: 250 }
+            },
+            technologies: {
+                mobile_networks: { unlocked: true, cost: 100, efficiency: 0.2 },
+                satellite_internet: { unlocked: true, cost: 200, efficiency: 0.25 },
+                mesh_networks: { unlocked: false, cost: 300, efficiency: 0.3 },
+                edge_computing: { unlocked: false, cost: 250, efficiency: 0.28 },
+                ai_matching: { unlocked: false, cost: 400, efficiency: 0.35 },
+                blockchain_identity: { unlocked: false, cost: 350, efficiency: 0.32 }
+            },
+            nodes: [],
+            achievements: []
+        };
+
+        function initializeConnectionNetwork() {
+            const nodesContainer = document.getElementById('nodes');
+            const connectionsContainer = document.getElementById('connections');
+            
+            nodesContainer.innerHTML = '';
+            connectionsContainer.innerHTML = '';
+
+            // Crear nodos
+            const nodeTypes = [
+                { name: 'África', x: 20, y: 30, status: 'needs_connection' },
+                { name: 'Asia', x: 60, y: 25, status: 'needs_connection' },
+                { name: 'América', x: 15, y: 60, status: 'needs_connection' },
+                { name: 'Europa', x: 50, y: 15, status: 'needs_connection' },
+                { name: 'Oceanía', x: 75, y: 70, status: 'needs_connection' },
+                { name: 'Oriente Medio', x: 45, y: 20, status: 'needs_connection' }
+            ];
+
+            nodeTypes.forEach((node, index) => {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.style.left = node.x + '%';
+                nodeElement.style.top = node.y + '%';
+                nodeElement.innerHTML = node.name;
+                nodeElement.onclick = () => selectNode(index);
+                nodeElement.dataset.nodeId = index;
+
+                nodesContainer.appendChild(nodeElement);
+
+                gameState.nodes.push({
+                    id: index,
+                    name: node.name,
+                    status: node.status,
+                    connections: [],
+                    strength: 0
+                });
+            });
+        }
+
+        function selectNode(nodeId) {
+            const node = gameState.nodes[nodeId];
+            if (!node) return;
+
+            // Deseleccionar todos los nodos
+            document.querySelectorAll('.node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            
+            // Seleccionar el nodo actual
+            const nodeElement = document.querySelector(`[data-node-id="${nodeId}"]`);
+            nodeElement.classList.add('selected');
+        }
+
+        function selectConnection(connection) {
+            // Deseleccionar todas las conexiones
+            document.querySelectorAll('.connection-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la conexión actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedConnection = connection;
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function createConnection() {
+            if (!gameState.selectedConnection) {
+                alert('Selecciona un tipo de conexión primero.');
+                return;
+            }
+
+            const connection = gameState.connections[gameState.selectedConnection];
+            if (!connection.unlocked) {
+                alert('Este tipo de conexión no está desbloqueado.');
+                return;
+            }
+
+            if (gameState.resources < connection.cost) {
+                alert('No tienes suficientes recursos para crear esta conexión.');
+                return;
+            }
+
+            gameState.resources -= connection.cost;
+            gameState.peopleConnected += connection.beneficiaries;
+            gameState.networksCreated++;
+            gameState.opportunitiesShared += connection.impact;
+            gameState.connectionStrength += 10;
+
+            // Crear conexión en el mapa
+            const connectionElement = document.createElement('div');
+            connectionElement.className = 'connection active';
+            connectionElement.style.left = (Math.random() * 70 + 15) + '%';
+            connectionElement.style.top = (Math.random() * 60 + 20) + '%';
+            connectionElement.style.width = '100px';
+            connectionElement.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            document.getElementById('connections').appendChild(connectionElement);
+
+            showAchievement('🔗 Conexión Creada', `Has creado una conexión de ${gameState.selectedConnection}`);
+            updateDisplay();
+        }
+
+        function strengthenConnection() {
+            if (gameState.networksCreated === 0) {
+                alert('No tienes conexiones para fortalecer.');
+                return;
+            }
+
+            const strengthenCost = 150;
+            if (gameState.resources >= strengthenCost) {
+                gameState.resources -= strengthenCost;
+                gameState.connectionStrength += 15;
+                gameState.peopleConnected *= 1.2;
+
+                showAchievement('💪 Conexión Fortalecida', 'Has fortalecido una conexión existente');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para fortalecer.');
+            }
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 300;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function optimizeNetwork() {
+            const optimizeCost = 200;
+            if (gameState.resources >= optimizeCost) {
+                gameState.resources -= optimizeCost;
+                
+                // Optimizar todas las conexiones
+                Object.keys(gameState.connections).forEach(connection => {
+                    if (gameState.connections[connection].unlocked) {
+                        gameState.connections[connection].impact *= 1.1;
+                    }
+                });
+
+                gameState.connectionStrength += 20;
+                showAchievement('⚡ Red Optimizada', 'Has optimizado la red de conexiones');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para optimizar.');
+            }
+        }
+
+        function expandNetwork() {
+            const expandCost = 400;
+            if (gameState.resources >= expandCost) {
+                gameState.resources -= expandCost;
+                
+                // Expandir red
+                gameState.peopleConnected *= 1.5;
+                gameState.networksCreated *= 1.3;
+                gameState.connectionStrength += 25;
+
+                showAchievement('📈 Red Expandida', 'Has expandido la red de conexiones');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para expandir.');
+            }
+        }
+
+        function measureImpact() {
+            const measureCost = 100;
+            if (gameState.resources >= measureCost) {
+                gameState.resources -= measureCost;
+                
+                // Medir impacto
+                const totalImpact = gameState.peopleConnected + gameState.opportunitiesShared;
+                gameState.connectionStrength += Math.round(totalImpact * 0.01);
+
+                showAchievement('📊 Impacto Medido', `Impacto total: ${totalImpact}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para medir.');
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('peopleConnected').textContent = gameState.peopleConnected;
+            document.getElementById('networksCreated').textContent = gameState.networksCreated;
+            document.getElementById('opportunitiesShared').textContent = gameState.opportunitiesShared;
+            document.getElementById('connectionStrength').textContent = gameState.connectionStrength + '%';
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeConnectionNetwork();
+        updateDisplay();
+    </script>
+</body>
+</html>

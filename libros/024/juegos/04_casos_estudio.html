@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos de Estudio - David y Goliat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .case-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+        .case-selector h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .case-card:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .case-card.selected {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        .case-card h4 {
+            color: #ff6b6b;
+            margin: 0 0 10px 0;
+        }
+        .case-card .difficulty {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .case-card .category {
+            background: #f8f9fa;
+            color: #666;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .case-study {
+            background: #fff3e0;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ff9800;
+            display: none;
+        }
+        .case-study h3 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .case-scenario {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .case-scenario h4 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .case-questions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .case-questions h4 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .question {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 2px solid #e3f2fd;
+        }
+        .question h5 {
+            color: #1976d2;
+            margin: 0 0 10px 0;
+        }
+        .question-options {
+            margin: 10px 0;
+        }
+        .question-option {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .question-option:hover {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .question-option.selected {
+            border-color: #2196f3;
+            background: #bbdefb;
+        }
+        .question-option.correct {
+            border-color: #4caf50;
+            background: #e8f5e8;
+        }
+        .question-option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+        .case-analysis {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        .case-analysis h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .analysis-section {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border-left: 3px solid #4caf50;
+        }
+        .analysis-section h5 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .score-display {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #9c27b0;
+            text-align: center;
+        }
+        .score-display h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #9c27b0;
+            margin: 10px 0;
+        }
+        .score-label {
+            font-size: 1.2em;
+            color: #666;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #ee5a24;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-success {
+            background: #4caf50;
+        }
+        .btn-success:hover {
+            background: #45a049;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover {
+            background: #0056b3;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Casos de Estudio</h1>
+        <p>"Aprende de ejemplos reales de David vs. Goliat"</p>
+    </div>
+
+    <div class="game-container">
+        <h2>¿Cómo Funcionan los Casos de Estudio?</h2>
+        <p>Este juego te presenta casos de estudio reales basados en los principios de David y Goliat. Analiza cada situación, responde las preguntas, y aprende cómo los principios se aplican en el mundo real. Cada caso te ayudará a desarrollar tu comprensión y aplicación de las estrategias de David.</p>
+
+        <div class="case-selector">
+            <h3>🎯 Selecciona un Caso de Estudio</h3>
+            <p>Elige uno de los siguientes casos para analizar:</p>
+            
+            <div class="case-grid">
+                <div class="case-card" data-case="netflix">
+                    <div class="difficulty">Fácil</div>
+                    <h4>🎬 Netflix vs. Blockbuster</h4>
+                    <p>¿Cómo una startup de alquiler de DVDs por correo venció al gigante del alquiler de videos?</p>
+                    <div class="category">Negocios</div>
+                </div>
+                
+                <div class="case-card" data-case="airbnb">
+                    <div class="difficulty">Medio</div>
+                    <h4>🏠 Airbnb vs. Hoteles</h4>
+                    <p>¿Cómo una plataforma de alojamiento en casas particulares revolucionó la industria hotelera?</p>
+                    <div class="category">Tecnología</div>
+                </div>
+                
+                <div class="case-card" data-case="tesla">
+                    <div class="difficulty">Medio</div>
+                    <h4>⚡ Tesla vs. Automotrices</h4>
+                    <p>¿Cómo una empresa de autos eléctricos desafió a las gigantes automotrices tradicionales?</p>
+                    <div class="category">Automotriz</div>
+                </div>
+                
+                <div class="case-card" data-case="spotify">
+                    <div class="difficulty">Fácil</div>
+                    <h4>🎵 Spotify vs. Industria Musical</h4>
+                    <p>¿Cómo un servicio de streaming cambió la forma en que consumimos música?</p>
+                    <div class="category">Entretenimiento</div>
+                </div>
+                
+                <div class="case-card" data-case="uber">
+                    <div class="difficulty">Medio</div>
+                    <h4>🚗 Uber vs. Taxis</h4>
+                    <p>¿Cómo una app de transporte personal revolucionó la industria del taxi?</p>
+                    <div class="category">Transporte</div>
+                </div>
+                
+                <div class="case-card" data-case="amazon">
+                    <div class="difficulty">Difícil</div>
+                    <h4>📦 Amazon vs. Librerías</h4>
+                    <p>¿Cómo una librería online se convirtió en el gigante del comercio electrónico?</p>
+                    <div class="category">Comercio</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="case-study" id="caseStudy">
+            <h3>📖 Análisis del Caso</h3>
+            
+            <div class="case-scenario">
+                <h4>🎭 El Escenario</h4>
+                <div id="caseScenario">
+                    <p>Selecciona un caso de estudio para comenzar...</p>
+                </div>
+            </div>
+            
+            <div class="case-questions">
+                <h4>❓ Preguntas de Análisis</h4>
+                <div id="caseQuestions">
+                    <p>Las preguntas aparecerán aquí...</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn" id="submitAnswers" disabled>📤 Enviar Respuestas</button>
+                <button class="btn btn-secondary" id="resetCase">🔄 Reiniciar Caso</button>
+            </div>
+        </div>
+
+        <div class="case-analysis" id="caseAnalysis">
+            <h3>📊 Análisis de Resultados</h3>
+            
+            <div class="score-display">
+                <h4>🎯 Tu Puntuación</h4>
+                <div class="score-number" id="finalScore">0</div>
+                <div class="score-label" id="scoreLabel">Analizando...</div>
+            </div>
+            
+            <div class="analysis-section">
+                <h5>🔍 Análisis del Caso</h5>
+                <div id="caseAnalysisText">
+                    <p>Analizando tu desempeño...</p>
+                </div>
+            </div>
+            
+            <div class="analysis-section">
+                <h5>💡 Principios de David y Goliat Aplicados</h5>
+                <div id="principlesApplied">
+                    <p>Identificando los principios...</p>
+                </div>
+            </div>
+            
+            <div class="analysis-section">
+                <h5>🚀 Lecciones Aprendidas</h5>
+                <div id="lessonsLearned">
+                    <p>Extrayendo lecciones...</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn btn-success" id="nextCase">📚 Siguiente Caso</button>
+                <button class="btn btn-secondary" id="returnToSelector">🏠 Volver a Selección</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="03_planificador_desventajas.html" class="nav-btn">← Anterior</a>
+        <a href="05_reflexion_personal.html" class="nav-btn">Siguiente →</a>
+    </div>
+
+    <script>
+        let currentCase = null;
+        let userAnswers = {};
+        let currentScore = 0;
+        let totalQuestions = 0;
+
+        // Casos de estudio y sus datos
+        const cases = {
+            netflix: {
+                title: "Netflix vs. Blockbuster",
+                difficulty: "Fácil",
+                category: "Negocios",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 1997, Netflix era una pequeña startup que alquilaba DVDs por correo. Su competidor, Blockbuster, era el gigante del alquiler de videos con más de 9,000 tiendas en todo el mundo y $6 mil millones en ingresos anuales.</p>
+                    
+                    <p><strong>La Situación:</strong> Netflix tenía recursos limitados, sin tiendas físicas, y competía contra un gigante establecido con una red masiva de tiendas, reconocimiento de marca, y relaciones establecidas con los estudios de cine.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Netflix, siendo tan pequeño y sin tiendas físicas, eventualmente llevar a Blockbuster a la bancarrota?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la estrategia principal de Netflix para competir con Blockbuster?",
+                        options: [
+                            "Construir más tiendas físicas que Blockbuster",
+                            "Ofrecer precios más bajos en alquiler de DVDs",
+                            "Crear un modelo de negocio completamente diferente",
+                            "Comprar Blockbuster cuando era barato"
+                        ],
+                        correct: 2,
+                        explanation: "Netflix cambió completamente las reglas del juego al eliminar las tiendas físicas y crear un modelo de suscripción por correo."
+                    },
+                    {
+                        question: "¿Qué ventaja oculta tenía Netflix al no tener tiendas físicas?",
+                        options: [
+                            "No tenía que pagar rentas",
+                            "Podía operar 24/7 sin personal",
+                            "Eliminaba la fricción de devolver videos a tiempo",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Netflix convirtió su aparente desventaja (no tener tiendas) en una ventaja masiva al eliminar costos fijos y crear conveniencia."
+                    },
+                    {
+                        question: "¿Cómo aplicó Netflix el principio de 'cambiar las reglas del juego'?",
+                        options: [
+                            "Eliminó las multas por retraso",
+                            "Creó un sistema de recomendaciones personalizado",
+                            "Implementó un modelo de suscripción ilimitada",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Netflix cambió fundamentalmente cómo funcionaba el alquiler de videos, eliminando las limitaciones tradicionales."
+                    }
+                ]
+            },
+            airbnb: {
+                title: "Airbnb vs. Hoteles",
+                difficulty: "Medio",
+                category: "Tecnología",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 2008, Airbnb era una startup que permitía a las personas alquilar habitaciones o casas a viajeros. La industria hotelera tradicional tenía décadas de experiencia, redes de reservas establecidas, y estándares de calidad reconocidos.</p>
+                    
+                    <p><strong>La Situación:</strong> Airbnb no tenía hoteles, personal de servicio, ni sistemas de reservas sofisticados. Solo tenía una plataforma web que conectaba viajeros con anfitriones particulares.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Airbnb, sin hoteles ni personal de servicio, convertirse en una amenaza para la industria hotelera tradicional?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la ventaja oculta de Airbnb al no tener hoteles?",
+                        options: [
+                            "No tenía que pagar impuestos hoteleros",
+                            "Podía ofrecer experiencias únicas y auténticas",
+                            "No tenía costos de mantenimiento de edificios",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Airbnb convirtió su falta de infraestructura hotelera en una ventaja al ofrecer experiencias únicas y reducir costos fijos."
+                    },
+                    {
+                        question: "¿Cómo aplicó Airbnb el principio de 'aprovechar el contexto'?",
+                        options: [
+                            "Usó la crisis financiera de 2008 para su beneficio",
+                            "Aprovechó el auge de los smartphones",
+                            "Utilizó las redes sociales para crecer",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Airbnb aprovechó múltiples contextos favorables para crecer rápidamente."
+                    },
+                    {
+                        question: "¿Qué estrategia de David usó Airbnb para competir con los hoteles?",
+                        options: [
+                            "Ofrecer precios más bajos",
+                            "Crear un mercado completamente nuevo",
+                            "Comprar hoteles pequeños",
+                            "Copiar el modelo hotelero"
+                        ],
+                        correct: 1,
+                        explanation: "Airbnb creó un nuevo mercado de alojamiento que no competía directamente con los hoteles tradicionales."
+                    }
+                ]
+            },
+            tesla: {
+                title: "Tesla vs. Automotrices",
+                difficulty: "Medio",
+                category: "Automotriz",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 2003, Tesla Motors era una startup que fabricaba autos eléctricos. La industria automotriz tradicional tenía más de 100 años de experiencia, redes de distribución masivas, y economías de escala establecidas.</p>
+                    
+                    <p><strong>La Situación:</strong> Tesla no tenía fábricas, redes de distribución, ni experiencia en fabricación de autos. Solo tenía una visión de autos eléctricos de alta gama y tecnología innovadora.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Tesla, siendo tan pequeño y sin experiencia automotriz, convertirse en la empresa automotriz más valiosa del mundo?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la estrategia principal de Tesla para competir con las automotrices tradicionales?",
+                        options: [
+                            "Fabricar autos más baratos",
+                            "Crear autos eléctricos de lujo de alta tecnología",
+                            "Copiar el modelo de negocio tradicional",
+                            "Comprar fábricas existentes"
+                        ],
+                        correct: 1,
+                        explanation: "Tesla cambió las reglas al crear autos eléctricos de lujo en lugar de competir en el mercado masivo."
+                    },
+                    {
+                        question: "¿Cómo aplicó Tesla el principio de 'desarrollar habilidades especializadas'?",
+                        options: [
+                            "Se enfocó en la tecnología de baterías",
+                            "Desarrolló software avanzado para autos",
+                            "Creó una red de carga exclusiva",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Tesla desarrolló múltiples habilidades especializadas que las automotrices tradicionales no tenían."
+                    },
+                    {
+                        question: "¿Qué ventaja oculta tenía Tesla al no tener fábricas tradicionales?",
+                        options: [
+                            "Podía usar tecnología más moderna",
+                            "No tenía que mantener líneas de producción obsoletas",
+                            "Podía innovar más rápidamente",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Tesla convirtió su falta de infraestructura tradicional en una ventaja al poder innovar sin restricciones."
+                    }
+                ]
+            },
+            spotify: {
+                title: "Spotify vs. Industria Musical",
+                difficulty: "Fácil",
+                category: "Entretenimiento",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 2006, Spotify era una startup sueca que ofrecía música en streaming. La industria musical tradicional tenía décadas de experiencia, redes de distribución establecidas, y relaciones con artistas consolidadas.</p>
+                    
+                    <p><strong>La Situación:</strong> Spotify no tenía catálogo de música, relaciones con artistas, ni experiencia en la industria musical. Solo tenía una plataforma tecnológica para streaming de música.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Spotify, sin música ni experiencia en la industria, revolucionar la forma en que consumimos música?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la estrategia principal de Spotify para entrar en la industria musical?",
+                        options: [
+                            "Comprar sellos discográficos",
+                            "Crear un modelo de negocio basado en suscripciones",
+                            "Copiar el modelo de iTunes",
+                            "Firmar contratos directos con artistas"
+                        ],
+                        correct: 1,
+                        explanation: "Spotify cambió las reglas al crear un modelo de suscripción que era completamente diferente al modelo de compra tradicional."
+                    },
+                    {
+                        question: "¿Cómo aplicó Spotify el principio de 'usar la velocidad'?",
+                        options: [
+                            "Lanzó actualizaciones semanales",
+                            "Se movió más rápido que la industria tradicional",
+                            "Implementó cambios rápidos basados en datos",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Spotify usó su agilidad tecnológica para moverse más rápido que la industria musical tradicional."
+                    },
+                    {
+                        question: "¿Qué ventaja oculta tenía Spotify al no tener catálogo de música?",
+                        options: [
+                            "Podía ser neutral en la industria",
+                            "No tenía que mantener inventario físico",
+                            "Podía adaptarse rápidamente a cambios",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Spotify convirtió su falta de catálogo en una ventaja al poder ser flexible y neutral."
+                    }
+                ]
+            },
+            uber: {
+                title: "Uber vs. Taxis",
+                difficulty: "Medio",
+                category: "Transporte",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 2009, Uber era una startup que conectaba pasajeros con conductores a través de una app. La industria del taxi tenía décadas de experiencia, licencias reguladas, y redes establecidas en las ciudades.</p>
+                    
+                    <p><strong>La Situación:</strong> Uber no tenía taxis, licencias, ni conductores empleados. Solo tenía una aplicación móvil y un modelo de negocio que conectaba conductores independientes con pasajeros.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Uber, sin taxis ni licencias, revolucionar la industria del transporte urbano?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la estrategia principal de Uber para competir con los taxis tradicionales?",
+                        options: [
+                            "Comprar empresas de taxi existentes",
+                            "Crear un modelo de transporte bajo demanda",
+                            "Obtener licencias de taxi tradicionales",
+                            "Copiar el modelo de negocio de los taxis"
+                        ],
+                        correct: 1,
+                        explanation: "Uber cambió las reglas al crear un modelo de transporte bajo demanda que era completamente diferente al modelo tradicional."
+                    },
+                    {
+                        question: "¿Cómo aplicó Uber el principio de 'rechazar convenciones'?",
+                        options: [
+                            "Ignoró las regulaciones existentes",
+                            "Creó un nuevo sistema de calificaciones",
+                            "Eliminó la necesidad de licencias tradicionales",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Uber rechazó las convenciones tradicionales de la industria del taxi para crear algo nuevo."
+                    },
+                    {
+                        question: "¿Qué ventaja oculta tenía Uber al no tener conductores empleados?",
+                        options: [
+                            "No tenía costos de nómina fijos",
+                            "Podía escalar rápidamente",
+                            "No tenía responsabilidad laboral",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Uber convirtió su falta de empleados en una ventaja masiva de escalabilidad y flexibilidad."
+                    }
+                ]
+            },
+            amazon: {
+                title: "Amazon vs. Librerías",
+                difficulty: "Difícil",
+                category: "Comercio",
+                scenario: `
+                    <p><strong>El Desafío:</strong> En 1994, Amazon era una startup que vendía libros online. La industria de las librerías tenía siglos de tradición, redes de distribución establecidas, y relaciones con editores consolidadas.</p>
+                    
+                    <p><strong>La Situación:</strong> Amazon no tenía tiendas físicas, inventario de libros, ni experiencia en venta minorista. Solo tenía un sitio web y una visión de vender libros online.</p>
+                    
+                    <p><strong>La Pregunta:</strong> ¿Cómo pudo Amazon, siendo tan pequeño y sin tiendas físicas, convertirse en el gigante del comercio electrónico?</p>
+                `,
+                questions: [
+                    {
+                        question: "¿Cuál fue la estrategia principal de Amazon para competir con las librerías tradicionales?",
+                        options: [
+                            "Construir más tiendas físicas",
+                            "Crear un modelo de comercio electrónico",
+                            "Comprar librerías existentes",
+                            "Copiar el modelo de negocio tradicional"
+                        ],
+                        correct: 1,
+                        explanation: "Amazon cambió las reglas al crear un modelo de comercio electrónico que era completamente diferente al modelo tradicional."
+                    },
+                    {
+                        question: "¿Cómo aplicó Amazon el principio de 'aprovechar el contexto'?",
+                        options: [
+                            "Aprovechó el auge de internet",
+                            "Usó la crisis de las librerías independientes",
+                            "Aprovechó la falta de competencia online",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Amazon aprovechó múltiples contextos favorables para crecer rápidamente."
+                    },
+                    {
+                        question: "¿Qué ventaja oculta tenía Amazon al no tener tiendas físicas?",
+                        options: [
+                            "No tenía costos de renta",
+                            "Podía operar 24/7",
+                            "No tenía limitaciones geográficas",
+                            "Todas las anteriores"
+                        ],
+                        correct: 3,
+                        explanation: "Amazon convirtió su falta de tiendas físicas en una ventaja masiva de escalabilidad y conveniencia."
+                    }
+                ]
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selección de casos
+            document.querySelectorAll('.case-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.case-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    loadCase(this.dataset.case);
+                });
+            });
+
+            // Botones
+            document.getElementById('submitAnswers').addEventListener('click', submitAnswers);
+            document.getElementById('resetCase').addEventListener('click', resetCase);
+            document.getElementById('nextCase').addEventListener('click', nextCase);
+            document.getElementById('returnToSelector').addEventListener('click', returnToSelector);
+        });
+
+        function loadCase(caseId) {
+            currentCase = caseId;
+            const caseData = cases[caseId];
+            
+            // Mostrar el caso
+            document.getElementById('caseScenario').innerHTML = caseData.scenario;
+            document.getElementById('caseStudy').style.display = 'block';
+            
+            // Generar preguntas
+            generateQuestions(caseData.questions);
+            
+            // Scroll al caso
+            document.getElementById('caseStudy').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateQuestions(questions) {
+            totalQuestions = questions.length;
+            userAnswers = {};
+            
+            let questionsHtml = '';
+            questions.forEach((q, index) => {
+                questionsHtml += `
+                    <div class="question">
+                        <h5>Pregunta ${index + 1}: ${q.question}</h5>
+                        <div class="question-options">
+                `;
+                
+                q.options.forEach((option, optionIndex) => {
+                    questionsHtml += `
+                        <div class="question-option" data-question="${index}" data-option="${optionIndex}">
+                            ${option}
+                        </div>
+                    `;
+                });
+                
+                questionsHtml += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('caseQuestions').innerHTML = questionsHtml;
+            
+            // Event listeners para opciones
+            document.querySelectorAll('.question-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionIndex = parseInt(this.dataset.question);
+                    const optionIndex = parseInt(this.dataset.option);
+                    
+                    // Deseleccionar otras opciones de la misma pregunta
+                    document.querySelectorAll(`[data-question="${questionIndex}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Seleccionar esta opción
+                    this.classList.add('selected');
+                    userAnswers[questionIndex] = optionIndex;
+                    
+                    // Habilitar botón de envío si todas las preguntas están respondidas
+                    if (Object.keys(userAnswers).length === totalQuestions) {
+                        document.getElementById('submitAnswers').disabled = false;
+                    }
+                });
+            });
+        }
+
+        function submitAnswers() {
+            if (Object.keys(userAnswers).length < totalQuestions) {
+                alert('Por favor, responde todas las preguntas antes de continuar.');
+                return;
+            }
+            
+            // Calcular puntuación
+            currentScore = 0;
+            const caseData = cases[currentCase];
+            
+            caseData.questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = question.correct;
+                
+                if (userAnswer === correctAnswer) {
+                    currentScore++;
+                    // Marcar como correcta
+                    document.querySelectorAll(`[data-question="${index}"]`).forEach(opt => {
+                        if (parseInt(opt.dataset.option) === userAnswer) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                } else {
+                    // Marcar como incorrecta
+                    document.querySelectorAll(`[data-question="${index}"]`).forEach(opt => {
+                        if (parseInt(opt.dataset.option) === userAnswer) {
+                            opt.classList.add('incorrect');
+                        }
+                        if (parseInt(opt.dataset.option) === correctAnswer) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+            });
+            
+            // Mostrar análisis
+            showAnalysis();
+        }
+
+        function showAnalysis() {
+            const percentage = Math.round((currentScore / totalQuestions) * 100);
+            
+            // Actualizar puntuación
+            document.getElementById('finalScore').textContent = currentScore + '/' + totalQuestions;
+            
+            let scoreLabel = '';
+            if (percentage >= 90) scoreLabel = '¡Excelente! Eres un experto en David y Goliat';
+            else if (percentage >= 70) scoreLabel = '¡Muy bien! Tienes una buena comprensión';
+            else if (percentage >= 50) scoreLabel = '¡Bien! Tienes una comprensión básica';
+            else scoreLabel = '¡Sigue aprendiendo! Los principios requieren práctica';
+            
+            document.getElementById('scoreLabel').textContent = scoreLabel;
+            
+            // Generar análisis
+            generateAnalysis();
+            
+            // Mostrar análisis
+            document.getElementById('caseAnalysis').style.display = 'block';
+            document.getElementById('caseAnalysis').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateAnalysis() {
+            const caseData = cases[currentCase];
+            
+            // Análisis del caso
+            document.getElementById('caseAnalysisText').innerHTML = `
+                <p><strong>Resumen del Caso:</strong> ${caseData.title} es un excelente ejemplo de cómo una empresa pequeña puede vencer a gigantes establecidos aplicando los principios de David y Goliat.</p>
+                
+                <p><strong>Tu Rendimiento:</strong> Obtuviste ${currentScore} de ${totalQuestions} respuestas correctas, lo que representa un ${Math.round((currentScore / totalQuestions) * 100)}% de acierto.</p>
+                
+                <p><strong>Áreas de Fortaleza:</strong> ${getStrengthAreas()}</p>
+                
+                <p><strong>Áreas de Mejora:</strong> ${getImprovementAreas()}</p>
+            `;
+            
+            // Principios aplicados
+            document.getElementById('principlesApplied').innerHTML = `
+                <ul>
+                    <li><strong>Cambiar las Reglas:</strong> ${caseData.title} no compitió según las reglas establecidas, sino que creó un juego completamente nuevo.</li>
+                    <li><strong>Convertir Debilidades:</strong> Lo que parecía ser una desventaja (no tener infraestructura tradicional) se convirtió en una ventaja.</li>
+                    <li><strong>Usar la Velocidad:</strong> La agilidad y rapidez permitieron superar a competidores más grandes pero más lentos.</li>
+                    <li><strong>Aprovechar el Contexto:</strong> Se aprovecharon cambios tecnológicos y sociales para crecer rápidamente.</li>
+                </ul>
+            `;
+            
+            // Lecciones aprendidas
+            document.getElementById('lessonsLearned').innerHTML = `
+                <ul>
+                    <li><strong>El Tamaño No Es Todo:</strong> Las empresas pequeñas pueden vencer a las grandes si usan estrategias inteligentes.</li>
+                    <li><strong>La Innovación Vence a la Tradición:</strong> Cambiar las reglas del juego puede ser más efectivo que jugar mejor.</li>
+                    <li><strong>Las Desventajas Pueden Ser Ventajas:</strong> Lo que parece ser una limitación puede ser en realidad una oportunidad.</li>
+                    <li><strong>El Contexto Es Clave:</strong> Aprovechar cambios en el entorno puede ser más importante que tener recursos.</li>
+                </ul>
+            `;
+        }
+
+        function getStrengthAreas() {
+            const caseData = cases[currentCase];
+            const strengths = [];
+            
+            caseData.questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    if (question.question.includes('estrategia principal')) strengths.push('Identificar estrategias clave');
+                    if (question.question.includes('principio')) strengths.push('Aplicar principios de David y Goliat');
+                    if (question.question.includes('ventaja oculta')) strengths.push('Reconocer ventajas ocultas');
+                }
+            });
+            
+            return strengths.length > 0 ? strengths.join(', ') : 'Necesitas más práctica para identificar áreas específicas de fortaleza';
+        }
+
+        function getImprovementAreas() {
+            const caseData = cases[currentCase];
+            const improvements = [];
+            
+            caseData.questions.forEach((question, index) => {
+                if (userAnswers[index] !== question.correct) {
+                    if (question.question.includes('estrategia principal')) improvements.push('Identificar estrategias clave');
+                    if (question.question.includes('principio')) improvements.push('Aplicar principios de David y Goliat');
+                    if (question.question.includes('ventaja oculta')) improvements.push('Reconocer ventajas ocultas');
+                }
+            });
+            
+            return improvements.length > 0 ? improvements.join(', ') : '¡Excelente trabajo! No se identificaron áreas específicas de mejora';
+        }
+
+        function resetCase() {
+            if (currentCase) {
+                loadCase(currentCase);
+                document.getElementById('submitAnswers').disabled = true;
+            }
+        }
+
+        function nextCase() {
+            // Implementar lógica para ir al siguiente caso
+            alert('Funcionalidad de siguiente caso en desarrollo. Selecciona un nuevo caso desde el selector.');
+        }
+
+        function returnToSelector() {
+            document.getElementById('caseStudy').style.display = 'none';
+            document.getElementById('caseAnalysis').style.display = 'none';
+            document.querySelectorAll('.case-card').forEach(c => c.classList.remove('selected'));
+            currentCase = null;
+            userAnswers = {};
+            currentScore = 0;
+            document.getElementById('submitAnswers').disabled = true;
+        }
+    </script>
+</body>
+</html>

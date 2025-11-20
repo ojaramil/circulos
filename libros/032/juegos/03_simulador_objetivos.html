@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Objetivos - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #4facfe;
+        }
+
+        .game-section h3 {
+            color: #4facfe;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .objective-creator {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .objective-creator h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .objectives-list {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .objectives-list h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .objective-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #4facfe;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .objective-item h5 {
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .objective-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .priority-high {
+            border-left-color: #f44336;
+        }
+
+        .priority-medium {
+            border-left-color: #ff9800;
+        }
+
+        .priority-low {
+            border-left-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Simulador de Objetivos</h1>
+            <p>Planifica, Ejecuta y Alcanza tus Metas</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 ¿Qué es el Simulador de Objetivos?</h3>
+                <p>El Simulador de Objetivos es una herramienta interactiva que te ayuda a establecer, planificar y alcanzar tus objetivos de manera efectiva. A través de técnicas de planificación y seguimiento, aprenderás a convertir tus sueños en realidad.</p>
+            </div>
+
+            <div class="objective-creator">
+                <h4>📝 Crear Nuevo Objetivo</h4>
+                <form id="objectiveForm">
+                    <div class="form-group">
+                        <label for="objectiveName">Nombre del Objetivo:</label>
+                        <input type="text" id="objectiveName" placeholder="Ej: Aprender un nuevo idioma" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="objectiveDescription">Descripción:</label>
+                        <textarea id="objectiveDescription" placeholder="Describe tu objetivo en detalle..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="objectivePriority">Prioridad:</label>
+                        <select id="objectivePriority" required>
+                            <option value="">Selecciona prioridad</option>
+                            <option value="high">Alta</option>
+                            <option value="medium">Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="objectiveDeadline">Fecha Límite:</label>
+                        <input type="date" id="objectiveDeadline" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="objectiveSteps">Pasos para Alcanzarlo:</label>
+                        <textarea id="objectiveSteps" placeholder="Lista los pasos necesarios para alcanzar tu objetivo..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Crear Objetivo</button>
+                </form>
+            </div>
+
+            <div class="objectives-list">
+                <h4>📋 Mis Objetivos</h4>
+                <div id="objectivesList">
+                    <!-- Los objetivos se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Objetivos Creados:</span>
+                    <span class="stat-value" id="totalObjectives">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Objetivos Completados:</span>
+                    <span class="stat-value" id="completedObjectives">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tasa de Éxito:</span>
+                    <span class="stat-value" id="successRate">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Objetivos Activos:</span>
+                    <span class="stat-value" id="activeObjectives">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🎯</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primer Objetivo</div>
+                            <div class="achievement-desc">Crea tu primer objetivo</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🏆</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Objetivo Completado</div>
+                            <div class="achievement-desc">Completa tu primer objetivo</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Racha de Éxito</div>
+                            <div class="achievement-desc">Completa 5 objetivos consecutivos</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de Objetivos</div>
+                            <div class="achievement-desc">Completa 20 objetivos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let objectives = JSON.parse(localStorage.getItem('objectives')) || [];
+        let stats = JSON.parse(localStorage.getItem('objectiveStats')) || {
+            totalObjectives: 0,
+            completedObjectives: 0,
+            successRate: 0,
+            activeObjectives: 0
+        };
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            renderObjectives();
+            updateAchievements();
+        }
+
+        // Crear nuevo objetivo
+        document.getElementById('objectiveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const objective = {
+                id: Date.now(),
+                name: document.getElementById('objectiveName').value,
+                description: document.getElementById('objectiveDescription').value,
+                priority: document.getElementById('objectivePriority').value,
+                deadline: document.getElementById('objectiveDeadline').value,
+                steps: document.getElementById('objectiveSteps').value,
+                createdAt: new Date().toISOString(),
+                isCompleted: false,
+                progress: 0
+            };
+            
+            objectives.push(objective);
+            saveData();
+            updateStats();
+            renderObjectives();
+            updateAchievements();
+            
+            // Limpiar formulario
+            document.getElementById('objectiveForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Objetivo creado exitosamente!');
+        });
+
+        // Renderizar objetivos
+        function renderObjectives() {
+            const objectivesList = document.getElementById('objectivesList');
+            objectivesList.innerHTML = '';
+            
+            if (objectives.length === 0) {
+                objectivesList.innerHTML = '<p>No tienes objetivos creados aún. ¡Crea tu primer objetivo!</p>';
+                return;
+            }
+            
+            objectives.forEach(objective => {
+                const objectiveItem = document.createElement('div');
+                objectiveItem.className = `objective-item priority-${objective.priority}`;
+                objectiveItem.innerHTML = `
+                    <h5>${objective.name}</h5>
+                    <p><strong>Descripción:</strong> ${objective.description}</p>
+                    <p><strong>Prioridad:</strong> ${getPriorityText(objective.priority)}</p>
+                    <p><strong>Fecha Límite:</strong> ${new Date(objective.deadline).toLocaleDateString()}</p>
+                    <p><strong>Pasos:</strong> ${objective.steps}</p>
+                    <p><strong>Progreso:</strong> ${objective.progress}%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${objective.progress}%"></div>
+                    </div>
+                    <button class="btn" onclick="updateProgress(${objective.id})">Actualizar Progreso</button>
+                    <button class="btn" onclick="completeObjective(${objective.id})" style="background: #4caf50; margin-left: 10px;">
+                        Completar
+                    </button>
+                    <button class="btn" onclick="deleteObjective(${objective.id})" style="background: #f44336; margin-left: 10px;">
+                        Eliminar
+                    </button>
+                `;
+                objectivesList.appendChild(objectiveItem);
+            });
+        }
+
+        // Actualizar progreso
+        function updateProgress(objectiveId) {
+            const objective = objectives.find(o => o.id === objectiveId);
+            if (objective) {
+                const newProgress = prompt('Ingresa el nuevo progreso (0-100):');
+                if (newProgress !== null && !isNaN(newProgress)) {
+                    objective.progress = Math.max(0, Math.min(100, parseInt(newProgress)));
+                    saveData();
+                    renderObjectives();
+                    updateStats();
+                }
+            }
+        }
+
+        // Completar objetivo
+        function completeObjective(objectiveId) {
+            const objective = objectives.find(o => o.id === objectiveId);
+            if (objective) {
+                objective.isCompleted = true;
+                objective.progress = 100;
+                saveData();
+                updateStats();
+                renderObjectives();
+                updateAchievements();
+                alert('¡Objetivo completado! ¡Felicidades!');
+            }
+        }
+
+        // Eliminar objetivo
+        function deleteObjective(objectiveId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este objetivo?')) {
+                objectives = objectives.filter(o => o.id !== objectiveId);
+                saveData();
+                updateStats();
+                renderObjectives();
+            }
+        }
+
+        // Obtener texto de prioridad
+        function getPriorityText(priority) {
+            const priorities = {
+                'high': 'Alta',
+                'medium': 'Media',
+                'low': 'Baja'
+            };
+            return priorities[priority] || priority;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalObjectives = objectives.length;
+            stats.completedObjectives = objectives.filter(o => o.isCompleted).length;
+            stats.successRate = stats.totalObjectives > 0 ? Math.round((stats.completedObjectives / stats.totalObjectives) * 100) : 0;
+            stats.activeObjectives = objectives.filter(o => !o.isCompleted).length;
+            
+            document.getElementById('totalObjectives').textContent = stats.totalObjectives;
+            document.getElementById('completedObjectives').textContent = stats.completedObjectives;
+            document.getElementById('successRate').textContent = stats.successRate + '%';
+            document.getElementById('activeObjectives').textContent = stats.activeObjectives;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primer Objetivo
+            if (stats.totalObjectives >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Objetivo Completado
+            if (stats.completedObjectives >= 1) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Racha de Éxito
+            if (stats.completedObjectives >= 5) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de Objetivos
+            if (stats.completedObjectives >= 20) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('objectives', JSON.stringify(objectives));
+            localStorage.setItem('objectiveStats', JSON.stringify(stats));
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

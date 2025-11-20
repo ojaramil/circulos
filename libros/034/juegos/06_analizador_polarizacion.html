@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Polarización - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .statement-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .polarization-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .indicator {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .indicator:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .indicator.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .indicator.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .indicator.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .polarization-level {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Analizador de Polarización</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es identificar los indicadores de polarización en diferentes declaraciones y situaciones. Aprende a reconocer cuándo el lenguaje y las actitudes contribuyen a la división social.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Correctas: <span id="correct">0</span> | Incorrectas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada declaración y selecciona todos los indicadores de polarización que identifiques. Puede haber múltiples indicadores en una sola declaración.</p>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextStatement()" id="next-btn" style="display: none;">Siguiente Declaración</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentStatement = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedIndicators = [];
+
+        const statements = [
+            {
+                text: "Todos los que piensan diferente a nosotros son enemigos de la patria y deben ser eliminados del debate público.",
+                correctIndicators: [
+                    "Lenguaje de 'nosotros vs ellos'",
+                    "Deshumanización del oponente",
+                    "Eliminación del diálogo",
+                    "Lenguaje extremo"
+                ],
+                incorrectIndicators: [
+                    "Búsqueda de consenso",
+                    "Reconocimiento de matices",
+                    "Lenguaje respetuoso"
+                ],
+                explanation: "Esta declaración muestra múltiples indicadores de polarización: divide en 'nosotros vs ellos', deshumaniza a los oponentes, elimina la posibilidad de diálogo y usa lenguaje extremo."
+            },
+            {
+                text: "Creo que deberíamos considerar diferentes enfoques para resolver este problema, aunque no estemos de acuerdo en todos los detalles.",
+                correctIndicators: [],
+                incorrectIndicators: [
+                    "Lenguaje de 'nosotros vs ellos'",
+                    "Deshumanización del oponente",
+                    "Eliminación del diálogo",
+                    "Lenguaje extremo"
+                ],
+                explanation: "Esta declaración NO muestra indicadores de polarización. Por el contrario, busca consenso, reconoce matices y mantiene un lenguaje respetuoso."
+            },
+            {
+                text: "La oposición está completamente equivocada y no tiene nada valioso que aportar. Solo quieren destruir todo lo que hemos construido.",
+                correctIndicators: [
+                    "Lenguaje de 'nosotros vs ellos'",
+                    "Deshumanización del oponente",
+                    "Eliminación del diálogo"
+                ],
+                incorrectIndicators: [
+                    "Búsqueda de consenso",
+                    "Reconocimiento de matices",
+                    "Lenguaje respetuoso"
+                ],
+                explanation: "Esta declaración muestra varios indicadores de polarización: divide en bandos opuestos, deshumaniza a la oposición y elimina la posibilidad de diálogo constructivo."
+            },
+            {
+                text: "Entiendo que tenemos perspectivas diferentes, pero creo que podemos encontrar puntos en común para trabajar juntos.",
+                correctIndicators: [],
+                incorrectIndicators: [
+                    "Lenguaje de 'nosotros vs ellos'",
+                    "Deshumanización del oponente",
+                    "Eliminación del diálogo",
+                    "Lenguaje extremo"
+                ],
+                explanation: "Esta declaración NO muestra indicadores de polarización. Busca consenso, reconoce las diferencias de manera respetuosa y promueve el diálogo constructivo."
+            },
+            {
+                text: "O estás con nosotros o estás contra nosotros. No hay término medio. Los tibios no sirven para nada.",
+                correctIndicators: [
+                    "Lenguaje de 'nosotros vs ellos'",
+                    "Eliminación del diálogo",
+                    "Lenguaje extremo"
+                ],
+                incorrectIndicators: [
+                    "Búsqueda de consenso",
+                    "Reconocimiento de matices",
+                    "Lenguaje respetuoso"
+                ],
+                explanation: "Esta declaración muestra varios indicadores de polarización: divide en bandos opuestos, elimina la posibilidad de matices y usa lenguaje extremo y despectivo."
+            }
+        ];
+
+        const allIndicators = [
+            "Lenguaje de 'nosotros vs ellos'",
+            "Deshumanización del oponente",
+            "Eliminación del diálogo",
+            "Lenguaje extremo",
+            "Búsqueda de consenso",
+            "Reconocimiento de matices",
+            "Lenguaje respetuoso"
+        ];
+
+        function loadStatement() {
+            const statement = statements[currentStatement];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📝 Declaración a Analizar:</h3>
+                    <div class="statement-box">
+                        <p><strong>"${statement.text}"</strong></p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>🔍 Selecciona todos los indicadores de polarización que identifiques:</h3>
+                    <div class="polarization-indicators">
+                        ${allIndicators.map(indicator => `
+                            <div class="indicator" onclick="selectIndicator('${indicator}')" data-indicator="${indicator}">
+                                ${indicator}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedIndicators = [];
+        }
+
+        function selectIndicator(indicator) {
+            if (selectedIndicators.includes(indicator)) {
+                selectedIndicators = selectedIndicators.filter(i => i !== indicator);
+                event.target.classList.remove('selected');
+            } else {
+                selectedIndicators.push(indicator);
+                event.target.classList.add('selected');
+            }
+        }
+
+        function checkAnswer() {
+            const statement = statements[currentStatement];
+            const correctIndicators = statement.correctIndicators;
+            const incorrectIndicators = statement.incorrectIndicators;
+            
+            const selectedCorrect = selectedIndicators.filter(indicator => correctIndicators.includes(indicator));
+            const selectedIncorrect = selectedIndicators.filter(indicator => incorrectIndicators.includes(indicator));
+            const missedCorrect = correctIndicators.filter(indicator => !selectedIndicators.includes(indicator));
+            
+            const isCorrect = selectedCorrect.length === correctIndicators.length && selectedIncorrect.length === 0;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.indicator').forEach(indicator => {
+                const indicatorText = indicator.dataset.indicator;
+                indicator.classList.remove('selected');
+                if (correctIndicators.includes(indicatorText)) {
+                    indicator.classList.add('correct');
+                } else if (selectedIndicators.includes(indicatorText) && incorrectIndicators.includes(indicatorText)) {
+                    indicator.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Análisis correcto!' : '❌ Revisa tu análisis'}</h3>
+                <p><strong>Indicadores seleccionados:</strong> ${selectedIndicators.length > 0 ? selectedIndicators.join(', ') : 'Ninguno'}</p>
+                <p><strong>Indicadores correctos:</strong> ${correctIndicators.join(', ')}</p>
+                ${selectedIncorrect.length > 0 ? `<p><strong>Indicadores incorrectos seleccionados:</strong> ${selectedIncorrect.join(', ')}</p>` : ''}
+                ${missedCorrect.length > 0 ? `<p><strong>Indicadores correctos que no seleccionaste:</strong> ${missedCorrect.join(', ')}</p>` : ''}
+                <p><strong>Explicación:</strong> ${statement.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextStatement() {
+            currentStatement++;
+            if (currentStatement < statements.length) {
+                loadStatement();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el analizador de polarización.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentStatement = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadStatement();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadStatement();
+    </script>
+</body>
+</html>

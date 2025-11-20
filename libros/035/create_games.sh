@@ -1,0 +1,159 @@
+#!/bin/bash
+
+# Juego 02: Planificador de Objetivos
+cat > juegos/02_planificador_objetivos.html << 'EOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Objetivos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #218838;
+        }
+        .goal-list {
+            margin-top: 30px;
+        }
+        .goal-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Planificador de Objetivos</h1>
+        
+        <div class="input-group">
+            <label>Objetivo Principal:</label>
+            <input type="text" id="goalTitle" placeholder="Ej: Escribir un libro">
+        </div>
+
+        <div class="input-group">
+            <label>¿Por qué quieres lograr esto?</label>
+            <textarea id="goalWhy" rows="3" placeholder="Tu motivación..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Fecha Límite:</label>
+            <input type="date" id="goalDeadline">
+        </div>
+
+        <div class="input-group">
+            <label>Primer Paso Concreto:</label>
+            <input type="text" id="goalFirstStep" placeholder="Acción específica que puedes hacer hoy">
+        </div>
+
+        <button class="button" onclick="addGoal()">Agregar Objetivo</button>
+
+        <div class="goal-list" id="goalList"></div>
+    </div>
+
+    <script>
+        let goals = JSON.parse(localStorage.getItem('goals') || '[]');
+        
+        function displayGoals() {
+            const list = document.getElementById('goalList');
+            list.innerHTML = '<h2>Mis Objetivos</h2>';
+            goals.forEach((goal, index) => {
+                list.innerHTML += `
+                    <div class="goal-item">
+                        <h3>${goal.title}</h3>
+                        <p><strong>Por qué:</strong> ${goal.why}</p>
+                        <p><strong>Fecha límite:</strong> ${goal.deadline}</p>
+                        <p><strong>Primer paso:</strong> ${goal.firstStep}</p>
+                        <button onclick="deleteGoal(${index})" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Eliminar</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addGoal() {
+            const title = document.getElementById('goalTitle').value;
+            const why = document.getElementById('goalWhy').value;
+            const deadline = document.getElementById('goalDeadline').value;
+            const firstStep = document.getElementById('goalFirstStep').value;
+
+            if (!title || !why || !deadline || !firstStep) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            goals.push({ title, why, deadline, firstStep });
+            localStorage.setItem('goals', JSON.stringify(goals));
+            
+            document.getElementById('goalTitle').value = '';
+            document.getElementById('goalWhy').value = '';
+            document.getElementById('goalDeadline').value = '';
+            document.getElementById('goalFirstStep').value = '';
+            
+            displayGoals();
+        }
+
+        function deleteGoal(index) {
+            goals.splice(index, 1);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            displayGoals();
+        }
+
+        displayGoals();
+    </script>
+</body>
+</html>
+EOF
+
+echo "Juegos creados exitosamente"

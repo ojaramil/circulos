@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Portafolio - Money Mindset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .builder-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .asset-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .asset-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .asset-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .allocation-slider {
+            margin: 15px 0;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #e9ecef;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+        .percentage-display {
+            background: #007bff;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+        }
+        .result-box {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .pie-chart {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            margin: 20px auto;
+            position: relative;
+            background: conic-gradient(
+                #007bff 0deg 120deg,
+                #28a745 120deg 200deg,
+                #ffc107 200deg 280deg,
+                #dc3545 280deg 360deg
+            );
+        }
+        .portfolio-summary {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .risk-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .risk-low { background: #28a745; }
+        .risk-medium { background: #ffc107; color: #333; }
+        .risk-high { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Constructor de Portafolio</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Construye tu portafolio de inversión ideal ajustando las asignaciones de diferentes clases de activos según tu perfil de riesgo y objetivos financieros.</p>
+        </div>
+
+        <div class="builder-box">
+            <h3>💰 Configuración del Portafolio</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div>
+                    <label for="totalAmount">Cantidad Total a Invertir:</label>
+                    <input type="number" id="totalAmount" value="100000" min="1000" step="1000" style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px;">
+                </div>
+                <div>
+                    <label for="riskProfile">Perfil de Riesgo:</label>
+                    <select id="riskProfile" style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px;">
+                        <option value="conservative">Conservador</option>
+                        <option value="moderate" selected>Moderado</option>
+                        <option value="aggressive">Agresivo</option>
+                        <option value="very-aggressive">Muy Agresivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="timeHorizon">Horizonte Temporal:</label>
+                    <select id="timeHorizon" style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px;">
+                        <option value="short">Corto (1-3 años)</option>
+                        <option value="medium">Mediano (3-7 años)</option>
+                        <option value="long" selected>Largo (7+ años)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="builder-box">
+            <h3>📊 Asignación de Activos</h3>
+            <p>Ajusta los porcentajes para cada clase de activo. El total debe sumar 100%.</p>
+            
+            <div id="assets-container">
+                <!-- Los activos se generarán dinámicamente -->
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <div id="total-percentage" style="font-size: 1.2em; font-weight: bold; color: #007bff;">Total: 100%</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-success" onclick="buildPortfolio()">🏗️ Construir Portafolio</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="result-box">
+                <h3>📈 Resumen de tu Portafolio</h3>
+                <div id="portfolioSummary"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>🥧 Distribución Visual</h3>
+                <div id="pieChart"></div>
+            </div>
+            
+            <div class="portfolio-summary">
+                <h3>📊 Análisis del Portafolio</h3>
+                <div id="portfolioAnalysis"></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>💰 Desglose por Cantidades</h3>
+                <div id="amountBreakdown"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>💡 Principios de Construcción de Portafolio</h2>
+            <ul>
+                <li><strong>Diversificación:</strong> No pongas todos tus huevos en una canasta</li>
+                <li><strong>Balance Riesgo-Rendimiento:</strong> Encuentra tu punto óptimo</li>
+                <li><strong>Rebalanceo:</strong> Ajusta periódicamente para mantener tu estrategia</li>
+                <li><strong>Costos:</strong> Minimiza las comisiones y fees</li>
+                <li><strong>Liquidez:</strong> Mantén algo de efectivo para emergencias</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const assetClasses = [
+            {
+                id: 'stocks-large',
+                name: 'Acciones Grandes',
+                description: 'Empresas grandes y estables (S&P 500)',
+                color: '#007bff',
+                defaultAllocation: 40,
+                riskLevel: 'medium'
+            },
+            {
+                id: 'stocks-small',
+                name: 'Acciones Pequeñas',
+                description: 'Empresas pequeñas con mayor potencial de crecimiento',
+                color: '#fd7e14',
+                defaultAllocation: 15,
+                riskLevel: 'high'
+            },
+            {
+                id: 'bonds',
+                name: 'Bonos',
+                description: 'Bonos gubernamentales y corporativos',
+                color: '#28a745',
+                defaultAllocation: 30,
+                riskLevel: 'low'
+            },
+            {
+                id: 'international',
+                name: 'Internacional',
+                description: 'Acciones de mercados internacionales',
+                color: '#6f42c1',
+                defaultAllocation: 10,
+                riskLevel: 'medium'
+            },
+            {
+                id: 'emerging',
+                name: 'Mercados Emergentes',
+                description: 'Países en desarrollo con alto potencial',
+                color: '#dc3545',
+                defaultAllocation: 5,
+                riskLevel: 'high'
+            }
+        ];
+
+        let currentAllocations = {};
+
+        function initializeAssets() {
+            const container = document.getElementById('assets-container');
+            container.innerHTML = '';
+            
+            assetClasses.forEach(asset => {
+                currentAllocations[asset.id] = asset.defaultAllocation;
+                
+                const assetDiv = document.createElement('div');
+                assetDiv.className = 'asset-card';
+                assetDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <h4 style="margin: 0; color: ${asset.color};">${asset.name}</h4>
+                            <p style="margin: 5px 0; color: #6c757d;">${asset.description}</p>
+                        </div>
+                        <div class="percentage-display" style="background: ${asset.color};">
+                            ${asset.defaultAllocation}%
+                        </div>
+                    </div>
+                    <div class="allocation-slider">
+                        <div class="slider-container">
+                            <span>0%</span>
+                            <input type="range" 
+                                   id="slider-${asset.id}" 
+                                   min="0" 
+                                   max="100" 
+                                   value="${asset.defaultAllocation}" 
+                                   oninput="updateAllocation('${asset.id}', this.value)">
+                            <span>100%</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(assetDiv);
+            });
+            
+            updateTotalPercentage();
+        }
+
+        function updateAllocation(assetId, value) {
+            currentAllocations[assetId] = parseInt(value);
+            
+            // Actualizar display
+            const assetCard = document.querySelector(`#slider-${assetId}`).closest('.asset-card');
+            const percentageDisplay = assetCard.querySelector('.percentage-display');
+            percentageDisplay.textContent = value + '%';
+            
+            // Actualizar color del display
+            const asset = assetClasses.find(a => a.id === assetId);
+            percentageDisplay.style.background = asset.color;
+            
+            updateTotalPercentage();
+        }
+
+        function updateTotalPercentage() {
+            const total = Object.values(currentAllocations).reduce((sum, val) => sum + val, 0);
+            const totalElement = document.getElementById('total-percentage');
+            
+            if (total === 100) {
+                totalElement.textContent = `Total: ${total}% ✓`;
+                totalElement.style.color = '#28a745';
+            } else if (total < 100) {
+                totalElement.textContent = `Total: ${total}% (Faltan ${100 - total}%)`;
+                totalElement.style.color = '#ffc107';
+            } else {
+                totalElement.textContent = `Total: ${total}% (Exceso de ${total - 100}%)`;
+                totalElement.style.color = '#dc3545';
+            }
+        }
+
+        function buildPortfolio() {
+            const total = Object.values(currentAllocations).reduce((sum, val) => sum + val, 0);
+            
+            if (total !== 100) {
+                alert('El total debe sumar exactamente 100%. Actualmente suma ' + total + '%');
+                return;
+            }
+            
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+            const riskProfile = document.getElementById('riskProfile').value;
+            const timeHorizon = document.getElementById('timeHorizon').value;
+            
+            displayPortfolioResults(totalAmount, riskProfile, timeHorizon);
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function displayPortfolioResults(totalAmount, riskProfile, timeHorizon) {
+            // Calcular cantidades por activo
+            const amounts = {};
+            Object.keys(currentAllocations).forEach(assetId => {
+                const asset = assetClasses.find(a => a.id === assetId);
+                amounts[assetId] = {
+                    name: asset.name,
+                    percentage: currentAllocations[assetId],
+                    amount: (totalAmount * currentAllocations[assetId]) / 100,
+                    color: asset.color
+                };
+            });
+            
+            // Mostrar resumen
+            document.getElementById('portfolioSummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>💰 Total Invertido</h4>
+                        <p style="font-size: 1.5em; color: #007bff;">$${totalAmount.toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <h4>🎯 Perfil de Riesgo</h4>
+                        <p style="font-size: 1.5em; color: #28a745;">${getRiskProfileName(riskProfile)}</p>
+                    </div>
+                    <div>
+                        <h4>⏰ Horizonte</h4>
+                        <p style="font-size: 1.5em; color: #6f42c1;">${getTimeHorizonName(timeHorizon)}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Crear gráfico de pie
+            createPieChart(amounts);
+            
+            // Mostrar análisis
+            const analysis = analyzePortfolio(currentAllocations, riskProfile);
+            document.getElementById('portfolioAnalysis').innerHTML = `
+                <div style="margin: 20px 0;">
+                    <h4>📊 Nivel de Riesgo del Portafolio</h4>
+                    <div style="margin: 10px 0;">
+                        <span class="risk-indicator ${analysis.riskClass}">${analysis.riskLevel}</span>
+                    </div>
+                    <p>${analysis.description}</p>
+                    
+                    <h4>📈 Rendimiento Esperado</h4>
+                    <p><strong>Anual:</strong> ${analysis.expectedReturn}%</p>
+                    <p><strong>Volatilidad:</strong> ${analysis.volatility}%</p>
+                    
+                    <h4>💡 Recomendaciones</h4>
+                    <ul>
+                        ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // Mostrar desglose por cantidades
+            document.getElementById('amountBreakdown').innerHTML = `
+                <div style="margin: 20px 0;">
+                    ${Object.values(amounts).map(asset => `
+                        <div style="margin: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>${asset.name}</strong></span>
+                                <span>$${asset.amount.toLocaleString()} (${asset.percentage}%)</span>
+                            </div>
+                            <div style="background: #e9ecef; border-radius: 10px; height: 20px; overflow: hidden;">
+                                <div style="background: ${asset.color}; height: 100%; width: ${asset.percentage}%; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                    ${asset.percentage}%
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function createPieChart(amounts) {
+            const pieChartDiv = document.getElementById('pieChart');
+            
+            // Crear gradiente cónico
+            let gradient = '';
+            let currentAngle = 0;
+            
+            Object.values(amounts).forEach(asset => {
+                const angle = (asset.percentage / 100) * 360;
+                gradient += `${asset.color} ${currentAngle}deg ${currentAngle + angle}deg, `;
+                currentAngle += angle;
+            });
+            
+            pieChartDiv.innerHTML = `
+                <div class="pie-chart" style="background: conic-gradient(${gradient.slice(0, -2)});"></div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 20px;">
+                    ${Object.values(amounts).map(asset => `
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 20px; height: 20px; background: ${asset.color}; border-radius: 3px;"></div>
+                            <span>${asset.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function analyzePortfolio(allocations, riskProfile) {
+            // Calcular riesgo promedio ponderado
+            let totalRisk = 0;
+            let totalReturn = 0;
+            
+            Object.keys(allocations).forEach(assetId => {
+                const asset = assetClasses.find(a => a.id === assetId);
+                const percentage = allocations[assetId] / 100;
+                
+                // Asignar valores de riesgo y rendimiento
+                const riskValues = { low: 1, medium: 2, high: 3 };
+                const returnValues = { low: 4, medium: 7, high: 10 };
+                
+                totalRisk += riskValues[asset.riskLevel] * percentage;
+                totalReturn += returnValues[asset.riskLevel] * percentage;
+            });
+            
+            let riskLevel, riskClass, description;
+            if (totalRisk <= 1.5) {
+                riskLevel = 'Bajo';
+                riskClass = 'risk-low';
+                description = 'Portafolio conservador con bajo riesgo y rendimientos estables';
+            } else if (totalRisk <= 2.5) {
+                riskLevel = 'Medio';
+                riskClass = 'risk-medium';
+                description = 'Portafolio balanceado con riesgo moderado';
+            } else {
+                riskLevel = 'Alto';
+                riskClass = 'risk-high';
+                description = 'Portafolio agresivo con alto potencial de crecimiento';
+            }
+            
+            const recommendations = [
+                'Revisa tu portafolio trimestralmente',
+                'Considera rebalancear cuando las asignaciones se desvíen más del 5%',
+                'Mantén costos de inversión por debajo del 1% anual',
+                'Diversifica geográficamente para reducir riesgo'
+            ];
+            
+            return {
+                riskLevel,
+                riskClass,
+                description,
+                expectedReturn: totalReturn.toFixed(1),
+                volatility: (totalRisk * 5).toFixed(1),
+                recommendations
+            };
+        }
+
+        function getRiskProfileName(profile) {
+            const names = {
+                'conservative': 'Conservador',
+                'moderate': 'Moderado',
+                'aggressive': 'Agresivo',
+                'very-aggressive': 'Muy Agresivo'
+            };
+            return names[profile] || 'Moderado';
+        }
+
+        function getTimeHorizonName(horizon) {
+            const names = {
+                'short': 'Corto Plazo',
+                'medium': 'Mediano Plazo',
+                'long': 'Largo Plazo'
+            };
+            return names[horizon] || 'Largo Plazo';
+        }
+
+        // Inicializar cuando se carga la página
+        initializeAssets();
+    </script>
+</body>
+</html>

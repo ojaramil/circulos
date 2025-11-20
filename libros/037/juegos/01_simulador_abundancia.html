@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Abundancia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .simulation-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .metric-item {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .control-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        .chart-container {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 300px;
+            position: relative;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, #007bff, #0056b3);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            min-width: 20px;
+            margin: 0 2px;
+        }
+        .year-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+        }
+        .score-display {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Simulador de Abundancia</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Simula cómo las tecnologías exponenciales pueden crear abundancia global. Toma decisiones estratégicas para acelerar el progreso hacia un mundo donde todos tengan acceso a agua, alimentos, energía, educación, salud y libertad.</p>
+        </div>
+
+        <div class="score-display">
+            <h3>Puntuación de Abundancia</h3>
+            <div class="score-number" id="abundanceScore">0</div>
+            <p>Meta: 1000 puntos</p>
+        </div>
+
+        <div class="control-panel">
+            <h3>🎮 Controles del Simulador</h3>
+            <button class="button" onclick="startSimulation()">Iniciar Simulación</button>
+            <button class="button" onclick="pauseSimulation()">Pausar</button>
+            <button class="button" onclick="resetSimulation()">Reiniciar</button>
+            <button class="button" onclick="accelerateProgress()">Acelerar Progreso</button>
+        </div>
+
+        <div class="simulation-box">
+            <h3>📊 Métricas de Abundancia</h3>
+            
+            <div class="metric-item">
+                <span>💧 Acceso a Agua Potable</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="waterProgress" style="width: 76%;"></div>
+                    </div>
+                    <span id="waterPercent" style="margin-left: 10px;">76%</span>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <span>🍎 Seguridad Alimentaria</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="foodProgress" style="width: 85%;"></div>
+                    </div>
+                    <span id="foodPercent" style="margin-left: 10px;">85%</span>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <span>⚡ Acceso a Energía</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="energyProgress" style="width: 91%;"></div>
+                    </div>
+                    <span id="energyPercent" style="margin-left: 10px;">91%</span>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <span>🎓 Educación Universal</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="educationProgress" style="width: 86%;"></div>
+                    </div>
+                    <span id="educationPercent" style="margin-left: 10px;">86%</span>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <span>🏥 Atención Sanitaria</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="healthProgress" style="width: 70%;"></div>
+                    </div>
+                    <span id="healthPercent" style="margin-left: 10px;">70%</span>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <span>🕊️ Libertad Personal</span>
+                <div style="display: flex; align-items: center; width: 200px;">
+                    <div class="progress-bar" style="flex: 1;">
+                        <div class="progress-fill" id="freedomProgress" style="width: 60%;"></div>
+                    </div>
+                    <span id="freedomPercent" style="margin-left: 10px;">60%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulation-box">
+            <h3>🚀 Tecnologías Exponenciales</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="metric-item" style="flex-direction: column; text-align: center;">
+                    <span>🤖 IA</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="aiProgress" style="width: 45%;"></div>
+                    </div>
+                    <span id="aiLevel">Nivel 45</span>
+                </div>
+                <div class="metric-item" style="flex-direction: column; text-align: center;">
+                    <span>🧬 Biotecnología</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="bioProgress" style="width: 35%;"></div>
+                    </div>
+                    <span id="bioLevel">Nivel 35</span>
+                </div>
+                <div class="metric-item" style="flex-direction: column; text-align: center;">
+                    <span>🌐 Conectividad</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="connectivityProgress" style="width: 80%;"></div>
+                    </div>
+                    <span id="connectivityLevel">Nivel 80</span>
+                </div>
+                <div class="metric-item" style="flex-direction: column; text-align: center;">
+                    <span>⚡ Energía Limpia</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="cleanEnergyProgress" style="width: 60%;"></div>
+                    </div>
+                    <span id="cleanEnergyLevel">Nivel 60</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>📈 Progreso Histórico</h3>
+            <div id="chartBars" style="display: flex; height: 250px; align-items: end; justify-content: space-around; padding: 20px 0;">
+                <!-- Las barras se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="simulation-box">
+            <h3>🎯 Decisiones Estratégicas</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <button class="button" onclick="investInTechnology('ai')">Invertir en IA</button>
+                <button class="button" onclick="investInTechnology('biotech')">Invertir en Biotecnología</button>
+                <button class="button" onclick="investInTechnology('connectivity')">Mejorar Conectividad</button>
+                <button class="button" onclick="investInTechnology('energy')">Desarrollar Energía Limpia</button>
+                <button class="button" onclick="investInTechnology('education')">Expandir Educación</button>
+                <button class="button" onclick="investInTechnology('health')">Mejorar Salud</button>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🏆 Logros Desbloqueados</h3>
+            <div id="achievements" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <!-- Los logros se mostrarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let simulationRunning = false;
+        let abundanceScore = 0;
+        let year = 2024;
+        let metrics = {
+            water: 76,
+            food: 85,
+            energy: 91,
+            education: 86,
+            health: 70,
+            freedom: 60
+        };
+        let technologies = {
+            ai: 45,
+            biotech: 35,
+            connectivity: 80,
+            cleanEnergy: 60
+        };
+        let achievements = [];
+        let historicalData = [];
+
+        function startSimulation() {
+            simulationRunning = true;
+            updateSimulation();
+        }
+
+        function pauseSimulation() {
+            simulationRunning = false;
+        }
+
+        function resetSimulation() {
+            simulationRunning = false;
+            year = 2024;
+            abundanceScore = 0;
+            metrics = {
+                water: 76,
+                food: 85,
+                energy: 91,
+                education: 86,
+                health: 70,
+                freedom: 60
+            };
+            technologies = {
+                ai: 45,
+                biotech: 35,
+                connectivity: 80,
+                cleanEnergy: 60
+            };
+            achievements = [];
+            historicalData = [];
+            updateDisplay();
+        }
+
+        function accelerateProgress() {
+            if (simulationRunning) {
+                // Acelerar el progreso de todas las métricas
+                Object.keys(metrics).forEach(key => {
+                    metrics[key] = Math.min(100, metrics[key] + Math.random() * 2);
+                });
+                Object.keys(technologies).forEach(key => {
+                    technologies[key] = Math.min(100, technologies[key] + Math.random() * 3);
+                });
+                updateDisplay();
+            }
+        }
+
+        function investInTechnology(tech) {
+            if (technologies[tech] < 100) {
+                technologies[tech] = Math.min(100, technologies[tech] + 5);
+                updateDisplay();
+                checkAchievements();
+            }
+        }
+
+        function updateSimulation() {
+            if (!simulationRunning) return;
+
+            year++;
+            
+            // Simular progreso natural
+            Object.keys(metrics).forEach(key => {
+                metrics[key] = Math.min(100, metrics[key] + Math.random() * 0.5);
+            });
+
+            // Las tecnologías impulsan el progreso
+            if (technologies.ai > 50) {
+                metrics.education = Math.min(100, metrics.education + Math.random() * 0.3);
+                metrics.health = Math.min(100, metrics.health + Math.random() * 0.3);
+            }
+            if (technologies.biotech > 50) {
+                metrics.food = Math.min(100, metrics.food + Math.random() * 0.3);
+                metrics.health = Math.min(100, metrics.health + Math.random() * 0.3);
+            }
+            if (technologies.cleanEnergy > 50) {
+                metrics.energy = Math.min(100, metrics.energy + Math.random() * 0.3);
+            }
+            if (technologies.connectivity > 50) {
+                metrics.freedom = Math.min(100, metrics.freedom + Math.random() * 0.3);
+            }
+
+            // Guardar datos históricos
+            historicalData.push({
+                year: year,
+                water: metrics.water,
+                food: metrics.food,
+                energy: metrics.energy,
+                education: metrics.education,
+                health: metrics.health,
+                freedom: metrics.freedom
+            });
+
+            updateDisplay();
+            checkAchievements();
+
+            if (year < 2050) {
+                setTimeout(updateSimulation, 1000);
+            } else {
+                simulationRunning = false;
+                showFinalResults();
+            }
+        }
+
+        function updateDisplay() {
+            // Actualizar métricas
+            document.getElementById('waterProgress').style.width = metrics.water + '%';
+            document.getElementById('waterPercent').textContent = Math.round(metrics.water) + '%';
+            
+            document.getElementById('foodProgress').style.width = metrics.food + '%';
+            document.getElementById('foodPercent').textContent = Math.round(metrics.food) + '%';
+            
+            document.getElementById('energyProgress').style.width = metrics.energy + '%';
+            document.getElementById('energyPercent').textContent = Math.round(metrics.energy) + '%';
+            
+            document.getElementById('educationProgress').style.width = metrics.education + '%';
+            document.getElementById('educationPercent').textContent = Math.round(metrics.education) + '%';
+            
+            document.getElementById('healthProgress').style.width = metrics.health + '%';
+            document.getElementById('healthPercent').textContent = Math.round(metrics.health) + '%';
+            
+            document.getElementById('freedomProgress').style.width = metrics.freedom + '%';
+            document.getElementById('freedomPercent').textContent = Math.round(metrics.freedom) + '%';
+
+            // Actualizar tecnologías
+            document.getElementById('aiProgress').style.width = technologies.ai + '%';
+            document.getElementById('aiLevel').textContent = 'Nivel ' + Math.round(technologies.ai);
+            
+            document.getElementById('bioProgress').style.width = technologies.biotech + '%';
+            document.getElementById('bioLevel').textContent = 'Nivel ' + Math.round(technologies.biotech);
+            
+            document.getElementById('connectivityProgress').style.width = technologies.connectivity + '%';
+            document.getElementById('connectivityLevel').textContent = 'Nivel ' + Math.round(technologies.connectivity);
+            
+            document.getElementById('cleanEnergyProgress').style.width = technologies.cleanEnergy + '%';
+            document.getElementById('cleanEnergyLevel').textContent = 'Nivel ' + Math.round(technologies.cleanEnergy);
+
+            // Calcular puntuación de abundancia
+            abundanceScore = Math.round(
+                (metrics.water + metrics.food + metrics.energy + 
+                 metrics.education + metrics.health + metrics.freedom) / 6
+            );
+            document.getElementById('abundanceScore').textContent = abundanceScore;
+
+            // Actualizar gráfico
+            updateChart();
+        }
+
+        function updateChart() {
+            const chartContainer = document.getElementById('chartBars');
+            chartContainer.innerHTML = '';
+            
+            const recentData = historicalData.slice(-10); // Últimos 10 años
+            
+            recentData.forEach(data => {
+                const barContainer = document.createElement('div');
+                barContainer.style.position = 'relative';
+                barContainer.style.display = 'flex';
+                barContainer.style.flexDirection = 'column';
+                barContainer.style.alignItems = 'center';
+                
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = (data.water + data.food + data.energy + data.education + data.health + data.freedom) / 6 + '%';
+                bar.style.width = '30px';
+                
+                const label = document.createElement('div');
+                label.className = 'year-label';
+                label.textContent = data.year;
+                
+                barContainer.appendChild(bar);
+                barContainer.appendChild(label);
+                chartContainer.appendChild(barContainer);
+            });
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+            
+            if (metrics.water >= 95 && !achievements.includes('water')) {
+                newAchievements.push({name: '💧 Agua para Todos', description: 'Acceso universal al agua potable'});
+                achievements.push('water');
+            }
+            if (metrics.food >= 95 && !achievements.includes('food')) {
+                newAchievements.push({name: '🍎 Seguridad Alimentaria', description: 'Alimentos para todos'});
+                achievements.push('food');
+            }
+            if (technologies.ai >= 80 && !achievements.includes('ai')) {
+                newAchievements.push({name: '🤖 IA Avanzada', description: 'Inteligencia artificial desarrollada'});
+                achievements.push('ai');
+            }
+            if (abundanceScore >= 90 && !achievements.includes('abundance')) {
+                newAchievements.push({name: '🌟 Abundancia Global', description: 'Mundo de abundancia alcanzado'});
+                achievements.push('abundance');
+            }
+
+            if (newAchievements.length > 0) {
+                showAchievement(newAchievements[0]);
+            }
+        }
+
+        function showAchievement(achievement) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <h4>🏆 ¡Logro Desbloqueado!</h4>
+                <p><strong>${achievement.name}</strong></p>
+                <p>${achievement.description}</p>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showFinalResults() {
+            const results = document.createElement('div');
+            results.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 1000;
+                text-align: center;
+                max-width: 500px;
+            `;
+            
+            results.innerHTML = `
+                <h2>🎉 ¡Simulación Completada!</h2>
+                <p><strong>Año:</strong> ${year}</p>
+                <p><strong>Puntuación Final:</strong> ${abundanceScore}/100</p>
+                <p><strong>Estado:</strong> ${abundanceScore >= 90 ? 'Abundancia Global Alcanzada' : 'Progreso Significativo'}</p>
+                <button class="button" onclick="this.parentElement.remove()">Cerrar</button>
+            `;
+            
+            document.body.appendChild(results);
+        }
+
+        // Inicializar display
+        updateDisplay();
+    </script>
+</body>
+</html>

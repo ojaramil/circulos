@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Abundancia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #6f42c1;
+        }
+        .abundance-map {
+            background: #e9ecef;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .resource {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #dee2e6;
+            border: 3px solid #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .resource:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .resource.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .resource.optimized {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        .resource.abundant {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .resource-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .resource-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .resource-card:hover {
+            border-color: #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .resource-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .resource-card.unlocked {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .resource-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .resource-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .resource-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .resource-potential {
+            font-size: 0.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .tech-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tech-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tech-card.selected {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .tech-card.unlocked {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tech-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tech-cost {
+            font-size: 0.8em;
+            color: #2196f3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .button {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #5a2d91;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.info {
+            background: #17a2b8;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6f42c1, #28a745);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Maestro de Abundancia</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Domina el arte de crear abundancia sostenible combinando tecnologías exponenciales, recursos naturales y innovación humana. Desarrolla sistemas que generen prosperidad para todos mientras preservan el planeta para futuras generaciones.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="abundanceScore">0</div>
+                <div class="stat-label">Puntuación de Abundancia</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="resourcesOptimized">0</div>
+                <div class="stat-label">Recursos Optimizados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="systemsCreated">0</div>
+                <div class="stat-label">Sistemas Creados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="sustainabilityIndex">0%</div>
+                <div class="stat-label">Índice de Sostenibilidad</div>
+            </div>
+        </div>
+
+        <div class="resource-panel">
+            <h3>🌍 Recursos de Abundancia</h3>
+            <div class="resource-grid">
+                <div class="resource-card unlocked" onclick="selectResource('solar_energy')">
+                    <div class="resource-icon">☀️</div>
+                    <div class="resource-title">Energía Solar</div>
+                    <div class="resource-description">Energía ilimitada del sol</div>
+                    <div class="resource-potential">Potencial: Infinito | Eficiencia: 95%</div>
+                </div>
+                <div class="resource-card unlocked" onclick="selectResource('wind_energy')">
+                    <div class="resource-icon">💨</div>
+                    <div class="resource-title">Energía Eólica</div>
+                    <div class="resource-description">Fuerza del viento para generar electricidad</div>
+                    <div class="resource-potential">Potencial: Alto | Eficiencia: 85%</div>
+                </div>
+                <div class="resource-card unlocked" onclick="selectResource('water_resources')">
+                    <div class="resource-icon">💧</div>
+                    <div class="resource-title">Recursos Hídricos</div>
+                    <div class="resource-description">Agua limpia y accesible para todos</div>
+                    <div class="resource-potential">Potencial: Alto | Eficiencia: 90%</div>
+                </div>
+                <div class="resource-card unlocked" onclick="selectResource('food_production')">
+                    <div class="resource-icon">🌾</div>
+                    <div class="resource-title">Producción de Alimentos</div>
+                    <div class="resource-description">Alimentación sostenible y nutritiva</div>
+                    <div class="resource-potential">Potencial: Alto | Eficiencia: 80%</div>
+                </div>
+                <div class="resource-card" onclick="selectResource('mineral_resources')">
+                    <div class="resource-icon">⛏️</div>
+                    <div class="resource-title">Recursos Minerales</div>
+                    <div class="resource-description">Materiales para tecnología avanzada</div>
+                    <div class="resource-potential">Potencial: Medio | Eficiencia: 75%</div>
+                </div>
+                <div class="resource-card" onclick="selectResource('biological_resources')">
+                    <div class="resource-icon">🧬</div>
+                    <div class="resource-title">Recursos Biológicos</div>
+                    <div class="resource-description">Biodiversidad y biotecnología</div>
+                    <div class="resource-potential">Potencial: Alto | Eficiencia: 85%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="abundance-map" id="abundanceMap">
+            <h3>🌍 Mapa de Abundancia Global</h3>
+            <div id="resources">
+                <!-- Los recursos se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tech-panel">
+            <h3>🔬 Tecnologías de Abundancia</h3>
+            <div class="tech-grid">
+                <div class="tech-card unlocked" onclick="selectTech('fusion_energy')">
+                    <div class="tech-icon">⚡</div>
+                    <div class="tech-title">Energía de Fusión</div>
+                    <div class="tech-description">Energía limpia e ilimitada</div>
+                    <div class="tech-cost">Costo: 500</div>
+                </div>
+                <div class="tech-card unlocked" onclick="selectTech('nanotechnology')">
+                    <div class="tech-icon">🔬</div>
+                    <div class="tech-title">Nanotecnología</div>
+                    <div class="tech-description">Manipulación a nivel molecular</div>
+                    <div class="tech-cost">Costo: 400</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('artificial_intelligence')">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">Inteligencia Artificial</div>
+                    <div class="tech-description">Optimización automática de recursos</div>
+                    <div class="tech-cost">Costo: 600</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('biotechnology')">
+                    <div class="tech-icon">🧬</div>
+                    <div class="tech-title">Biotecnología</div>
+                    <div class="tech-description">Ingeniería de sistemas biológicos</div>
+                    <div class="tech-cost">Costo: 450</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('quantum_computing')">
+                    <div class="tech-icon">⚛️</div>
+                    <div class="tech-title">Computación Cuántica</div>
+                    <div class="tech-description">Procesamiento exponencial</div>
+                    <div class="tech-cost">Costo: 700</div>
+                </div>
+                <div class="tech-card" onclick="selectTech('space_technology')">
+                    <div class="tech-icon">🚀</div>
+                    <div class="tech-title">Tecnología Espacial</div>
+                    <div class="tech-description">Acceso a recursos espaciales</div>
+                    <div class="tech-cost">Costo: 800</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Abundancia</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="optimizeResource()">Optimizar Recurso</button>
+                <button class="button" onclick="createSystem()">Crear Sistema</button>
+                <button class="button" onclick="researchTech()">Investigar</button>
+                <button class="button" onclick="scaleAbundance()">Escalar Abundancia</button>
+                <button class="button" onclick="measureSustainability()">Medir Sostenibilidad</button>
+                <button class="button" onclick="achieveMastery()">Alcanzar Maestría</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Crea abundancia sostenible para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            abundanceScore: 0,
+            resourcesOptimized: 0,
+            systemsCreated: 0,
+            sustainabilityIndex: 0,
+            selectedResource: null,
+            selectedTech: null,
+            resources: 1000,
+            resourceTypes: {
+                solar_energy: { unlocked: true, potential: 1000, efficiency: 0.95, cost: 200 },
+                wind_energy: { unlocked: true, potential: 800, efficiency: 0.85, cost: 150 },
+                water_resources: { unlocked: true, potential: 900, efficiency: 0.90, cost: 180 },
+                food_production: { unlocked: true, potential: 700, efficiency: 0.80, cost: 120 },
+                mineral_resources: { unlocked: false, potential: 600, efficiency: 0.75, cost: 250 },
+                biological_resources: { unlocked: false, potential: 850, efficiency: 0.85, cost: 300 }
+            },
+            technologies: {
+                fusion_energy: { unlocked: true, cost: 500, efficiency: 0.3 },
+                nanotechnology: { unlocked: true, cost: 400, efficiency: 0.25 },
+                artificial_intelligence: { unlocked: false, cost: 600, efficiency: 0.35 },
+                biotechnology: { unlocked: false, cost: 450, efficiency: 0.28 },
+                quantum_computing: { unlocked: false, cost: 700, efficiency: 0.4 },
+                space_technology: { unlocked: false, cost: 800, efficiency: 0.45 }
+            },
+            resources: [],
+            achievements: []
+        };
+
+        function initializeAbundanceMap() {
+            const resourcesContainer = document.getElementById('resources');
+            resourcesContainer.innerHTML = '';
+
+            // Crear recursos
+            const resourceTypes = [
+                { name: 'Solar', x: 20, y: 30, status: 'needs_optimization' },
+                { name: 'Eólico', x: 60, y: 25, status: 'needs_optimization' },
+                { name: 'Hídrico', x: 15, y: 60, status: 'needs_optimization' },
+                { name: 'Alimentario', x: 50, y: 15, status: 'needs_optimization' },
+                { name: 'Mineral', x: 75, y: 70, status: 'needs_optimization' },
+                { name: 'Biológico', x: 45, y: 20, status: 'needs_optimization' }
+            ];
+
+            resourceTypes.forEach((resource, index) => {
+                const resourceElement = document.createElement('div');
+                resourceElement.className = 'resource';
+                resourceElement.style.left = resource.x + '%';
+                resourceElement.style.top = resource.y + '%';
+                resourceElement.innerHTML = resource.name;
+                resourceElement.onclick = () => selectResource(resource.name);
+                resourceElement.dataset.resourceId = index;
+
+                resourcesContainer.appendChild(resourceElement);
+
+                gameState.resources.push({
+                    id: index,
+                    name: resource.name,
+                    status: resource.status,
+                    optimization: 0,
+                    abundance: 0
+                });
+            });
+        }
+
+        function selectResource(resource) {
+            // Deseleccionar todos los recursos
+            document.querySelectorAll('.resource-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar el recurso actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedResource = resource;
+        }
+
+        function selectTech(tech) {
+            // Deseleccionar todas las tecnologías
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la tecnología actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTech = tech;
+        }
+
+        function optimizeResource() {
+            if (!gameState.selectedResource) {
+                alert('Selecciona un recurso primero.');
+                return;
+            }
+
+            const resource = gameState.resourceTypes[gameState.selectedResource];
+            if (!resource.unlocked) {
+                alert('Este recurso no está desbloqueado.');
+                return;
+            }
+
+            if (gameState.resources < resource.cost) {
+                alert('No tienes suficientes recursos para optimizar.');
+                return;
+            }
+
+            gameState.resources -= resource.cost;
+            gameState.resourcesOptimized++;
+            gameState.abundanceScore += resource.potential * resource.efficiency;
+            gameState.sustainabilityIndex += 5;
+
+            showAchievement('⚡ Recurso Optimizado', `Has optimizado ${gameState.selectedResource}`);
+            updateDisplay();
+        }
+
+        function createSystem() {
+            if (gameState.resourcesOptimized === 0) {
+                alert('No tienes recursos optimizados para crear sistemas.');
+                return;
+            }
+
+            const systemCost = 300;
+            if (gameState.resources >= systemCost) {
+                gameState.resources -= systemCost;
+                gameState.systemsCreated++;
+                gameState.abundanceScore += 500;
+                gameState.sustainabilityIndex += 10;
+
+                showAchievement('🔧 Sistema Creado', 'Has creado un sistema de abundancia');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para crear sistemas.');
+            }
+        }
+
+        function researchTech() {
+            const lockedTechs = Object.keys(gameState.technologies).filter(tech => !gameState.technologies[tech].unlocked);
+            if (lockedTechs.length === 0) {
+                alert('Todas las tecnologías están desbloqueadas.');
+                return;
+            }
+
+            const researchCost = 400;
+            if (gameState.resources >= researchCost) {
+                gameState.resources -= researchCost;
+                const randomTech = lockedTechs[Math.floor(Math.random() * lockedTechs.length)];
+                gameState.technologies[randomTech].unlocked = true;
+
+                // Actualizar UI
+                const techCard = document.querySelector(`[onclick="selectTech('${randomTech}')"]`);
+                techCard.classList.add('unlocked');
+
+                showAchievement('🔬 Tecnología Desbloqueada', `Has desbloqueado ${randomTech}`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para investigar.');
+            }
+        }
+
+        function scaleAbundance() {
+            const scaleCost = 500;
+            if (gameState.resources >= scaleCost) {
+                gameState.resources -= scaleCost;
+                
+                // Escalar abundancia
+                gameState.abundanceScore *= 1.5;
+                gameState.sustainabilityIndex += 15;
+
+                showAchievement('📈 Abundancia Escalada', 'Has escalado la abundancia global');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para escalar.');
+            }
+        }
+
+        function measureSustainability() {
+            const measureCost = 200;
+            if (gameState.resources >= measureCost) {
+                gameState.resources -= measureCost;
+                
+                // Medir sostenibilidad
+                const totalSustainability = gameState.abundanceScore + gameState.sustainabilityIndex;
+                gameState.sustainabilityIndex += Math.round(totalSustainability * 0.1);
+
+                showAchievement('📊 Sostenibilidad Medida', `Índice de sostenibilidad: ${gameState.sustainabilityIndex}%`);
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para medir.');
+            }
+        }
+
+        function achieveMastery() {
+            if (gameState.abundanceScore < 10000 || gameState.sustainabilityIndex < 80) {
+                alert('Necesitas más abundancia y sostenibilidad para alcanzar la maestría.');
+                return;
+            }
+
+            const masteryCost = 1000;
+            if (gameState.resources >= masteryCost) {
+                gameState.resources -= masteryCost;
+                
+                // Alcanzar maestría
+                gameState.abundanceScore += 5000;
+                gameState.sustainabilityIndex = 100;
+
+                showAchievement('🌟 Maestría Alcanzada', '¡Has alcanzado la maestría en abundancia!');
+                updateDisplay();
+            } else {
+                alert('No tienes suficientes recursos para alcanzar la maestría.');
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('abundanceScore').textContent = Math.round(gameState.abundanceScore);
+            document.getElementById('resourcesOptimized').textContent = gameState.resourcesOptimized;
+            document.getElementById('systemsCreated').textContent = gameState.systemsCreated;
+            document.getElementById('sustainabilityIndex').textContent = gameState.sustainabilityIndex + '%';
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeAbundanceMap();
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Cambios Cerebrales - El Cerebro se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .simulator-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .simulator-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .scenario-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .scenario-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .scenario-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .scenario-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .scenario-card p {
+            margin: 10px 0;
+        }
+        .scenario-card .difficulty {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .simulation-area {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0056b3;
+            display: none;
+        }
+        .simulation-area h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .brain-visualization {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .brain-visualization h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .brain-diagram {
+            font-size: 8em;
+            margin: 20px 0;
+        }
+        .progress-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .progress-section h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .results {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        .results h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .simulation-controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .simulation-controls h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .control-group {
+            margin: 15px 0;
+        }
+        .control-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Simulador de Cambios Cerebrales</h1>
+            <p>Experimenta cómo la neuroplasticidad transforma tu cerebro</p>
+        </div>
+
+        <div class="tip-box">
+            <h4>🧠 ¿Qué es la Neuroplasticidad?</h4>
+            <p>La neuroplasticidad es la capacidad del cerebro para cambiar y adaptarse a lo largo de la vida. Este simulador te permite experimentar cómo diferentes actividades y experiencias pueden transformar tu cerebro.</p>
+        </div>
+
+        <div class="simulator-section">
+            <h3>🎯 Selecciona un Escenario de Transformación</h3>
+            <p>Elige un escenario para simular cómo la neuroplasticidad puede cambiar tu cerebro:</p>
+            
+            <div class="scenario-card" onclick="selectScenario('learning')">
+                <h4>📚 Aprendizaje Intensivo</h4>
+                <p>Simula cómo aprender una nueva habilidad puede cambiar la estructura de tu cerebro.</p>
+                <div class="difficulty">Dificultad: Media</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('recovery')">
+                <h4>🔄 Recuperación de Lesión</h4>
+                <p>Simula cómo el cerebro puede recuperarse y reorganizarse después de una lesión.</p>
+                <div class="difficulty">Dificultad: Alta</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('meditation')">
+                <h4>🧘 Práctica de Meditación</h4>
+                <p>Simula cómo la meditación puede cambiar la estructura y función del cerebro.</p>
+                <div class="difficulty">Dificultad: Baja</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('exercise')">
+                <h4>💪 Ejercicio Mental</h4>
+                <p>Simula cómo el entrenamiento mental puede fortalecer y optimizar el cerebro.</p>
+                <div class="difficulty">Dificultad: Media</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('therapy')">
+                <h4>🩺 Terapia Neuroplástica</h4>
+                <p>Simula cómo la terapia puede cambiar patrones neuronales problemáticos.</p>
+                <div class="difficulty">Dificultad: Alta</div>
+            </div>
+            
+            <div class="scenario-card" onclick="selectScenario('aging')">
+                <h4>🔄 Rejuvenecimiento</h4>
+                <p>Simula cómo el cerebro puede rejuvenecerse y mantener su juventud.</p>
+                <div class="difficulty">Dificultad: Media</div>
+            </div>
+        </div>
+
+        <div class="simulation-area" id="simulation-area">
+            <h3>🧠 Simulación en Progreso</h3>
+            <div class="brain-visualization">
+                <h4>Estado Actual del Cerebro</h4>
+                <div class="brain-diagram" id="brain-diagram">🧠</div>
+                <p id="brain-status">Cerebro en estado inicial</p>
+            </div>
+            
+            <div class="simulation-controls">
+                <h3>🎛️ Controles de Simulación</h3>
+                <div class="control-group">
+                    <label for="intensity">Intensidad del Cambio</label>
+                    <input type="range" id="intensity" min="1" max="10" value="5">
+                </div>
+                <div class="control-group">
+                    <label for="duration">Duración de la Simulación</label>
+                    <select id="duration">
+                        <option value="30">30 segundos</option>
+                        <option value="60">1 minuto</option>
+                        <option value="120">2 minutos</option>
+                        <option value="300">5 minutos</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="focus-area">Área de Enfoque</label>
+                    <select id="focus-area">
+                        <option value="memory">Memoria</option>
+                        <option value="attention">Atención</option>
+                        <option value="emotion">Emoción</option>
+                        <option value="motor">Motor</option>
+                        <option value="language">Lenguaje</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="progress-section">
+                <h4>📊 Progreso de la Transformación</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p>Progreso: <span id="progress-text">0%</span></p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="startSimulation()" id="start-btn">▶️ Iniciar Simulación</button>
+                <button class="btn btn-secondary" onclick="pauseSimulation()" id="pause-btn" style="display: none;">⏸️ Pausar</button>
+                <button class="btn btn-danger" onclick="stopSimulation()" id="stop-btn" style="display: none;">⏹️ Detener</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h3>📊 Resultados de la Simulación</h3>
+            <div id="results-content"></div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Simulaciones Completadas</h4>
+                <div class="number" id="completed-simulations">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Tiempo Total</h4>
+                <div class="number" id="total-time">0 min</div>
+            </div>
+            <div class="stat-card">
+                <h4>Escenarios Probados</h4>
+                <div class="number" id="scenarios-tested">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Transformaciones Simuladas</h4>
+                <div class="number" id="transformations-simulated">0</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()" id="stats-btn" style="display: none;">📊 Ver Estadísticas</button>
+            <button class="btn btn-success" onclick="saveSimulation()" id="save-btn" style="display: none;">💾 Guardar Simulación</button>
+            <button class="btn btn-secondary" onclick="resetSimulator()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = null;
+        let simulationTimer = null;
+        let simulationProgress = 0;
+        let simulationData = JSON.parse(localStorage.getItem('simulationData') || '[]');
+
+        function selectScenario(scenarioType) {
+            currentScenario = scenarioType;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva tarjeta
+            event.currentTarget.classList.add('selected');
+            
+            // Mostrar área de simulación
+            document.getElementById('simulation-area').style.display = 'block';
+            
+            // Configurar escenario específico
+            configureScenario(scenarioType);
+        }
+
+        function configureScenario(scenarioType) {
+            const scenarios = {
+                'learning': {
+                    title: 'Aprendizaje Intensivo',
+                    description: 'Simulando el aprendizaje de una nueva habilidad...',
+                    brainStates: ['🧠', '🧠💡', '🧠💡⚡', '🧠💡⚡🎯', '🧠💡⚡🎯🚀'],
+                    statuses: [
+                        'Cerebro en estado inicial',
+                        'Iniciando aprendizaje...',
+                        'Formando nuevas conexiones...',
+                        'Fortalecimiento de sinapsis...',
+                        'Transformación completa!'
+                    ]
+                },
+                'recovery': {
+                    title: 'Recuperación de Lesión',
+                    description: 'Simulando la recuperación después de una lesión...',
+                    brainStates: ['🧠💔', '🧠💔🔄', '🧠💔🔄💪', '🧠💔🔄💪✨', '🧠💔🔄💪✨🎉'],
+                    statuses: [
+                        'Cerebro con lesión',
+                        'Iniciando recuperación...',
+                        'Reorganización cortical...',
+                        'Formación de nuevas vías...',
+                        'Recuperación exitosa!'
+                    ]
+                },
+                'meditation': {
+                    title: 'Práctica de Meditación',
+                    description: 'Simulando los efectos de la meditación...',
+                    brainStates: ['🧠', '🧠🧘', '🧠🧘✨', '🧠🧘✨🌟', '🧠🧘✨🌟💫'],
+                    statuses: [
+                        'Cerebro en estado normal',
+                        'Iniciando meditación...',
+                        'Activando áreas de calma...',
+                        'Fortalecimiento de conexiones...',
+                        'Estado meditativo alcanzado!'
+                    ]
+                },
+                'exercise': {
+                    title: 'Ejercicio Mental',
+                    description: 'Simulando el entrenamiento mental...',
+                    brainStates: ['🧠', '🧠💪', '🧠💪⚡', '🧠💪⚡🎯', '🧠💪⚡🎯🏆'],
+                    statuses: [
+                        'Cerebro en estado inicial',
+                        'Iniciando entrenamiento...',
+                        'Fortalecimiento de conexiones...',
+                        'Optimización de circuitos...',
+                        'Cerebro optimizado!'
+                    ]
+                },
+                'therapy': {
+                    title: 'Terapia Neuroplástica',
+                    description: 'Simulando la terapia neuroplástica...',
+                    brainStates: ['🧠😰', '🧠😰🔄', '🧠😰🔄💡', '🧠😰🔄💡✨', '🧠😰🔄💡✨🎉'],
+                    statuses: [
+                        'Cerebro con patrones problemáticos',
+                        'Iniciando terapia...',
+                        'Reorganización de patrones...',
+                        'Formación de nuevas asociaciones...',
+                        'Terapia exitosa!'
+                    ]
+                },
+                'aging': {
+                    title: 'Rejuvenecimiento',
+                    description: 'Simulando el rejuvenecimiento cerebral...',
+                    brainStates: ['🧠👴', '🧠👴🔄', '🧠👴🔄💪', '🧠👴🔄💪✨', '🧠👴🔄💪✨👶'],
+                    statuses: [
+                        'Cerebro envejecido',
+                        'Iniciando rejuvenecimiento...',
+                        'Activación de células madre...',
+                        'Regeneración de tejido...',
+                        'Cerebro rejuvenecido!'
+                    ]
+                }
+            };
+            
+            const scenario = scenarios[scenarioType];
+            if (scenario) {
+                // Configurar el escenario
+                document.getElementById('brain-diagram').textContent = scenario.brainStates[0];
+                document.getElementById('brain-status').textContent = scenario.statuses[0];
+            }
+        }
+
+        function startSimulation() {
+            if (!currentScenario) return;
+            
+            const duration = parseInt(document.getElementById('duration').value);
+            const intensity = parseInt(document.getElementById('intensity').value);
+            const focusArea = document.getElementById('focus-area').value;
+            
+            simulationProgress = 0;
+            
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            document.getElementById('stop-btn').style.display = 'inline-block';
+            
+            // Iniciar simulación
+            simulationTimer = setInterval(() => {
+                simulationProgress += (100 / duration) * (intensity / 10);
+                updateSimulation();
+                
+                if (simulationProgress >= 100) {
+                    completeSimulation();
+                }
+            }, 1000);
+        }
+
+        function pauseSimulation() {
+            if (simulationTimer) {
+                clearInterval(simulationTimer);
+                simulationTimer = null;
+                document.getElementById('pause-btn').textContent = '▶️ Continuar';
+            } else {
+                startSimulation();
+                document.getElementById('pause-btn').textContent = '⏸️ Pausar';
+            }
+        }
+
+        function stopSimulation() {
+            if (confirm('¿Estás seguro de que quieres detener la simulación?')) {
+                clearInterval(simulationTimer);
+                simulationTimer = null;
+                resetSimulation();
+            }
+        }
+
+        function updateSimulation() {
+            const scenarios = {
+                'learning': {
+                    brainStates: ['🧠', '🧠💡', '🧠💡⚡', '🧠💡⚡🎯', '🧠💡⚡🎯🚀'],
+                    statuses: [
+                        'Cerebro en estado inicial',
+                        'Iniciando aprendizaje...',
+                        'Formando nuevas conexiones...',
+                        'Fortalecimiento de sinapsis...',
+                        'Transformación completa!'
+                    ]
+                },
+                'recovery': {
+                    brainStates: ['🧠💔', '🧠💔🔄', '🧠💔🔄💪', '🧠💔🔄💪✨', '🧠💔🔄💪✨🎉'],
+                    statuses: [
+                        'Cerebro con lesión',
+                        'Iniciando recuperación...',
+                        'Reorganización cortical...',
+                        'Formación de nuevas vías...',
+                        'Recuperación exitosa!'
+                    ]
+                },
+                'meditation': {
+                    brainStates: ['🧠', '🧠🧘', '🧠🧘✨', '🧠🧘✨🌟', '🧠🧘✨🌟💫'],
+                    statuses: [
+                        'Cerebro en estado normal',
+                        'Iniciando meditación...',
+                        'Activando áreas de calma...',
+                        'Fortalecimiento de conexiones...',
+                        'Estado meditativo alcanzado!'
+                    ]
+                },
+                'exercise': {
+                    brainStates: ['🧠', '🧠💪', '🧠💪⚡', '🧠💪⚡🎯', '🧠💪⚡🎯🏆'],
+                    statuses: [
+                        'Cerebro en estado inicial',
+                        'Iniciando entrenamiento...',
+                        'Fortalecimiento de conexiones...',
+                        'Optimización de circuitos...',
+                        'Cerebro optimizado!'
+                    ]
+                },
+                'therapy': {
+                    brainStates: ['🧠😰', '🧠😰🔄', '🧠😰🔄💡', '🧠😰🔄💡✨', '🧠😰🔄💡✨🎉'],
+                    statuses: [
+                        'Cerebro con patrones problemáticos',
+                        'Iniciando terapia...',
+                        'Reorganización de patrones...',
+                        'Formación de nuevas asociaciones...',
+                        'Terapia exitosa!'
+                    ]
+                },
+                'aging': {
+                    brainStates: ['🧠👴', '🧠👴🔄', '🧠👴🔄💪', '🧠👴🔄💪✨', '🧠👴🔄💪✨👶'],
+                    statuses: [
+                        'Cerebro envejecido',
+                        'Iniciando rejuvenecimiento...',
+                        'Activación de células madre...',
+                        'Regeneración de tejido...',
+                        'Cerebro rejuvenecido!'
+                    ]
+                }
+            };
+            
+            const scenario = scenarios[currentScenario];
+            if (scenario) {
+                const progressIndex = Math.floor((simulationProgress / 100) * (scenario.brainStates.length - 1));
+                const brainState = scenario.brainStates[progressIndex];
+                const status = scenario.statuses[progressIndex];
+                
+                document.getElementById('brain-diagram').textContent = brainState;
+                document.getElementById('brain-status').textContent = status;
+            }
+            
+            document.getElementById('progress-fill').style.width = `${simulationProgress}%`;
+            document.getElementById('progress-text').textContent = `${Math.round(simulationProgress)}%`;
+        }
+
+        function completeSimulation() {
+            clearInterval(simulationTimer);
+            simulationTimer = null;
+            
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            
+            // Mostrar resultados
+            showResults();
+            
+            // Guardar simulación
+            saveSimulationData();
+        }
+
+        function showResults() {
+            const results = `
+                <div class="brain-visualization">
+                    <h4>🧠 Estado Final del Cerebro</h4>
+                    <div class="brain-diagram">${document.getElementById('brain-diagram').textContent}</div>
+                    <p>${document.getElementById('brain-status').textContent}</p>
+                </div>
+                
+                <div class="progress-section">
+                    <h4>📊 Transformación Completada</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                    <p>Progreso: 100%</p>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>🎉 ¡Simulación Completada!</h4>
+                    <p>Has experimentado cómo la neuroplasticidad puede transformar tu cerebro. Recuerda que estos cambios son posibles en la vida real a través de la práctica regular y el entrenamiento específico.</p>
+                </div>
+            `;
+            
+            document.getElementById('results-content').innerHTML = results;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function saveSimulationData() {
+            const simulation = {
+                scenario: currentScenario,
+                duration: parseInt(document.getElementById('duration').value),
+                intensity: parseInt(document.getElementById('intensity').value),
+                focusArea: document.getElementById('focus-area').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            simulationData.push(simulation);
+            localStorage.setItem('simulationData', JSON.stringify(simulationData));
+        }
+
+        function saveSimulation() {
+            alert('¡Simulación guardada exitosamente!');
+        }
+
+        function viewStats() {
+            const totalSimulations = simulationData.length;
+            const totalTime = simulationData.reduce((sum, sim) => sum + sim.duration, 0);
+            const scenariosTested = new Set(simulationData.map(sim => sim.scenario)).size;
+            const transformationsSimulated = simulationData.length;
+            
+            document.getElementById('completed-simulations').textContent = totalSimulations;
+            document.getElementById('total-time').textContent = `${Math.round(totalTime / 60)} min`;
+            document.getElementById('scenarios-tested').textContent = scenariosTested;
+            document.getElementById('transformations-simulated').textContent = transformationsSimulated;
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function resetSimulation() {
+            simulationProgress = 0;
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0%';
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('stats-btn').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        function resetSimulator() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el simulador?')) {
+                resetSimulation();
+                document.getElementById('simulation-area').style.display = 'none';
+                document.querySelectorAll('.scenario-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                currentScenario = null;
+            }
+        }
+    </script>
+</body>
+</html>

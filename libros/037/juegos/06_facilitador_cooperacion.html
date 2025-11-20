@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilitador de Cooperación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .collaboration-map {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        .node:hover {
+            transform: scale(1.1);
+            border-color: #007bff;
+        }
+        .node.connected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .node.isolated {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: #007bff;
+            transform-origin: left center;
+            opacity: 0.7;
+        }
+        .connection-line.strong {
+            background: #28a745;
+            height: 4px;
+        }
+        .connection-line.weak {
+            background: #ffc107;
+            height: 1px;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .tools-panel {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tool-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tool-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tool-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .tool-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tool-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tool-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Facilitador de Cooperación</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Facilita la cooperación global conectando personas, organizaciones y recursos para resolver problemas complejos. Usa herramientas de colaboración para crear redes de cooperación efectivas y acelerar el progreso hacia la abundancia.</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="cooperationScore">0</div>
+                <div class="stat-label">Puntuación de Cooperación</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="connections">0</div>
+                <div class="stat-label">Conexiones</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="networks">0</div>
+                <div class="stat-label">Redes Activas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="collaborations">0</div>
+                <div class="stat-label">Colaboraciones</div>
+            </div>
+        </div>
+
+        <div class="collaboration-map">
+            <h3>🌍 Mapa de Cooperación Global</h3>
+            <div id="collaborationNodes">
+                <!-- Los nodos se generarán dinámicamente -->
+            </div>
+        </div>
+
+        <div class="tools-panel">
+            <h3>🛠️ Herramientas de Cooperación</h3>
+            <div class="tool-grid">
+                <div class="tool-card" onclick="selectTool('communication')">
+                    <div class="tool-icon">💬</div>
+                    <div class="tool-title">Comunicación</div>
+                    <div class="tool-description">Herramientas de comunicación global</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('platform')">
+                    <div class="tool-icon">🌐</div>
+                    <div class="tool-title">Plataformas</div>
+                    <div class="tool-description">Plataformas de colaboración</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('resource')">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-title">Recursos</div>
+                    <div class="tool-description">Gestión de recursos compartidos</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('knowledge')">
+                    <div class="tool-icon">📚</div>
+                    <div class="tool-title">Conocimiento</div>
+                    <div class="tool-description">Compartir conocimiento</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('innovation')">
+                    <div class="tool-icon">💡</div>
+                    <div class="tool-title">Innovación</div>
+                    <div class="tool-description">Colaboración en innovación</div>
+                </div>
+                <div class="tool-card" onclick="selectTool('governance')">
+                    <div class="tool-icon">⚖️</div>
+                    <div class="tool-title">Gobernanza</div>
+                    <div class="tool-description">Gobernanza colaborativa</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Cooperación</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="createConnection()">Crear Conexión</button>
+                <button class="button" onclick="strengthenNetwork()">Fortalecer Red</button>
+                <button class="button" onclick="shareResources()">Compartir Recursos</button>
+                <button class="button" onclick="collaborateOnProject()">Colaborar en Proyecto</button>
+                <button class="button" onclick="resolveConflict()">Resolver Conflicto</button>
+                <button class="button" onclick="scaleCooperation()">Escalar Cooperación</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Facilita la cooperación para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            cooperationScore: 0,
+            connections: 0,
+            networks: 0,
+            collaborations: 0,
+            selectedTool: null,
+            nodes: [],
+            connections: []
+        };
+
+        const nodeTypes = [
+            { icon: '👤', type: 'person', name: 'Persona' },
+            { icon: '🏢', type: 'organization', name: 'Organización' },
+            { icon: '🎓', type: 'university', name: 'Universidad' },
+            { icon: '🏛️', type: 'government', name: 'Gobierno' },
+            { icon: '🏥', type: 'ngo', name: 'ONG' },
+            { icon: '💼', type: 'company', name: 'Empresa' },
+            { icon: '🔬', type: 'research', name: 'Investigación' },
+            { icon: '🌍', type: 'global', name: 'Global' }
+        ];
+
+        function initializeNodes() {
+            const container = document.getElementById('collaborationNodes');
+            container.innerHTML = '';
+
+            // Crear nodos aleatorios
+            for (let i = 0; i < 12; i++) {
+                const nodeType = nodeTypes[Math.floor(Math.random() * nodeTypes.length)];
+                const node = {
+                    id: i,
+                    type: nodeType.type,
+                    icon: nodeType.icon,
+                    name: nodeType.name,
+                    x: Math.random() * 80 + 10,
+                    y: Math.random() * 60 + 20,
+                    connections: [],
+                    strength: Math.random() * 100
+                };
+
+                gameState.nodes.push(node);
+
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.style.left = node.x + '%';
+                nodeElement.style.top = node.y + '%';
+                nodeElement.innerHTML = node.icon;
+                nodeElement.onclick = () => selectNode(node.id);
+                nodeElement.dataset.nodeId = node.id;
+
+                container.appendChild(nodeElement);
+            }
+        }
+
+        function selectNode(nodeId) {
+            const node = gameState.nodes.find(n => n.id === nodeId);
+            if (!node) return;
+
+            // Alternar selección
+            const nodeElement = document.querySelector(`[data-node-id="${nodeId}"]`);
+            if (nodeElement.classList.contains('selected')) {
+                nodeElement.classList.remove('selected');
+                return;
+            }
+
+            // Deseleccionar otros nodos
+            document.querySelectorAll('.node').forEach(el => el.classList.remove('selected'));
+            nodeElement.classList.add('selected');
+
+            // Si hay otro nodo seleccionado, crear conexión
+            const selectedNodes = document.querySelectorAll('.node.selected');
+            if (selectedNodes.length === 2) {
+                const node1Id = parseInt(selectedNodes[0].dataset.nodeId);
+                const node2Id = parseInt(selectedNodes[1].dataset.nodeId);
+                createConnectionBetweenNodes(node1Id, node2Id);
+            }
+        }
+
+        function createConnectionBetweenNodes(node1Id, node2Id) {
+            const node1 = gameState.nodes.find(n => n.id === node1Id);
+            const node2 = gameState.nodes.find(n => n.id === node2Id);
+
+            if (!node1 || !node2) return;
+
+            // Verificar si ya existe conexión
+            if (node1.connections.includes(node2Id) || node2.connections.includes(node1Id)) {
+                alert('Ya existe una conexión entre estos nodos.');
+                return;
+            }
+
+            // Crear conexión
+            node1.connections.push(node2Id);
+            node2.connections.push(node1Id);
+
+            gameState.connections++;
+            gameState.cooperationScore += 10;
+
+            // Crear línea visual
+            createConnectionLine(node1, node2);
+
+            // Actualizar estado de nodos
+            updateNodeStates();
+
+            showAchievement('🔗 Conexión Creada', 'Has conectado dos nodos en la red de cooperación');
+            updateDisplay();
+        }
+
+        function createConnectionLine(node1, node2) {
+            const container = document.getElementById('collaborationNodes');
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+
+            const x1 = node1.x;
+            const y1 = node1.y;
+            const x2 = node2.x;
+            const y2 = node2.y;
+
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+            line.style.left = x1 + '%';
+            line.style.top = y1 + '%';
+            line.style.width = length + '%';
+            line.style.transform = `rotate(${angle}deg)`;
+
+            container.appendChild(line);
+        }
+
+        function updateNodeStates() {
+            gameState.nodes.forEach(node => {
+                const nodeElement = document.querySelector(`[data-node-id="${node.id}"]`);
+                if (node.connections.length === 0) {
+                    nodeElement.classList.add('isolated');
+                    nodeElement.classList.remove('connected');
+                } else if (node.connections.length >= 3) {
+                    nodeElement.classList.add('connected');
+                    nodeElement.classList.remove('isolated');
+                } else {
+                    nodeElement.classList.remove('connected', 'isolated');
+                }
+            });
+        }
+
+        function selectTool(tool) {
+            // Deseleccionar todas las herramientas
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar la herramienta actual
+            event.currentTarget.classList.add('selected');
+            gameState.selectedTool = tool;
+        }
+
+        function createConnection() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Crear nueva conexión aleatoria
+            const availableNodes = gameState.nodes.filter(n => n.connections.length < 4);
+            if (availableNodes.length < 2) {
+                alert('No hay suficientes nodos disponibles para crear conexiones.');
+                return;
+            }
+
+            const node1 = availableNodes[Math.floor(Math.random() * availableNodes.length)];
+            const node2 = availableNodes.filter(n => n.id !== node1.id)[Math.floor(Math.random() * (availableNodes.length - 1))];
+
+            createConnectionBetweenNodes(node1.id, node2.id);
+        }
+
+        function strengthenNetwork() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Fortalecer conexiones existentes
+            gameState.nodes.forEach(node => {
+                if (node.connections.length > 0) {
+                    node.strength = Math.min(100, node.strength + Math.random() * 10 + 5);
+                }
+            });
+
+            gameState.cooperationScore += 15;
+            gameState.networks++;
+
+            showAchievement('💪 Red Fortalecida', 'Has fortalecido las conexiones en la red');
+            updateDisplay();
+        }
+
+        function shareResources() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Compartir recursos mejora la cooperación
+            gameState.nodes.forEach(node => {
+                if (node.connections.length > 0) {
+                    node.strength = Math.min(100, node.strength + Math.random() * 15 + 10);
+                }
+            });
+
+            gameState.cooperationScore += 20;
+            gameState.collaborations++;
+
+            showAchievement('📊 Recursos Compartidos', 'Has facilitado el intercambio de recursos');
+            updateDisplay();
+        }
+
+        function collaborateOnProject() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Colaboración en proyecto crea nuevas conexiones
+            const connectedNodes = gameState.nodes.filter(n => n.connections.length > 0);
+            if (connectedNodes.length >= 2) {
+                const node1 = connectedNodes[Math.floor(Math.random() * connectedNodes.length)];
+                const node2 = connectedNodes.filter(n => n.id !== node1.id)[Math.floor(Math.random() * (connectedNodes.length - 1))];
+
+                if (!node1.connections.includes(node2.id)) {
+                    createConnectionBetweenNodes(node1.id, node2.id);
+                }
+            }
+
+            gameState.cooperationScore += 25;
+            gameState.collaborations++;
+
+            showAchievement('🤝 Proyecto Colaborativo', 'Has iniciado un proyecto colaborativo');
+            updateDisplay();
+        }
+
+        function resolveConflict() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Resolver conflictos mejora la cooperación
+            gameState.nodes.forEach(node => {
+                node.strength = Math.min(100, node.strength + Math.random() * 20 + 15);
+            });
+
+            gameState.cooperationScore += 30;
+            gameState.networks++;
+
+            showAchievement('🕊️ Conflicto Resuelto', 'Has resuelto un conflicto mediante cooperación');
+            updateDisplay();
+        }
+
+        function scaleCooperation() {
+            if (!gameState.selectedTool) {
+                alert('Selecciona una herramienta primero.');
+                return;
+            }
+
+            // Escalar cooperación mejora todos los aspectos
+            gameState.nodes.forEach(node => {
+                node.strength = Math.min(100, node.strength + Math.random() * 25 + 20);
+            });
+
+            gameState.cooperationScore += 40;
+            gameState.networks++;
+            gameState.collaborations++;
+
+            showAchievement('📈 Cooperación Escalada', 'Has escalado la cooperación global');
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('cooperationScore').textContent = gameState.cooperationScore;
+            document.getElementById('connections').textContent = gameState.connections;
+            document.getElementById('networks').textContent = gameState.networks;
+            document.getElementById('collaborations').textContent = gameState.collaborations;
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        // Inicializar juego
+        initializeNodes();
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preparador para la Singularidad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .singularity-timer {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 20px 0;
+        }
+        .preparation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .prep-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .prep-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .prep-card.completed {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .prep-card.completed::after {
+            content: '✅';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+        }
+        .prep-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .prep-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .prep-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .prep-progress {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .prep-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            transition: width 0.5s ease;
+        }
+        .prep-level {
+            text-align: center;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .tech-convergence {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .convergence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .convergence-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        .convergence-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .convergence-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .convergence-level {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .stats-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .achievement {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Preparador para la Singularidad</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Prepárate para la Singularidad Tecnológica desarrollando las capacidades necesarias para prosperar en un mundo post-singularidad. Desarrolla habilidades humanas únicas, prepara sistemas éticos y construye la infraestructura necesaria para una transición exitosa.</p>
+        </div>
+
+        <div class="singularity-timer">
+            <h3>⏰ Cuenta Regresiva hacia la Singularidad</h3>
+            <div class="timer-display" id="singularityTimer">21 años</div>
+            <p>Según Ray Kurzweil, la Singularidad ocurrirá alrededor de 2045</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="readinessScore">0</div>
+                <div class="stat-label">Puntuación de Preparación</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="humanSkills">0</div>
+                <div class="stat-label">Habilidades Humanas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="ethicalSystems">0</div>
+                <div class="stat-label">Sistemas Éticos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="infrastructure">0</div>
+                <div class="stat-label">Infraestructura</div>
+            </div>
+        </div>
+
+        <div class="preparation-grid">
+            <div class="prep-card" onclick="workOnPreparation('creativity')">
+                <div class="prep-icon">🎨</div>
+                <div class="prep-title">Creatividad</div>
+                <div class="prep-description">Desarrolla habilidades creativas únicas que las máquinas no pueden replicar</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="creativityProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="creativityLevel">Nivel 0</div>
+            </div>
+
+            <div class="prep-card" onclick="workOnPreparation('empathy')">
+                <div class="prep-icon">❤️</div>
+                <div class="prep-title">Empatía</div>
+                <div class="prep-description">Fortalece la conexión emocional y la comprensión humana</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="empathyProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="empathyLevel">Nivel 0</div>
+            </div>
+
+            <div class="prep-card" onclick="workOnPreparation('wisdom')">
+                <div class="prep-icon">🧠</div>
+                <div class="prep-title">Sabiduría</div>
+                <div class="prep-description">Desarrolla juicio ético y sabiduría práctica</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="wisdomProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="wisdomLevel">Nivel 0</div>
+            </div>
+
+            <div class="prep-card" onclick="workOnPreparation('spirituality')">
+                <div class="prep-icon">🌟</div>
+                <div class="prep-title">Espiritualidad</div>
+                <div class="prep-description">Cultiva propósito y conexión con algo mayor</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="spiritualityProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="spiritualityLevel">Nivel 0</div>
+            </div>
+
+            <div class="prep-card" onclick="workOnPreparation('collaboration')">
+                <div class="prep-icon">🤝</div>
+                <div class="prep-title">Colaboración</div>
+                <div class="prep-description">Mejora habilidades de trabajo en equipo y liderazgo</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="collaborationProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="collaborationLevel">Nivel 0</div>
+            </div>
+
+            <div class="prep-card" onclick="workOnPreparation('adaptability')">
+                <div class="prep-icon">🔄</div>
+                <div class="prep-title">Adaptabilidad</div>
+                <div class="prep-description">Desarrolla flexibilidad y capacidad de cambio</div>
+                <div class="prep-progress">
+                    <div class="prep-progress-fill" id="adaptabilityProgress" style="width: 0%;"></div>
+                </div>
+                <div class="prep-level" id="adaptabilityLevel">Nivel 0</div>
+            </div>
+        </div>
+
+        <div class="tech-convergence">
+            <h3>🔬 Convergencia Tecnológica</h3>
+            <p>Desarrolla las tecnologías que convergerán hacia la Singularidad:</p>
+            <div class="convergence-grid">
+                <div class="convergence-item">
+                    <div class="convergence-icon">🤖</div>
+                    <div class="convergence-title">IA General</div>
+                    <div class="convergence-level" id="agiLevel">Nivel 0</div>
+                </div>
+                <div class="convergence-item">
+                    <div class="convergence-icon">🧬</div>
+                    <div class="convergence-title">Biotecnología</div>
+                    <div class="convergence-level" id="biotechLevel">Nivel 0</div>
+                </div>
+                <div class="convergence-item">
+                    <div class="convergence-icon">🧠</div>
+                    <div class="convergence-title">Neurotecnología</div>
+                    <div class="convergence-level" id="neurotechLevel">Nivel 0</div>
+                </div>
+                <div class="convergence-item">
+                    <div class="convergence-icon">⚡</div>
+                    <div class="convergence-title">Computación</div>
+                    <div class="convergence-level" id="computingLevel">Nivel 0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h3>🎮 Acciones de Preparación</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="button" onclick="developHumanSkills()">Desarrollar Habilidades Humanas</button>
+                <button class="button" onclick="buildEthicalSystems()">Construir Sistemas Éticos</button>
+                <button class="button" onclick="createInfrastructure()">Crear Infraestructura</button>
+                <button class="button" onclick="researchSafety()">Investigar Seguridad</button>
+                <button class="button" onclick="prepareSociety()">Preparar Sociedad</button>
+                <button class="button" onclick="planTransition()">Planificar Transición</button>
+            </div>
+        </div>
+
+        <div id="achievements" class="game-section">
+            <h3>🏆 Logros</h3>
+            <p>Desarrolla capacidades para desbloquear logros especiales.</p>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            readinessScore: 0,
+            humanSkills: 0,
+            ethicalSystems: 0,
+            infrastructure: 0,
+            yearsToSingularity: 21,
+            preparations: {
+                creativity: { level: 0, progress: 0 },
+                empathy: { level: 0, progress: 0 },
+                wisdom: { level: 0, progress: 0 },
+                spirituality: { level: 0, progress: 0 },
+                collaboration: { level: 0, progress: 0 },
+                adaptability: { level: 0, progress: 0 }
+            },
+            technologies: {
+                agi: { level: 0, progress: 0 },
+                biotech: { level: 0, progress: 0 },
+                neurotech: { level: 0, progress: 0 },
+                computing: { level: 0, progress: 0 }
+            },
+            achievements: []
+        };
+
+        function workOnPreparation(type) {
+            const prep = gameState.preparations[type];
+            prep.progress += Math.random() * 15 + 10;
+            prep.level = Math.min(100, Math.floor(prep.progress));
+            
+            gameState.humanSkills = Math.round(Object.values(gameState.preparations).reduce((sum, p) => sum + p.level, 0) / 6);
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function developHumanSkills() {
+            // Mejora todas las habilidades humanas
+            Object.keys(gameState.preparations).forEach(skill => {
+                gameState.preparations[skill].progress += Math.random() * 10 + 5;
+                gameState.preparations[skill].level = Math.min(100, Math.floor(gameState.preparations[skill].progress));
+            });
+            
+            gameState.humanSkills = Math.round(Object.values(gameState.preparations).reduce((sum, p) => sum + p.level, 0) / 6);
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function buildEthicalSystems() {
+            gameState.ethicalSystems = Math.min(100, gameState.ethicalSystems + Math.floor(Math.random() * 15 + 10));
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function createInfrastructure() {
+            gameState.infrastructure = Math.min(100, gameState.infrastructure + Math.floor(Math.random() * 15 + 10));
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function researchSafety() {
+            // Investigar seguridad mejora sistemas éticos
+            gameState.ethicalSystems = Math.min(100, gameState.ethicalSystems + Math.floor(Math.random() * 20 + 15));
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            showAchievement('🔒 Investigación de Seguridad', 'Has desarrollado sistemas de seguridad para la IA');
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function prepareSociety() {
+            // Preparar sociedad mejora infraestructura
+            gameState.infrastructure = Math.min(100, gameState.infrastructure + Math.floor(Math.random() * 20 + 15));
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            showAchievement('🏛️ Preparación Social', 'Has preparado a la sociedad para la Singularidad');
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function planTransition() {
+            // Planificar transición mejora todos los aspectos
+            gameState.ethicalSystems = Math.min(100, gameState.ethicalSystems + Math.floor(Math.random() * 10 + 5));
+            gameState.infrastructure = Math.min(100, gameState.infrastructure + Math.floor(Math.random() * 10 + 5));
+            gameState.readinessScore = Math.round((gameState.humanSkills + gameState.ethicalSystems + gameState.infrastructure) / 3);
+            
+            showAchievement('📋 Planificación de Transición', 'Has desarrollado un plan para la transición');
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function updateDisplay() {
+            // Actualizar estadísticas
+            document.getElementById('readinessScore').textContent = gameState.readinessScore;
+            document.getElementById('humanSkills').textContent = gameState.humanSkills;
+            document.getElementById('ethicalSystems').textContent = gameState.ethicalSystems;
+            document.getElementById('infrastructure').textContent = gameState.infrastructure;
+
+            // Actualizar preparaciones
+            Object.keys(gameState.preparations).forEach(prep => {
+                const prepData = gameState.preparations[prep];
+                document.getElementById(prep + 'Progress').style.width = prepData.progress + '%';
+                document.getElementById(prep + 'Level').textContent = 'Nivel ' + prepData.level;
+                
+                const card = document.querySelector(`[onclick="workOnPreparation('${prep}')"]`);
+                if (prepData.level >= 100) {
+                    card.classList.add('completed');
+                } else {
+                    card.classList.remove('completed');
+                }
+            });
+
+            // Actualizar tecnologías
+            Object.keys(gameState.technologies).forEach(tech => {
+                const techData = gameState.technologies[tech];
+                document.getElementById(tech + 'Level').textContent = 'Nivel ' + techData.level;
+            });
+
+            // Actualizar timer
+            document.getElementById('singularityTimer').textContent = gameState.yearsToSingularity + ' años';
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+
+            if (gameState.humanSkills >= 80 && !gameState.achievements.includes('human_master')) {
+                newAchievements.push({name: '👤 Maestro Humano', description: 'Has desarrollado habilidades humanas excepcionales'});
+                gameState.achievements.push('human_master');
+            }
+
+            if (gameState.ethicalSystems >= 80 && !gameState.achievements.includes('ethics_master')) {
+                newAchievements.push({name: '⚖️ Maestro Ético', description: 'Has construido sistemas éticos robustos'});
+                gameState.achievements.push('ethics_master');
+            }
+
+            if (gameState.infrastructure >= 80 && !gameState.achievements.includes('infrastructure_master')) {
+                newAchievements.push({name: '🏗️ Maestro de Infraestructura', description: 'Has creado infraestructura sólida'});
+                gameState.achievements.push('infrastructure_master');
+            }
+
+            if (gameState.readinessScore >= 90 && !gameState.achievements.includes('singularity_ready')) {
+                newAchievements.push({name: '🔮 Listo para la Singularidad', description: 'Estás preparado para la Singularidad'});
+                gameState.achievements.push('singularity_ready');
+            }
+
+            if (newAchievements.length > 0) {
+                showAchievement(newAchievements[0].name, newAchievements[0].description);
+            }
+
+            // Verificar victoria
+            if (gameState.readinessScore >= 100) {
+                showVictory();
+            }
+        }
+
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.innerHTML = `
+                <h4>${title}</h4>
+                <p>${description}</p>
+            `;
+            
+            document.getElementById('achievements').appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function showVictory() {
+            const victory = document.createElement('div');
+            victory.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 1000;
+                text-align: center;
+                max-width: 500px;
+            `;
+            
+            victory.innerHTML = `
+                <h2>🎉 ¡Preparación Completa!</h2>
+                <p>Has preparado exitosamente a la humanidad para la Singularidad.</p>
+                <p><strong>Puntuación Final:</strong> ${gameState.readinessScore}/100</p>
+                <p><strong>Habilidades Humanas:</strong> ${gameState.humanSkills}/100</p>
+                <p><strong>Sistemas Éticos:</strong> ${gameState.ethicalSystems}/100</p>
+                <p><strong>Infraestructura:</strong> ${gameState.infrastructure}/100</p>
+                <p>¡La humanidad está lista para prosperar en la era post-singularidad!</p>
+                <button class="button" onclick="location.reload()">Jugar de Nuevo</button>
+            `;
+            
+            document.body.appendChild(victory);
+        }
+
+        // Simular progreso hacia la Singularidad
+        function simulateProgress() {
+            if (gameState.yearsToSingularity > 0) {
+                gameState.yearsToSingularity -= 0.1;
+                
+                // Las tecnologías avanzan automáticamente
+                Object.keys(gameState.technologies).forEach(tech => {
+                    gameState.technologies[tech].progress += Math.random() * 2;
+                    gameState.technologies[tech].level = Math.min(100, Math.floor(gameState.technologies[tech].progress));
+                });
+                
+                updateDisplay();
+            }
+        }
+
+        // Inicializar juego
+        updateDisplay();
+        
+        // Simular progreso cada segundo
+        setInterval(simulateProgress, 1000);
+    </script>
+</body>
+</html>

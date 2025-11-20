@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Autoestima en Ventas</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+    <link rel="stylesheet" href="../juegos-style.css">
+    <style>
+        .quiz-option {
+            background: #142b47;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #213a5a;
+            border-color: #005BAA;
+        }
+
+        .quiz-option.selected {
+            background: #005BAA;
+            border-color: #0077CC;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #005BAA 0%, #0077CC 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #005BAA;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #0077CC;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Test: Tu Autoestima en Ventas</h1>
+        <h2>Evalúa tu Nivel de Confianza en Ventas</h2>
+
+        <div class="highlight">
+            <p>Este test te ayudará a identificar tu nivel actual de autoestima en ventas y las áreas donde puedes
+                mejorar. Responde honestamente a cada pregunta.</p>
+        </div>
+
+        <div id="quiz-container">
+            <div class="question-block">
+                <h3>1. ¿Cómo te sientes antes de hacer una llamada de prospección?</h3>
+                <div class="quiz-option" data-question="1" data-value="1">A) Muy nervioso/a, casi con temor</div>
+                <div class="quiz-option" data-question="1" data-value="2">B) Un poco ansioso/a pero lo hago</div>
+                <div class="quiz-option" data-question="1" data-value="3">C) Neutral, es parte del trabajo</div>
+                <div class="quiz-option" data-question="1" data-value="4">D) Confiado/a y entusiasmado/a</div>
+            </div>
+
+            <div class="question-block">
+                <h3>2. Cuando un cliente dice "no", ¿cómo reaccionas internamente?</h3>
+                <div class="quiz-option" data-question="2" data-value="1">A) Me siento rechazado/a personalmente</div>
+                <div class="quiz-option" data-question="2" data-value="2">B) Me desanimo un poco pero continúo</div>
+                <div class="quiz-option" data-question="2" data-value="3">C) Lo veo como parte del proceso</div>
+                <div class="quiz-option" data-question="2" data-value="4">D) Lo veo como una oportunidad de aprender
+                </div>
+            </div>
+
+            <div class="question-block">
+                <h3>3. ¿Con qué frecuencia te dices afirmaciones positivas sobre tus habilidades de ventas?</h3>
+                <div class="quiz-option" data-question="3" data-value="1">A) Nunca o casi nunca</div>
+                <div class="quiz-option" data-question="3" data-value="2">B) Ocasionalmente</div>
+                <div class="quiz-option" data-question="3" data-value="3">C) Varias veces a la semana</div>
+                <div class="quiz-option" data-question="3" data-value="4">D) Diariamente, es parte de mi rutina</div>
+            </div>
+
+            <div class="question-block">
+                <h3>4. ¿Cómo te comparas con otros vendedores?</h3>
+                <div class="quiz-option" data-question="4" data-value="1">A) Siento que soy inferior a la mayoría</div>
+                <div class="quiz-option" data-question="4" data-value="2">B) Estoy en el promedio</div>
+                <div class="quiz-option" data-question="4" data-value="3">C) Estoy por encima del promedio</div>
+                <div class="quiz-option" data-question="4" data-value="4">D) Soy uno de los mejores</div>
+            </div>
+
+            <div class="question-block">
+                <h3>5. ¿Cuánto crees que mereces ganar al año?</h3>
+                <div class="quiz-option" data-question="5" data-value="1">A) Lo mínimo necesario para sobrevivir</div>
+                <div class="quiz-option" data-question="5" data-value="2">B) Un salario promedio</div>
+                <div class="quiz-option" data-question="5" data-value="3">C) Por encima del promedio</div>
+                <div class="quiz-option" data-question="5" data-value="4">D) Tanto como los mejores en mi campo</div>
+            </div>
+
+            <div class="question-block">
+                <h3>6. Al presentar tu producto, ¿cómo te sientes?</h3>
+                <div class="quiz-option" data-question="6" data-value="1">A) Inseguro/a de su valor</div>
+                <div class="quiz-option" data-question="6" data-value="2">B) Algo confiado/a pero con dudas</div>
+                <div class="quiz-option" data-question="6" data-value="3">C) Confiado/a en su valor</div>
+                <div class="quiz-option" data-question="6" data-value="4">D) Totalmente convencido/a y entusiasta</div>
+            </div>
+
+            <div class="question-block">
+                <h3>7. ¿Cómo manejas los días difíciles en ventas?</h3>
+                <div class="quiz-option" data-question="7" data-value="1">A) Me desmorono y considero renunciar</div>
+                <div class="quiz-option" data-question="7" data-value="2">B) Me afectan mucho pero sigo adelante</div>
+                <div class="quiz-option" data-question="7" data-value="3">C) Los acepto como temporales</div>
+                <div class="quiz-option" data-question="7" data-value="4">D) Los uso como motivación para mejorar</div>
+            </div>
+
+            <div class="question-block">
+                <h3>8. ¿Qué tan cómodo/a te sientes pidiendo referencias?</h3>
+                <div class="quiz-option" data-question="8" data-value="1">A) Muy incómodo/a, casi nunca lo hago</div>
+                <div class="quiz-option" data-question="8" data-value="2">B) Un poco incómodo/a pero lo intento</div>
+                <div class="quiz-option" data-question="8" data-value="3">C) Cómodo/a, lo hago regularmente</div>
+                <div class="quiz-option" data-question="8" data-value="4">D) Muy cómodo/a, es natural para mí</div>
+            </div>
+
+            <div class="question-block">
+                <h3>9. ¿Cómo visualizas tu futuro en ventas?</h3>
+                <div class="quiz-option" data-question="9" data-value="1">A) Con incertidumbre y preocupación</div>
+                <div class="quiz-option" data-question="9" data-value="2">B) Espero que mejore</div>
+                <div class="quiz-option" data-question="9" data-value="3">C) Veo crecimiento constante</div>
+                <div class="quiz-option" data-question="9" data-value="4">D) Me veo como líder en mi campo</div>
+            </div>
+
+            <div class="question-block">
+                <h3>10. ¿Con qué frecuencia celebras tus victorias en ventas?</h3>
+                <div class="quiz-option" data-question="10" data-value="1">A) Nunca, no me parecen importantes</div>
+                <div class="quiz-option" data-question="10" data-value="2">B) Raramente</div>
+                <div class="quiz-option" data-question="10" data-value="3">C) A menudo</div>
+                <div class="quiz-option" data-question="10" data-value="4">D) Siempre, cada venta es una victoria</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="calculateScore()">Ver Resultados</button>
+        </div>
+
+        <div id="result" class="result-box">
+            <h2 style="text-align: center;">Tu Resultado</h2>
+            <div class="score-display" id="score"></div>
+            <div id="interpretation"></div>
+            <div id="recommendations"></div>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function () {
+                const question = this.dataset.question;
+                const value = this.dataset.value;
+
+                // Deseleccionar otras opciones de la misma pregunta
+                document.querySelectorAll(`[data-question="${question}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                // Seleccionar esta opción
+                this.classList.add('selected');
+                answers[question] = parseInt(value);
+            });
+        });
+
+        function calculateScore() {
+            if (Object.keys(answers).length < 10) {
+                alert('Por favor responde todas las preguntas antes de ver los resultados.');
+                return;
+            }
+
+            const total = Object.values(answers).reduce((a, b) => a + b, 0);
+            const percentage = (total / 40) * 100;
+
+            document.getElementById('score').textContent = total + ' / 40 puntos';
+
+            let interpretation = '';
+            let recommendations = '';
+
+            if (percentage >= 85) {
+                interpretation = `
+                    <h3 style="color: #00FF00;">🌟 Autoestima Excelente (${Math.round(percentage)}%)</h3>
+                    <p>¡Felicitaciones! Tienes una autoestima muy alta en ventas. Confías en ti mismo/a y en tus habilidades. Esta es la base del éxito extraordinario en ventas.</p>
+                `;
+                recommendations = `
+                    <h4>Recomendaciones:</h4>
+                    <ul>
+                        <li>Mantén tu práctica de afirmaciones diarias</li>
+                        <li>Comparte tu conocimiento con otros vendedores</li>
+                        <li>Establece metas aún más ambiciosas</li>
+                        <li>Considera convertirte en mentor</li>
+                    </ul>
+                `;
+            } else if (percentage >= 70) {
+                interpretation = `
+                    <h3 style="color: #90EE90;">✅ Autoestima Buena (${Math.round(percentage)}%)</h3>
+                    <p>Tienes una buena autoestima en ventas. Confías en tus habilidades la mayor parte del tiempo. Con un poco más de trabajo, puedes alcanzar el nivel de excelencia.</p>
+                `;
+                recommendations = `
+                    <h4>Recomendaciones:</h4>
+                    <ul>
+                        <li>Incrementa tus afirmaciones positivas diarias</li>
+                        <li>Celebra más tus victorias, incluso las pequeñas</li>
+                        <li>Visualiza tu éxito cada mañana</li>
+                        <li>Trabaja en las áreas donde puntuaste más bajo</li>
+                    </ul>
+                `;
+            } else if (percentage >= 50) {
+                interpretation = `
+                    <h3 style="color: #FFD700;">⚠️ Autoestima Moderada (${Math.round(percentage)}%)</h3>
+                    <p>Tu autoestima en ventas es moderada. Tienes confianza en algunas áreas pero dudas en otras. Hay mucho potencial para mejorar.</p>
+                `;
+                recommendations = `
+                    <h4>Recomendaciones Urgentes:</h4>
+                    <ul>
+                        <li>Comienza un programa diario de afirmaciones: "¡Me gusto!" 20 veces cada mañana</li>
+                        <li>Lee las lecciones sobre autoestima y concepto de uno mismo</li>
+                        <li>Busca un mentor o coach de ventas</li>
+                        <li>Enfócate en pequeñas victorias diarias</li>
+                        <li>Evita personas y pensamientos negativos</li>
+                    </ul>
+                `;
+            } else {
+                interpretation = `
+                    <h3 style="color: #FF6B6B;">🚨 Autoestima Baja (${Math.round(percentage)}%)</h3>
+                    <p>Tu autoestima en ventas necesita atención inmediata. La baja autoestima es el mayor obstáculo para el éxito en ventas, pero la buena noticia es que se puede mejorar significativamente.</p>
+                `;
+                recommendations = `
+                    <h4>Plan de Acción Inmediato:</h4>
+                    <ul>
+                        <li><strong>HOY:</strong> Comienza a repetir "¡Me gusto!" 50 veces cada mañana</li>
+                        <li><strong>Esta semana:</strong> Lee las lecciones 2, 10 y 11 sobre autoestima</li>
+                        <li><strong>Diariamente:</strong> Escribe 3 cosas que hiciste bien cada día</li>
+                        <li><strong>Evita:</strong> Compararte negativamente con otros</li>
+                        <li><strong>Busca:</strong> Apoyo de un mentor o coach profesional</li>
+                        <li><strong>Recuerda:</strong> La autoestima se puede desarrollar. No es permanente.</li>
+                    </ul>
+                `;
+            }
+
+            document.getElementById('interpretation').innerHTML = interpretation;
+            document.getElementById('recommendations').innerHTML = recommendations;
+            document.getElementById('result').classList.add('show');
+
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

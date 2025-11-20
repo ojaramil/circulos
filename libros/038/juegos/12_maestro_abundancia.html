@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Abundancia - Mentalidad de Abundancia</title>
+    <link rel="stylesheet" href="../juegos-style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Maestro de Abundancia</h1>
+            <p>Domina los Principios de la Abundancia</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🎯 Sobre el Maestro de Abundancia</h3>
+                <p>Este es el juego final que integra todos los principios de abundancia. Completa los desafíos para
+                    convertirte en un Maestro de Abundancia.</p>
+            </div>
+
+            <div class="mastery-level">
+                <h3>Nivel de Maestría</h3>
+                <div id="masteryLevel">Principiante</div>
+                <div class="progress-bar">
+                    <div id="masteryBar" style="width: 0%;">0%</div>
+                </div>
+            </div>
+
+            <div class="challenges" id="challenges"></div>
+
+            <div class="actions">
+                <button class="btn" onclick="completeChallenge()">Completar Desafío</button>
+                <button class="btn" onclick="viewCertificate()">Ver Certificado</button>
+            </div>
+
+            <div id="achievements"></div>
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            { id: 1, name: 'Mentalidad de Abundancia', completed: false },
+            { id: 2, name: 'Visión Clara', completed: false },
+            { id: 3, name: 'Expectativas Elevadas', completed: false },
+            { id: 4, name: 'Poder Activado', completed: false },
+            { id: 5, name: 'Bendición a Otros', completed: false },
+            { id: 6, name: 'Siembra Consistente', completed: false },
+            { id: 7, name: 'Transformación Completa', completed: false },
+            { id: 8, name: 'Impacto en Vidas', completed: false }
+        ];
+
+        let completedChallenges = 0;
+
+        function initGame() {
+            renderChallenges();
+            updateDisplay();
+        }
+
+        function renderChallenges() {
+            const container = document.getElementById('challenges');
+            container.innerHTML = challenges.map(c => `
+                <div class="challenge-card ${c.completed ? 'completed' : ''}" onclick="toggleChallenge(${c.id})">
+                    <h4>${c.name}</h4>
+                    <p>${c.completed ? '✅ Completado' : '⏳ Pendiente'}</p>
+                </div>
+            `).join('');
+        }
+
+        function toggleChallenge(id) {
+            const challenge = challenges.find(c => c.id === id);
+            if (challenge && !challenge.completed) {
+                challenge.completed = true;
+                completedChallenges++;
+                renderChallenges();
+                updateDisplay();
+                showAchievement('🎯 Desafío Completado', `Has completado: ${challenge.name}`);
+            }
+        }
+
+        function completeChallenge() {
+            const incomplete = challenges.find(c => !c.completed);
+            if (incomplete) {
+                incomplete.completed = true;
+                completedChallenges++;
+                renderChallenges();
+                updateDisplay();
+                showAchievement('🎯 Desafío Completado', `Has completado: ${incomplete.name}`);
+            }
+        }
+
+        function updateDisplay() {
+            const percentage = (completedChallenges / challenges.length) * 100;
+            document.getElementById('masteryBar').style.width = percentage + '%';
+            document.getElementById('masteryBar').textContent = Math.round(percentage) + '%';
+
+            let level;
+            if (percentage === 100) level = 'Maestro de Abundancia';
+            else if (percentage >= 75) level = 'Avanzado';
+            else if (percentage >= 50) level = 'Intermedio';
+            else if (percentage >= 25) level = 'Aprendiz';
+            else level = 'Principiante';
+
+            document.getElementById('masteryLevel').textContent = level;
+
+            if (percentage === 100) {
+                showAchievement('👑 ¡Maestro de Abundancia!', 'Has completado todos los desafíos');
+            }
+        }
+
+        function viewCertificate() {
+            if (completedChallenges === challenges.length) {
+                alert(`🏆 CERTIFICADO DE MAESTRÍA 🏆\n\nSe certifica que has completado\ntodos los desafíos de\nMENTALIDAD DE ABUNDANCIA\n\n¡Felicidades, Maestro de Abundancia!`);
+            } else {
+                alert(`Completa todos los desafíos para obtener tu certificado.\nProgreso: ${completedChallenges}/${challenges.length}`);
+            }
+        }
+
+        function showAchievement(title, desc) {
+            const div = document.createElement('div');
+            div.className = 'achievement';
+            div.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+            document.getElementById('achievements').appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

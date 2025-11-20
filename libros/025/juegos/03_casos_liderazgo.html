@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos de Liderazgo - Los Líderes Comen de Último</title>
+    <link rel="stylesheet" href="../nuevo-style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Casos de Liderazgo</h1>
+        <p class="game-description">Resuelve escenarios reales de liderazgo aplicando los principios del Círculo de Seguridad</p>
+        
+        <div id="caseContainer" class="case-container">
+            <div class="case-intro">
+                <h2>Bienvenido al Simulador de Casos de Liderazgo</h2>
+                <p>En este juego, enfrentarás situaciones reales que los líderes encuentran en el trabajo diario. Tu tarea es analizar cada caso y elegir la mejor respuesta basándote en los principios que has aprendido.</p>
+                <button id="startGame" class="btn-primary">Comenzar Juego</button>
+            </div>
+        </div>
+
+        <div id="gameControls" class="game-controls" style="display: none;">
+            <button id="prevCase" class="btn-secondary">← Caso Anterior</button>
+            <button id="nextCase" class="btn-secondary">Siguiente Caso →</button>
+            <button id="restartGame" class="btn-primary">Reiniciar Juego</button>
+        </div>
+
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <h2>Resultados del Juego</h2>
+            <div id="finalScore"></div>
+            <div id="caseAnalysis"></div>
+            <button id="playAgain" class="btn-primary">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const cases = [
+            {
+                id: 1,
+                title: "El Equipo Desmotivado",
+                description: "Tu equipo ha estado trabajando en un proyecto importante durante meses. Recientemente, varios miembros han mostrado signos de desmotivación y baja productividad. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Implementar un sistema de recompensas individuales para motivar a los mejores",
+                        score: 2,
+                        feedback: "Las recompensas individuales pueden crear competencia interna y debilitar el Círculo de Seguridad."
+                    },
+                    {
+                        text: "Organizar una reunión para escuchar las preocupaciones del equipo y buscar soluciones juntos",
+                        score: 5,
+                        feedback: "Excelente! Escuchar al equipo y buscar soluciones colaborativas fortalece el Círculo de Seguridad."
+                    },
+                    {
+                        text: "Establecer metas más agresivas y aumentar la presión para mejorar el rendimiento",
+                        score: 1,
+                        feedback: "Aumentar la presión puede crear más estrés y debilitar la confianza del equipo."
+                    },
+                    {
+                        text: "Reemplazar a los miembros menos productivos del equipo",
+                        score: 0,
+                        feedback: "Reemplazar personas sin entender por qué están desmotivadas puede crear miedo y debilitar la seguridad."
+                    }
+                ],
+                correctAnswer: 1,
+                explanation: "La opción correcta es escuchar al equipo y buscar soluciones juntos. Esto demuestra que valoras sus opiniones y creas un entorno donde se sienten seguros para expresar sus preocupaciones."
+            },
+            {
+                id: 2,
+                title: "El Error Costoso",
+                description: "Un miembro de tu equipo cometió un error que costó a la empresa $50,000. El empleado está devastado y teme ser despedido. ¿Cómo manejas esta situación?",
+                options: [
+                    {
+                        text: "Despedir al empleado para establecer un ejemplo y evitar futuros errores",
+                        score: 0,
+                        feedback: "Despedir a alguien por un error puede crear un ambiente de miedo y debilitar la seguridad psicológica."
+                    },
+                    {
+                        text: "Suspender al empleado por una semana sin pago como castigo",
+                        score: 1,
+                        feedback: "Los castigos pueden crear resentimiento y no ayudan a prevenir errores futuros."
+                    },
+                    {
+                        text: "Reunir al equipo para analizar qué salió mal y cómo prevenir errores similares",
+                        score: 5,
+                        feedback: "Perfecto! Analizar errores como equipo crea aprendizaje colectivo y fortalece la seguridad."
+                    },
+                    {
+                        text: "Ignorar el incidente para no afectar la moral del equipo",
+                        score: 2,
+                        feedback: "Ignorar errores importantes puede crear problemas de calidad y no resuelve la causa raíz."
+                    }
+                ],
+                correctAnswer: 2,
+                explanation: "La mejor respuesta es analizar el error como equipo. Esto convierte un problema en una oportunidad de aprendizaje y fortalece el Círculo de Seguridad."
+            },
+            {
+                id: 3,
+                title: "El Conflicto entre Departamentos",
+                description: "Hay un conflicto creciente entre tu departamento y el de marketing. La comunicación se ha deteriorado y los proyectos están sufriendo. ¿Cuál es tu enfoque?",
+                options: [
+                    {
+                        text: "Tomar partido por tu departamento y defender sus intereses",
+                        score: 1,
+                        feedback: "Tomar partido puede escalar el conflicto y crear divisiones más profundas."
+                    },
+                    {
+                        text: "Organizar una reunión conjunta para identificar la raíz del problema y encontrar soluciones",
+                        score: 5,
+                        feedback: "Excelente! Facilitar la comunicación entre departamentos es clave para resolver conflictos."
+                    },
+                    {
+                        text: "Elevar el conflicto a la alta dirección para que ellos lo resuelvan",
+                        score: 2,
+                        feedback: "Aunque a veces es necesario, esto puede crear dependencia y no resuelve el conflicto de raíz."
+                    },
+                    {
+                        text: "Evitar el conflicto y enfocarte solo en tu departamento",
+                        score: 0,
+                        feedback: "Evitar conflictos permite que crezcan y afecten negativamente a toda la organización."
+                    }
+                ],
+                correctAnswer: 1,
+                explanation: "La mejor opción es facilitar la comunicación entre departamentos. Como líder, tu rol es crear puentes, no muros."
+            },
+            {
+                id: 4,
+                title: "La Nueva Política de la Empresa",
+                description: "La alta dirección implementó una nueva política que tu equipo encuentra confusa y potencialmente problemática. ¿Qué haces?",
+                options: [
+                    {
+                        text: "Implementar la política tal como está y esperar que el equipo se adapte",
+                        score: 1,
+                        feedback: "Implementar políticas sin considerar las preocupaciones del equipo puede crear resistencia y baja moral."
+                    },
+                    {
+                        text: "Reunir al equipo para explicar la política y recopilar sus preocupaciones para elevarlas",
+                        score: 5,
+                        feedback: "Perfecto! Esto demuestra que valoras las opiniones de tu equipo y actúas como su defensor."
+                    },
+                    {
+                        text: "Ignorar la política y continuar con los procedimientos anteriores",
+                        score: 0,
+                        feedback: "Ignorar políticas de la empresa puede crear problemas de cumplimiento y confusión."
+                    },
+                    {
+                        text: "Implementar la política pero hacer excepciones para los empleados más antiguos",
+                        score: 2,
+                        feedback: "Hacer excepciones puede crear favoritismo y debilitar la confianza en el liderazgo."
+                    }
+                ],
+                correctAnswer: 1,
+                explanation: "La mejor respuesta es explicar la política al equipo y recopilar sus preocupaciones. Esto fortalece tu rol como protector del Círculo de Seguridad."
+            },
+            {
+                id: 5,
+                title: "El Empleado con Problemas Personales",
+                description: "Un empleado valioso ha estado llegando tarde y su rendimiento ha disminuido. Descubres que está pasando por un divorcio difícil. ¿Cómo manejas esta situación?",
+                options: [
+                    {
+                        text: "Darle un ultimátum para que mejore su rendimiento o será despedido",
+                        score: 0,
+                        feedback: "Los ultimátums pueden crear más estrés y no resuelven los problemas subyacentes."
+                    },
+                    {
+                        text: "Ofrecer apoyo emocional y flexibilidad temporal mientras supera la crisis",
+                        score: 5,
+                        feedback: "Excelente! Demostrar empatía y apoyo durante momentos difíciles fortalece la lealtad y el Círculo de Seguridad."
+                    },
+                    {
+                        text: "Transferir al empleado a un puesto menos exigente temporalmente",
+                        score: 3,
+                        feedback: "Aunque bien intencionado, esto puede hacer que el empleado se sienta degradado."
+                    },
+                    {
+                        text: "Ignorar la situación personal y enfocarte solo en el rendimiento laboral",
+                        score: 1,
+                        feedback: "Ignorar los problemas personales puede crear resentimiento y no resuelve la situación."
+                    }
+                ],
+                correctAnswer: 1,
+                explanation: "La mejor opción es ofrecer apoyo y flexibilidad. Los líderes efectivos entienden que las personas son seres humanos completos, no solo recursos laborales."
+            }
+        ];
+
+        let currentCaseIndex = 0;
+        let userAnswers = [];
+        let totalScore = 0;
+
+        function startGame() {
+            document.getElementById('caseContainer').innerHTML = '';
+            document.getElementById('gameControls').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            currentCaseIndex = 0;
+            userAnswers = [];
+            totalScore = 0;
+            showCase(currentCaseIndex);
+        }
+
+        function showCase(index) {
+            if (index < 0 || index >= cases.length) return;
+            
+            const currentCase = cases[index];
+            const caseHTML = `
+                <div class="case-content">
+                    <h2>Caso ${currentCase.id}: ${currentCase.title}</h2>
+                    <p class="case-description">${currentCase.description}</p>
+                    
+                    <div class="options-container">
+                        ${currentCase.options.map((option, optionIndex) => `
+                            <div class="option-item">
+                                <input type="radio" name="case${currentCase.id}" id="option${optionIndex}" value="${optionIndex}">
+                                <label for="option${optionIndex}">${option.text}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="case-feedback" id="feedback${currentCase.id}" style="display: none;">
+                        <h3>Tu Respuesta:</h3>
+                        <p id="selectedAnswer${currentCase.id}"></p>
+                        <h3>Feedback:</h3>
+                        <p id="feedbackText${currentCase.id}"></p>
+                        <h3>Explicación:</h3>
+                        <p>${currentCase.explanation}</p>
+                    </div>
+                    
+                    <button id="submitCase${currentCase.id}" class="btn-primary">Enviar Respuesta</button>
+                </div>
+            `;
+            
+            document.getElementById('caseContainer').innerHTML = caseHTML;
+            
+            // Add event listener for submit button
+            document.getElementById(`submitCase${currentCase.id}`).addEventListener('click', () => submitCase(currentCase));
+            
+            // Update navigation buttons
+            document.getElementById('prevCase').disabled = index === 0;
+            document.getElementById('nextCase').disabled = index === cases.length - 1;
+        }
+
+        function submitCase(currentCase) {
+            const selectedOption = document.querySelector(`input[name="case${currentCase.id}"]:checked`);
+            
+            if (!selectedOption) {
+                alert('Por favor selecciona una opción antes de continuar.');
+                return;
+            }
+            
+            const selectedIndex = parseInt(selectedOption.value);
+            const selectedOptionData = currentCase.options[selectedIndex];
+            
+            // Store answer
+            userAnswers[currentCase.id] = {
+                selected: selectedIndex,
+                score: selectedOptionData.score,
+                feedback: selectedOptionData.feedback
+            };
+            
+            totalScore += selectedOptionData.score;
+            
+            // Show feedback
+            document.getElementById(`selectedAnswer${currentCase.id}`).textContent = selectedOptionData.text;
+            document.getElementById(`feedbackText${currentCase.id}`).textContent = selectedOptionData.feedback;
+            document.getElementById(`feedback${currentCase.id}`).style.display = 'block';
+            
+            // Disable submit button
+            document.getElementById(`submitCase${currentCase.id}`).disabled = true;
+            
+            // Disable all radio buttons
+            currentCase.options.forEach((_, optionIndex) => {
+                document.getElementById(`option${optionIndex}`).disabled = true;
+            });
+        }
+
+        function nextCase() {
+            if (currentCaseIndex < cases.length - 1) {
+                currentCaseIndex++;
+                showCase(currentCaseIndex);
+            } else {
+                showResults();
+            }
+        }
+
+        function prevCase() {
+            if (currentCaseIndex > 0) {
+                currentCaseIndex--;
+                showCase(currentCaseIndex);
+            }
+        }
+
+        function showResults() {
+            const maxScore = cases.length * 5;
+            const percentage = Math.round((totalScore / maxScore) * 100);
+            
+            let performanceLevel = '';
+            let performanceColor = '';
+            
+            if (percentage >= 80) {
+                performanceLevel = 'Excelente';
+                performanceColor = '#4caf50';
+            } else if (percentage >= 60) {
+                performanceLevel = 'Bueno';
+                performanceColor = '#ff9800';
+            } else {
+                performanceLevel = 'Necesita Mejora';
+                performanceColor = '#f44336';
+            }
+            
+            const resultsHTML = `
+                <h2>Resultados del Juego</h2>
+                <div class="score-display">
+                    <h3>Puntuación Final: ${totalScore}/${maxScore} (${percentage}%)</h3>
+                    <p class="performance-level" style="color: ${performanceColor};">Nivel: ${performanceLevel}</p>
+                </div>
+                
+                <div class="case-analysis">
+                    <h3>Análisis por Caso:</h3>
+                    ${cases.map(caseItem => {
+                        const userAnswer = userAnswers[caseItem.id];
+                        if (!userAnswer) return `<p><strong>Caso ${caseItem.id}:</strong> No respondido</p>`;
+                        
+                        const isCorrect = userAnswer.selected === caseItem.correctAnswer;
+                        const color = isCorrect ? '#4caf50' : '#f44336';
+                        const status = isCorrect ? '✓ Correcto' : '✗ Incorrecto';
+                        
+                        return `
+                            <div class="case-result">
+                                <p><strong>Caso ${caseItem.id}:</strong> <span style="color: ${color};">${status}</span></p>
+                                <p><strong>Tu respuesta:</strong> ${caseItem.options[userAnswer.selected].text}</p>
+                                <p><strong>Puntuación:</strong> ${userAnswer.score}/5</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <div class="improvement-tips">
+                    <h3>Consejos para Mejorar:</h3>
+                    <ul>
+                        <li><strong>Recuerda el Círculo de Seguridad:</strong> Siempre prioriza la seguridad y bienestar de tu equipo</li>
+                        <li><strong>Practica la empatía:</strong> Ponte en el lugar de los demás antes de tomar decisiones</li>
+                        <li><strong>Fomenta la colaboración:</strong> Busca soluciones que beneficien a todo el equipo</li>
+                        <li><strong>Comunica abiertamente:</strong> La transparencia construye confianza</li>
+                        <li><strong>Modela el comportamiento:</strong> Demuestra con acciones, no solo con palabras</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('caseContainer').innerHTML = resultsHTML;
+            document.getElementById('gameControls').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // Event listeners
+        document.getElementById('startGame').addEventListener('click', startGame);
+        document.getElementById('nextCase').addEventListener('click', nextCase);
+        document.getElementById('prevCase').addEventListener('click', prevCase);
+        document.getElementById('restartGame').addEventListener('click', restartGame);
+        document.getElementById('playAgain').addEventListener('click', startGame);
+    </script>
+
+    <style>
+        .case-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .case-intro {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .case-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .case-description {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .options-container {
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-item:hover {
+            border-color: #1e3a5c;
+            background-color: #f8f9fa;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            margin-top: 3px;
+        }
+
+        .option-item label {
+            cursor: pointer;
+            line-height: 1.5;
+            margin: 0;
+            flex: 1;
+        }
+
+        .case-feedback {
+            background-color: #f8f9fa;
+            border-left: 4px solid #1e3a5c;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .case-feedback h3 {
+            color: #1e3a5c;
+            margin-top: 0;
+        }
+
+        .game-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #1e3a5c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #274472;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-secondary:disabled {
+            background-color: #dee2e6;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .score-display {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .performance-level {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .case-analysis {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .case-result {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+        }
+
+        .case-result:last-child {
+            border-bottom: none;
+        }
+
+        .improvement-tips {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .improvement-tips ul {
+            padding-left: 20px;
+        }
+
+        .improvement-tips li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditación para el Ego - El Ego es el Enemigo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .meditation-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .meditation-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .meditation-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .meditation-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .meditation-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .meditation-card h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .meditation-card p {
+            margin: 10px 0;
+        }
+        .meditation-card .duration {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .timer-section {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0056b3;
+            text-align: center;
+        }
+        .timer-section h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .timer-controls {
+            margin: 20px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .meditation-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        .meditation-content h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .meditation-step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .meditation-step h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .meditation-step .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .breathing-guide {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+        .breathing-guide h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.5s ease;
+        }
+        .breathing-circle.inhale {
+            transform: scale(1.2);
+            background: #e7f3ff;
+        }
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: #f0f4ff;
+        }
+        .breathing-circle.hold {
+            transform: scale(1.1);
+            background: #fff3cd;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .quote-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+            font-style: italic;
+            text-align: center;
+        }
+        .quote-box p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #495057;
+        }
+        .quote-box .author {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧘 Meditación para el Ego</h1>
+            <p>Encuentra la paz interior y domina tu ego</p>
+        </div>
+
+        <div class="quote-box">
+            <p>"La meditación no es evasión; es un encuentro sereno con la realidad."</p>
+            <div class="author">- Thich Nhat Hanh</div>
+        </div>
+
+        <div class="meditation-section">
+            <h3>🎯 Selecciona tu Meditación</h3>
+            <p>Elige el tipo de meditación que mejor se adapte a tu estado actual:</p>
+            
+            <div class="meditation-card" onclick="selectMeditation('ego-awareness')">
+                <h4>🎭 Conciencia del Ego</h4>
+                <p>Meditación para reconocer y observar tu ego sin juzgarlo.</p>
+                <div class="duration">Duración: 10 minutos</div>
+            </div>
+            
+            <div class="meditation-card" onclick="selectMeditation('humility')">
+                <h4>🌱 Cultivar la Humildad</h4>
+                <p>Práctica para desarrollar una actitud humilde y abierta.</p>
+                <div class="duration">Duración: 15 minutos</div>
+            </div>
+            
+            <div class="meditation-card" onclick="selectMeditation('letting-go')">
+                <h4>🕊️ Soltar el Control</h4>
+                <p>Meditación para aprender a soltar la necesidad de controlar todo.</p>
+                <div class="duration">Duración: 12 minutos</div>
+            </div>
+            
+            <div class="meditation-card" onclick="selectMeditation('gratitude')">
+                <h4>🙏 Gratitud y Apreciación</h4>
+                <p>Práctica para cultivar gratitud y apreciar lo que tienes.</p>
+                <div class="duration">Duración: 8 minutos</div>
+            </div>
+            
+            <div class="meditation-card" onclick="selectMeditation('compassion')">
+                <h4>💝 Compasión hacia Ti Mismo</h4>
+                <p>Meditación para desarrollar autocompasión y aceptación.</p>
+                <div class="duration">Duración: 20 minutos</div>
+            </div>
+        </div>
+
+        <div class="timer-section" id="timer-section" style="display: none;">
+            <h3>⏰ Meditación en Progreso</h3>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-controls">
+                <button class="btn" onclick="startMeditation()" id="start-btn">▶️ Comenzar</button>
+                <button class="btn btn-secondary" onclick="pauseMeditation()" id="pause-btn" style="display: none;">⏸️ Pausar</button>
+                <button class="btn btn-danger" onclick="stopMeditation()" id="stop-btn" style="display: none;">⏹️ Detener</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="breathing-guide" id="breathing-guide" style="display: none;">
+            <h3>🌬️ Guía de Respiración</h3>
+            <p>Sigue el círculo para sincronizar tu respiración:</p>
+            <div class="breathing-circle" id="breathing-circle">Inhala</div>
+            <p id="breathing-instruction">Inhala lentamente por la nariz...</p>
+        </div>
+
+        <div class="meditation-content" id="meditation-content">
+            <h3 id="meditation-title">Meditación</h3>
+            <div id="meditation-steps"></div>
+        </div>
+
+        <div class="meditation-section" id="reflection-section" style="display: none;">
+            <h3>📝 Reflexión Post-Meditativa</h3>
+            <p>Reflexiona sobre tu experiencia de meditación:</p>
+            
+            <div class="form-group">
+                <label for="meditation-feelings">¿Cómo te sientes después de la meditación?</label>
+                <textarea id="meditation-feelings" placeholder="Describe tus emociones y sensaciones..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="ego-observations">¿Qué observaste sobre tu ego durante la meditación?</label>
+                <textarea id="ego-observations" placeholder="¿Qué pensamientos o patrones notaste?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="insights">¿Qué insights o revelaciones tuviste?</label>
+                <textarea id="insights" placeholder="¿Qué aprendiste sobre ti mismo?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="commitment">¿Cómo te comprometes a aplicar estos insights en tu vida diaria?</label>
+                <textarea id="commitment" placeholder="¿Qué acciones específicas tomarás?"></textarea>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <h4>Sesiones Completadas</h4>
+                <div class="number" id="sessions-completed">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Tiempo Total</h4>
+                <div class="number" id="total-time">0 min</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Actual</h4>
+                <div class="number" id="current-streak">0 días</div>
+            </div>
+            <div class="stat-card">
+                <h4>Racha Máxima</h4>
+                <div class="number" id="max-streak">0 días</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="viewStats()" id="stats-btn" style="display: none;">📊 Ver Estadísticas</button>
+            <button class="btn btn-success" onclick="saveMeditation()" id="save-btn" style="display: none;">💾 Guardar Meditación</button>
+            <button class="btn btn-secondary" onclick="resetMeditation()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedMeditation = null;
+        let meditationTimer = null;
+        let meditationDuration = 0;
+        let currentTime = 0;
+        let isPaused = false;
+        let breathingInterval = null;
+        let breathingPhase = 'inhale';
+
+        const meditations = {
+            'ego-awareness': {
+                title: 'Conciencia del Ego',
+                duration: 10,
+                steps: [
+                    'Siéntate cómodamente y cierra los ojos',
+                    'Observa tu respiración sin intentar cambiarla',
+                    'Nota los pensamientos que surgen sin juzgarlos',
+                    'Reconoce cuando tu ego está presente en tus pensamientos',
+                    'Observa cómo tu ego se manifiesta en tu cuerpo',
+                    'Permite que los pensamientos pasen como nubes en el cielo',
+                    'Mantén la atención en tu respiración',
+                    'Observa sin juzgar, sin intentar cambiar nada',
+                    'Reconoce tu ego con compasión y comprensión',
+                    'Abre los ojos y regresa lentamente al presente'
+                ]
+            },
+            'humility': {
+                title: 'Cultivar la Humildad',
+                duration: 15,
+                steps: [
+                    'Siéntate con la espalda recta y los ojos cerrados',
+                    'Respira profundamente y relaja tu cuerpo',
+                    'Reflexiona sobre las personas que te han ayudado en la vida',
+                    'Reconoce que no has llegado solo a donde estás',
+                    'Agradece a todos los que han contribuido a tu crecimiento',
+                    'Reflexiona sobre las lecciones que has aprendido de los errores',
+                    'Reconoce que siempre hay más por aprender',
+                    'Abre tu corazón a la humildad y la gratitud',
+                    'Permite que la humildad llene tu ser',
+                    'Mantén esta sensación de humildad y gratitud',
+                    'Reflexiona sobre cómo puedes servir a otros',
+                    'Agradece por la oportunidad de crecer y aprender',
+                    'Permite que la humildad guíe tus acciones',
+                    'Abre los ojos con una nueva perspectiva humilde',
+                    'Lleva esta humildad contigo durante el día'
+                ]
+            },
+            'letting-go': {
+                title: 'Soltar el Control',
+                duration: 12,
+                steps: [
+                    'Siéntate cómodamente y cierra los ojos',
+                    'Respira profundamente y relaja tu cuerpo',
+                    'Reflexiona sobre las cosas que intentas controlar',
+                    'Reconoce que no puedes controlar todo',
+                    'Permite que la sensación de control se relaje',
+                    'Observa cómo se siente soltar el control',
+                    'Confía en que las cosas se resolverán como deben ser',
+                    'Permite que la vida fluya naturalmente',
+                    'Suelta la necesidad de tener todas las respuestas',
+                    'Confía en tu capacidad de adaptarte',
+                    'Permite que la paz llene tu ser',
+                    'Abre los ojos con una nueva sensación de libertad'
+                ]
+            },
+            'gratitude': {
+                title: 'Gratitud y Apreciación',
+                duration: 8,
+                steps: [
+                    'Siéntate cómodamente y cierra los ojos',
+                    'Respira profundamente y relaja tu cuerpo',
+                    'Reflexiona sobre tres cosas por las que estás agradecido',
+                    'Permite que la gratitud llene tu corazón',
+                    'Agradece por las personas en tu vida',
+                    'Agradece por las oportunidades que has tenido',
+                    'Agradece por las lecciones aprendidas',
+                    'Abre los ojos con un corazón lleno de gratitud'
+                ]
+            },
+            'compassion': {
+                title: 'Compasión hacia Ti Mismo',
+                duration: 20,
+                steps: [
+                    'Siéntate cómodamente y cierra los ojos',
+                    'Respira profundamente y relaja tu cuerpo',
+                    'Dirige tu atención a tu corazón',
+                    'Imagina una luz cálida en tu pecho',
+                    'Permite que esta luz se expanda por todo tu cuerpo',
+                    'Envíate compasión y amor incondicional',
+                    'Reconoce que mereces amor y compasión',
+                    'Perdónate por los errores del pasado',
+                    'Acepta tus imperfecciones con amor',
+                    'Permite que la compasión llene tu ser',
+                    'Imagina abrazarte con amor y comprensión',
+                    'Reconoce tu valor inherente como ser humano',
+                    'Permite que la compasión se extienda a otros',
+                    'Mantén esta sensación de amor y compasión',
+                    'Reflexiona sobre cómo puedes ser más compasivo contigo mismo',
+                    'Permite que la compasión guíe tus acciones',
+                    'Agradece por la oportunidad de amarte a ti mismo',
+                    'Permite que el amor llene tu corazón',
+                    'Abre los ojos con un corazón lleno de compasión',
+                    'Lleva esta compasión contigo durante el día'
+                ]
+            }
+        };
+
+        function selectMeditation(type) {
+            selectedMeditation = type;
+            const meditation = meditations[type];
+            
+            // Remover selección anterior
+            document.querySelectorAll('.meditation-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva meditación
+            event.currentTarget.classList.add('selected');
+            
+            // Mostrar timer y contenido
+            document.getElementById('timer-section').style.display = 'block';
+            document.getElementById('meditation-content').style.display = 'block';
+            document.getElementById('meditation-title').textContent = meditation.title;
+            
+            // Mostrar pasos
+            const stepsHtml = meditation.steps.map((step, index) => `
+                <div class="meditation-step">
+                    <span class="step-number">${index + 1}</span>
+                    <h4>Paso ${index + 1}</h4>
+                    <p>${step}</p>
+                </div>
+            `).join('');
+            
+            document.getElementById('meditation-steps').innerHTML = stepsHtml;
+            
+            // Configurar duración
+            meditationDuration = meditation.duration * 60; // Convertir a segundos
+            currentTime = 0;
+            updateTimerDisplay();
+        }
+
+        function startMeditation() {
+            if (!selectedMeditation) return;
+            
+            isPaused = false;
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            document.getElementById('stop-btn').style.display = 'inline-block';
+            
+            // Iniciar timer
+            meditationTimer = setInterval(() => {
+                if (!isPaused) {
+                    currentTime++;
+                    updateTimerDisplay();
+                    updateProgress();
+                    
+                    if (currentTime >= meditationDuration) {
+                        completeMeditation();
+                    }
+                }
+            }, 1000);
+            
+            // Iniciar guía de respiración
+            startBreathingGuide();
+        }
+
+        function pauseMeditation() {
+            isPaused = !isPaused;
+            document.getElementById('pause-btn').textContent = isPaused ? '▶️ Continuar' : '⏸️ Pausar';
+            
+            if (isPaused) {
+                stopBreathingGuide();
+            } else {
+                startBreathingGuide();
+            }
+        }
+
+        function stopMeditation() {
+            if (confirm('¿Estás seguro de que quieres detener la meditación?')) {
+                clearInterval(meditationTimer);
+                stopBreathingGuide();
+                resetMeditation();
+            }
+        }
+
+        function completeMeditation() {
+            clearInterval(meditationTimer);
+            stopBreathingGuide();
+            
+            document.getElementById('timer-section').style.display = 'none';
+            document.getElementById('meditation-content').style.display = 'none';
+            document.getElementById('reflection-section').style.display = 'block';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            
+            // Guardar sesión
+            saveMeditationSession();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentTime / 60);
+            const seconds = currentTime % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateProgress() {
+            const progress = (currentTime / meditationDuration) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        function startBreathingGuide() {
+            document.getElementById('breathing-guide').style.display = 'block';
+            
+            let breathCount = 0;
+            breathingInterval = setInterval(() => {
+                const circle = document.getElementById('breathing-circle');
+                const instruction = document.getElementById('breathing-instruction');
+                
+                if (breathCount % 4 === 0) {
+                    // Inhala
+                    circle.textContent = 'Inhala';
+                    circle.className = 'breathing-circle inhale';
+                    instruction.textContent = 'Inhala lentamente por la nariz...';
+                    breathingPhase = 'inhale';
+                } else if (breathCount % 4 === 1) {
+                    // Mantén
+                    circle.textContent = 'Mantén';
+                    circle.className = 'breathing-circle hold';
+                    instruction.textContent = 'Mantén la respiración...';
+                    breathingPhase = 'hold';
+                } else if (breathCount % 4 === 2) {
+                    // Exhala
+                    circle.textContent = 'Exhala';
+                    circle.className = 'breathing-circle exhale';
+                    instruction.textContent = 'Exhala lentamente por la boca...';
+                    breathingPhase = 'exhale';
+                } else {
+                    // Pausa
+                    circle.textContent = 'Pausa';
+                    circle.className = 'breathing-circle';
+                    instruction.textContent = 'Pausa antes de la siguiente respiración...';
+                    breathingPhase = 'pause';
+                }
+                
+                breathCount++;
+            }, 4000); // 4 segundos por fase
+        }
+
+        function stopBreathingGuide() {
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+                breathingInterval = null;
+            }
+            document.getElementById('breathing-guide').style.display = 'none';
+        }
+
+        function saveMeditation() {
+            const reflection = {
+                type: selectedMeditation,
+                duration: Math.floor(currentTime / 60),
+                feelings: document.getElementById('meditation-feelings').value,
+                egoObservations: document.getElementById('ego-observations').value,
+                insights: document.getElementById('insights').value,
+                commitment: document.getElementById('commitment').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            const savedMeditations = JSON.parse(localStorage.getItem('meditations') || '[]');
+            savedMeditations.push(reflection);
+            localStorage.setItem('meditations', JSON.stringify(savedMeditations));
+            
+            alert('¡Meditación guardada exitosamente!');
+            resetMeditation();
+        }
+
+        function saveMeditationSession() {
+            const session = {
+                type: selectedMeditation,
+                duration: Math.floor(currentTime / 60),
+                timestamp: new Date().toISOString()
+            };
+            
+            const sessions = JSON.parse(localStorage.getItem('meditationSessions') || '[]');
+            sessions.push(session);
+            localStorage.setItem('meditationSessions', JSON.stringify(sessions));
+        }
+
+        function viewStats() {
+            const sessions = JSON.parse(localStorage.getItem('meditationSessions') || '[]');
+            const totalSessions = sessions.length;
+            const totalTime = sessions.reduce((sum, session) => sum + session.duration, 0);
+            
+            // Calcular racha
+            const today = new Date().toDateString();
+            let currentStreak = 0;
+            let maxStreak = 0;
+            let tempStreak = 0;
+            
+            sessions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            for (let i = 0; i < sessions.length; i++) {
+                const sessionDate = new Date(sessions[i].timestamp).toDateString();
+                const prevDate = i > 0 ? new Date(sessions[i-1].timestamp).toDateString() : null;
+                
+                if (i === 0 || sessionDate === prevDate) {
+                    tempStreak++;
+                } else {
+                    maxStreak = Math.max(maxStreak, tempStreak);
+                    tempStreak = 1;
+                }
+            }
+            
+            maxStreak = Math.max(maxStreak, tempStreak);
+            currentStreak = tempStreak;
+            
+            document.getElementById('sessions-completed').textContent = totalSessions;
+            document.getElementById('total-time').textContent = `${totalTime} min`;
+            document.getElementById('current-streak').textContent = `${currentStreak} días`;
+            document.getElementById('max-streak').textContent = `${maxStreak} días`;
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function resetMeditation() {
+            selectedMeditation = null;
+            currentTime = 0;
+            isPaused = false;
+            
+            if (meditationTimer) {
+                clearInterval(meditationTimer);
+                meditationTimer = null;
+            }
+            
+            stopBreathingGuide();
+            
+            document.getElementById('timer-section').style.display = 'none';
+            document.getElementById('meditation-content').style.display = 'none';
+            document.getElementById('reflection-section').style.display = 'none';
+            document.getElementById('breathing-guide').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('stats-btn').style.display = 'none';
+            
+            // Limpiar formularios
+            document.querySelectorAll('textarea').forEach(textarea => {
+                textarea.value = '';
+            });
+            
+            // Remover selecciones
+            document.querySelectorAll('.meditation-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+    </script>
+</body>
+</html>

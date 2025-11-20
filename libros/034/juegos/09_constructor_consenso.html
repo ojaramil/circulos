@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Consenso - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .scenario-box {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .consensus-strategies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .strategy {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .strategy:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .strategy.selected {
+            background: #4caf50;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .strategy.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .strategy.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        .consensus-principles {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Constructor de Consenso</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es practicar la construcción de consenso en diferentes situaciones de conflicto. Aprende a identificar puntos en común, facilitar el diálogo y encontrar soluciones que satisfagan a todas las partes involucradas.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Estrategias de Consenso: <span id="correct">0</span> | Estrategias Divisivas: <span id="incorrect">0</span> | Total: <span id="total">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>Lee cada escenario y selecciona las estrategias que consideres más efectivas para construir consenso. Puedes seleccionar múltiples estrategias para cada situación.</p>
+        </div>
+
+        <div class="consensus-principles">
+            <h3>📋 Principios de Construcción de Consenso:</h3>
+            <ul>
+                <li>Identificar puntos en común entre las partes</li>
+                <li>Facilitar el diálogo respetuoso</li>
+                <li>Buscar soluciones creativas que beneficien a todos</li>
+                <li>Mantener el enfoque en los intereses, no en las posiciones</li>
+                <li>Promover la colaboración sobre la competencia</li>
+            </ul>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkAnswer()" id="check-btn">Verificar Respuesta</button>
+            <button class="btn" onclick="nextScenario()" id="next-btn" style="display: none;">Siguiente Escenario</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        let score = { correct: 0, incorrect: 0, total: 0 };
+        let selectedStrategies = [];
+
+        const scenarios = [
+            {
+                title: "Conflicto de Presupuesto",
+                description: "Un equipo de trabajo está dividido sobre cómo asignar el presupuesto del próximo año. Un grupo quiere invertir en tecnología nueva, otro grupo prefiere contratar más personal, y un tercer grupo quiere aumentar los salarios existentes.",
+                correctStrategies: [
+                    "Identificar objetivos comunes del equipo",
+                    "Facilitar una discusión sobre las necesidades de cada grupo",
+                    "Buscar soluciones que satisfagan parcialmente a todos",
+                    "Crear un plan de implementación por fases"
+                ],
+                incorrectStrategies: [
+                    "Votar para que gane la mayoría",
+                    "Dejar que el jefe decida unilateralmente",
+                    "Dividir el presupuesto en partes iguales sin considerar las necesidades",
+                    "Ignorar las preocupaciones de algunos grupos"
+                ],
+                explanation: "La construcción de consenso requiere identificar objetivos comunes, facilitar el diálogo y buscar soluciones creativas que beneficien a todos."
+            },
+            {
+                title: "Decisión de Política Empresarial",
+                description: "Una empresa está considerando implementar una nueva política de trabajo remoto. Algunos empleados están entusiasmados, otros están preocupados por la pérdida de colaboración, y los gerentes tienen dudas sobre la productividad.",
+                correctStrategies: [
+                    "Realizar una encuesta para entender las preocupaciones de todos",
+                    "Crear un período de prueba con métricas claras",
+                    "Desarrollar pautas que aborden las preocupaciones de cada grupo",
+                    "Establecer canales de comunicación regulares durante la transición"
+                ],
+                incorrectStrategies: [
+                    "Implementar la política sin consultar a los empleados",
+                    "Solo considerar las opiniones de los empleados más vocales",
+                    "Ignorar las preocupaciones de los gerentes",
+                    "Tomar la decisión basándose solo en costos"
+                ],
+                explanation: "La construcción de consenso requiere considerar todas las perspectivas, crear soluciones que aborden las preocupaciones de todos y establecer procesos de comunicación claros."
+            },
+            {
+                title: "Planificación de Evento Comunitario",
+                description: "Una comunidad está organizando un festival anual. Los residentes tienen diferentes ideas sobre el tipo de música, comida y actividades. Algunos quieren un evento familiar, otros prefieren algo más moderno, y hay preocupaciones sobre el ruido y la limpieza.",
+                correctStrategies: [
+                    "Organizar reuniones comunitarias para escuchar todas las ideas",
+                    "Crear diferentes zonas para diferentes tipos de actividades",
+                    "Desarrollar un plan de limpieza y control de ruido",
+                    "Incluir representantes de todos los grupos en el comité organizador"
+                ],
+                incorrectStrategies: [
+                    "Dejar que solo los organizadores decidan",
+                    "Ignorar las preocupaciones sobre ruido y limpieza",
+                    "Crear un evento que solo satisfaga a un grupo",
+                    "Evitar la participación de la comunidad"
+                ],
+                explanation: "La construcción de consenso requiere inclusión, consideración de todas las preocupaciones y búsqueda de soluciones creativas que satisfagan a múltiples grupos."
+            }
+        ];
+
+        const allStrategies = [
+            "Identificar objetivos comunes del equipo",
+            "Facilitar una discusión sobre las necesidades de cada grupo",
+            "Buscar soluciones que satisfagan parcialmente a todos",
+            "Crear un plan de implementación por fases",
+            "Votar para que gane la mayoría",
+            "Dejar que el jefe decida unilateralmente",
+            "Dividir el presupuesto en partes iguales sin considerar las necesidades",
+            "Ignorar las preocupaciones de algunos grupos",
+            "Realizar una encuesta para entender las preocupaciones de todos",
+            "Crear un período de prueba con métricas claras",
+            "Desarrollar pautas que aborden las preocupaciones de cada grupo",
+            "Establecer canales de comunicación regulares durante la transición",
+            "Implementar la política sin consultar a los empleados",
+            "Solo considerar las opiniones de los empleados más vocales",
+            "Ignorar las preocupaciones de los gerentes",
+            "Tomar la decisión basándose solo en costos",
+            "Organizar reuniones comunitarias para escuchar todas las ideas",
+            "Crear diferentes zonas para diferentes tipos de actividades",
+            "Desarrollar un plan de limpieza y control de ruido",
+            "Incluir representantes de todos los grupos en el comité organizador",
+            "Dejar que solo los organizadores decidan",
+            "Ignorar las preocupaciones sobre ruido y limpieza",
+            "Crear un evento que solo satisfaga a un grupo",
+            "Evitar la participación de la comunidad"
+        ];
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>📋 Escenario: ${scenario.title}</h3>
+                    <div class="scenario-box">
+                        <p><strong>Situación:</strong> ${scenario.description}</p>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>🤝 Selecciona las estrategias que usarías para construir consenso:</h3>
+                    <div class="consensus-strategies">
+                        ${allStrategies.map(strategy => `
+                            <div class="strategy" onclick="selectStrategy('${strategy}')" data-strategy="${strategy}">
+                                ${strategy}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            selectedStrategies = [];
+        }
+
+        function selectStrategy(strategy) {
+            if (selectedStrategies.includes(strategy)) {
+                selectedStrategies = selectedStrategies.filter(s => s !== strategy);
+                event.target.classList.remove('selected');
+            } else {
+                selectedStrategies.push(strategy);
+                event.target.classList.add('selected');
+            }
+        }
+
+        function checkAnswer() {
+            if (selectedStrategies.length === 0) {
+                alert('Por favor, selecciona al menos una estrategia antes de verificar.');
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const correctStrategies = scenario.correctStrategies;
+            const incorrectStrategies = scenario.incorrectStrategies;
+            
+            const selectedCorrect = selectedStrategies.filter(strategy => correctStrategies.includes(strategy));
+            const selectedIncorrect = selectedStrategies.filter(strategy => incorrectStrategies.includes(strategy));
+            const missedCorrect = correctStrategies.filter(strategy => !selectedStrategies.includes(strategy));
+            
+            const isCorrect = selectedCorrect.length === correctStrategies.length && selectedIncorrect.length === 0;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+            score.total++;
+
+            // Mostrar retroalimentación visual
+            document.querySelectorAll('.strategy').forEach(strategy => {
+                const strategyText = strategy.dataset.strategy;
+                strategy.classList.remove('selected');
+                if (correctStrategies.includes(strategyText)) {
+                    strategy.classList.add('correct');
+                } else if (selectedStrategies.includes(strategyText) && incorrectStrategies.includes(strategyText)) {
+                    strategy.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Excelente construcción de consenso!' : '❌ Revisa tu selección'}</h3>
+                <p><strong>Estrategias seleccionadas:</strong> ${selectedStrategies.join(', ')}</p>
+                <p><strong>Estrategias correctas:</strong> ${correctStrategies.join(', ')}</p>
+                ${selectedIncorrect.length > 0 ? `<p><strong>Estrategias incorrectas seleccionadas:</strong> ${selectedIncorrect.join(', ')}</p>` : ''}
+                ${missedCorrect.length > 0 ? `<p><strong>Estrategias correctas que no seleccionaste:</strong> ${missedCorrect.join(', ')}</p>` : ''}
+                <p><strong>Explicación:</strong> ${scenario.explanation}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            if (currentScenario < scenarios.length) {
+                loadScenario();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                alert(`¡Felicidades! Has completado el constructor de consenso.\n\nPuntuación: ${score.correct}/${score.total} (${percentage}%)`);
+            }
+        }
+
+        function resetGame() {
+            currentScenario = 0;
+            score = { correct: 0, incorrect: 0, total: 0 };
+            loadScenario();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            document.getElementById('total').textContent = score.total;
+            
+            const percentage = score.total > 0 ? (score.correct / score.total) * 100 : 0;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        // Inicializar el juego
+        loadScenario();
+    </script>
+</body>
+</html>

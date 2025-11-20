@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Nivel de Plasticidad Cerebral - El Cerebro se Cambia a Sí Mismo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+        .question-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .question-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .results {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        .results h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .score-display {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-display h2 {
+            color: #667eea;
+            margin: 0;
+        }
+        .score-display .score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        .score-display .level {
+            font-size: 1.2em;
+            color: #666;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .recommendations {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .recommendations h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .recommendations ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .recommendations li {
+            margin: 8px 0;
+        }
+        .tip-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0056b3;
+        }
+        .tip-box h4 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .question-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Test: Tu Nivel de Plasticidad Cerebral</h1>
+            <p>Descubre qué tan adaptable es tu cerebro</p>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 ¿Qué es la Plasticidad Cerebral?</h4>
+            <p>La plasticidad cerebral es la capacidad del cerebro para cambiar y adaptarse a lo largo de la vida. Un cerebro más plástico puede aprender más fácilmente, recuperarse de lesiones y adaptarse a nuevos desafíos.</p>
+        </div>
+
+        <form id="plasticity-test">
+            <div class="question-section">
+                <h3><span class="question-number">1</span>¿Con qué frecuencia aprendes cosas nuevas?</h3>
+                <div class="form-group">
+                    <select name="learning-frequency" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Diariamente - Siempre estoy aprendiendo algo nuevo</option>
+                        <option value="4">Varias veces por semana - Aprendo regularmente</option>
+                        <option value="3">Semanalmente - Aprendo algo nuevo cada semana</option>
+                        <option value="2">Mensualmente - Aprendo ocasionalmente</option>
+                        <option value="1">Raramente - Aprendo muy poco</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">2</span>¿Cómo te sientes cuando enfrentas un nuevo desafío?</h3>
+                <div class="form-group">
+                    <select name="challenge-response" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Emocionado - Me encantan los nuevos desafíos</option>
+                        <option value="4">Optimista - Creo que puedo superarlo</option>
+                        <option value="3">Neutral - Lo veo como una oportunidad</option>
+                        <option value="2">Nervioso - Me siento un poco ansioso</option>
+                        <option value="1">Abrumado - Prefiero evitar desafíos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">3</span>¿Qué tan fácil te resulta cambiar de rutina?</h3>
+                <div class="form-group">
+                    <select name="routine-change" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Muy fácil - Me adapto instantáneamente</option>
+                        <option value="4">Fácil - Me adapto rápidamente</option>
+                        <option value="3">Moderado - Me adapto con algo de tiempo</option>
+                        <option value="2">Difícil - Me cuesta adaptarme</option>
+                        <option value="1">Muy difícil - Me resisto al cambio</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">4</span>¿Con qué frecuencia practicas ejercicios mentales?</h3>
+                <div class="form-group">
+                    <select name="mental-exercises" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Diariamente - Practico ejercicios mentales todos los días</option>
+                        <option value="4">Varias veces por semana - Practico regularmente</option>
+                        <option value="3">Semanalmente - Practico ocasionalmente</option>
+                        <option value="2">Mensualmente - Practico muy poco</option>
+                        <option value="1">Nunca - No practico ejercicios mentales</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">5</span>¿Qué tan bien te recuperas de errores o fracasos?</h3>
+                <div class="form-group">
+                    <select name="recovery-ability" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Excelente - Aprendo rápidamente de mis errores</option>
+                        <option value="4">Muy bien - Me recupero bien y aprendo</option>
+                        <option value="3">Bien - Me recupero con tiempo</option>
+                        <option value="2">Regular - Me cuesta recuperarme</option>
+                        <option value="1">Mal - Me afectan mucho los errores</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">6</span>¿Qué tan abierto estás a nuevas experiencias?</h3>
+                <div class="form-group">
+                    <select name="openness" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Muy abierto - Busco activamente nuevas experiencias</option>
+                        <option value="4">Abierto - Disfruto de nuevas experiencias</option>
+                        <option value="3">Moderado - Acepto nuevas experiencias</option>
+                        <option value="2">Cauteloso - Prefiero lo familiar</option>
+                        <option value="1">Cerrado - Evito nuevas experiencias</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">7</span>¿Qué tan bien mantienes tu concentración en tareas complejas?</h3>
+                <div class="form-group">
+                    <select name="concentration" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Excelente - Puedo concentrarme por horas</option>
+                        <option value="4">Muy bien - Puedo concentrarme bien</option>
+                        <option value="3">Bien - Puedo concentrarme moderadamente</option>
+                        <option value="2">Regular - Me distraigo fácilmente</option>
+                        <option value="1">Mal - Me cuesta mucho concentrarme</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">8</span>¿Qué tan fácil te resulta aprender nuevas habilidades?</h3>
+                <div class="form-group">
+                    <select name="skill-learning" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Muy fácil - Aprendo habilidades rápidamente</option>
+                        <option value="4">Fácil - Aprendo bien con práctica</option>
+                        <option value="3">Moderado - Aprendo con esfuerzo</option>
+                        <option value="2">Difícil - Me cuesta aprender</option>
+                        <option value="1">Muy difícil - Aprendo muy lentamente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">9</span>¿Qué tan bien recuerdas información nueva?</h3>
+                <div class="form-group">
+                    <select name="memory" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Excelente - Recuerdo muy bien</option>
+                        <option value="4">Muy bien - Recuerdo bien</option>
+                        <option value="3">Bien - Recuerdo moderadamente</option>
+                        <option value="2">Regular - A veces olvido</option>
+                        <option value="1">Mal - Olvido frecuentemente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">10</span>¿Qué tan bien te adaptas a cambios en tu entorno?</h3>
+                <div class="form-group">
+                    <select name="adaptation" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Excelente - Me adapto instantáneamente</option>
+                        <option value="4">Muy bien - Me adapto rápidamente</option>
+                        <option value="3">Bien - Me adapto con tiempo</option>
+                        <option value="2">Regular - Me cuesta adaptarme</option>
+                        <option value="1">Mal - Me resisto al cambio</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">11</span>¿Qué tan activo mantienes tu cerebro?</h3>
+                <div class="form-group">
+                    <select name="brain-activity" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Muy activo - Siempre estoy pensando y aprendiendo</option>
+                        <option value="4">Activo - Mantengo mi cerebro ocupado</option>
+                        <option value="3">Moderado - Uso mi cerebro regularmente</option>
+                        <option value="2">Poco activo - Uso mi cerebro ocasionalmente</option>
+                        <option value="1">Inactivo - Raramente uso mi cerebro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3><span class="question-number">12</span>¿Qué tan bien manejas el estrés mental?</h3>
+                <div class="form-group">
+                    <select name="stress-management" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="5">Excelente - Manejo el estrés muy bien</option>
+                        <option value="4">Muy bien - Manejo el estrés bien</option>
+                        <option value="3">Bien - Manejo el estrés moderadamente</option>
+                        <option value="2">Regular - Me cuesta manejar el estrés</option>
+                        <option value="1">Mal - El estrés me afecta mucho</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="btn">🧠 Calcular Mi Plasticidad Cerebral</button>
+                <button type="button" class="btn btn-secondary" onclick="resetTest()">🔄 Reiniciar Test</button>
+            </div>
+        </form>
+
+        <div class="results" id="results">
+            <h3>📊 Resultados de tu Test de Plasticidad Cerebral</h3>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('plasticity-test').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculatePlasticity();
+        });
+
+        function calculatePlasticity() {
+            const form = document.getElementById('plasticity-test');
+            const formData = new FormData(form);
+            let totalScore = 0;
+            let answeredQuestions = 0;
+
+            // Calcular puntuación
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    totalScore += parseInt(value);
+                    answeredQuestions++;
+                }
+            }
+
+            if (answeredQuestions < 12) {
+                alert('Por favor responde todas las preguntas para obtener un resultado preciso.');
+                return;
+            }
+
+            const averageScore = totalScore / 12;
+            const percentage = (averageScore / 5) * 100;
+
+            // Determinar nivel de plasticidad
+            let level = '';
+            let description = '';
+            let recommendations = [];
+
+            if (percentage >= 90) {
+                level = 'Plasticidad Cerebral Excelente';
+                description = 'Tu cerebro tiene una plasticidad excepcional. Eres muy adaptable, aprendes rápidamente y te recuperas bien de los desafíos.';
+                recommendations = [
+                    'Continúa desafiando tu cerebro con nuevas experiencias',
+                    'Mantén tu rutina de ejercicios mentales',
+                    'Explora nuevas áreas de conocimiento',
+                    'Comparte tu conocimiento con otros'
+                ];
+            } else if (percentage >= 80) {
+                level = 'Plasticidad Cerebral Muy Buena';
+                description = 'Tu cerebro tiene una plasticidad muy buena. Eres adaptable y aprendes bien, con espacio para mejorar.';
+                recommendations = [
+                    'Aumenta la frecuencia de tus ejercicios mentales',
+                    'Busca nuevos desafíos regularmente',
+                    'Practica la meditación para mejorar la concentración',
+                    'Aprende una nueva habilidad cada mes'
+                ];
+            } else if (percentage >= 70) {
+                level = 'Plasticidad Cerebral Buena';
+                description = 'Tu cerebro tiene una plasticidad buena. Eres moderadamente adaptable y puedes mejorar con práctica.';
+                recommendations = [
+                    'Incorpora ejercicios mentales en tu rutina diaria',
+                    'Practica la resolución de problemas',
+                    'Lee libros sobre temas nuevos',
+                    'Participa en actividades que requieran concentración'
+                ];
+            } else if (percentage >= 60) {
+                level = 'Plasticidad Cerebral Moderada';
+                description = 'Tu cerebro tiene una plasticidad moderada. Hay mucho potencial para mejorar con el entrenamiento adecuado.';
+                recommendations = [
+                    'Comienza un programa de ejercicios mentales',
+                    'Practica la meditación diariamente',
+                    'Aprende algo nuevo cada semana',
+                    'Desafía tu zona de confort regularmente'
+                ];
+            } else {
+                level = 'Plasticidad Cerebral en Desarrollo';
+                description = 'Tu cerebro tiene potencial para desarrollar mayor plasticidad. Con el entrenamiento adecuado, puedes mejorar significativamente.';
+                recommendations = [
+                    'Comienza con ejercicios mentales básicos',
+                    'Practica la meditación para mejorar la concentración',
+                    'Lee regularmente sobre temas nuevos',
+                    'Busca actividades que estimulen tu cerebro',
+                    'Considera trabajar con un entrenador mental'
+                ];
+            }
+
+            // Mostrar resultados
+            const resultsHtml = `
+                <div class="score-display">
+                    <h2>${level}</h2>
+                    <div class="score">${Math.round(percentage)}%</div>
+                    <div class="level">Puntuación: ${averageScore.toFixed(1)}/5</div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>📝 Descripción</h4>
+                    <p>${description}</p>
+                </div>
+                
+                <div class="recommendations">
+                    <h3>💡 Recomendaciones para Mejorar</h3>
+                    <ul>
+                        ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>🧠 ¿Qué es la Plasticidad Cerebral?</h4>
+                    <p>La plasticidad cerebral es la capacidad del cerebro para cambiar y adaptarse a lo largo de la vida. Un cerebro más plástico puede aprender más fácilmente, recuperarse de lesiones y adaptarse a nuevos desafíos. Esta capacidad puede ser mejorada a través del entrenamiento mental, la meditación y la exposición a nuevas experiencias.</p>
+                </div>
+            `;
+
+            document.getElementById('results-content').innerHTML = resultsHtml;
+            document.getElementById('results').style.display = 'block';
+
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetTest() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el test?')) {
+                document.getElementById('plasticity-test').reset();
+                document.getElementById('results').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

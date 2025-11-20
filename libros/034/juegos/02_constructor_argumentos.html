@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Argumentos - Think Again</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .argument-builder {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .premise-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+        .premise-box:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .conclusion-box {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            min-height: 60px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Constructor de Argumentos</h1>
+        
+        <div class="game-section">
+            <h2>🎯 Objetivo del Juego</h2>
+            <p>Tu misión es construir argumentos sólidos arrastrando las premisas correctas a la zona de construcción. Cada argumento debe tener premisas que apoyen lógicamente la conclusión.</p>
+        </div>
+
+        <div class="score">
+            <h3>📊 Puntuación</h3>
+            <p>Argumentos Correctos: <span id="correct">0</span> | Argumentos Incorrectos: <span id="incorrect">0</span></p>
+        </div>
+
+        <div class="game-section">
+            <h2>🎮 Instrucciones</h2>
+            <p>1. Lee la conclusión que debes defender</p>
+            <p>2. Arrastra las premisas correctas a la zona de construcción</p>
+            <p>3. Verifica que tu argumento sea lógicamente sólido</p>
+        </div>
+
+        <div id="game-container">
+            <!-- El contenido del juego se cargará dinámicamente -->
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="checkArgument()" id="check-btn">Verificar Argumento</button>
+            <button class="btn" onclick="nextArgument()" id="next-btn" style="display: none;">Siguiente Argumento</button>
+            <button class="btn" onclick="resetGame()">Reiniciar Juego</button>
+        </div>
+
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentArgument = 0;
+        let score = { correct: 0, incorrect: 0 };
+        let selectedPremises = [];
+
+        const argumentScenarios = [
+            {
+                conclusion: "Por tanto, debemos invertir más en educación pública.",
+                correctPremises: [
+                    "La educación es fundamental para el desarrollo económico",
+                    "Los países con mejor educación tienen menor desigualdad",
+                    "La educación pública beneficia a toda la sociedad"
+                ],
+                incorrectPremises: [
+                    "Me gusta el color azul",
+                    "El fútbol es el deporte más popular",
+                    "La tecnología avanza rápidamente"
+                ]
+            },
+            {
+                conclusion: "Por tanto, el ejercicio regular es beneficioso para la salud.",
+                correctPremises: [
+                    "El ejercicio fortalece el sistema cardiovascular",
+                    "El ejercicio reduce el riesgo de enfermedades crónicas",
+                    "El ejercicio mejora la salud mental"
+                ],
+                incorrectPremises: [
+                    "Los videojuegos son entretenidos",
+                    "La música clásica es relajante",
+                    "Los perros son mascotas leales"
+                ]
+            },
+            {
+                conclusion: "Por tanto, debemos proteger el medio ambiente.",
+                correctPremises: [
+                    "El cambio climático amenaza la supervivencia humana",
+                    "La biodiversidad es esencial para los ecosistemas",
+                    "Los recursos naturales son limitados"
+                ],
+                incorrectPremises: [
+                    "Las películas de acción son emocionantes",
+                    "La pizza es deliciosa",
+                    "Los viajes son enriquecedores"
+                ]
+            }
+        ];
+
+        function loadArgument() {
+            const scenario = argumentScenarios[currentArgument];
+            const container = document.getElementById('game-container');
+            
+            container.innerHTML = `
+                <div class="game-section">
+                    <h3>🎯 Conclusión a Defender:</h3>
+                    <div class="conclusion-box">
+                        <strong>${scenario.conclusion}</strong>
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>📝 Premisas Disponibles:</h3>
+                    <div id="premises-container">
+                        ${[...scenario.correctPremises, ...scenario.incorrectPremises]
+                            .sort(() => Math.random() - 0.5)
+                            .map((premise, index) => `
+                                <div class="premise-box" draggable="true" data-premise="${premise}" data-index="${index}">
+                                    ${premise}
+                                </div>
+                            `).join('')}
+                    </div>
+                </div>
+                
+                <div class="game-section">
+                    <h3>🏗️ Construye tu Argumento:</h3>
+                    <div class="drop-zone" id="argument-zone">
+                        <p>Arrastra aquí las premisas que apoyen la conclusión</p>
+                    </div>
+                </div>
+            `;
+
+            setupDragAndDrop();
+            selectedPremises = [];
+        }
+
+        function setupDragAndDrop() {
+            const premises = document.querySelectorAll('.premise-box');
+            const dropZone = document.getElementById('argument-zone');
+
+            premises.forEach(premise => {
+                premise.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.dataset.premise);
+                    e.target.classList.add('dragging');
+                });
+
+                premise.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                
+                const premise = e.dataTransfer.getData('text/plain');
+                if (!selectedPremises.includes(premise)) {
+                    selectedPremises.push(premise);
+                    updateArgumentZone();
+                }
+            });
+        }
+
+        function updateArgumentZone() {
+            const dropZone = document.getElementById('argument-zone');
+            if (selectedPremises.length === 0) {
+                dropZone.innerHTML = '<p>Arrastra aquí las premisas que apoyen la conclusión</p>';
+            } else {
+                dropZone.innerHTML = selectedPremises.map((premise, index) => `
+                    <div class="premise-box" style="background: #d4edda; border-color: #28a745;">
+                        ${index + 1}. ${premise}
+                        <button onclick="removePremise('${premise}')" style="float: right; background: #dc3545; color: white; border: none; border-radius: 4px; padding: 2px 6px; cursor: pointer;">×</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function removePremise(premise) {
+            selectedPremises = selectedPremises.filter(p => p !== premise);
+            updateArgumentZone();
+        }
+
+        function checkArgument() {
+            const scenario = argumentScenarios[currentArgument];
+            const correctPremises = scenario.correctPremises;
+            const selectedCorrect = selectedPremises.filter(p => correctPremises.includes(p));
+            const selectedIncorrect = selectedPremises.filter(p => !correctPremises.includes(p));
+            
+            const isCorrect = selectedCorrect.length === correctPremises.length && selectedIncorrect.length === 0;
+
+            if (isCorrect) {
+                score.correct++;
+            } else {
+                score.incorrect++;
+            }
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? '' : 'incorrect'}`;
+            
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                <p><strong>Tu selección:</strong> ${selectedPremises.length > 0 ? selectedPremises.join(', ') : 'Ninguna premisa seleccionada'}</p>
+                <p><strong>Premisas correctas:</strong> ${correctPremises.join(', ')}</p>
+                <p><strong>Explicación:</strong> ${isCorrect ? 'Has seleccionado todas las premisas correctas y ninguna incorrecta.' : 'Algunas premisas seleccionadas no apoyan la conclusión, o faltan premisas importantes.'}</p>
+            `;
+
+            updateScore();
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextArgument() {
+            currentArgument++;
+            if (currentArgument < argumentScenarios.length) {
+                loadArgument();
+                document.getElementById('check-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                alert('¡Felicidades! Has completado todos los argumentos del juego.');
+            }
+        }
+
+        function resetGame() {
+            currentArgument = 0;
+            score = { correct: 0, incorrect: 0 };
+            loadArgument();
+            updateScore();
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+        }
+
+        // Inicializar el juego
+        loadArgument();
+    </script>
+</body>
+</html>

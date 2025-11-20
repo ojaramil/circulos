@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Sesgos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .challenge {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .challenge h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .challenge p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .challenge-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .challenge-content h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .challenge-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .bias-identification {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bias-identification h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .bias-step {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .bias-step h5 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .bias-step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .challenge-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .challenge-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .challenge-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .challenge-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .challenge-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .challenge-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .challenge-option h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .challenge-option p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .master-tips {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .master-tips.show {
+            display: block;
+        }
+
+        .master-tips h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .tip {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .tip h5 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .tip p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .score .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .achievements {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .achievements.show {
+            display: block;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .achievement .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .master-analysis {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .master-analysis h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .analysis-step {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .analysis-step h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .analysis-step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .game-area {
+                padding: 20px;
+            }
+            
+            .challenge-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Maestro de Sesgos</h1>
+            <p>Domina la identificación y superación de sesgos cognitivos</p>
+        </div>
+
+        <div class="game-area">
+            <div class="score">
+                <h3>Puntuación</h3>
+                <div class="score-value" id="score">0</div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div id="challenge-container">
+                <!-- Los desafíos se cargarán dinámicamente -->
+            </div>
+
+            <div class="master-tips" id="master-tips">
+                <h4>Consejos de Maestro</h4>
+                <div id="tips-content"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="next-btn" onclick="nextChallenge()" disabled>Siguiente</button>
+                <button class="btn" id="restart-btn" onclick="restartGame()">Reiniciar</button>
+            </div>
+
+            <div class="achievements" id="achievements">
+                <h3>🏆 Logros Desbloqueados</h3>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChallenge = 0;
+        let score = 0;
+        let selectedOption = null;
+        let challenges = [
+            {
+                title: "Desafío de Identificación Avanzada",
+                description: "Identifica todos los sesgos cognitivos presentes en el siguiente escenario:",
+                content: "Un gerente está evaluando a un empleado. Recuerda claramente el error que cometió la semana pasada, pero tiene dificultad para recordar los logros del mes anterior. Además, está considerando despedirlo porque 'siempre ha tenido problemas con empleados como él'.",
+                thinking: {
+                    title: "Proceso de Identificación Avanzada",
+                    steps: [
+                        {
+                            step: "Analizar la Situación",
+                            description: "El gerente está evaluando a un empleado basándose en información limitada."
+                        },
+                        {
+                            step: "Identificar Patrones",
+                            description: "Busca patrones de comportamiento que puedan indicar sesgos."
+                        },
+                        {
+                            step: "Clasificar Sesgos",
+                            description: "Identifica y clasifica los diferentes tipos de sesgos presentes."
+                        },
+                        {
+                            step: "Evaluar Impacto",
+                            description: "Considera cómo estos sesgos afectan la decisión del gerente."
+                        }
+                    ]
+                },
+                options: [
+                    {
+                        text: "Solo Sesgo de Negatividad",
+                        description: "El gerente solo tiene sesgo de negatividad",
+                        correct: false,
+                        explanation: "Aunque hay sesgo de negatividad, también hay otros sesgos presentes en el escenario."
+                    },
+                    {
+                        text: "Sesgo de Negatividad y Representatividad",
+                        description: "El gerente tiene sesgo de negatividad y representatividad",
+                        correct: true,
+                        explanation: "Correcto. El gerente tiene sesgo de negatividad (recuerda más el error) y sesgo de representatividad (asume que el empleado es como otros problemáticos)."
+                    },
+                    {
+                        text: "Sesgo de Confirmación y Anclaje",
+                        description: "El gerente tiene sesgo de confirmación y anclaje",
+                        correct: false,
+                        explanation: "Aunque puede haber elementos de confirmación, los sesgos principales son negatividad y representatividad."
+                    }
+                ],
+                tips: [
+                    {
+                        title: "Múltiples Sesgos",
+                        description: "Recuerda que una situación puede contener múltiples sesgos cognitivos."
+                    },
+                    {
+                        title: "Sesgo de Negatividad",
+                        description: "Da más peso a la información negativa que a la positiva."
+                    },
+                    {
+                        title: "Sesgo de Representatividad",
+                        description: "Juzga basándose en estereotipos o categorías en lugar de evidencia específica."
+                    }
+                ],
+                maxScore: 150
+            },
+            {
+                title: "Desafío de Superación de Sesgos",
+                description: "¿Cuál es la mejor estrategia para superar el sesgo de confirmación?",
+                content: "Un equipo de investigación está estudiando un nuevo medicamento. Han encontrado evidencia que sugiere que el medicamento es efectivo, pero también han encontrado algunos estudios que sugieren lo contrario.",
+                thinking: {
+                    title: "Proceso de Superación de Sesgos",
+                    steps: [
+                        {
+                            step: "Identificar el Sesgo",
+                            description: "El equipo puede estar buscando solo información que confirme su hipótesis inicial."
+                        },
+                        {
+                            step: "Buscar Evidencia Contradictoria",
+                            description: "Activamente buscar y considerar evidencia que contradiga la hipótesis."
+                        },
+                        {
+                            step: "Evaluar Objetivamente",
+                            description: "Evaluar toda la evidencia de manera objetiva y sistemática."
+                        },
+                        {
+                            step: "Tomar Decisión Informada",
+                            description: "Tomar una decisión basada en la evidencia completa, no solo en la confirmatoria."
+                        }
+                    ]
+                },
+                options: [
+                    {
+                        text: "Ignorar la Evidencia Contradictoria",
+                        description: "Enfocarse solo en la evidencia que confirma la efectividad",
+                        correct: false,
+                        explanation: "Ignorar evidencia contradictoria es exactamente lo que causa el sesgo de confirmación."
+                    },
+                    {
+                        text: "Buscar Activamente Evidencia Contradictoria",
+                        description: "Buscar y considerar toda la evidencia disponible",
+                        correct: true,
+                        explanation: "Correcto. Buscar activamente evidencia contradictoria es la mejor estrategia para superar el sesgo de confirmación."
+                    },
+                    {
+                        text: "Pedir una Segunda Opinión",
+                        description: "Consultar con otro equipo de investigación",
+                        correct: false,
+                        explanation: "Aunque puede ser útil, no aborda directamente el problema del sesgo de confirmación en el equipo actual."
+                    }
+                ],
+                tips: [
+                    {
+                        title: "Búsqueda Activa",
+                        description: "Busca activamente información que contradiga tus creencias iniciales."
+                    },
+                    {
+                        title: "Evaluación Objetiva",
+                        description: "Evalúa toda la evidencia de manera objetiva y sistemática."
+                    },
+                    {
+                        title: "Múltiples Perspectivas",
+                        description: "Considera múltiples perspectivas y fuentes de información."
+                    }
+                ],
+                maxScore: 150
+            },
+            {
+                title: "Desafío de Análisis Complejo",
+                description: "Analiza la siguiente situación y identifica todos los sesgos presentes:",
+                content: "Un inversionista está considerando una nueva oportunidad. Su amigo le dice que 'todas las empresas de tecnología son una buena inversión' y le muestra solo los casos exitosos que conoce. El inversionista recuerda claramente una inversión exitosa que hizo hace 5 años, pero tiene dificultad para recordar las pérdidas. Además, está considerando invertir porque 'no puede perder esta oportunidad'.",
+                thinking: {
+                    title: "Proceso de Análisis Complejo",
+                    steps: [
+                        {
+                            step: "Identificar Sesgos Individuales",
+                            description: "Identifica cada sesgo cognitivo presente en la situación."
+                        },
+                        {
+                            step: "Analizar Interacciones",
+                            description: "Considera cómo los diferentes sesgos interactúan entre sí."
+                        },
+                        {
+                            step: "Evaluar Impacto",
+                            description: "Evalúa cómo estos sesgos afectan la decisión de inversión."
+                        },
+                        {
+                            step: "Proponer Soluciones",
+                            description: "Propone estrategias para superar estos sesgos."
+                        }
+                    ]
+                },
+                options: [
+                    {
+                        text: "Solo Sesgo de Confirmación",
+                        description: "Solo hay sesgo de confirmación presente",
+                        correct: false,
+                        explanation: "Aunque hay sesgo de confirmación, también hay otros sesgos presentes en la situación."
+                    },
+                    {
+                        text: "Múltiples Sesgos",
+                        description: "Hay varios sesgos cognitivos presentes",
+                        correct: true,
+                        explanation: "Correcto. Hay sesgo de confirmación, sesgo de disponibilidad, sesgo de negatividad, y sesgo de escasez."
+                    },
+                    {
+                        text: "Solo Sesgo de Disponibilidad",
+                        description: "Solo hay sesgo de disponibilidad presente",
+                        correct: false,
+                        explanation: "Aunque hay sesgo de disponibilidad, también hay otros sesgos presentes en la situación."
+                    }
+                ],
+                tips: [
+                    {
+                        title: "Sesgo de Confirmación",
+                        description: "Busca solo información que confirme su creencia sobre las empresas de tecnología."
+                    },
+                    {
+                        title: "Sesgo de Disponibilidad",
+                        description: "Recuerda más fácilmente la inversión exitosa que las pérdidas."
+                    },
+                    {
+                        title: "Sesgo de Escasez",
+                        description: "Sobreestima el valor de la oportunidad porque es limitada."
+                    }
+                ],
+                maxScore: 150
+            },
+            {
+                title: "Desafío de Estrategias de Mitigación",
+                description: "¿Cuál es la mejor estrategia para mitigar el sesgo de anclaje en las negociaciones?",
+                content: "Un comprador está negociando el precio de un automóvil. El vendedor menciona un precio inicial de $30,000, pero el comprador sabe que el precio justo debería ser alrededor de $25,000.",
+                thinking: {
+                    title: "Proceso de Estrategias de Mitigación",
+                    steps: [
+                        {
+                            step: "Identificar el Ancla",
+                            description: "El precio inicial de $30,000 actúa como ancla para la negociación."
+                        },
+                        {
+                            step: "Evaluar el Impacto",
+                            description: "Considera cómo el ancla puede afectar la percepción del comprador."
+                        },
+                        {
+                            step: "Desarrollar Estrategias",
+                            description: "Desarrolla estrategias para evitar que el ancla influya en la decisión."
+                        },
+                        {
+                            step: "Implementar Soluciones",
+                            description: "Implementa las estrategias más efectivas para la situación."
+                        }
+                    ]
+                },
+                options: [
+                    {
+                        text: "Aceptar el Precio Inicial",
+                        description: "Negociar basándose en el precio inicial mencionado",
+                        correct: false,
+                        explanation: "Aceptar el precio inicial es exactamente lo que causa el sesgo de anclaje."
+                    },
+                    {
+                        text: "Establecer un Ancla Propia",
+                        description: "Mencionar un precio más bajo como punto de partida",
+                        correct: true,
+                        explanation: "Correcto. Establecer un ancla propia es una estrategia efectiva para mitigar el sesgo de anclaje."
+                    },
+                    {
+                        text: "Ignorar Completamente el Precio",
+                        description: "No considerar el precio inicial en absoluto",
+                        correct: false,
+                        explanation: "Aunque puede ser útil, no es práctico ignorar completamente el precio inicial en una negociación."
+                    }
+                ],
+                tips: [
+                    {
+                        title: "Ancla Propia",
+                        description: "Establece tu propio ancla antes de que el otro lado establezca el suyo."
+                    },
+                    {
+                        title: "Investigación Previa",
+                        description: "Investiga el valor real del producto antes de la negociación."
+                    },
+                    {
+                        title: "Múltiples Opciones",
+                        description: "Considera múltiples opciones para evitar depender de una sola ancla."
+                    }
+                ],
+                maxScore: 150
+            },
+            {
+                title: "Desafío de Maestría Final",
+                description: "Como maestro de sesgos, ¿cuál es la mejor estrategia para ayudar a otros a superar sus sesgos cognitivos?",
+                content: "Un equipo de trabajo está tomando decisiones importantes pero está siendo afectado por múltiples sesgos cognitivos. Como consultor experto, debes ayudarlos a identificar y superar estos sesgos.",
+                thinking: {
+                    title: "Proceso de Maestría Final",
+                    steps: [
+                        {
+                            step: "Evaluar la Situación",
+                            description: "Evalúa la situación del equipo y identifica los sesgos presentes."
+                        },
+                        {
+                            step: "Desarrollar Estrategias",
+                            description: "Desarrolla estrategias específicas para cada sesgo identificado."
+                        },
+                        {
+                            step: "Implementar Soluciones",
+                            description: "Implementa las soluciones de manera sistemática y efectiva."
+                        },
+                        {
+                            step: "Monitorear Progreso",
+                            description: "Monitorea el progreso y ajusta las estrategias según sea necesario."
+                        }
+                    ]
+                },
+                options: [
+                    {
+                        text: "Enseñar Conceptos Teóricos",
+                        description: "Explicar los conceptos de sesgos cognitivos de manera teórica",
+                        correct: false,
+                        explanation: "Aunque la teoría es importante, no es suficiente para superar los sesgos en la práctica."
+                    },
+                    {
+                        text: "Implementar Estrategias Prácticas",
+                        description: "Implementar estrategias prácticas y herramientas específicas",
+                        correct: true,
+                        explanation: "Correcto. Implementar estrategias prácticas es la mejor manera de ayudar a otros a superar sus sesgos cognitivos."
+                    },
+                    {
+                        text: "Dejar que Aprendan por Sí Mismos",
+                        description: "Permitir que el equipo aprenda a superar los sesgos por sí mismo",
+                        correct: false,
+                        explanation: "Aunque el aprendizaje autónomo es valioso, los sesgos cognitivos requieren intervención activa para ser superados."
+                    }
+                ],
+                tips: [
+                    {
+                        title: "Estrategias Prácticas",
+                        description: "Implementa herramientas y técnicas específicas para cada sesgo."
+                    },
+                    {
+                        title: "Monitoreo Continuo",
+                        description: "Monitorea el progreso y ajusta las estrategias según sea necesario."
+                    },
+                    {
+                        title: "Apoyo Continuo",
+                        description: "Proporciona apoyo continuo y seguimiento para asegurar el éxito."
+                    }
+                ],
+                maxScore: 150
+            }
+        ];
+
+        function loadChallenge() {
+            const challenge = challenges[currentChallenge];
+            const container = document.getElementById('challenge-container');
+            
+            container.innerHTML = `
+                <div class="challenge">
+                    <h3>${challenge.title}</h3>
+                    <p>${challenge.description}</p>
+                    <div class="challenge-content">
+                        <h4>Desafío</h4>
+                        <p>${challenge.content}</p>
+                        <div class="bias-identification">
+                            <h4>${challenge.thinking.title}</h4>
+                            ${challenge.thinking.steps.map(step => `
+                                <div class="bias-step">
+                                    <h5>${step.step}</h5>
+                                    <p>${step.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="challenge-options">
+                            ${challenge.options.map((option, index) => `
+                                <div class="challenge-option" onclick="selectOption(${index})">
+                                    <h5>${option.text}</h5>
+                                    <p>${option.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('master-tips').classList.remove('show');
+            document.getElementById('next-btn').disabled = true;
+            selectedOption = null;
+        }
+
+        function selectOption(index) {
+            if (selectedOption !== null) return;
+            
+            selectedOption = index;
+            const options = document.querySelectorAll('.challenge-option');
+            options.forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextChallenge() {
+            if (selectedOption === null) return;
+            
+            const challenge = challenges[currentChallenge];
+            const selected = challenge.options[selectedOption];
+            const options = document.querySelectorAll('.challenge-option');
+            
+            // Mostrar respuestas correctas/incorrectas
+            options.forEach((option, index) => {
+                const optionData = challenge.options[index];
+                if (optionData.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedOption) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Mostrar consejos de maestro
+            const masterTips = document.getElementById('master-tips');
+            const tipsContent = document.getElementById('tips-content');
+            
+            tipsContent.innerHTML = `
+                <div class="tip">
+                    <h5>Explicación</h5>
+                    <p>${selected.explanation}</p>
+                </div>
+                ${challenge.tips.map(tip => `
+                    <div class="tip">
+                        <h5>${tip.title}</h5>
+                        <p>${tip.description}</p>
+                    </div>
+                `).join('')}
+            `;
+            
+            masterTips.classList.add('show');
+            
+            // Actualizar puntuación
+            if (selected.correct) {
+                score += challenge.maxScore;
+                document.getElementById('score').textContent = score;
+            }
+            
+            // Actualizar progreso
+            const progress = ((currentChallenge + 1) / challenges.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Verificar logros
+            checkAchievements();
+            
+            // Preparar siguiente desafío
+            currentChallenge++;
+            if (currentChallenge < challenges.length) {
+                document.getElementById('next-btn').textContent = 'Siguiente';
+            } else {
+                document.getElementById('next-btn').textContent = 'Finalizar';
+                document.getElementById('next-btn').onclick = finishGame;
+            }
+        }
+
+        function checkAchievements() {
+            const achievements = document.getElementById('achievements');
+            const achievementsList = document.getElementById('achievements-list');
+            let newAchievements = [];
+            
+            if (score >= 300 && !localStorage.getItem('achievement_300')) {
+                newAchievements.push('🏆 Maestro de Sesgos: Obtuviste 300 puntos');
+                localStorage.setItem('achievement_300', 'true');
+            }
+            
+            if (score >= 600 && !localStorage.getItem('achievement_600')) {
+                newAchievements.push('🎯 Experto en Sesgos: Obtuviste 600 puntos');
+                localStorage.setItem('achievement_600', 'true');
+            }
+            
+            if (score >= 750 && !localStorage.getItem('achievement_750')) {
+                newAchievements.push('🧠 Gran Maestro de Sesgos: Obtuviste 750 puntos');
+                localStorage.setItem('achievement_750', 'true');
+            }
+            
+            if (newAchievements.length > 0) {
+                achievementsList.innerHTML = newAchievements.map(achievement => 
+                    `<div class="achievement">
+                        <span class="icon">${achievement.split(' ')[0]}</span>
+                        <span>${achievement}</span>
+                    </div>`
+                ).join('');
+                achievements.classList.add('show');
+            }
+        }
+
+        function finishGame() {
+            alert(`¡Desafíos completados! Tu puntuación final es: ${score} puntos`);
+            restartGame();
+        }
+
+        function restartGame() {
+            currentChallenge = 0;
+            score = 0;
+            selectedOption = null;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('next-btn').textContent = 'Siguiente';
+            document.getElementById('next-btn').onclick = nextChallenge;
+            document.getElementById('achievements').classList.remove('show');
+            loadChallenge();
+        }
+
+        // Cargar el primer desafío
+        loadChallenge();
+    </script>
+</body>
+</html>

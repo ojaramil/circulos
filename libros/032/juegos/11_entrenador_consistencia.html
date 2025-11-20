@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Consistencia - Autodisciplina Diaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #a8edea;
+        }
+
+        .game-section h3 {
+            color: #a8edea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .consistency-tracker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .consistency-tracker h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .consistency-level {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .consistency-level h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #a8edea;
+            margin: 20px 0;
+        }
+
+        .level-text {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .consistency-exercises {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .consistency-exercises h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .exercise h5 {
+            color: #a8edea;
+            margin-bottom: 10px;
+        }
+
+        .exercise p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .activities-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .activities-list h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .activity-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #a8edea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .activity-item h5 {
+            color: #a8edea;
+            margin-bottom: 10px;
+        }
+
+        .activity-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .stats h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value {
+            color: #a8edea;
+            font-weight: bold;
+        }
+
+        .achievements {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .achievements h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .achievement-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .achievement-unlocked {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .achievement-locked {
+            background: #f5f5f5;
+            border-left: 4px solid #ccc;
+        }
+
+        .consistency-quote {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #a8edea;
+        }
+
+        .consistency-quote h4 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .priority-high {
+            border-left-color: #f44336;
+        }
+
+        .priority-medium {
+            border-left-color: #ff9800;
+        }
+
+        .priority-low {
+            border-left-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Entrenador de Consistencia</h1>
+            <p>Mantén la Constancia en tus Objetivos</p>
+        </div>
+
+        <div class="content">
+            <div class="game-section">
+                <h3>🔄 ¿Qué es el Entrenador de Consistencia?</h3>
+                <p>El Entrenador de Consistencia es una herramienta interactiva que te ayuda a desarrollar y mantener la constancia en tus objetivos. A través de ejercicios, seguimiento de progreso y técnicas de motivación, aprenderás a mantenerte constante en tus esfuerzos.</p>
+            </div>
+
+            <div class="consistency-level">
+                <h4>📊 Tu Nivel de Consistencia</h4>
+                <div class="level-display">
+                    <div class="level-number" id="consistencyLevel">50</div>
+                    <div class="level-text" id="consistencyText">Consistencia Media</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="consistencyProgress" style="width: 50%"></div>
+                </div>
+                <p>Tu nivel de consistencia actual se basa en tu constancia en mantener tus objetivos.</p>
+            </div>
+
+            <div class="consistency-tracker">
+                <h4>📝 Registrar Actividad Consistente</h4>
+                <form id="consistencyForm">
+                    <div class="form-group">
+                        <label for="activityName">Nombre de la Actividad:</label>
+                        <input type="text" id="activityName" placeholder="Ej: Ejercicio diario" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityDescription">Descripción:</label>
+                        <textarea id="activityDescription" placeholder="Describe la actividad que mantienes consistente..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="consistencyLevel">Nivel de Consistencia (1-10):</label>
+                        <select id="consistencyLevel" required>
+                            <option value="">Selecciona nivel</option>
+                            <option value="1">1 - Muy Bajo</option>
+                            <option value="2">2 - Bajo</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="5">5 - Muy Bueno</option>
+                            <option value="6">6 - Excelente</option>
+                            <option value="7">7 - Fantástico</option>
+                            <option value="8">8 - Increíble</option>
+                            <option value="9">9 - Extraordinario</option>
+                            <option value="10">10 - Épico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityType">Tipo de Actividad:</label>
+                        <select id="activityType" required>
+                            <option value="">Selecciona tipo</option>
+                            <option value="health">Salud</option>
+                            <option value="work">Trabajo</option>
+                            <option value="study">Estudio</option>
+                            <option value="creative">Creatividad</option>
+                            <option value="social">Social</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityFrequency">Frecuencia:</label>
+                        <select id="activityFrequency" required>
+                            <option value="">Selecciona frecuencia</option>
+                            <option value="daily">Diario</option>
+                            <option value="weekly">Semanal</option>
+                            <option value="monthly">Mensual</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Registrar Actividad</button>
+                </form>
+            </div>
+
+            <div class="consistency-exercises">
+                <h4>🏋️ Ejercicios de Consistencia</h4>
+                
+                <div class="exercise">
+                    <h5>1. Meditación de Constancia</h5>
+                    <p>Medita sobre tu capacidad de mantener la constancia en tus objetivos.</p>
+                    <button class="btn" onclick="startConstancyMeditation()">Iniciar Meditación</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>2. Visualización de Consistencia</h5>
+                    <p>Visualiza cómo mantienes la consistencia en tus actividades diarias.</p>
+                    <button class="btn" onclick="startConsistencyVisualization()">Iniciar Visualización</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>3. Ejercicio de Motivación</h5>
+                    <p>Reflexiona sobre las razones por las que quieres mantener la consistencia.</p>
+                    <button class="btn" onclick="startMotivationExercise()">Iniciar Ejercicio</button>
+                </div>
+
+                <div class="exercise">
+                    <h5>4. Simulación de Consistencia</h5>
+                    <p>Simula diferentes escenarios donde mantienes la consistencia.</p>
+                    <button class="btn" onclick="startConsistencySimulation()">Iniciar Simulación</button>
+                </div>
+            </div>
+
+            <div class="activities-list">
+                <h4>📋 Mis Actividades Consistentes</h4>
+                <div id="activitiesList">
+                    <!-- Las actividades se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="consistency-quote">
+                <h4>💬 Cita de Consistencia del Día</h4>
+                <div class="quote-text" id="dailyQuote">"La consistencia es la clave del éxito. No importa cuánto talento tengas, si no puedes mantener la consistencia, no podrás aprovecharlo."</div>
+                <div class="quote-author" id="quoteAuthor">- Anónimo</div>
+                <button class="btn" onclick="getNewQuote()" style="margin-top: 15px;">Nueva Cita</button>
+            </div>
+
+            <div class="stats">
+                <h4>📊 Estadísticas</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Actividades Registradas:</span>
+                    <span class="stat-value" id="totalActivities">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Nivel Promedio:</span>
+                    <span class="stat-value" id="averageLevel">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mejor Nivel:</span>
+                    <span class="stat-value" id="bestLevel">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Días de Consistencia:</span>
+                    <span class="stat-value" id="consistencyDays">0</span>
+                </div>
+            </div>
+
+            <div class="achievements">
+                <h4>🏆 Logros</h4>
+                <div id="achievementsList">
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔄</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Primera Actividad</div>
+                            <div class="achievement-desc">Registra tu primera actividad consistente</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">🔥</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Consistencia Alta</div>
+                            <div class="achievement-desc">Alcanza un nivel de consistencia de 8 o más</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">💪</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Maestro de la Consistencia</div>
+                            <div class="achievement-desc">Registra 50 actividades consistentes</div>
+                        </div>
+                    </div>
+                    <div class="achievement-item achievement-locked">
+                        <span class="achievement-icon">👑</span>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Campeón de la Consistencia</div>
+                            <div class="achievement-desc">Mantén la consistencia por 100 días</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        let activities = JSON.parse(localStorage.getItem('consistencyActivities')) || [];
+        let stats = JSON.parse(localStorage.getItem('consistencyStats')) || {
+            totalActivities: 0,
+            averageLevel: 0,
+            bestLevel: 0,
+            consistencyDays: 0
+        };
+
+        let currentConsistencyLevel = parseInt(localStorage.getItem('currentConsistencyLevel')) || 50;
+
+        // Citas de consistencia
+        const quotes = [
+            { text: "La consistencia es la clave del éxito. No importa cuánto talento tengas, si no puedes mantener la consistencia, no podrás aprovecharlo.", author: "Anónimo" },
+            { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier" },
+            { text: "No importa lo lento que vayas, siempre y cuando no te detengas.", author: "Confucio" },
+            { text: "La consistencia es la diferencia entre el éxito y el fracaso.", author: "Anónimo" },
+            { text: "La constancia es la madre de la buena fortuna.", author: "Miguel de Cervantes" },
+            { text: "La consistencia es la capacidad de mantener el esfuerzo a pesar de los obstáculos.", author: "Anónimo" },
+            { text: "El éxito no es la clave de la felicidad. La felicidad es la clave del éxito.", author: "Herman Cain" },
+            { text: "La consistencia es la clave de la productividad.", author: "Anónimo" }
+        ];
+
+        // Inicializar el juego
+        function initGame() {
+            updateStats();
+            updateConsistencyLevel();
+            updateAchievements();
+            displayRandomQuote();
+            renderActivities();
+        }
+
+        // Registrar nueva actividad
+        document.getElementById('consistencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const activity = {
+                id: Date.now(),
+                name: document.getElementById('activityName').value,
+                description: document.getElementById('activityDescription').value,
+                consistencyLevel: parseInt(document.getElementById('consistencyLevel').value),
+                type: document.getElementById('activityType').value,
+                frequency: document.getElementById('activityFrequency').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            activities.push(activity);
+            currentConsistencyLevel = Math.min(100, currentConsistencyLevel + activity.consistencyLevel);
+            
+            saveData();
+            updateStats();
+            updateConsistencyLevel();
+            updateAchievements();
+            renderActivities();
+            
+            // Limpiar formulario
+            document.getElementById('consistencyForm').reset();
+            
+            // Mostrar mensaje de éxito
+            alert('¡Actividad registrada exitosamente!');
+        });
+
+        // Actualizar nivel de consistencia
+        function updateConsistencyLevel() {
+            document.getElementById('consistencyLevel').textContent = currentConsistencyLevel;
+            document.getElementById('consistencyProgress').style.width = currentConsistencyLevel + '%';
+            
+            let levelText = '';
+            if (currentConsistencyLevel < 20) levelText = 'Consistencia Muy Baja';
+            else if (currentConsistencyLevel < 40) levelText = 'Consistencia Baja';
+            else if (currentConsistencyLevel < 60) levelText = 'Consistencia Media';
+            else if (currentConsistencyLevel < 80) levelText = 'Consistencia Alta';
+            else levelText = 'Consistencia Máxima';
+            
+            document.getElementById('consistencyText').textContent = levelText;
+        }
+
+        // Iniciar meditación de constancia
+        function startConstancyMeditation() {
+            alert('Ejercicio de Meditación de Constancia:\n\n1. Siéntate cómodamente\n2. Respira profundamente\n3. Visualiza tu constancia\n4. Medita sobre tu capacidad de mantener el esfuerzo\n\n¡Ejercicio completado!');
+            currentConsistencyLevel = Math.min(100, currentConsistencyLevel + 5);
+            updateConsistencyLevel();
+            saveData();
+        }
+
+        // Iniciar visualización de consistencia
+        function startConsistencyVisualization() {
+            alert('Ejercicio de Visualización de Consistencia:\n\n1. Cierra los ojos\n2. Imagina tu actividad consistente\n3. Visualiza cómo la mantienes día tras día\n4. Siente la satisfacción de la constancia\n\n¡Ejercicio completado!');
+            currentConsistencyLevel = Math.min(100, currentConsistencyLevel + 5);
+            updateConsistencyLevel();
+            saveData();
+        }
+
+        // Iniciar ejercicio de motivación
+        function startMotivationExercise() {
+            alert('Ejercicio de Motivación:\n\n1. Piensa en tu actividad consistente\n2. Reflexiona sobre las razones por las que la mantienes\n3. Visualiza los beneficios que obtienes\n4. Fortalece tu determinación\n\n¡Ejercicio completado!');
+            currentConsistencyLevel = Math.min(100, currentConsistencyLevel + 5);
+            updateConsistencyLevel();
+            saveData();
+        }
+
+        // Iniciar simulación de consistencia
+        function startConsistencySimulation() {
+            alert('Ejercicio de Simulación de Consistencia:\n\n1. Imagina diferentes escenarios donde mantienes la consistencia\n2. Practica tu respuesta mental\n3. Visualiza cómo superas los obstáculos\n4. Desarrolla estrategias de afrontamiento\n\n¡Ejercicio completado!');
+            currentConsistencyLevel = Math.min(100, currentConsistencyLevel + 5);
+            updateConsistencyLevel();
+            saveData();
+        }
+
+        // Renderizar actividades
+        function renderActivities() {
+            const activitiesList = document.getElementById('activitiesList');
+            activitiesList.innerHTML = '';
+            
+            if (activities.length === 0) {
+                activitiesList.innerHTML = '<p>No tienes actividades registradas aún. ¡Registra tu primera actividad!</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <h5>${activity.name}</h5>
+                    <p><strong>Descripción:</strong> ${activity.description}</p>
+                    <p><strong>Tipo:</strong> ${getActivityTypeText(activity.type)}</p>
+                    <p><strong>Frecuencia:</strong> ${getFrequencyText(activity.frequency)}</p>
+                    <p><strong>Nivel de Consistencia:</strong> ${activity.consistencyLevel}/10</p>
+                    <p><strong>Fecha:</strong> ${new Date(activity.createdAt).toLocaleDateString()}</p>
+                `;
+                activitiesList.appendChild(activityItem);
+            });
+        }
+
+        // Obtener texto del tipo de actividad
+        function getActivityTypeText(type) {
+            const types = {
+                'health': 'Salud',
+                'work': 'Trabajo',
+                'study': 'Estudio',
+                'creative': 'Creatividad',
+                'social': 'Social',
+                'other': 'Otro'
+            };
+            return types[type] || type;
+        }
+
+        // Obtener texto de frecuencia
+        function getFrequencyText(frequency) {
+            const frequencies = {
+                'daily': 'Diario',
+                'weekly': 'Semanal',
+                'monthly': 'Mensual'
+            };
+            return frequencies[frequency] || frequency;
+        }
+
+        // Obtener nueva cita
+        function getNewQuote() {
+            displayRandomQuote();
+        }
+
+        // Mostrar cita aleatoria
+        function displayRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote.text;
+            document.getElementById('quoteAuthor').textContent = '- ' + randomQuote.author;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            stats.totalActivities = activities.length;
+            stats.averageLevel = activities.length > 0 ? Math.round(activities.reduce((sum, a) => sum + a.consistencyLevel, 0) / activities.length) : 0;
+            stats.bestLevel = activities.length > 0 ? Math.max(...activities.map(a => a.consistencyLevel)) : 0;
+            stats.consistencyDays = Math.floor(activities.length / 2); // Aproximación
+            
+            document.getElementById('totalActivities').textContent = stats.totalActivities;
+            document.getElementById('averageLevel').textContent = stats.averageLevel;
+            document.getElementById('bestLevel').textContent = stats.bestLevel;
+            document.getElementById('consistencyDays').textContent = stats.consistencyDays;
+            
+            saveData();
+        }
+
+        // Actualizar logros
+        function updateAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item');
+            
+            // Primera Actividad
+            if (stats.totalActivities >= 1) {
+                achievements[0].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Consistencia Alta
+            if (stats.bestLevel >= 8) {
+                achievements[1].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Maestro de la Consistencia
+            if (stats.totalActivities >= 50) {
+                achievements[2].className = 'achievement-item achievement-unlocked';
+            }
+            
+            // Campeón de la Consistencia
+            if (stats.consistencyDays >= 100) {
+                achievements[3].className = 'achievement-item achievement-unlocked';
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('consistencyActivities', JSON.stringify(activities));
+            localStorage.setItem('consistencyStats', JSON.stringify(stats));
+            localStorage.setItem('currentConsistencyLevel', currentConsistencyLevel.toString());
+        }
+
+        // Inicializar el juego
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Negocios - The Millionaire Fastlane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description { text-align: center; color: #666; font-size: 1.1em; margin-bottom: 30px; line-height: 1.6; }
+        .game-area {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .input-group { margin: 20px 0; }
+        label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .result {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid #FF6B35;
+        }
+        .result.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .tip-box h4 { color: #856404; margin-bottom: 10px; }
+        .tip-box ul { margin-left: 20px; color: #856404; }
+        .tip-box li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🎮</div>
+        <h1>Simulador de Negocios</h1>
+        <p class="description">Simula el crecimiento de diferentes modelos de negocio y compara resultados</p>
+        
+        <div class="game-area">
+            <h3 style="color: #2c3e50; margin-bottom: 20px;">Compara 3 Modelos de Negocio</h3>
+            <div class="input-group">
+                <label>Inversión Inicial (USD):</label>
+                <input type="number" id="inversion" value="10000" min="1000" step="1000">
+            </div>
+            <div class="input-group">
+                <label>Horas de Trabajo Semanal:</label>
+                <input type="number" id="horas" value="40" min="10" max="80" step="5">
+            </div>
+            <button onclick="simular()">🚀 Simular Crecimiento a 5 Años</button>
+            <div class="result" id="result">
+                <h3 style="color: #FF6B35; margin-bottom: 15px;">📊 Resultados de Simulación</h3>
+                <div id="resultados"></div>
+            </div>
+        </div>
+        <script>
+            function simular() {
+                const inversion = parseFloat(document.getElementById('inversion').value);
+                const horas = parseFloat(document.getElementById('horas').value);
+                
+                // Modelo 1: Trabajo tradicional (Slowlane)
+                const slowlane = inversion * 0.07 * 5; // 7% anual
+                
+                // Modelo 2: Negocio local
+                const local = inversion * 2; // 2x en 5 años
+                
+                // Modelo 3: Negocio escalable (Fastlane)
+                const fastlane = inversion * 10; // 10x en 5 años
+                
+                const html = `
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f5f5f5;">
+                            <th style="padding: 15px; text-align: left;">Modelo</th>
+                            <th style="padding: 15px; text-align: right;">Retorno en 5 años</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px;">🐌 Inversión Tradicional</td>
+                            <td style="padding: 15px; text-align: right; font-weight: bold;">$${slowlane.toLocaleString()}</td>
+                        </tr>
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 15px;">🏪 Negocio Local</td>
+                            <td style="padding: 15px; text-align: right; font-weight: bold;">$${local.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px;">🚀 Negocio Escalable</td>
+                            <td style="padding: 15px; text-align: right; font-weight: bold; color: #11998e;">$${fastlane.toLocaleString()}</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 20px; color: #666; line-height: 1.8;">
+                        <strong>Conclusión:</strong> Un negocio escalable (Fastlane) puede generar ${(fastlane/slowlane).toFixed(1)}x más 
+                        retorno que inversiones tradicionales en el mismo período.
+                    </p>
+                `;
+                
+                document.getElementById('resultados').innerHTML = html;
+                document.getElementById('result').classList.add('show');
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

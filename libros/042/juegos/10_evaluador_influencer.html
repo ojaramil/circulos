@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Influencer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⭐ Evaluador de Influencer</h1>
+        <p style="color: #666; margin-bottom: 20px;">Evalúa si un influencer es adecuado para tu marca</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Seguidores del Influencer:</label>
+        <input type="number" id="followers" placeholder="Ej: 50000">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Promedio de Likes por Post:</label>
+        <input type="number" id="likes" placeholder="Ej: 2500">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Promedio de Comentarios:</label>
+        <input type="number" id="comments" placeholder="Ej: 150">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Costo por Post ($):</label>
+        <input type="number" id="cost" placeholder="Ej: 500">
+
+        <button class="btn" onclick="evaluate()">Evaluar Influencer</button>
+
+        <div class="result" id="result">
+            <div class="score-circle" id="score">0</div>
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 20px;" id="verdict">Veredicto</h2>
+            
+            <div class="metric">
+                <span>Engagement Rate:</span>
+                <span id="engRate" style="font-weight: 600; color: #667eea;">0%</span>
+            </div>
+            <div class="metric">
+                <span>CPE (Costo por Engagement):</span>
+                <span id="cpe" style="font-weight: 600; color: #667eea;">$0</span>
+            </div>
+            <div class="metric">
+                <span>Alcance Estimado:</span>
+                <span id="reach" style="font-weight: 600; color: #667eea;">0</span>
+            </div>
+            <div class="metric">
+                <span>Recomendación:</span>
+                <span id="recommendation" style="font-weight: 600; color: #667eea;">-</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function evaluate() {
+            const followers = parseInt(document.getElementById('followers').value) || 0;
+            const likes = parseInt(document.getElementById('likes').value) || 0;
+            const comments = parseInt(document.getElementById('comments').value) || 0;
+            const cost = parseFloat(document.getElementById('cost').value) || 0;
+
+            if (!followers || !likes || !cost) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const totalEngagement = likes + (comments * 3); // Comentarios valen más
+            const engagementRate = ((totalEngagement / followers) * 100).toFixed(2);
+            const cpe = (cost / totalEngagement).toFixed(2);
+            const reach = Math.round(followers * 0.3); // Estimado 30% de alcance
+
+            let score, verdict, recommendation;
+
+            if (engagementRate >= 5) {
+                score = 95;
+                verdict = '🌟 EXCELENTE';
+                recommendation = '¡Altamente recomendado!';
+            } else if (engagementRate >= 3) {
+                score = 75;
+                verdict = '👍 BUENO';
+                recommendation = 'Buen candidato';
+            } else if (engagementRate >= 1) {
+                score = 50;
+                verdict = '📊 PROMEDIO';
+                recommendation = 'Considera otras opciones';
+            } else {
+                score = 25;
+                verdict = '⚠️ BAJO';
+                recommendation = 'No recomendado';
+            }
+
+            document.getElementById('score').textContent = score;
+            document.getElementById('verdict').textContent = verdict;
+            document.getElementById('engRate').textContent = engagementRate + '%';
+            document.getElementById('cpe').textContent = '$' + cpe;
+            document.getElementById('reach').textContent = reach.toLocaleString();
+            document.getElementById('recommendation').textContent = recommendation;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

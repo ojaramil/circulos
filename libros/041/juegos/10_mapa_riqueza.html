@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Riqueza Personal - The Millionaire Fastlane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description { text-align: center; color: #666; font-size: 1.1em; margin-bottom: 30px; }
+        .componente {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #FF6B35;
+        }
+        .componente h3 { color: #FF6B35; margin-bottom: 15px; }
+        .componente p { color: #666; margin-bottom: 10px; line-height: 1.6; }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+        button:hover { transform: translateY(-3px); }
+        .resultado {
+            display: none;
+            margin-top: 40px;
+        }
+        .resultado.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mapa-visual {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .mapa-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #11998e;
+        }
+        .mapa-item h4 { color: #11998e; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🗺️</div>
+        <h1>Mapa de Riqueza Personal</h1>
+        <p class="description">Crea tu mapa personalizado hacia la riqueza Fastlane</p>
+
+        <div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">🧭 Los 4 Componentes del Viaje</h3>
+            <p style="color: #666; line-height: 1.8;">
+                Según MJ DeMarco, el viaje hacia la riqueza tiene 4 componentes: <strong>Tu Mapa (Sidewalk/Slowlane/Fastlane),
+                Tu Vehículo (Tú mismo), Tus Caminos (Negocios/Inversiones), y Tu Velocidad (Ejecución)</strong>.
+                Define cada uno para crear tu mapa personalizado.
+            </p>
+        </div>
+
+        <form id="mapaForm">
+            <div class="componente">
+                <h3>🗺️ 1. Tu Mapa (Mentalidad)</h3>
+                <p>¿Qué mapa estás siguiendo actualmente?</p>
+                <select id="mapa" required>
+                    <option value="">Selecciona tu mapa...</option>
+                    <option value="sidewalk">Sidewalk - Viviendo al día, sin plan</option>
+                    <option value="slowlane">Slowlane - Trabajando, ahorrando para el retiro</option>
+                    <option value="fastlane">Fastlane - Construyendo sistemas escalables</option>
+                </select>
+            </div>
+
+            <div class="componente">
+                <h3>🚗 2. Tu Vehículo (Tú Mismo)</h3>
+                <p>¿En qué áreas necesitas mejorar para ser un mejor emprendedor?</p>
+                <textarea id="vehiculo" rows="3" placeholder="Ejemplo: Habilidades técnicas, marketing, ventas, liderazgo..." required></textarea>
+            </div>
+
+            <div class="componente">
+                <h3>🛣️ 3. Tus Caminos (Modelo de Negocio)</h3>
+                <p>¿Qué camino Fastlane vas a tomar?</p>
+                <select id="camino" required>
+                    <option value="">Selecciona tu camino...</option>
+                    <option value="internet">Internet - Alcance global instantáneo</option>
+                    <option value="innovacion">Innovación - Crear algo nuevo</option>
+                    <option value="contenido">Contenido - Información valiosa</option>
+                    <option value="software">Software - Automatización y escala</option>
+                    <option value="distribucion">Distribución - Conectar productores y consumidores</option>
+                </select>
+            </div>
+
+            <div class="componente">
+                <h3>⚡ 4. Tu Velocidad (Ejecución)</h3>
+                <p>¿Qué harás esta semana para avanzar?</p>
+                <input type="text" id="velocidad" placeholder="Acción concreta para esta semana" required>
+            </div>
+
+            <button type="submit">🗺️ Crear Mi Mapa de Riqueza</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('mapaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const mapa = document.getElementById('mapa').value;
+            const vehiculo = document.getElementById('vehiculo').value;
+            const camino = document.getElementById('camino').value;
+            const velocidad = document.getElementById('velocidad').value;
+            
+            const mapas = {
+                sidewalk: { nombre: 'Sidewalk', color: '#fc4a1a', consejo: 'Necesitas cambiar urgentemente a Fastlane' },
+                slowlane: { nombre: 'Slowlane', color: '#fa709a', consejo: 'Considera el Fastlane para acelerar tu riqueza' },
+                fastlane: { nombre: 'Fastlane', color: '#11998e', consejo: '¡Excelente! Mantén el enfoque' }
+            };
+            
+            const caminos = {
+                internet: 'Internet - Alcance Global',
+                innovacion: 'Innovación - Crear Algo Nuevo',
+                contenido: 'Contenido - Información Valiosa',
+                software: 'Software - Automatización',
+                distribucion: 'Distribución - Conectar Mercados'
+            };
+            
+            let html = '<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; border-radius: 15px; color: white; text-align: center; margin-bottom: 30px;">';
+            html += '<h2 style="font-size: 2em; margin-bottom: 10px;">🗺️ Tu Mapa Personal de Riqueza</h2>';
+            html += '<p style="font-size: 1.1em;">Ruta hacia la Libertad Financiera</p>';
+            html += '</div>';
+            
+            html += '<div class="mapa-visual">';
+            
+            html += '<div class="mapa-item">';
+            html += '<h4>🗺️ Tu Mapa Actual: ' + mapas[mapa].nombre + '</h4>';
+            html += '<p style="color: #666;">' + mapas[mapa].consejo + '</p>';
+            html += '</div>';
+            
+            html += '<div class="mapa-item">';
+            html += '<h4>🚗 Tu Vehículo (Áreas de Mejora):</h4>';
+            html += '<p style="color: #666;">' + vehiculo + '</p>';
+            html += '</div>';
+            
+            html += '<div class="mapa-item">';
+            html += '<h4>🛣️ Tu Camino: ' + caminos[camino] + '</h4>';
+            html += '<p style="color: #666;">Este es tu camino hacia la riqueza Fastlane</p>';
+            html += '</div>';
+            
+            html += '<div class="mapa-item">';
+            html += '<h4>⚡ Tu Velocidad (Acción Esta Semana):</h4>';
+            html += '<p style="color: #666; font-weight: 600;">' + velocidad + '</p>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            html += '<div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 5px solid #ffc107; margin-top: 20px;">';
+            html += '<h4 style="color: #856404; margin-bottom: 15px;">🎯 Próximos Pasos:</h4>';
+            html += '<ol style="margin-left: 20px; color: #856404; line-height: 2;">';
+            html += '<li>Ejecuta tu acción de esta semana SIN FALTA</li>';
+            html += '<li>Trabaja en mejorar las áreas que identificaste en tu vehículo</li>';
+            html += '<li>Mantente enfocado en tu camino elegido</li>';
+            html += '<li>Revisa este mapa cada mes y ajusta según necesites</li>';
+            html += '</ol>';
+            html += '</div>';
+            
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador SEO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            border-radius: 15px;
+        }
+        .result.show { display: block; }
+        .score-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔎 Optimizador SEO para YouTube</h1>
+        <p style="color: #666; margin-bottom: 20px;">Optimiza tu video para búsquedas</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Título del Video:</label>
+        <input type="text" id="title" placeholder="Ej: Cómo Ganar Dinero en YouTube 2024" maxlength="100">
+        <div style="text-align: right; font-size: 0.9em; color: #666;" id="titleCount">0/100</div>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Descripción:</label>
+        <textarea id="description" placeholder="Escribe una descripción detallada..."></textarea>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Palabras Clave (separadas por comas):</label>
+        <input type="text" id="keywords" placeholder="youtube, ganar dinero, tutorial">
+
+        <button class="btn" onclick="analyzeSEO()">Analizar SEO</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #FF0000; text-align: center; margin-bottom: 20px;">📊 Análisis SEO</h2>
+            
+            <div class="score-item">
+                <span>Puntuación Total</span>
+                <span class="score-value" style="color: #FF0000;" id="totalScore">0/100</span>
+            </div>
+
+            <div class="score-item">
+                <span>Longitud del Título</span>
+                <span id="titleScore">-</span>
+            </div>
+
+            <div class="score-item">
+                <span>Descripción</span>
+                <span id="descScore">-</span>
+            </div>
+
+            <div class="score-item">
+                <span>Palabras Clave</span>
+                <span id="keywordScore">-</span>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #FF0000; margin-bottom: 15px;">💡 Recomendaciones</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('title').addEventListener('input', function() {
+            document.getElementById('titleCount').textContent = this.value.length + '/100';
+        });
+
+        function analyzeSEO() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const keywords = document.getElementById('keywords').value;
+
+            if (!title || !description || !keywords) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            let score = 0;
+            let recommendations = [];
+
+            // Analizar título
+            let titleScore = 0;
+            if (title.length >= 40 && title.length <= 70) {
+                titleScore = 30;
+                document.getElementById('titleScore').innerHTML = '✅ Óptimo';
+                document.getElementById('titleScore').style.color = '#4CAF50';
+            } else if (title.length >= 30 && title.length < 40) {
+                titleScore = 20;
+                document.getElementById('titleScore').innerHTML = '⚠️ Corto';
+                document.getElementById('titleScore').style.color = '#FF9800';
+                recommendations.push('Título muy corto. Apunta a 40-70 caracteres.');
+            } else {
+                titleScore = 10;
+                document.getElementById('titleScore').innerHTML = '❌ Muy largo/corto';
+                document.getElementById('titleScore').style.color = '#f44336';
+                recommendations.push('Título fuera del rango óptimo (40-70 caracteres).');
+            }
+            score += titleScore;
+
+            // Analizar descripción
+            let descScore = 0;
+            if (description.length >= 200) {
+                descScore = 40;
+                document.getElementById('descScore').innerHTML = '✅ Completa';
+                document.getElementById('descScore').style.color = '#4CAF50';
+            } else if (description.length >= 100) {
+                descScore = 25;
+                document.getElementById('descScore').innerHTML = '⚠️ Corta';
+                document.getElementById('descScore').style.color = '#FF9800';
+                recommendations.push('Descripción corta. Apunta a 200+ caracteres.');
+            } else {
+                descScore = 10;
+                document.getElementById('descScore').innerHTML = '❌ Muy corta';
+                document.getElementById('descScore').style.color = '#f44336';
+                recommendations.push('Descripción muy corta. Necesitas al menos 200 caracteres.');
+            }
+            score += descScore;
+
+            // Analizar keywords
+            const keywordArray = keywords.split(',').map(k => k.trim()).filter(k => k);
+            let keywordScore = 0;
+            if (keywordArray.length >= 5 && keywordArray.length <= 15) {
+                keywordScore = 30;
+                document.getElementById('keywordScore').innerHTML = '✅ Óptimo';
+                document.getElementById('keywordScore').style.color = '#4CAF50';
+            } else if (keywordArray.length >= 3) {
+                keywordScore = 20;
+                document.getElementById('keywordScore').innerHTML = '⚠️ Pocas';
+                document.getElementById('keywordScore').style.color = '#FF9800';
+                recommendations.push('Agrega más palabras clave (5-15 es óptimo).');
+            } else {
+                keywordScore = 10;
+                document.getElementById('keywordScore').innerHTML = '❌ Muy pocas';
+                document.getElementById('keywordScore').style.color = '#f44336';
+                recommendations.push('Necesitas más palabras clave. Mínimo 5.');
+            }
+            score += keywordScore;
+
+            document.getElementById('totalScore').textContent = score + '/100';
+
+            let recHtml = '';
+            if (recommendations.length === 0) {
+                recHtml = '<p style="color: #4CAF50; font-weight: 600;">¡Perfecto! Tu SEO está optimizado.</p>';
+            } else {
+                recommendations.forEach(rec => {
+                    recHtml += `<p style="padding: 10px 0; border-bottom: 1px solid #eee;">• ${rec}</p>`;
+                });
+            }
+            document.getElementById('recommendations').innerHTML = recHtml;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

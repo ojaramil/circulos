@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Million Followers - Interactivo</title>
+  <style>
+    body {
+      background-color: #0D1F33;
+      color: #E0E7EF;
+      font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #142b47;
+      color: #E0E7EF;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 70px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #0D1F33;
+    }
+    .header .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo {
+      font-size: 1.3em;
+      font-weight: bold;
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .header .course-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+    .header .course-info .module-name {
+      font-size: 0.9em;
+      color: #A0B0C0;
+    }
+    .header .course-info .content-title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .header nav a {
+      color: #E0E7EF;
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.95em;
+    }
+    .header nav a:hover,
+    .header nav a.active-nav {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+    }
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      height: calc(100vh - 70px);
+    }
+    .sidebar-left, .main-content-area, .sidebar-right {
+      padding: 20px 25px;
+      overflow-y: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .sidebar-left {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 1;
+      border-right: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .main-content-area {
+      background-color: #0D1F33;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      order: 2;
+      padding: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+    .main-content-area iframe {
+      background-color: #F0F8FF;
+      color: #0D1F33;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(30,34,51,0.08);
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #f0f0f0;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .main-content-area iframe::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    
+    .sidebar-left::-webkit-scrollbar,
+    .sidebar-right::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-track,
+    .sidebar-right::-webkit-scrollbar-track {
+      background: #142b47;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb,
+    .sidebar-right::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+    
+    .sidebar-left::-webkit-scrollbar-thumb:hover,
+    .sidebar-right::-webkit-scrollbar-thumb:hover {
+      background: #E55A2B;
+    }
+    .sidebar-right {
+      background-color: #142b47;
+      width: 24%;
+      min-width: 260px;
+      order: 3;
+      border-left: 1px solid #0D1F33;
+      color: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #FF6B35 #142b47;
+    }
+    .sidebar-section h3 {
+      color: #82aaff;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2a4464;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      padding-bottom: 20px;
+    }
+    .sidebar-list li a {
+      display: flex;
+      align-items: center;
+      color: #C0D0E0;
+      text-decoration: none;
+      padding: 14px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.08em;
+    }
+    .sidebar-list li a .icon-placeholder {
+      margin-right: 12px;
+      font-size: 1.1em;
+      width: 20px;
+      text-align: center;
+      color: #7993b4;
+    }
+    .sidebar-list li a:hover {
+      background-color: #213a5a;
+      color: #FFFFFF;
+    }
+    .sidebar-list li a:hover .icon-placeholder {
+      color: #9cc2ff;
+    }
+    .sidebar-list li a.active-lesson,
+    .sidebar-list li a.active-activity {
+      background-color: #FF6B35;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+    .sidebar-list li a.active-lesson .icon-placeholder,
+    .sidebar-list li a.active-activity .icon-placeholder {
+      color: #FFFFFF;
+    }
+    @media (max-width: 992px) {
+      .sidebar-left, .sidebar-right { width: 30%; min-width: 180px; }
+    }
+    @media (max-width: 768px) {
+      body {
+        overflow: auto;
+        height: auto;
+      }
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+      }
+      .sidebar-left, .main-content-area, .sidebar-right {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-left: none;
+        border-right: none;
+        padding: 18px 10px 10px 10px;
+      }
+      .main-content-area { order: 1; padding: 10px; }
+      .sidebar-left { order: 2; }
+      .sidebar-right { order: 3; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo">📱</div>
+      <div class="course-info">
+        <span class="module-name">Círculo de Lectura • Marketing Digital</span>
+        <span class="content-title">One Million Followers - Brendan Kane</span>
+      </div>
+    </div>
+        <nav>
+        <a href="../index2.html"><span style="font-size: 1.2rem;">📚</span> Volver a la Biblioteca</a>
+        <a href="https://www.amazon.com/" target="_blank"><span style="font-size: 1.2rem;">🛒</span> Comprar libro en Amazon</a>
+    </nav>
+  </header>
+  <div class="main-container">
+    <main class="main-content-area">
+      <iframe id="content-frame" src="lecciones/01_introduccion.html" frameborder="0"></iframe>
+    </main>
+    <aside class="sidebar-left">
+      <section class="sidebar-section">
+        <h3>Lecciones del Libro</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="lecciones/01_introduccion.html" class="active-lesson"><span class="icon-placeholder">📖</span>Introducción</a></li>
+          <li><a href="#" data-src="lecciones/02_como_gane_un_millon.html"><span class="icon-placeholder">🚀</span>Cómo Gané un Millón</a></li>
+          <li><a href="#" data-src="lecciones/03_target_audiencia.html"><span class="icon-placeholder">🎯</span>Target de Audiencia</a></li>
+          <li><a href="#" data-src="lecciones/04_mensaje_masas.html"><span class="icon-placeholder">📢</span>Mensaje para las Masas</a></li>
+          <li><a href="#" data-src="lecciones/05_testing_social.html"><span class="icon-placeholder">🧪</span>Testing Social</a></li>
+          <li><a href="#" data-src="lecciones/06_contenido_shareable_facebook.html"><span class="icon-placeholder">👍</span>Contenido Shareable en Facebook</a></li>
+          <li><a href="#" data-src="lecciones/07_alianzas_estrategicas.html"><span class="icon-placeholder">🤝</span>Alianzas Estratégicas</a></li>
+          <li><a href="#" data-src="lecciones/08_ir_global.html"><span class="icon-placeholder">🌍</span>Ir Global</a></li>
+          <li><a href="#" data-src="lecciones/09_influencia_instagram.html"><span class="icon-placeholder">📸</span>Influencia en Instagram</a></li>
+          <li><a href="#" data-src="lecciones/10_growth_youtube.html"><span class="icon-placeholder">▶️</span>Growth en YouTube</a></li>
+          <li><a href="#" data-src="lecciones/11_realidades_snapchat.html"><span class="icon-placeholder">👻</span>Realidades de Snapchat</a></li>
+          <li><a href="#" data-src="lecciones/12_crecimiento_linkedin.html"><span class="icon-placeholder">💼</span>Crecimiento en LinkedIn</a></li>
+          <li><a href="#" data-src="lecciones/13_poder_permanencia.html"><span class="icon-placeholder">⏳</span>Poder de Permanencia</a></li>
+          <li><a href="#" data-src="lecciones/14_contenido_viral.html"><span class="icon-placeholder">🔥</span>Contenido Viral</a></li>
+          <li><a href="#" data-src="lecciones/15_algoritmos_plataformas.html"><span class="icon-placeholder">🤖</span>Algoritmos de Plataformas</a></li>
+          <li><a href="#" data-src="lecciones/16_engagement_audiencia.html"><span class="icon-placeholder">💬</span>Engagement de Audiencia</a></li>
+          <li><a href="#" data-src="lecciones/17_paid_media.html"><span class="icon-placeholder">💰</span>Paid Media</a></li>
+          <li><a href="#" data-src="lecciones/18_influencer_marketing.html"><span class="icon-placeholder">⭐</span>Influencer Marketing</a></li>
+          <li><a href="#" data-src="lecciones/19_branding_personal.html"><span class="icon-placeholder">👤</span>Branding Personal</a></li>
+          <li><a href="#" data-src="lecciones/20_metricas_analytics.html"><span class="icon-placeholder">📊</span>Métricas y Analytics</a></li>
+          <li><a href="#" data-src="lecciones/21_storytelling_digital.html"><span class="icon-placeholder">📝</span>Storytelling Digital</a></li>
+          <li><a href="#" data-src="lecciones/22_comunidad_online.html"><span class="icon-placeholder">👥</span>Comunidad Online</a></li>
+          <li><a href="#" data-src="lecciones/23_monetizacion.html"><span class="icon-placeholder">💵</span>Monetización</a></li>
+          <li><a href="#" data-src="lecciones/24_futuro_social_media.html"><span class="icon-placeholder">🔮</span>Futuro del Social Media</a></li>
+          <li><a href="#" data-src="lecciones/25_conclusion.html"><span class="icon-placeholder">🏁</span>Conclusión</a></li>
+        </ul>
+      </section>
+    </aside>
+    <aside class="sidebar-right">
+      <section class="sidebar-section">
+        <h3>Juegos y Actividades</h3>
+        <ul class="sidebar-list">
+          <li><a href="#" data-src="juegos/01_calculadora_engagement.html"><span class="icon-placeholder">🧮</span>Calculadora de Engagement</a></li>
+          <li><a href="#" data-src="juegos/02_test_audiencia.html"><span class="icon-placeholder">🎯</span>Test de Audiencia</a></li>
+          <li><a href="#" data-src="juegos/03_generador_contenido.html"><span class="icon-placeholder">✨</span>Generador de Contenido</a></li>
+          <li><a href="#" data-src="juegos/04_simulador_campanas.html"><span class="icon-placeholder">📣</span>Simulador de Campañas</a></li>
+          <li><a href="#" data-src="juegos/05_analizador_hashtags.html"><span class="icon-placeholder">#️⃣</span>Analizador de Hashtags</a></li>
+          <li><a href="#" data-src="juegos/06_planificador_contenido.html"><span class="icon-placeholder">📅</span>Planificador de Contenido</a></li>
+          <li><a href="#" data-src="juegos/07_test_viral.html"><span class="icon-placeholder">🌟</span>Test de Viralidad</a></li>
+          <li><a href="#" data-src="juegos/08_optimizador_perfiles.html"><span class="icon-placeholder">⚙️</span>Optimizador de Perfiles</a></li>
+          <li><a href="#" data-src="juegos/09_estrategia_crecimiento.html"><span class="icon-placeholder">📈</span>Estrategia de Crecimiento</a></li>
+          <li><a href="#" data-src="juegos/10_evaluador_influencer.html"><span class="icon-placeholder">🌟</span>Evaluador de Influencer</a></li>
+          <li><a href="#" data-src="juegos/11_constructor_marca.html"><span class="icon-placeholder">🏗️</span>Constructor de Marca</a></li>
+          <li><a href="#" data-src="juegos/12_maestro_social_media.html"><span class="icon-placeholder">🏆</span>Maestro de Social Media</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <script>
+    const frame = document.getElementById('content-frame');
+    document.querySelectorAll('.sidebar-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Solo interceptar enlaces internos (con data-src)
+        if (this.getAttribute('data-src')) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-list a').forEach(a => a.classList.remove('active-lesson', 'active-activity'));
+          if (this.closest('.sidebar-left')) {
+            this.classList.add('active-lesson');
+          } else if (this.closest('.sidebar-right')) {
+            this.classList.add('active-activity');
+          }
+          frame.src = this.getAttribute('data-src');
+        }
+        // Los enlaces externos (sin data-src) funcionarán normalmente
+      });
+    });
+  </script>
+</body>
+</html>

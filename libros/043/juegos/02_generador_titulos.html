@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Títulos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .title-card {
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .title-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+        }
+        .title-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .title-type {
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ Generador de Títulos para YouTube</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera títulos clickeables para tus videos</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tema de tu Video:</label>
+        <input type="text" id="topic" placeholder="Ej: productividad, cocina, gaming...">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tipo de Contenido:</label>
+        <select id="contentType">
+            <option value="">Selecciona...</option>
+            <option value="tutorial">Tutorial / Cómo Hacer</option>
+            <option value="listicle">Lista / Top</option>
+            <option value="review">Review / Análisis</option>
+            <option value="vlog">Vlog / Lifestyle</option>
+            <option value="challenge">Challenge / Desafío</option>
+            <option value="comparison">Comparación</option>
+        </select>
+
+        <button class="btn" onclick="generateTitles()">Generar Títulos</button>
+
+        <div id="titles"></div>
+    </div>
+
+    <script>
+        const titleTemplates = {
+            tutorial: [
+                "Cómo [TOPIC] en 10 Minutos (Paso a Paso)",
+                "La Forma MÁS FÁCIL de [TOPIC] en 2024",
+                "[TOPIC]: Guía Completa para Principiantes",
+                "Aprende [TOPIC] RÁPIDO (Sin Experiencia)",
+                "El Método Secreto para [TOPIC] que NADIE Te Cuenta"
+            ],
+            listicle: [
+                "7 [TOPIC] que CAMBIARÁN Tu Vida",
+                "Top 10 [TOPIC] que Debes Conocer",
+                "5 [TOPIC] que los EXPERTOS No Quieren que Sepas",
+                "Los 3 MEJORES [TOPIC] de 2024",
+                "10 [TOPIC] que Desearías Haber Conocido Antes"
+            ],
+            review: [
+                "[TOPIC]: ¿Vale la Pena? (Review Honesto)",
+                "Probé [TOPIC] por 30 Días - Resultados INCREÍBLES",
+                "[TOPIC] Review: La VERDAD que Nadie Te Dice",
+                "¿Es [TOPIC] una ESTAFA? Mi Experiencia Real",
+                "[TOPIC] vs [TOPIC]: ¿Cuál es MEJOR?"
+            ],
+            vlog: [
+                "Un Día en Mi Vida con [TOPIC]",
+                "24 Horas Haciendo SOLO [TOPIC]",
+                "Mi Rutina Diaria de [TOPIC]",
+                "Vlog: Probando [TOPIC] por Primera Vez",
+                "La REALIDAD de [TOPIC] (No es lo que Piensas)"
+            ],
+            challenge: [
+                "Desafío de [TOPIC] por 7 Días",
+                "¿Puedo [TOPIC] en 24 Horas?",
+                "Challenge EXTREMO de [TOPIC]",
+                "Intenté [TOPIC] y Esto Pasó...",
+                "[TOPIC] Challenge: ¿Lo Lograré?"
+            ],
+            comparison: [
+                "[TOPIC] vs [TOPIC]: La Batalla Definitiva",
+                "¿Qué es MEJOR? [TOPIC] o [TOPIC]",
+                "[TOPIC] Comparado: Antes y Después",
+                "Probé TODOS los [TOPIC] - Aquí está el Ganador",
+                "[TOPIC]: Barato vs Caro (¿Cuál Comprar?)"
+            ]
+        };
+
+        function generateTitles() {
+            const topic = document.getElementById('topic').value.trim();
+            const contentType = document.getElementById('contentType').value;
+
+            if (!topic || !contentType) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const templates = titleTemplates[contentType];
+            let html = '<h2 style="color: #FF0000; margin: 30px 0 20px 0;">💡 Títulos Generados:</h2>';
+
+            templates.forEach((template, index) => {
+                const title = template.replace(/\[TOPIC\]/g, topic);
+                html += `
+                    <div class="title-card" onclick="copyTitle('${title}')">
+                        <div class="title-text">${title}</div>
+                        <div class="title-type">Click para copiar</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('titles').innerHTML = html;
+        }
+
+        function copyTitle(title) {
+            navigator.clipboard.writeText(title).then(() => {
+                alert('¡Título copiado al portapapeles!\n\n' + title);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Tiempo - The Millionaire Fastlane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description { text-align: center; color: #666; font-size: 1.1em; margin-bottom: 30px; line-height: 1.6; }
+        .game-area {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .input-group { margin: 20px 0; }
+        label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .result {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid #FF6B35;
+        }
+        .result.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .tip-box h4 { color: #856404; margin-bottom: 10px; }
+        .tip-box ul { margin-left: 20px; color: #856404; }
+        .tip-box li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">⏱️</div>
+        <h1>Analizador de Tiempo</h1>
+        <p class="description">Analiza cómo usas tus 168 horas semanales y descubre oportunidades</p>
+        
+        <div class="game-area">
+            <h3 style="color: #2c3e50; margin-bottom: 20px;">¿Cómo usas tus 168 horas semanales?</h3>
+            <div class="input-group">
+                <label>😴 Dormir (horas/semana):</label>
+                <input type="number" id="dormir" value="56" min="35" max="70">
+            </div>
+            <div class="input-group">
+                <label>💼 Trabajo (horas/semana):</label>
+                <input type="number" id="trabajo" value="40" min="0" max="80">
+            </div>
+            <div class="input-group">
+                <label>📺 Entretenimiento/TV/Redes (horas/semana):</label>
+                <input type="number" id="entretenimiento" value="20" min="0" max="50">
+            </div>
+            <div class="input-group">
+                <label>🚀 Construyendo tu negocio (horas/semana):</label>
+                <input type="number" id="negocio" value="5" min="0" max="60">
+            </div>
+            <div class="input-group">
+                <label>📚 Aprendizaje/Desarrollo (horas/semana):</label>
+                <input type="number" id="aprendizaje" value="3" min="0" max="30">
+            </div>
+            <button onclick="analizar()">📊 Analizar Mi Tiempo</button>
+            <div class="result" id="result">
+                <div id="analisis"></div>
+            </div>
+        </div>
+        <script>
+            function analizar() {
+                const dormir = parseFloat(document.getElementById('dormir').value);
+                const trabajo = parseFloat(document.getElementById('trabajo').value);
+                const entretenimiento = parseFloat(document.getElementById('entretenimiento').value);
+                const negocio = parseFloat(document.getElementById('negocio').value);
+                const aprendizaje = parseFloat(document.getElementById('aprendizaje').value);
+                
+                const total = dormir + trabajo + entretenimiento + negocio + aprendizaje;
+                const otras = 168 - total;
+                
+                const tiempoProductivo = negocio + aprendizaje;
+                const porcentajeProductivo = (tiempoProductivo / 168) * 100;
+                
+                let mensaje = '';
+                let color = '';
+                
+                if (porcentajeProductivo < 5) {
+                    mensaje = '🚨 CRÍTICO: Menos del 5% de tu tiempo está dedicado a construir riqueza. ¡Necesitas cambiar esto YA!';
+                    color = '#fc4a1a';
+                } else if (porcentajeProductivo < 15) {
+                    mensaje = '⚠️ BAJO: Estás dedicando poco tiempo a actividades que generan riqueza. Aumenta este porcentaje.';
+                    color = '#fa709a';
+                } else if (porcentajeProductivo < 25) {
+                    mensaje = '👍 BUENO: Estás en el camino correcto. Sigue aumentando tu tiempo productivo.';
+                    color = '#f5576c';
+                } else {
+                    mensaje = '🏆 EXCELENTE: Estás dedicando tiempo significativo a construir tu futuro. ¡Sigue así!';
+                    color = '#11998e';
+                }
+                
+                const html = `
+                    <h3 style="color: #FF6B35; margin-bottom: 15px;">📊 Tu Análisis de Tiempo</h3>
+                    <div style="background: ${color}; color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                        <div style="font-size: 3em; font-weight: bold;">${porcentajeProductivo.toFixed(1)}%</div>
+                        <div style="font-size: 1.2em; margin-top: 10px;">Tiempo Productivo (Fastlane)</div>
+                    </div>
+                    <p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        ${mensaje}
+                    </p>
+                    <h4 style="color: #2c3e50; margin: 20px 0;">Desglose Semanal:</h4>
+                    <ul style="line-height: 2; color: #666;">
+                        <li>😴 Dormir: ${dormir}h (${((dormir/168)*100).toFixed(1)}%)</li>
+                        <li>💼 Trabajo: ${trabajo}h (${((trabajo/168)*100).toFixed(1)}%)</li>
+                        <li>📺 Entretenimiento: ${entretenimiento}h (${((entretenimiento/168)*100).toFixed(1)}%)</li>
+                        <li>🚀 Negocio: ${negocio}h (${((negocio/168)*100).toFixed(1)}%)</li>
+                        <li>📚 Aprendizaje: ${aprendizaje}h (${((aprendizaje/168)*100).toFixed(1)}%)</li>
+                        <li>🔧 Otras actividades: ${otras.toFixed(1)}h (${((otras/168)*100).toFixed(1)}%)</li>
+                    </ul>
+                    <div class="tip-box" style="margin-top: 20px;">
+                        <h4>💡 Recomendación:</h4>
+                        <p>Intenta reducir ${entretenimiento > 15 ? 'entretenimiento' : 'actividades improductivas'} y dedica más tiempo a construir tu negocio Fastlane. Incluso 10-15 horas semanales pueden hacer una gran diferencia.</p>
+                    </div>
+                `;
+                
+                document.getElementById('analisis').innerHTML = html;
+                document.getElementById('result').classList.add('show');
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

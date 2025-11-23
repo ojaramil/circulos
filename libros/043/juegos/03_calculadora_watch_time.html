@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Watch Time</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            border-radius: 15px;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Calculadora de Watch Time para YPP</h1>
+        <p style="color: #666; margin-bottom: 20px;">Calcula cuánto te falta para el YouTube Partner Program</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Suscriptores Actuales:</label>
+        <input type="number" id="subs" placeholder="Ej: 500">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Horas de Watch Time (últimos 12 meses):</label>
+        <input type="number" id="watchTime" placeholder="Ej: 2000">
+
+        <button class="btn" onclick="calculate()">Calcular Progreso</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #FF0000; text-align: center; margin-bottom: 20px;">📊 Tu Progreso</h2>
+            
+            <div class="metric">
+                <span>Progreso de Suscriptores</span>
+                <span style="font-weight: 600; color: #FF0000;" id="subsProgress">0%</span>
+            </div>
+
+            <div class="metric">
+                <span>Progreso de Watch Time</span>
+                <span style="font-weight: 600; color: #FF0000;" id="wtProgress">0%</span>
+            </div>
+
+            <div class="metric">
+                <span>Te Faltan</span>
+                <span style="font-weight: 600;" id="remaining">-</span>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #FF0000; margin-bottom: 15px;">🎯 Recomendación</h3>
+                <p id="recommendation"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const subs = parseInt(document.getElementById('subs').value) || 0;
+            const watchTime = parseInt(document.getElementById('watchTime').value) || 0;
+
+            const subsNeeded = 1000;
+            const wtNeeded = 4000;
+
+            const subsProgress = Math.min((subs / subsNeeded) * 100, 100).toFixed(1);
+            const wtProgress = Math.min((watchTime / wtNeeded) * 100, 100).toFixed(1);
+
+            const subsRemaining = Math.max(subsNeeded - subs, 0);
+            const wtRemaining = Math.max(wtNeeded - watchTime, 0);
+
+            document.getElementById('subsProgress').textContent = subsProgress + '%';
+            document.getElementById('wtProgress').textContent = wtProgress + '%';
+            document.getElementById('remaining').textContent = subsRemaining + ' subs, ' + wtRemaining + ' horas';
+
+            let recommendation = '';
+            if (subs >= subsNeeded && watchTime >= wtNeeded) {
+                recommendation = '🎉 ¡Felicidades! Cumples los requisitos para YPP. Solicita monetización ahora.';
+            } else if (subsProgress < wtProgress) {
+                recommendation = '📢 Enfócate en conseguir más suscriptores. Crea CTAs claros y thumbnails atractivos.';
+            } else {
+                recommendation = '⏱️ Enfócate en aumentar watch time. Crea videos más largos y mejora la retención.';
+            }
+
+            document.getElementById('recommendation').textContent = recommendation;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

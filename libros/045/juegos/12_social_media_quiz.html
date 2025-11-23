@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Social Media Master</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .result { display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 15px; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Quiz Social Media Master</h1>
+        <p style="color: #666; margin-bottom: 20px;">Pon a prueba tus conocimientos</p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">Pregunta 1: ¿Cuál es un buen engagement rate en Instagram?</h3>
+            <div style="margin: 10px 0;"><input type="radio" name="q1" value="1"> 1-2%</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q1" value="3"> 3-6%</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q1" value="10"> 10%+</div>
+        </div>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">Pregunta 2: ¿Cuándo es mejor publicar en TikTok?</h3>
+            <div style="margin: 10px 0;"><input type="radio" name="q2" value="morning"> Mañana (6-10 AM)</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q2" value="afternoon"> Tarde (2-4 PM)</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q2" value="night"> Noche (7-11 PM)</div>
+        </div>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">Pregunta 3: ¿Qué es más importante?</h3>
+            <div style="margin: 10px 0;"><input type="radio" name="q3" value="followers"> Número de seguidores</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q3" value="engagement"> Engagement rate</div>
+            <div style="margin: 10px 0;"><input type="radio" name="q3" value="likes"> Cantidad de likes</div>
+        </div>
+        <button class="btn" onclick="checkAnswers()">Ver Resultados</button>
+        <div class="result" id="result">
+            <h2 style="color: #1e3a8a; text-align: center;">Puntuación: <span id="score">0</span>/3</h2>
+            <p id="verdict" style="margin-top: 20px; font-size: 1.2em; text-align: center;"></p>
+        </div>
+        <script>
+            function checkAnswers() {{
+                let score = 0;
+                if (document.querySelector('input[name="q1"]:checked')?.value === '3') score++;
+                if (document.querySelector('input[name="q2"]:checked')?.value === 'night') score++;
+                if (document.querySelector('input[name="q2"]:checked')?.value === 'morning') score++;
+                if (document.querySelector('input[name="q3"]:checked')?.value === 'engagement') score++;
+                
+                document.getElementById('score').textContent = score;
+                const verdict = score === 3 ? '🏆 ¡Maestro de Social Media!' :
+                                score === 2 ? '✅ Buen conocimiento' :
+                                '📚 Sigue aprendiendo';
+                document.getElementById('verdict').textContent = verdict;
+                document.getElementById('result').classList.add('show');
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

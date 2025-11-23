@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Fastlane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        input:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+        .results.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .comparison-table th {
+            background: #FF6B35;
+            color: white;
+            font-weight: 600;
+        }
+        .sidewalk { background: #ffebee; }
+        .slowlane { background: #fff3e0; }
+        .fastlane { background: #e8f5e9; }
+        .highlight {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🧮</div>
+        <h1>Calculadora Fastlane</h1>
+        <p class="description">Compara cuánto tiempo te tomará alcanzar la libertad financiera en cada camino</p>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>💰 Objetivo de Riqueza (USD):</label>
+                <input type="number" id="objetivo" value="1000000" min="100000" step="100000">
+            </div>
+            <div class="input-group">
+                <label>💵 Ingresos Mensuales Actuales (USD):</label>
+                <input type="number" id="ingresos" value="3000" min="1000" step="500">
+            </div>
+            <div class="input-group">
+                <label>💸 Gastos Mensuales (USD):</label>
+                <input type="number" id="gastos" value="2500" min="500" step="100">
+            </div>
+            <div class="input-group">
+                <label>📈 Retorno Anual Esperado en Inversiones (%):</label>
+                <input type="number" id="retorno" value="7" min="0" max="20" step="0.5">
+            </div>
+            <button onclick="calcular()">🚀 Calcular Tiempo para Libertad Financiera</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">📊 Comparación de Caminos</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Camino</th>
+                        <th>Tiempo Estimado</th>
+                        <th>Estrategia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sidewalk">
+                        <td><strong>🚶 Sidewalk</strong></td>
+                        <td id="tiempo-sidewalk" class="highlight">∞</td>
+                        <td>Gastar todo, sin plan</td>
+                    </tr>
+                    <tr class="slowlane">
+                        <td><strong>🐌 Slowlane</strong></td>
+                        <td id="tiempo-slowlane" class="highlight">-</td>
+                        <td>Ahorrar 10%, invertir en fondos</td>
+                    </tr>
+                    <tr class="fastlane">
+                        <td><strong>🏎️ Fastlane</strong></td>
+                        <td id="tiempo-fastlane" class="highlight">-</td>
+                        <td>Negocio escalable, apalancamiento</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="mensaje" style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 5px solid #ffc107;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            const objetivo = parseFloat(document.getElementById('objetivo').value);
+            const ingresos = parseFloat(document.getElementById('ingresos').value);
+            const gastos = parseFloat(document.getElementById('gastos').value);
+            const retorno = parseFloat(document.getElementById('retorno').value) / 100;
+
+            const ahorro = ingresos - gastos;
+
+            // Sidewalk: nunca llega (gasta todo)
+            document.getElementById('tiempo-sidewalk').textContent = '∞ años';
+
+            // Slowlane: ahorra 10% e invierte
+            const ahorroSlowlane = ingresos * 0.10;
+            const añosSlowlane = calcularAñosInversion(objetivo, ahorroSlowlane, retorno);
+            document.getElementById('tiempo-slowlane').textContent = añosSlowlane.toFixed(1) + ' años';
+
+            // Fastlane: asume crecimiento exponencial de negocio (10x más rápido)
+            const añosFastlane = añosSlowlane / 10;
+            document.getElementById('tiempo-fastlane').textContent = añosFastlane.toFixed(1) + ' años';
+
+            // Mensaje personalizado
+            let mensaje = '';
+            if (añosSlowlane > 40) {
+                mensaje = '⚠️ <strong>Alerta:</strong> El Slowlane te tomará más de 40 años. ¡Es hora de considerar el Fastlane!';
+            } else if (añosSlowlane > 20) {
+                mensaje = '💡 El Slowlane funciona, pero te tomará décadas. El Fastlane puede reducir esto dramáticamente.';
+            } else {
+                mensaje = '✅ Estás en buen camino, pero el Fastlane puede acelerar tu libertad financiera significativamente.';
+            }
+
+            document.getElementById('mensaje').innerHTML = mensaje;
+            document.getElementById('results').classList.add('show');
+        }
+
+        function calcularAñosInversion(objetivo, ahorroMensual, retornoAnual) {
+            if (ahorroMensual <= 0) return Infinity;
+            const retornoMensual = Math.pow(1 + retornoAnual, 1/12) - 1;
+            const meses = Math.log(1 + (objetivo * retornoMensual) / ahorroMensual) / Math.log(1 + retornoMensual);
+            return meses / 12;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Viralidad</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .question h3 { color: #333; margin-bottom: 15px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover { border-color: #667eea; }
+        .option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        .result.show { display: block; }
+        .score { font-size: 4em; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Test de Potencial Viral</h1>
+        <p style="color: #666; margin-bottom: 20px;">¿Qué tan viral es tu idea de contenido?</p>
+
+        <div class="question">
+            <h3>1. ¿Tu contenido genera emoción fuerte?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q1', 10)">Sí, genera asombro o risa</div>
+                <div class="option" onclick="selectOption(this, 'q1', 5)">Algo de emoción</div>
+                <div class="option" onclick="selectOption(this, 'q1', 0)">No mucha emoción</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>2. ¿Es fácil de compartir?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q2', 10)">Muy fácil, mensaje claro</div>
+                <div class="option" onclick="selectOption(this, 'q2', 5)">Moderadamente fácil</div>
+                <div class="option" onclick="selectOption(this, 'q2', 0)">Complicado de explicar</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>3. ¿Ofrece valor práctico?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q3', 10)">Sí, muy útil</div>
+                <div class="option" onclick="selectOption(this, 'q3', 5)">Algo útil</div>
+                <div class="option" onclick="selectOption(this, 'q3', 0)">Solo entretenimiento</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>4. ¿Hace que la gente se vea bien al compartirlo?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q4', 10)">Sí, da estatus social</div>
+                <div class="option" onclick="selectOption(this, 'q4', 5)">Un poco</div>
+                <div class="option" onclick="selectOption(this, 'q4', 0)">No realmente</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>5. ¿Es visualmente atractivo?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q5', 10)">Muy atractivo</div>
+                <div class="option" onclick="selectOption(this, 'q5', 5)">Decente</div>
+                <div class="option" onclick="selectOption(this, 'q5', 0)">Básico</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculateViral()">Calcular Potencial Viral</button>
+
+        <div class="result" id="result">
+            <div class="score" id="score">0%</div>
+            <h2 id="verdict">Veredicto</h2>
+            <p id="recommendation"></p>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        function selectOption(element, question, value) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[question] = value;
+        }
+
+        function calculateViral() {
+            if (Object.keys(answers).length < 5) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            const total = Object.values(answers).reduce((a, b) => a + b, 0);
+            const percentage = (total / 50) * 100;
+
+            document.getElementById('score').textContent = percentage + '%';
+
+            let verdict, recommendation;
+            if (percentage >= 80) {
+                verdict = '🔥 ¡ALTAMENTE VIRAL!';
+                recommendation = 'Tu contenido tiene todos los elementos para volverse viral. ¡Publícalo ya!';
+            } else if (percentage >= 60) {
+                verdict = '🌟 Buen Potencial';
+                recommendation = 'Tu contenido tiene potencial. Mejora el aspecto visual y la emoción.';
+            } else if (percentage >= 40) {
+                verdict = '📊 Potencial Moderado';
+                recommendation = 'Necesitas trabajar más en generar emoción y valor práctico.';
+            } else {
+                verdict = '📉 Bajo Potencial';
+                recommendation = 'Replantea tu contenido. Enfócate en generar emoción y valor.';
+            }
+
+            document.getElementById('verdict').textContent = verdict;
+            document.getElementById('recommendation').textContent = recommendation;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

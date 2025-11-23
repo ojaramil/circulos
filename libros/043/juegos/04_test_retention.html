@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Retención</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .question h3 { color: #333; margin-bottom: 15px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover { border-color: #FF0000; }
+        .option.selected {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border-color: #FF0000;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        .result.show { display: block; }
+        .score { font-size: 4em; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Test de Retención de Audiencia</h1>
+        <p style="color: #666; margin-bottom: 20px;">¿Qué tan bien retienes a tu audiencia?</p>
+
+        <div class="question">
+            <h3>1. ¿Tus primeros 10 segundos capturan atención?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q1', 10)">Sí, con hook fuerte y visual</div>
+                <div class="option" onclick="selectOption(this, 'q1', 5)">A veces</div>
+                <div class="option" onclick="selectOption(this, 'q1', 0)">No, intro larga</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>2. ¿Usas pattern interrupts?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q2', 10)">Sí, cambios visuales frecuentes</div>
+                <div class="option" onclick="selectOption(this, 'q2', 5)">Algunos</div>
+                <div class="option" onclick="selectOption(this, 'q2', 0)">No, video estático</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>3. ¿Entregas valor temprano?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q3', 10)">Sí, en primer minuto</div>
+                <div class="option" onclick="selectOption(this, 'q3', 5)">A mitad del video</div>
+                <div class="option" onclick="selectOption(this, 'q3', 0)">Al final</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>4. ¿Usas loops abiertos?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q4', 10)">Sí, creo anticipación</div>
+                <div class="option" onclick="selectOption(this, 'q4', 5)">A veces</div>
+                <div class="option" onclick="selectOption(this, 'q4', 0)">No</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>5. ¿Tu pacing es adecuado?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q5', 10)">Sí, ritmo constante</div>
+                <div class="option" onclick="selectOption(this, 'q5', 5)">Irregular</div>
+                <div class="option" onclick="selectOption(this, 'q5', 0)">Muy lento</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculateRetention()">Calcular Puntuación</button>
+
+        <div class="result" id="result">
+            <div class="score" id="score">0%</div>
+            <h2 id="verdict">Veredicto</h2>
+            <p id="recommendation"></p>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        function selectOption(element, question, value) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[question] = value;
+        }
+
+        function calculateRetention() {
+            if (Object.keys(answers).length < 5) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            const total = Object.values(answers).reduce((a, b) => a + b, 0);
+            const percentage = (total / 50) * 100;
+
+            document.getElementById('score').textContent = percentage + '%';
+
+            let verdict, recommendation;
+            if (percentage >= 80) {
+                verdict = '🔥 EXCELENTE Retención';
+                recommendation = 'Tus videos están optimizados para retención. ¡Sigue así!';
+            } else if (percentage >= 60) {
+                verdict = '✅ Buena Retención';
+                recommendation = 'Vas bien. Mejora los pattern interrupts y el pacing.';
+            } else if (percentage >= 40) {
+                verdict = '⚠️ Retención Moderada';
+                recommendation = 'Necesitas trabajar en el hook y entregar valor más temprano.';
+            } else {
+                verdict = '❌ Baja Retención';
+                recommendation = 'Rediseña completamente tu estructura de video. Estudia canales exitosos.';
+            }
+
+            document.getElementById('verdict').textContent = verdict;
+            document.getElementById('recommendation').textContent = recommendation;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

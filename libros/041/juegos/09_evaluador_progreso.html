@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Progreso Fastlane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description { text-align: center; color: #666; font-size: 1.1em; margin-bottom: 30px; }
+        .metrica {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .metrica h3 { color: #2c3e50; margin-bottom: 10px; }
+        .slider-container { margin: 15px 0; }
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF6B35;
+            cursor: pointer;
+        }
+        .valor { text-align: center; font-size: 1.5em; color: #FF6B35; font-weight: bold; margin-top: 10px; }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+        button:hover { transform: translateY(-3px); }
+        .resultado {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .resultado.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .radar-chart {
+            width: 100%;
+            max-width: 400px;
+            margin: 30px auto;
+            text-align: center;
+        }
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: white;
+        }
+        .excelente { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .bueno { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .regular { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .malo { background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📊</div>
+        <h1>Evaluador de Progreso</h1>
+        <p class="description">Mide tu progreso en el Fastlane con métricas clave</p>
+
+        <form id="progresoForm">
+            <div class="metrica">
+                <h3>1. Validación de Mercado (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Has validado que existe demanda real para tu producto/servicio?</p>
+                <div class="slider-container">
+                    <input type="range" id="validacion" min="0" max="10" value="5" oninput="updateValor('validacion')">
+                    <div class="valor" id="validacion-valor">5/10</div>
+                </div>
+            </div>
+
+            <div class="metrica">
+                <h3>2. MVP/Producto (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Qué tan avanzado está tu producto mínimo viable?</p>
+                <div class="slider-container">
+                    <input type="range" id="producto" min="0" max="10" value="5" oninput="updateValor('producto')">
+                    <div class="valor" id="producto-valor">5/10</div>
+                </div>
+            </div>
+
+            <div class="metrica">
+                <h3>3. Clientes/Usuarios (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Tienes clientes pagando o usuarios activos?</p>
+                <div class="slider-container">
+                    <input type="range" id="clientes" min="0" max="10" value="5" oninput="updateValor('clientes')">
+                    <div class="valor" id="clientes-valor">5/10</div>
+                </div>
+            </div>
+
+            <div class="metrica">
+                <h3>4. Ingresos Recurrentes (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Generas ingresos mensuales recurrentes?</p>
+                <div class="slider-container">
+                    <input type="range" id="ingresos" min="0" max="10" value="5" oninput="updateValor('ingresos')">
+                    <div class="valor" id="ingresos-valor">5/10</div>
+                </div>
+            </div>
+
+            <div class="metrica">
+                <h3>5. Sistemas y Automatización (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Tu negocio puede funcionar sin tu presencia constante?</p>
+                <div class="slider-container">
+                    <input type="range" id="sistemas" min="0" max="10" value="5" oninput="updateValor('sistemas')">
+                    <div class="valor" id="sistemas-valor">5/10</div>
+                </div>
+            </div>
+
+            <div class="metrica">
+                <h3>6. Escalabilidad (0-10)</h3>
+                <p style="color: #666; font-size: 0.9em;">¿Puedes 10x tu negocio sin 10x tu tiempo?</p>
+                <div class="slider-container">
+                    <input type="range" id="escala" min="0" max="10" value="5" oninput="updateValor('escala')">
+                    <div class="valor" id="escala-valor">5/10</div>
+                </div>
+            </div>
+
+            <button type="submit">�� Evaluar Mi Progreso</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        function updateValor(id) {
+            const valor = document.getElementById(id).value;
+            document.getElementById(id + '-valor').textContent = valor + '/10';
+        }
+
+        document.getElementById('progresoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const validacion = parseInt(document.getElementById('validacion').value);
+            const producto = parseInt(document.getElementById('producto').value);
+            const clientes = parseInt(document.getElementById('clientes').value);
+            const ingresos = parseInt(document.getElementById('ingresos').value);
+            const sistemas = parseInt(document.getElementById('sistemas').value);
+            const escala = parseInt(document.getElementById('escala').value);
+            
+            const total = validacion + producto + clientes + ingresos + sistemas + escala;
+            const promedio = (total / 60 * 100).toFixed(1);
+            
+            let clase = 'malo';
+            let mensaje = '';
+            let recomendaciones = [];
+            
+            if (promedio >= 75) {
+                clase = 'excelente';
+                mensaje = '🏆 ¡Excelente Progreso Fastlane!';
+                recomendaciones = [
+                    'Estás en el camino correcto. Mantén el enfoque.',
+                    'Busca oportunidades para escalar aún más.',
+                    'Considera delegar más para liberar tu tiempo.',
+                    'Documenta tus sistemas para futuro crecimiento.'
+                ];
+            } else if (promedio >= 50) {
+                clase = 'bueno';
+                mensaje = '👍 Buen Progreso, Sigue Adelante';
+                recomendaciones = [
+                    'Identifica tu métrica más débil y enfócate en ella.',
+                    'Acelera la validación de mercado si es baja.',
+                    'Prioriza conseguir clientes pagando.',
+                    'Comienza a automatizar procesos repetitivos.'
+                ];
+            } else if (promedio >= 25) {
+                clase = 'regular';
+                mensaje = '⚠️ Progreso Inicial, Acelera';
+                recomendaciones = [
+                    'Enfócate en validación de mercado primero.',
+                    'Lanza un MVP lo antes posible.',
+                    'Habla con clientes potenciales esta semana.',
+                    'Define métricas claras de éxito.'
+                ];
+            } else {
+                clase = 'malo';
+                mensaje = '🚨 Fase Muy Inicial, Toma Acción';
+                recomendaciones = [
+                    'Deja de planificar y empieza a ejecutar HOY.',
+                    'Valida tu idea con 10 clientes potenciales.',
+                    'Crea un MVP en las próximas 2 semanas.',
+                    'Lee nuevamente los capítulos de ejecución del libro.'
+                ];
+            }
+            
+            let html = '<div class="score-circle ' + clase + '">' + promedio + '%</div>';
+            html += '<h2 style="text-align: center; color: #2c3e50; margin: 20px 0;">' + mensaje + '</h2>';
+            
+            html += '<div style="background: white; padding: 25px; border-radius: 12px; margin: 20px 0;">';
+            html += '<h3 style="color: #2c3e50; margin-bottom: 15px;">📊 Desglose por Área:</h3>';
+            html += '<p>Validación de Mercado: <strong>' + validacion + '/10</strong></p>';
+            html += '<p>MVP/Producto: <strong>' + producto + '/10</strong></p>';
+            html += '<p>Clientes/Usuarios: <strong>' + clientes + '/10</strong></p>';
+            html += '<p>Ingresos Recurrentes: <strong>' + ingresos + '/10</strong></p>';
+            html += '<p>Sistemas y Automatización: <strong>' + sistemas + '/10</strong></p>';
+            html += '<p>Escalabilidad: <strong>' + escala + '/10</strong></p>';
+            html += '</div>';
+            
+            html += '<div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 5px solid #ffc107;">';
+            html += '<h4 style="color: #856404; margin-bottom: 15px;">💡 Recomendaciones:</h4>';
+            html += '<ul style="margin-left: 20px; color: #856404; line-height: 2;">';
+            recomendaciones.forEach(rec => {
+                html += '<li>' + rec + '</li>';
+            });
+            html += '</ul>';
+            html += '</div>';
+            
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

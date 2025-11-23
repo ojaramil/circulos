@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Audiencia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        .result.show { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .result h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+        .result p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test de Audiencia</h1>
+        <p style="color: #666; margin-bottom: 20px;">Descubre qué tipo de audiencia es ideal para tu contenido</p>
+
+        <div class="question">
+            <h3>1. ¿Qué tipo de contenido prefieres crear?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q1', 'educational')">📚 Educativo y profesional</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'entertainment')">🎭 Entretenimiento y humor</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'inspirational')">✨ Inspiracional y motivacional</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'lifestyle')">🌟 Lifestyle y personal</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>2. ¿Cuál es tu objetivo principal?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q2', 'business')">💼 Generar negocios/ventas</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'awareness')">📢 Aumentar awareness de marca</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'community')">👥 Construir comunidad</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'influence')">⭐ Ser influencer</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>3. ¿Qué plataforma prefieres?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q3', 'linkedin')">💼 LinkedIn</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'instagram')">📸 Instagram</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'tiktok')">🎵 TikTok</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'youtube')">▶️ YouTube</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculateResult()">Ver Mi Audiencia Ideal</button>
+
+        <div class="result" id="result">
+            <h2 id="audienceType">Tu Audiencia Ideal</h2>
+            <p id="audienceDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        function selectOption(element, question, value) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[question] = value;
+        }
+
+        function calculateResult() {
+            if (Object.keys(answers).length < 3) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            let audienceType = '';
+            let description = '';
+
+            // Lógica simple para determinar audiencia
+            if (answers.q1 === 'educational' && answers.q3 === 'linkedin') {
+                audienceType = '👔 Profesionales y Emprendedores';
+                description = 'Tu audiencia ideal son profesionales de 25-45 años que buscan crecer en sus carreras. Enfócate en contenido de valor, casos de estudio y networking estratégico.';
+            } else if (answers.q1 === 'entertainment' && (answers.q3 === 'tiktok' || answers.q3 === 'instagram')) {
+                audienceType = '🎉 Gen Z y Millennials';
+                description = 'Tu audiencia son jóvenes de 18-35 años que buscan entretenimiento. Crea contenido corto, dinámico y auténtico. Los trends y challenges funcionan muy bien.';
+            } else if (answers.q1 === 'inspirational') {
+                audienceType = '✨ Buscadores de Inspiración';
+                description = 'Tu audiencia busca motivación y crecimiento personal. Comparte historias auténticas, lecciones de vida y contenido que empodere. Edad: 25-50 años.';
+            } else if (answers.q3 === 'youtube') {
+                audienceType = '📺 Consumidores de Contenido Profundo';
+                description = 'Tu audiencia valora contenido de formato largo y educativo. Invierte en calidad de producción y contenido evergreen que aporte valor duradero.';
+            } else {
+                audienceType = '🌐 Audiencia Diversa';
+                description = 'Tu audiencia es variada. Experimenta con diferentes formatos y analiza qué resuena más. Usa analytics para refinar tu estrategia.';
+            }
+
+            document.getElementById('audienceType').textContent = audienceType;
+            document.getElementById('audienceDescription').textContent = description;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

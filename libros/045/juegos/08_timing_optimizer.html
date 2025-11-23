@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Timing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .result { display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 15px; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ Optimizador de Timing</h1>
+        <p style="color: #666; margin-bottom: 20px;">Cuándo publicar para máximo alcance</p>
+        
+        <select id="platform">
+            <option value="">Selecciona plataforma...</option>
+            <option value="instagram">Instagram</option>
+            <option value="tiktok">TikTok</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="youtube">YouTube</option>
+        </select>
+        <button class="btn" onclick="showTiming()">Ver Mejores Horarios</button>
+        <div class="result" id="result">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">⏰ Mejores horarios:</h3>
+            <div id="times"></div>
+        </div>
+        <script>
+            const timings = {{
+                instagram: ['9:00 AM - 11:00 AM', '1:00 PM - 3:00 PM', '7:00 PM - 9:00 PM'],
+                tiktok: ['6:00 AM - 10:00 AM', '7:00 PM - 11:00 PM'],
+                linkedin: ['7:00 AM - 9:00 AM', '12:00 PM - 2:00 PM', '5:00 PM - 6:00 PM'],
+                youtube: ['2:00 PM - 4:00 PM', '6:00 PM - 9:00 PM']
+            }};
+            
+            function showTiming() {{
+                const platform = document.getElementById('platform').value;
+                if (!platform) {{ alert('Selecciona una plataforma'); return; }}
+                
+                const times = timings[platform];
+                document.getElementById('times').innerHTML = times.map((time, i) => 
+                    `<div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                        <strong>Opción ${{i+1}}:</strong> ${{time}}
+                    </div>`
+                ).join('');
+                document.getElementById('result').classList.add('show');
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

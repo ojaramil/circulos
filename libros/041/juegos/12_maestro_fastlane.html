@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro Fastlane - Quiz Final</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .pregunta {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #FF6B35;
+        }
+
+        .pregunta h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opcion {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .opcion:hover {
+            border-color: #FF6B35;
+            background: #fff3e0;
+        }
+
+        .opcion input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .resultado.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .maestro {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .avanzado {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .intermedio {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .principiante {
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">🏆</div>
+        <h1>Maestro Fastlane - Quiz Final</h1>
+        <p class="description">Pon a prueba tu conocimiento del libro "The Millionaire Fastlane"</p>
+
+        <form id="quizForm">
+            <div class="pregunta">
+                <h3>1. ¿Cuál es la ecuación de riqueza del Slowlane?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q1" value="a" required>
+                        Riqueza = Ingresos + Deuda
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q1" value="b">
+                        Riqueza = Trabajo + Inversiones en Mercado
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q1" value="c">
+                        Riqueza = Patrimonio Neto × Apalancamiento
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>2. ¿Cuántos mandamientos del Fastlane existen?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q2" value="a" required>
+                        3 mandamientos
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q2" value="b">
+                        5 mandamientos
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q2" value="c">
+                        7 mandamientos
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>3. Según MJ DeMarco, ¿qué es más importante?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q3" value="a" required>
+                        Planificación perfecta
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q3" value="b">
+                        Ejecución rápida
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q3" value="c">
+                        Esperar el momento perfecto
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>4. ¿Qué significa "Entrada fácil = ..."?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q4" value="a" required>
+                        Camino fácil
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q4" value="b">
+                        Camino difícil
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q4" value="c">
+                        Camino rápido
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>5. ¿Cuál NO es un camino Fastlane según el libro?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q5" value="a" required>
+                        Internet
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q5" value="b">
+                        Marketing multinivel (MLM)
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q5" value="c">
+                        Software/SaaS
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>6. ¿Qué es más valioso según el Fastlane?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q6" value="a" required>
+                        Dinero
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q6" value="b">
+                        Tiempo
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q6" value="c">
+                        Educación formal
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>7. ¿Qué debes construir en el Fastlane?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q7" value="a" required>
+                        Un trabajo mejor pagado
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q7" value="b">
+                        Sistemas escalables
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q7" value="c">
+                        Un portafolio de inversiones
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>8. ¿Cuál es el problema con "Haz lo que amas"?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q8" value="a" required>
+                        Es siempre el mejor consejo
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q8" value="b">
+                        El mercado no paga por tus pasiones, paga por soluciones
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q8" value="c">
+                        No hay problema con ese consejo
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>9. ¿Qué es el Mandamiento de Escala?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q9" value="a" required>
+                        Tu negocio debe poder servir a millones
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q9" value="b">
+                        Tu negocio debe ser local
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q9" value="c">
+                        Tu negocio debe crecer lentamente
+                    </label>
+                </div>
+            </div>
+
+            <div class="pregunta">
+                <h3>10. ¿Cuál es la Trinidad de la Riqueza (3 F's)?</h3>
+                <div class="opciones">
+                    <label class="opcion">
+                        <input type="radio" name="q10" value="a" required>
+                        Familia, Fitness, Libertad
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q10" value="b">
+                        Fama, Fortuna, Felicidad
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="q10" value="c">
+                        Finanzas, Futuro, Fuerza
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">🏆 Ver Mi Puntuación</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        const respuestasCorrectas = {
+            q1: 'b', q2: 'b', q3: 'b', q4: 'b', q5: 'b',
+            q6: 'b', q7: 'b', q8: 'b', q9: 'a', q10: 'a'
+        };
+
+        document.getElementById('quizForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let correctas = 0;
+            const total = 10;
+
+            for (let i = 1; i <= total; i++) {
+                const respuesta = document.querySelector(`input[name="q${i}"]:checked`).value;
+                if (respuesta === respuestasCorrectas[`q${i}`]) {
+                    correctas++;
+                }
+            }
+
+            const porcentaje = (correctas / total * 100).toFixed(0);
+            let clase = '';
+            let titulo = '';
+            let mensaje = '';
+
+            if (correctas >= 9) {
+                clase = 'maestro';
+                titulo = '🏆 ¡Maestro Fastlane!';
+                mensaje = '¡Excelente! Dominas los conceptos del Fastlane. Ahora enfócate en la EJECUCIÓN. El conocimiento sin acción es inútil.';
+            } else if (correctas >= 7) {
+                clase = 'avanzado';
+                titulo = '🌟 Nivel Avanzado';
+                mensaje = 'Muy bien! Entiendes los conceptos principales. Revisa las áreas donde fallaste y luego EJECUTA.';
+            } else if (correctas >= 5) {
+                clase = 'intermedio';
+                titulo = '📚 Nivel Intermedio';
+                mensaje = 'Buen inicio, pero necesitas repasar el libro. Enfócate en los 5 Mandamientos y la diferencia entre Sidewalk/Slowlane/Fastlane.';
+            } else {
+                clase = 'principiante';
+                titulo = '📖 Nivel Principiante';
+                mensaje = 'Te recomendamos leer el libro nuevamente. Los conceptos del Fastlane son fundamentales para tu éxito emprendedor.';
+            }
+
+            let html = '<div class="score-circle ' + clase + '">';
+            html += correctas + '/' + total;
+            html += '</div>';
+            html += '<h2 style="color: #2c3e50; margin: 20px 0;">' + titulo + '</h2>';
+            html += '<p style="color: #666; font-size: 1.1em; line-height: 1.8; margin: 20px 0;">' + mensaje + '</p>';
+
+            html += '<div style="background: white; padding: 25px; border-radius: 12px; margin: 20px 0; text-align: left;">';
+            html += '<h3 style="color: #2c3e50; margin-bottom: 15px;">📊 Respuestas Correctas:</h3>';
+            html += '<p style="color: #666; line-height: 2;">';
+            html += '1. Slowlane = Trabajo + Inversiones en Mercado<br>';
+            html += '2. 5 Mandamientos (Necesidad, Entrada, Control, Escala, Tiempo)<br>';
+            html += '3. Ejecución rápida > Planificación perfecta<br>';
+            html += '4. Entrada fácil = Camino difícil<br>';
+            html += '5. MLM NO es Fastlane (falta de control)<br>';
+            html += '6. Tiempo es más valioso que dinero<br>';
+            html += '7. Construye sistemas escalables<br>';
+            html += '8. El mercado paga por soluciones, no pasiones<br>';
+            html += '9. Escala = Servir a millones<br>';
+            html += '10. Trinidad = Familia, Fitness, Libertad';
+            html += '</p>';
+            html += '</div>';
+
+            html += '<div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 5px solid #ffc107;">';
+            html += '<h4 style="color: #856404; margin-bottom: 15px;">🚀 Próximo Paso:</h4>';
+            html += '<p style="color: #856404; line-height: 1.8;">';
+            html += 'Ahora que conoces los conceptos, es momento de EJECUTAR. Elige una idea, valídala con el mercado, ';
+            html += 'y lanza tu MVP en las próximas 2 semanas. Recuerda: <strong>La velocidad mata a la grandeza.</strong>';
+            html += '</p>';
+            html += '</div>';
+
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>

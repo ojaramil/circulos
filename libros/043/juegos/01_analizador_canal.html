@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Canal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF0000;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FF0000;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            border-radius: 15px;
+        }
+
+        .result.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Analizador de Salud del Canal</h1>
+        <p style="color: #666; margin-bottom: 20px;">Evalúa el rendimiento de tu canal de YouTube</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Suscriptores:</label>
+        <input type="number" id="subs" placeholder="Ej: 10000">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Vistas Promedio por
+            Video:</label>
+        <input type="number" id="views" placeholder="Ej: 5000">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">CTR Promedio (%):</label>
+        <input type="number" id="ctr" placeholder="Ej: 6" step="0.1">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">AVD Promedio (%):</label>
+        <input type="number" id="avd" placeholder="Ej: 45" step="0.1">
+
+        <button class="btn" onclick="analyzeChannel()">Analizar Canal</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #FF0000; text-align: center; margin-bottom: 20px;">Resultados del Análisis</h2>
+
+            <div class="metric-card">
+                <span>Puntuación General</span>
+                <span class="score" id="overallScore">0/100</span>
+            </div>
+
+            <div class="metric-card">
+                <span>Engagement Rate</span>
+                <span style="font-weight: 600; color: #FF0000;" id="engRate">0%</span>
+            </div>
+
+            <div class="metric-card">
+                <span>Estado del CTR</span>
+                <span style="font-weight: 600;" id="ctrStatus">-</span>
+            </div>
+
+            <div class="metric-card">
+                <span>Estado del AVD</span>
+                <span style="font-weight: 600;" id="avdStatus">-</span>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #FF0000; margin-bottom: 15px;">📝 Recomendaciones</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function analyzeChannel() {
+            const subs = parseInt(document.getElementById('subs').value) || 0;
+            const views = parseInt(document.getElementById('views').value) || 0;
+            const ctr = parseFloat(document.getElementById('ctr').value) || 0;
+            const avd = parseFloat(document.getElementById('avd').value) || 0;
+
+            if (!subs || !views || !ctr || !avd) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const engagementRate = ((views / subs) * 100).toFixed(2);
+
+            let score = 0;
+            let recommendations = [];
+
+            // Evaluar CTR
+            if (ctr >= 8) {
+                score += 30;
+                document.getElementById('ctrStatus').textContent = '🔥 Excelente';
+                document.getElementById('ctrStatus').style.color = '#4CAF50';
+            } else if (ctr >= 5) {
+                score += 20;
+                document.getElementById('ctrStatus').textContent = '✅ Bueno';
+                document.getElementById('ctrStatus').style.color = '#2196F3';
+                recommendations.push('Prueba diferentes thumbnails para mejorar CTR');
+            } else {
+                score += 10;
+                document.getElementById('ctrStatus').textContent = '⚠️ Necesita Mejora';
+                document.getElementById('ctrStatus').style.color = '#FF9800';
+                recommendations.push('URGENTE: Rediseña tus thumbnails y títulos');
+            }
+
+            // Evaluar AVD
+            if (avd >= 50) {
+                score += 30;
+                document.getElementById('avdStatus').textContent = '🔥 Excelente';
+                document.getElementById('avdStatus').style.color = '#4CAF50';
+            } else if (avd >= 40) {
+                score += 20;
+                document.getElementById('avdStatus').textContent = '✅ Bueno';
+                document.getElementById('avdStatus').style.color = '#2196F3';
+                recommendations.push('Mejora el hook de tus videos');
+            } else {
+                score += 10;
+                document.getElementById('avdStatus').textContent = '⚠️ Necesita Mejora';
+                document.getElementById('avdStatus').style.color = '#FF9800';
+                recommendations.push('URGENTE: Trabaja en retención de audiencia');
+            }
+
+            // Evaluar Engagement
+            if (engagementRate >= 10) {
+                score += 40;
+            } else if (engagementRate >= 5) {
+                score += 25;
+                recommendations.push('Aumenta frecuencia de publicación');
+            } else {
+                score += 15;
+                recommendations.push('Mejora la promoción de tus videos');
+            }
+
+            document.getElementById('overallScore').textContent = score + '/100';
+            document.getElementById('engRate').textContent = engagementRate + '%';
+
+            let recHtml = '';
+            recommendations.forEach((rec, index) => {
+                recHtml += `<p style="padding: 10px 0; border-bottom: 1px solid #eee;">✓ ${rec}</p>`;
+            });
+            if (recommendations.length === 0) {
+                recHtml = '<p style="color: #4CAF50; font-weight: 600;">¡Tu canal está en excelente forma! Sigue así.</p>';
+            }
+            document.getElementById('recommendations').innerHTML = recHtml;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Acción 90 Días - The Millionaire Fastlane</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .intro-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .mes-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #FF6B35;
+        }
+
+        .mes-section h3 {
+            color: #FF6B35;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 40px;
+            animation: slideIn 0.5s;
+        }
+
+        .resultado.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #11998e;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item h3 {
+            color: #11998e;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .timeline-item ul {
+            margin-left: 20px;
+            color: #666;
+            line-height: 2;
+        }
+
+        .timeline-item li {
+            margin: 10px 0;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: #FF6B35;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        .tip-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tip-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .tip-box ul {
+            margin-left: 20px;
+            color: #856404;
+            line-height: 2;
+        }
+
+        .download-btn {
+            background: #11998e;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #0d7a6f;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">📅</div>
+        <h1>Planificador de Acción 90 Días</h1>
+        <p class="description">Crea tu plan de ejecución Fastlane para los próximos 90 días</p>
+
+        <div class="intro-box">
+            <h3>⚡ La Filosofía de los 90 Días</h3>
+            <p style="color: #666; line-height: 1.8;">
+                En el Fastlane, <strong>la ejecución es todo</strong>. Un plan de 90 días te permite enfocarte en
+                acciones concretas sin perderte en la planificación infinita. Como dice MJ DeMarco:
+                <em>"Quema el plan de negocios, enciende la ejecución"</em>. Este planificador te ayuda a
+                definir acciones específicas mes a mes para avanzar hacia tu objetivo Fastlane.
+            </p>
+        </div>
+
+        <form id="planForm">
+            <div class="form-section">
+                <div class="input-group">
+                    <label>🎯 Objetivo Principal para los próximos 90 días:</label>
+                    <textarea id="objetivoPrincipal"
+                        placeholder="Ejemplo: Lanzar MVP de mi SaaS y conseguir 100 usuarios beta" required></textarea>
+                </div>
+
+                <div class="mes-section">
+                    <h3>📆 MES 1: Fundación y Validación</h3>
+                    <div class="input-group">
+                        <label>Acción Principal del Mes 1:</label>
+                        <input type="text" id="mes1Principal"
+                            placeholder="Ejemplo: Validar idea con 20 clientes potenciales" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Tareas Específicas (separadas por comas):</label>
+                        <textarea id="mes1Tareas"
+                            placeholder="Ejemplo: Crear landing page, Entrevistar 20 clientes, Definir MVP, Crear mockups"
+                            required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Métrica de Éxito:</label>
+                        <input type="text" id="mes1Metrica"
+                            placeholder="Ejemplo: 20 entrevistas completadas, 50 emails en lista" required>
+                    </div>
+                </div>
+
+                <div class="mes-section">
+                    <h3>📆 MES 2: Construcción y Lanzamiento</h3>
+                    <div class="input-group">
+                        <label>Acción Principal del Mes 2:</label>
+                        <input type="text" id="mes2Principal" placeholder="Ejemplo: Construir MVP y lanzar versión beta"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Tareas Específicas (separadas por comas):</label>
+                        <textarea id="mes2Tareas"
+                            placeholder="Ejemplo: Desarrollar funcionalidades core, Testing, Conseguir primeros 10 usuarios beta"
+                            required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Métrica de Éxito:</label>
+                        <input type="text" id="mes2Metrica"
+                            placeholder="Ejemplo: MVP funcional, 10 usuarios beta activos" required>
+                    </div>
+                </div>
+
+                <div class="mes-section">
+                    <h3>📆 MES 3: Iteración y Escalamiento</h3>
+                    <div class="input-group">
+                        <label>Acción Principal del Mes 3:</label>
+                        <input type="text" id="mes3Principal"
+                            placeholder="Ejemplo: Iterar basado en feedback y escalar a 100 usuarios" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Tareas Específicas (separadas por comas):</label>
+                        <textarea id="mes3Tareas"
+                            placeholder="Ejemplo: Implementar mejoras, Crear estrategia de marketing, Automatizar procesos"
+                            required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Métrica de Éxito:</label>
+                        <input type="text" id="mes3Metrica"
+                            placeholder="Ejemplo: 100 usuarios activos, Primeros $1000 en ingresos" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">🚀 Generar Mi Plan de 90 Días</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('planForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const objetivoPrincipal = document.getElementById('objetivoPrincipal').value;
+
+            const mes1 = {
+                principal: document.getElementById('mes1Principal').value,
+                tareas: document.getElementById('mes1Tareas').value.split(',').map(t => t.trim()),
+                metrica: document.getElementById('mes1Metrica').value
+            };
+
+            const mes2 = {
+                principal: document.getElementById('mes2Principal').value,
+                tareas: document.getElementById('mes2Tareas').value.split(',').map(t => t.trim()),
+                metrica: document.getElementById('mes2Metrica').value
+            };
+
+            const mes3 = {
+                principal: document.getElementById('mes3Principal').value,
+                tareas: document.getElementById('mes3Tareas').value.split(',').map(t => t.trim()),
+                metrica: document.getElementById('mes3Metrica').value
+            };
+
+            const hoy = new Date();
+            const mes1Fin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate());
+            const mes2Fin = new Date(hoy.getFullYear(), hoy.getMonth() + 2, hoy.getDate());
+            const mes3Fin = new Date(hoy.getFullYear(), hoy.getMonth() + 3, hoy.getDate());
+
+            let html = '<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; border-radius: 15px; color: white; text-align: center; margin-bottom: 30px;">';
+            html += '<h2 style="font-size: 2em; margin-bottom: 15px;">🎯 Tu Plan Fastlane de 90 Días</h2>';
+            html += '<p style="font-size: 1.2em;">' + objetivoPrincipal + '</p>';
+            html += '<p style="margin-top: 15px; font-size: 1.1em;">Inicio: ' + hoy.toLocaleDateString('es-ES') + ' | Fin: ' + mes3Fin.toLocaleDateString('es-ES') + '</p>';
+            html += '</div>';
+
+            // Timeline
+            html += '<div class="timeline">';
+
+            // Mes 1
+            html += '<div class="timeline-item">';
+            html += '<h3>📅 MES 1: Fundación y Validación</h3>';
+            html += '<p style="color: #666; margin-bottom: 15px;"><strong>Fecha límite:</strong> ' + mes1Fin.toLocaleDateString('es-ES') + '</p>';
+            html += '<p style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;"><strong>🎯 Objetivo:</strong> ' + mes1.principal + '</p>';
+            html += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">✅ Tareas a Completar:</h4>';
+            html += '<ul>';
+            mes1.tareas.forEach((tarea, index) => {
+                html += '<li><span class="week-badge">Semana ' + (index + 1) + '</span>' + tarea + '</li>';
+            });
+            html += '</ul>';
+            html += '<p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;"><strong>📊 Métrica de Éxito:</strong> ' + mes1.metrica + '</p>';
+            html += '</div>';
+
+            // Mes 2
+            html += '<div class="timeline-item">';
+            html += '<h3>📅 MES 2: Construcción y Lanzamiento</h3>';
+            html += '<p style="color: #666; margin-bottom: 15px;"><strong>Fecha límite:</strong> ' + mes2Fin.toLocaleDateString('es-ES') + '</p>';
+            html += '<p style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;"><strong>🎯 Objetivo:</strong> ' + mes2.principal + '</p>';
+            html += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">✅ Tareas a Completar:</h4>';
+            html += '<ul>';
+            mes2.tareas.forEach((tarea, index) => {
+                html += '<li><span class="week-badge">Semana ' + (index + 5) + '</span>' + tarea + '</li>';
+            });
+            html += '</ul>';
+            html += '<p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;"><strong>📊 Métrica de Éxito:</strong> ' + mes2.metrica + '</p>';
+            html += '</div>';
+
+            // Mes 3
+            html += '<div class="timeline-item">';
+            html += '<h3>📅 MES 3: Iteración y Escalamiento</h3>';
+            html += '<p style="color: #666; margin-bottom: 15px;"><strong>Fecha límite:</strong> ' + mes3Fin.toLocaleDateString('es-ES') + '</p>';
+            html += '<p style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;"><strong>🎯 Objetivo:</strong> ' + mes3.principal + '</p>';
+            html += '<h4 style="color: #2c3e50; margin: 20px 0 10px 0;">✅ Tareas a Completar:</h4>';
+            html += '<ul>';
+            mes3.tareas.forEach((tarea, index) => {
+                html += '<li><span class="week-badge">Semana ' + (index + 9) + '</span>' + tarea + '</li>';
+            });
+            html += '</ul>';
+            html += '<p style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;"><strong>📊 Métrica de Éxito:</strong> ' + mes3.metrica + '</p>';
+            html += '</div>';
+
+            html += '</div>';
+
+            // Consejos Fastlane
+            html += '<div class="tip-box">';
+            html += '<h4>⚡ Principios Fastlane para Tu Ejecución:</h4>';
+            html += '<ul>';
+            html += '<li><strong>Velocidad > Perfección:</strong> Lanza rápido, aprende rápido, itera rápido.</li>';
+            html += '<li><strong>Acción > Planificación:</strong> Deja de planificar y empieza a ejecutar HOY.</li>';
+            html += '<li><strong>Feedback > Opiniones:</strong> El mercado te dirá si estás en lo correcto, no tus amigos.</li>';
+            html += '<li><strong>Métricas > Sentimientos:</strong> Mide todo. Los números no mienten.</li>';
+            html += '<li><strong>Pivota Rápido:</strong> Si algo no funciona en el Mes 1, cámbialo en el Mes 2.</li>';
+            html += '<li><strong>Revisa Semanalmente:</strong> Cada semana, pregúntate: ¿Estoy más cerca de mi objetivo?</li>';
+            html += '</ul>';
+            html += '</div>';
+
+            // Botones de acción
+            html += '<div style="text-align: center; margin-top: 30px; padding: 25px; background: #f5f7fa; border-radius: 12px;">';
+            html += '<h4 style="color: #2c3e50; margin-bottom: 15px;">📥 Próximos Pasos</h4>';
+            html += '<p style="color: #666; margin-bottom: 20px;">Guarda este plan y revísalo semanalmente. La consistencia es clave.</p>';
+            html += '<button onclick="window.print()" class="download-btn">🖨️ Imprimir Plan</button>';
+            html += '<button onclick="copyToClipboard()" class="download-btn">📋 Copiar Texto</button>';
+            html += '</div>';
+
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        function copyToClipboard() {
+            const resultado = document.getElementById('resultado');
+            const text = resultado.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Plan copiado al portapapeles!');
+            });
+        }
+    </script>
+</body>
+
+</html>

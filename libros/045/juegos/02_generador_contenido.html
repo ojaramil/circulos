@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ideas de Contenido</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .idea-card {
+            background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💡 Generador de Ideas de Contenido</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera ideas virales para tus redes sociales</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tu Nicho:</label>
+        <select id="niche">
+            <option value="">Selecciona tu nicho...</option>
+            <option value="fitness">Fitness y Salud</option>
+            <option value="negocios">Negocios y Emprendimiento</option>
+            <option value="tech">Tecnología</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="educacion">Educación</option>
+            <option value="comida">Comida y Cocina</option>
+        </select>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Plataforma:</label>
+        <select id="platform">
+            <option value="">Selecciona plataforma...</option>
+            <option value="tiktok">TikTok</option>
+            <option value="instagram">Instagram Reels</option>
+            <option value="youtube">YouTube Shorts</option>
+            <option value="linkedin">LinkedIn</option>
+        </select>
+
+        <button class="btn" onclick="generateIdeas()">Generar Ideas</button>
+
+        <div id="ideas"></div>
+    </div>
+
+    <script>
+        const contentIdeas = {
+            fitness: {
+                tiktok: [
+                    "5 ejercicios que puedes hacer en tu escritorio",
+                    "Mitos del fitness que necesitas dejar de creer",
+                    "Mi rutina de mañana en 60 segundos",
+                    "Transformación de 30 días (time-lapse)",
+                    "Errores comunes en el gym que te hacen perder tiempo"
+                ],
+                instagram: [
+                    "Antes y después con tips específicos",
+                    "Recetas fitness que realmente saben bien",
+                    "Workout challenge de 7 días",
+                    "Equipamiento de gym vs casa",
+                    "Progreso semanal con métricas"
+                ]
+            },
+            negocios: {
+                tiktok: [
+                    "3 cosas que haría si empezara mi negocio hoy",
+                    "Errores de $10,000 que cometí para que tú no lo hagas",
+                    "Cómo conseguí mi primer cliente",
+                    "Herramientas gratis que uso diariamente",
+                    "Mi rutina de productividad real"
+                ],
+                linkedin: [
+                    "Lección que aprendí perdiendo $50k",
+                    "Por qué dejé mi trabajo corporativo",
+                    "5 libros que cambiaron mi negocio",
+                    "Cómo escalar de $0 a $100k",
+                    "Networking que realmente funciona"
+                ]
+            },
+            tech: {
+                tiktok: [
+                    "Apps que uso todos los días",
+                    "Trucos de iPhone que no conocías",
+                    "Gadgets que valen la pena en 2024",
+                    "Setup de trabajo desde casa",
+                    "IA tools que uso para trabajar"
+                ],
+                youtube: [
+                    "Review completo del último gadget",
+                    "Comparación: ¿Cuál comprar?",
+                    "Tutorial paso a paso",
+                    "Unboxing y primeras impresiones",
+                    "Setup tour completo"
+                ]
+            }
+        };
+
+        function generateIdeas() {
+            const niche = document.getElementById('niche').value;
+            const platform = document.getElementById('platform').value;
+
+            if (!niche || !platform) {
+                alert('Por favor selecciona nicho y plataforma');
+                return;
+            }
+
+            const ideas = contentIdeas[niche]?.[platform] || [
+                "Tutorial rápido de tu expertise",
+                "Behind the scenes de tu proceso",
+                "Responde preguntas frecuentes",
+                "Comparte un error y la lección",
+                "Muestra resultados reales"
+            ];
+
+            let html = '<h2 style="color: #1e3a8a; margin-top: 30px;">🎯 Ideas para ti:</h2>';
+            ideas.forEach((idea, index) => {
+                html += `
+                    <div class="idea-card">
+                        <h3 style="color: #1e3a8a; margin-bottom: 10px;">Idea ${index + 1}</h3>
+                        <p style="font-size: 1.1em;">${idea}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('ideas').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

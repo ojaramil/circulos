@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ideas de Contenido</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .idea-card {
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .idea-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+        }
+        .idea-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .idea-desc {
+            color: #666;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💡 Generador de Ideas de Contenido para YouTube</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera ideas virales basadas en tu nicho</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Selecciona tu Nicho:</label>
+        <select id="niche">
+            <option value="">Selecciona...</option>
+            <option value="tech">Tecnología</option>
+            <option value="gaming">Gaming</option>
+            <option value="fitness">Fitness</option>
+            <option value="cooking">Cocina</option>
+            <option value="finance">Finanzas</option>
+            <option value="education">Educación</option>
+            <option value="vlog">Vlog/Lifestyle</option>
+        </select>
+
+        <button class="btn" onclick="generateIdeas()">Generar Ideas</button>
+
+        <div id="ideas"></div>
+    </div>
+
+    <script>
+        const ideasDatabase = {
+            tech: [
+                { title: "Los 5 Gadgets que CAMBIARÁN 2024", desc: "Review de tecnología emergente" },
+                { title: "iPhone vs Android: La VERDAD en 2024", desc: "Comparación honesta y actualizada" },
+                { title: "Cómo Montar tu Setup Gamer por $500", desc: "Guía completa paso a paso" },
+                { title: "Apps SECRETAS que Debes Conocer", desc: "Apps poco conocidas pero útiles" },
+                { title: "IA que Hará tu Trabajo en 2024", desc: "Herramientas de IA prácticas" }
+            ],
+            gaming: [
+                { title: "De NOOB a PRO en [Juego] - 30 Días", desc: "Challenge de mejora" },
+                { title: "Los 10 Juegos MÁS ESPERADOS de 2024", desc: "Preview y análisis" },
+                { title: "Secretos que los PROS No Te Dicen", desc: "Tips avanzados" },
+                { title: "Probé TODOS los Battle Royale", desc: "Comparación masiva" },
+                { title: "Setup Gamer: $500 vs $5000", desc: "Comparación de presupuestos" }
+            ],
+            fitness: [
+                { title: "Transformación de 90 Días: Mi Historia", desc: "Before/After con proceso" },
+                { title: "Rutina de 15 Minutos para QUEMAR Grasa", desc: "Workout rápido efectivo" },
+                { title: "Qué Como en un Día: 2000 Calorías", desc: "Full day of eating" },
+                { title: "5 Ejercicios que TODOS Hacen MAL", desc: "Corrección de forma" },
+                { title: "Gym en Casa: Sin Equipo Necesario", desc: "Bodyweight workout" }
+            ],
+            cooking: [
+                { title: "5 Recetas en 15 Minutos", desc: "Comidas rápidas y fáciles" },
+                { title: "Probé Recetas VIRALES de TikTok", desc: "Testing de tendencias" },
+                { title: "Comida Gourmet con $10", desc: "Challenge de presupuesto" },
+                { title: "Secretos de Chef que Debes Saber", desc: "Tips profesionales" },
+                { title: "Meal Prep para Toda la Semana", desc: "Organización de comidas" }
+            ],
+            finance: [
+                { title: "Cómo Ahorré $10,000 en un Año", desc: "Estrategia paso a paso" },
+                { title: "Inversiones para Principiantes 2024", desc: "Guía de inicio" },
+                { title: "Apps que Me Hacen Ganar Dinero", desc: "Ingresos pasivos" },
+                { title: "5 Gastos que DEBES Eliminar YA", desc: "Reducción de gastos" },
+                { title: "De $0 a $1000: Side Hustles", desc: "Ideas de negocio" }
+            ],
+            education: [
+                { title: "Aprende [Skill] en 30 Días", desc: "Challenge de aprendizaje" },
+                { title: "Recursos GRATIS que Valen Oro", desc: "Herramientas educativas" },
+                { title: "Cómo Estudiar Menos y Aprender Más", desc: "Técnicas de estudio" },
+                { title: "Habilidades del Futuro en 2024", desc: "Qué aprender ahora" },
+                { title: "De Principiante a Experto: Mi Método", desc: "Framework de aprendizaje" }
+            ],
+            vlog: [
+                { title: "24 Horas en [Lugar Interesante]", desc: "Adventure vlog" },
+                { title: "Un Día en Mi Vida: La REALIDAD", desc: "Day in the life auténtico" },
+                { title: "Probé Vivir con $50 por Semana", desc: "Budget challenge" },
+                { title: "Mi Rutina Matutina que Cambió Todo", desc: "Morning routine" },
+                { title: "Cosas que Dejé de Hacer en 2024", desc: "Cambios de hábitos" }
+            ]
+        };
+
+        function generateIdeas() {
+            const niche = document.getElementById('niche').value;
+            
+            if (!niche) {
+                alert('Por favor selecciona un nicho');
+                return;
+            }
+
+            const ideas = ideasDatabase[niche];
+            let html = '<h2 style="color: #FF0000; margin: 30px 0 20px 0;">🎬 Ideas para tu Canal:</h2>';
+
+            ideas.forEach((idea, index) => {
+                html += `
+                    <div class="idea-card" onclick="copyIdea('${idea.title}')">
+                        <div class="idea-title">${idea.title}</div>
+                        <div class="idea-desc">${idea.desc}</div>
+                        <div style="margin-top: 10px; font-size: 0.85em; color: #999;">Click para copiar</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('ideas').innerHTML = html;
+        }
+
+        function copyIdea(title) {
+            navigator.clipboard.writeText(title).then(() => {
+                alert('¡Idea copiada!\n\n' + title);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Marca</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .brand-card {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+        .brand-card.show { display: block; }
+        .brand-element {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .brand-element h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Constructor de Marca Personal</h1>
+        <p style="color: #666; margin-bottom: 20px;">Define los elementos clave de tu marca</p>
+
+        <div class="section">
+            <h3>1. Identidad</h3>
+            <label style="display: block; color: #666; margin-top: 10px;">¿Quién eres?</label>
+            <input type="text" id="identity" placeholder="Ej: Emprendedor digital, Coach de fitness...">
+        </div>
+
+        <div class="section">
+            <h3>2. Propuesta de Valor</h3>
+            <label style="display: block; color: #666; margin-top: 10px;">¿Qué problema resuelves?</label>
+            <textarea id="value" placeholder="Ej: Ayudo a emprendedores a crecer su presencia en redes sociales..."></textarea>
+        </div>
+
+        <div class="section">
+            <h3>3. Audiencia Objetivo</h3>
+            <label style="display: block; color: #666; margin-top: 10px;">¿Para quién es tu contenido?</label>
+            <input type="text" id="audience" placeholder="Ej: Emprendedores de 25-40 años...">
+        </div>
+
+        <div class="section">
+            <h3>4. Tono de Voz</h3>
+            <select id="tone">
+                <option value="">Selecciona un tono...</option>
+                <option value="profesional">Profesional y formal</option>
+                <option value="casual">Casual y amigable</option>
+                <option value="inspiracional">Inspiracional y motivador</option>
+                <option value="educativo">Educativo y experto</option>
+                <option value="divertido">Divertido y entretenido</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <h3>5. Valores de Marca</h3>
+            <label style="display: block; color: #666; margin-top: 10px;">¿Qué valores representas? (separados por comas)</label>
+            <input type="text" id="values" placeholder="Ej: Autenticidad, Innovación, Excelencia">
+        </div>
+
+        <button class="btn" onclick="generateBrand()">Generar Mi Marca</button>
+
+        <div class="brand-card" id="brandCard">
+            <h2 style="color: #333; margin-bottom: 25px; text-align: center;">✨ Tu Marca Personal</h2>
+            <div id="brandOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateBrand() {
+            const identity = document.getElementById('identity').value;
+            const value = document.getElementById('value').value;
+            const audience = document.getElementById('audience').value;
+            const tone = document.getElementById('tone').value;
+            const values = document.getElementById('values').value;
+
+            if (!identity || !value || !audience || !tone || !values) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const toneDescriptions = {
+                profesional: 'Comunícate con autoridad y credibilidad',
+                casual: 'Sé cercano y accesible en tu comunicación',
+                inspiracional: 'Motiva y eleva a tu audiencia',
+                educativo: 'Enseña con claridad y profundidad',
+                divertido: 'Entretén mientras educas'
+            };
+
+            let html = `
+                <div class="brand-element">
+                    <h4>👤 Tu Identidad</h4>
+                    <p>${identity}</p>
+                </div>
+                <div class="brand-element">
+                    <h4>💎 Propuesta de Valor</h4>
+                    <p>${value}</p>
+                </div>
+                <div class="brand-element">
+                    <h4>🎯 Audiencia</h4>
+                    <p>${audience}</p>
+                </div>
+                <div class="brand-element">
+                    <h4>🗣️ Tono de Voz</h4>
+                    <p>${toneDescriptions[tone]}</p>
+                </div>
+                <div class="brand-element">
+                    <h4>⭐ Valores</h4>
+                    <p>${values}</p>
+                </div>
+                <div class="brand-element" style="background: #667eea; color: white;">
+                    <h4 style="color: white;">📝 Tu Elevator Pitch</h4>
+                    <p>Soy ${identity}. ${value} Mi audiencia son ${audience}. Me guío por valores como ${values}.</p>
+                </div>
+            `;
+
+            document.getElementById('brandOutput').innerHTML = html;
+            document.getElementById('brandCard').classList.add('show');
+        }
+    </script>
+</body>
+</html>

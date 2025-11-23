@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Hashtags</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .result { display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 15px; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>#️⃣ Generador de Hashtags</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera hashtags relevantes</p>
+        
+        <input type="text" id="keyword" placeholder="Palabra clave (ej: fitness)">
+        <select id="size">
+            <option value="small">Pequeños (< 100k)</option>
+            <option value="medium">Medianos (100k-500k)</option>
+            <option value="large">Grandes (> 500k)</option>
+        </select>
+        <button class="btn" onclick="generateHashtags()">Generar Hashtags</button>
+        <div class="result" id="result">
+            <h3 style="color: #1e3a8a;">Hashtags sugeridos:</h3>
+            <div id="hashtags" style="margin-top: 15px; line-height: 2;"></div>
+        </div>
+        <script>
+            function generateHashtags() {{
+                const keyword = document.getElementById('keyword').value;
+                if (!keyword) {{ alert('Ingresa una palabra clave'); return; }}
+                
+                const hashtags = [
+                    `#${{keyword}}`, `#${{keyword}}motivation`, `#${{keyword}}lifestyle`,
+                    `#${{keyword}}tips`, `#${{keyword}}community`, `#${{keyword}}daily`,
+                    `#${{keyword}}journey`, `#${{keyword}}goals`, `#${{keyword}}inspiration`,
+                    `#${{keyword}}love`
+                ];
+                
+                document.getElementById('hashtags').innerHTML = hashtags.map(h => 
+                    `<span style="background: #dbeafe; padding: 8px 12px; border-radius: 5px; margin: 5px; display: inline-block;">${{h}}</span>`
+                ).join('');
+                document.getElementById('result').classList.add('show');
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

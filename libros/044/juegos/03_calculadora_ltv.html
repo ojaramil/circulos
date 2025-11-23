@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora LTV</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2d5a3d; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 15px;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Calculadora de Lifetime Value (LTV)</h1>
+        <p style="color: #666; margin-bottom: 20px;">Calcula el valor de vida de tus clientes</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Valor Promedio de Compra ($):</label>
+        <input type="number" id="avgPurchase" placeholder="Ej: 100">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Frecuencia de Compra (veces/año):</label>
+        <input type="number" id="frequency" placeholder="Ej: 4">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Vida del Cliente (años):</label>
+        <input type="number" id="lifespan" placeholder="Ej: 3">
+
+        <button class="btn" onclick="calculateLTV()">Calcular LTV</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #2d5a3d; text-align: center; margin-bottom: 20px;">💰 Resultados</h2>
+            
+            <div class="metric">
+                <span>LTV Total</span>
+                <span style="font-weight: 600; color: #2d5a3d; font-size: 1.5em;" id="ltv">$0</span>
+            </div>
+
+            <div class="metric">
+                <span>CAC Máximo Recomendado</span>
+                <span style="font-weight: 600; color: #1a472a;" id="maxCAC">$0</span>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #2d5a3d; margin-bottom: 15px;">💡 Análisis</h3>
+                <p id="analysis"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateLTV() {
+            const avgPurchase = parseFloat(document.getElementById('avgPurchase').value) || 0;
+            const frequency = parseFloat(document.getElementById('frequency').value) || 0;
+            const lifespan = parseFloat(document.getElementById('lifespan').value) || 0;
+
+            if (!avgPurchase || !frequency || !lifespan) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const ltv = avgPurchase * frequency * lifespan;
+            const maxCAC = ltv / 3; // Regla: CAC debe ser < 1/3 del LTV
+
+            document.getElementById('ltv').textContent = '$' + ltv.toLocaleString();
+            document.getElementById('maxCAC').textContent = '$' + maxCAC.toLocaleString();
+
+            let analysis = '';
+            if (ltv < 500) {
+                analysis = 'LTV bajo. Considera aumentar el precio, frecuencia de compra, o crear productos adicionales para aumentar el valor de vida.';
+            } else if (ltv < 2000) {
+                analysis = 'LTV moderado. Puedes invertir hasta $' + maxCAC.toLocaleString() + ' en adquirir cada cliente. Enfócate en aumentar la retención.';
+            } else {
+                analysis = 'Excelente LTV! Tienes margen para invertir agresivamente en adquisición. Puedes gastar hasta $' + maxCAC.toLocaleString() + ' por cliente.';
+            }
+
+            document.getElementById('analysis').textContent = analysis;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Engagement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .metric {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .rating {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .rating-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .rating-text {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧮 Calculadora de Engagement</h1>
+        <p class="subtitle">Calcula la tasa de engagement de tus publicaciones en redes sociales</p>
+
+        <div class="input-group">
+            <label for="followers">Número de Seguidores</label>
+            <input type="number" id="followers" placeholder="Ej: 10000" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="likes">Likes en la Publicación</label>
+            <input type="number" id="likes" placeholder="Ej: 500" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="comments">Comentarios</label>
+            <input type="number" id="comments" placeholder="Ej: 50" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="shares">Compartidos</label>
+            <input type="number" id="shares" placeholder="Ej: 25" min="0">
+        </div>
+
+        <button class="btn" onclick="calculateEngagement()">Calcular Engagement</button>
+
+        <div class="result" id="result">
+            <div class="metric">
+                <div class="metric-label">Tasa de Engagement</div>
+                <div class="metric-value" id="engagementRate">0%</div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">Total de Interacciones</div>
+                <div class="metric-value" id="totalInteractions">0</div>
+            </div>
+
+            <div class="rating" id="rating">
+                <div class="rating-emoji" id="emoji">📊</div>
+                <div class="rating-text" id="ratingText">Calcula tu engagement</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateEngagement() {
+            const followers = parseInt(document.getElementById('followers').value) || 0;
+            const likes = parseInt(document.getElementById('likes').value) || 0;
+            const comments = parseInt(document.getElementById('comments').value) || 0;
+            const shares = parseInt(document.getElementById('shares').value) || 0;
+
+            if (followers === 0) {
+                alert('Por favor ingresa el número de seguidores');
+                return;
+            }
+
+            const totalInteractions = likes + comments + shares;
+            const engagementRate = ((totalInteractions / followers) * 100).toFixed(2);
+
+            document.getElementById('totalInteractions').textContent = totalInteractions.toLocaleString();
+            document.getElementById('engagementRate').textContent = engagementRate + '%';
+
+            let emoji, ratingText, ratingColor;
+
+            if (engagementRate >= 10) {
+                emoji = '🔥';
+                ratingText = '¡EXCEPCIONAL! Engagement de estrella de rock';
+                ratingColor = '#4CAF50';
+            } else if (engagementRate >= 5) {
+                emoji = '🌟';
+                ratingText = '¡EXCELENTE! Muy buen engagement';
+                ratingColor = '#2196F3';
+            } else if (engagementRate >= 3) {
+                emoji = '👍';
+                ratingText = 'BUENO - Por encima del promedio';
+                ratingColor = '#FF9800';
+            } else if (engagementRate >= 1) {
+                emoji = '📊';
+                ratingText = 'PROMEDIO - Hay espacio para mejorar';
+                ratingColor = '#FFC107';
+            } else {
+                emoji = '📉';
+                ratingText = 'BAJO - Necesitas optimizar tu contenido';
+                ratingColor = '#F44336';
+            }
+
+            document.getElementById('emoji').textContent = emoji;
+            document.getElementById('ratingText').textContent = ratingText;
+            document.getElementById('ratingText').style.color = ratingColor;
+
+            document.getElementById('result').classList.add('show');
+        }
+
+        // Permitir calcular con Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    calculateEngagement();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

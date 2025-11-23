@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Tu Modelo Ideal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 { color: #2d5a3d; margin-bottom: 20px; }
+.btn {
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px 5px;
+}
+.btn:hover { transform: translateY(-2px); }
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+}
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .question h3 { color: #333; margin-bottom: 15px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover { border-color: #2d5a3d; }
+        .option.selected {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            border-color: #2d5a3d;
+        }
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test: ¿Cuál es Tu Modelo Ideal?</h1>
+        <p style="color: #666; margin-bottom: 20px;">Descubre qué modelo se adapta mejor a ti</p>
+
+        <div class="question">
+            <h3>1. ¿Cuánto tiempo quieres dedicar por cliente?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q1', 'uno-a-uno')">Mucho tiempo personalizado</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'uno-a-pocos')">Tiempo moderado en grupos</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'uno-a-muchos')">Mínimo tiempo individual</div>
+                <div class="option" onclick="selectOption(this, 'q1', 'uno-a-infinito')">Cero tiempo directo</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>2. ¿Qué precio prefieres cobrar?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q2', 'uno-a-uno')">$10,000+ por cliente</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'uno-a-pocos')">$2,000-$10,000</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'uno-a-muchos')">$500-$2,000</div>
+                <div class="option" onclick="selectOption(this, 'q2', 'uno-a-infinito')">$10-$500</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>3. ¿Cuántos clientes quieres servir?</h3>
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'q3', 'uno-a-uno')">5-20 clientes premium</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'uno-a-pocos')">20-100 clientes</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'uno-a-muchos')">100-10,000 clientes</div>
+                <div class="option" onclick="selectOption(this, 'q3', 'uno-a-infinito')">Ilimitado</div>
+            </div>
+        </div>
+
+        <button class="btn" style="width: 100%; margin-top: 20px;" onclick="calculateModel()">Ver Mi Modelo Ideal</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #2d5a3d; margin-bottom: 20px;" id="modelTitle">Tu Modelo</h2>
+            <p id="modelDesc" style="font-size: 1.1em; line-height: 1.6;"></p>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        function selectOption(element, question, value) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[question] = value;
+        }
+
+        function calculateModel() {
+            if (Object.keys(answers).length < 3) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            const counts = {};
+            Object.values(answers).forEach(val => {
+                counts[val] = (counts[val] || 0) + 1;
+            });
+
+            const model = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+
+            const models = {
+                'uno-a-uno': {
+                    title: '👤 Modelo Uno a Uno',
+                    desc: 'Perfecto para ti! Deberías enfocarte en servicios premium personalizados. Cobra alto ticket ($10k+) y trabaja con pocos clientes VIP. Este modelo te permite maximizar ingresos mientras construyes experiencia profunda.'
+                },
+                'uno-a-pocos': {
+                    title: '👥 Modelo Uno a Pocos',
+                    desc: 'Ideal para ti! Deberías crear programas de grupo pequeño o masterminds. Este modelo te da el balance perfecto entre precio premium y escalabilidad. Cobra $2k-$10k por persona en grupos de 10-30.'
+                },
+                'uno-a-muchos': {
+                    title: '🎓 Modelo Uno a Muchos',
+                    desc: 'Excelente elección! Deberías crear cursos online o programas masivos. Este modelo te permite impactar a miles mientras generas ingresos significativos. Cobra $500-$2k y enfócate en volumen.'
+                },
+                'uno-a-infinito': {
+                    title: '♾️ Modelo Uno a Infinito',
+                    desc: '¡Ambicioso! Deberías construir productos digitales o SaaS. Este modelo requiere más inversión inicial pero ofrece escala ilimitada. Perfecto si tienes habilidades técnicas o capital para invertir.'
+                }
+            };
+
+            document.getElementById('modelTitle').textContent = models[model].title;
+            document.getElementById('modelDesc').textContent = models[model].desc;
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

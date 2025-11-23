@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Perfiles</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .checklist-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checklist-item:hover { background: #e9ecef; }
+        .checklist-item.checked {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+        .checklist-item.checked .checkbox {
+            background: #667eea;
+            color: white;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Optimizador de Perfil Social</h1>
+        <p style="color: #666; margin-bottom: 20px;">Checklist para optimizar tu perfil</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%;">0%</div>
+        </div>
+
+        <div id="checklist"></div>
+    </div>
+
+    <script>
+        const items = [
+            { text: 'Foto de perfil profesional y clara', tip: 'Usa una foto donde se vea claramente tu rostro' },
+            { text: 'Bio optimizada con palabras clave', tip: 'Incluye qué haces y para quién' },
+            { text: 'Link en bio actualizado', tip: 'Usa un link tree o landing page' },
+            { text: 'Highlights organizados (Instagram)', tip: 'Categoriza tu contenido en highlights' },
+            { text: 'Nombre de usuario fácil de recordar', tip: 'Consistente en todas las plataformas' },
+            { text: 'Call to action claro en bio', tip: 'Dile a la gente qué hacer' },
+            { text: 'Información de contacto visible', tip: 'Email o forma de contactarte' },
+            { text: 'Posts fijados estratégicos', tip: 'Fija tu mejor contenido' },
+            { text: 'Estética visual consistente', tip: 'Colores y estilo coherente' },
+            { text: 'Verificación (si es posible)', tip: 'Solicita verificación si cumples requisitos' }
+        ];
+
+        let checkedCount = 0;
+
+        function initChecklist() {
+            let html = '';
+            items.forEach((item, index) => {
+                html += `
+                    <div class="checklist-item" onclick="toggleItem(this, ${index})">
+                        <div class="checkbox"></div>
+                        <div>
+                            <div style="font-weight: 600; color: #333;">${item.text}</div>
+                            <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${item.tip}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('checklist').innerHTML = html;
+        }
+
+        function toggleItem(element, index) {
+            element.classList.toggle('checked');
+            const checkbox = element.querySelector('.checkbox');
+            
+            if (element.classList.contains('checked')) {
+                checkbox.textContent = '✓';
+                checkedCount++;
+            } else {
+                checkbox.textContent = '';
+                checkedCount--;
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((checkedCount / items.length) * 100);
+            const progressBar = document.getElementById('progress');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+        }
+
+        initChecklist();
+    </script>
+</body>
+</html>

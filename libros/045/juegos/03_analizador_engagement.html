@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Engagement</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .gauge { width: 200px; height: 200px; margin: 30px auto; position: relative; }
+        .gauge-circle { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#3b82f6 0deg, #e0e0e0 0deg); }
+        .gauge-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5em; font-weight: bold; color: #1e3a8a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Analizador de Engagement</h1>
+        <p style="color: #666; margin-bottom: 20px;">Calcula tu tasa de engagement</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Seguidores:</label>
+        <input type="number" id="followers" placeholder="Ej: 10000">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Likes promedio:</label>
+        <input type="number" id="likes" placeholder="Ej: 500">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Comentarios promedio:</label>
+        <input type="number" id="comments" placeholder="Ej: 50">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Compartidos promedio:</label>
+        <input type="number" id="shares" placeholder="Ej: 20">
+
+        <button class="btn" onclick="calculate()">Calcular Engagement</button>
+
+        <div id="result" style="display: none; margin-top: 30px;">
+            <div class="gauge">
+                <div class="gauge-circle" id="gauge"></div>
+                <div class="gauge-text" id="rate">0%</div>
+            </div>
+            <div style="text-align: center; padding: 20px; background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px;">
+                <h3 style="color: #1e3a8a;" id="verdict">Veredicto</h3>
+                <p id="recommendation" style="margin-top: 10px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const followers = parseFloat(document.getElementById('followers').value) || 0;
+            const likes = parseFloat(document.getElementById('likes').value) || 0;
+            const comments = parseFloat(document.getElementById('comments').value) || 0;
+            const shares = parseFloat(document.getElementById('shares').value) || 0;
+
+            if (!followers) {
+                alert('Por favor ingresa el número de seguidores');
+                return;
+            }
+
+            const engagement = ((likes + comments + shares) / followers * 100).toFixed(2);
+            const degrees = Math.min(engagement * 3.6, 360);
+
+            document.getElementById('rate').textContent = engagement + '%';
+            document.getElementById('gauge').style.background = `conic-gradient(#3b82f6 ${degrees}deg, #e0e0e0 ${degrees}deg)`;
+
+            let verdict, recommendation;
+            if (engagement >= 10) {
+                verdict = '🔥 EXCELENTE Engagement';
+                recommendation = '¡Increíble! Tu audiencia está muy comprometida. Sigue haciendo lo que haces.';
+            } else if (engagement >= 5) {
+                verdict = '✅ BUEN Engagement';
+                recommendation = 'Muy bien! Estás por encima del promedio. Sigue mejorando.';
+            } else if (engagement >= 2) {
+                verdict = '📊 PROMEDIO';
+                recommendation = 'Estás en el promedio. Enfócate en crear contenido más interactivo.';
+            } else {
+                verdict = '⚠️ BAJO Engagement';
+                recommendation = 'Necesitas mejorar. Prueba contenido más auténtico y relevante para tu audiencia.';
+            }
+
+            document.getElementById('verdict').textContent = verdict;
+            document.getElementById('recommendation').textContent = recommendation;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

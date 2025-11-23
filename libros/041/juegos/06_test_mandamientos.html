@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de 5 Mandamientos - The Millionaire Fastlane</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .intro-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .intro-box p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .mandamiento {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #FF6B35;
+        }
+
+        .mandamiento h3 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mandamiento .explicacion {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .pregunta {
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 15px 0 10px 0;
+            font-size: 1.05em;
+        }
+
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opcion {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .opcion:hover {
+            border-color: #FF6B35;
+            background: #fff3e0;
+            transform: translateX(5px);
+        }
+
+        .opcion input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .opcion label {
+            cursor: pointer;
+            flex: 1;
+            color: #2c3e50;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            animation: slideIn 0.5s;
+        }
+
+        .resultado.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-label {
+            font-size: 0.3em;
+            margin-top: 5px;
+        }
+
+        .mandamiento-resultado {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 5px solid #ddd;
+        }
+
+        .mandamiento-resultado.cumple {
+            border-left-color: #11998e;
+            background: #e8f5e9;
+        }
+
+        .mandamiento-resultado.no-cumple {
+            border-left-color: #fc4a1a;
+            background: #ffebee;
+        }
+
+        .mandamiento-resultado h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recomendacion {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .recomendacion h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .recomendacion ul {
+            margin-left: 20px;
+            color: #856404;
+            line-height: 2;
+        }
+
+        .excelente {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .bueno {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .regular {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .malo {
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">✅</div>
+        <h1>Test de los 5 Mandamientos</h1>
+        <p class="description">Evalúa tu idea o negocio actual contra los 5 Mandamientos del Fastlane de MJ DeMarco</p>
+
+        <div class="intro-box">
+            <h3>📚 Los 5 Mandamientos del Fastlane</h3>
+            <p>
+                Según MJ DeMarco, para que un negocio tenga potencial Fastlane debe cumplir con los 5 mandamientos:
+                <strong>Necesidad, Entrada, Control, Escala y Tiempo</strong>. Cuantos más mandamientos cumpla tu
+                negocio,
+                mayor será tu probabilidad de crear riqueza rápidamente.
+            </p>
+        </div>
+
+        <form id="testForm">
+            <!-- MANDAMIENTO 1: NECESIDAD -->
+            <div class="mandamiento">
+                <h3><span>1️⃣</span> Mandamiento de NECESIDAD</h3>
+                <div class="explicacion">
+                    <strong>El negocio debe resolver un problema o satisfacer una necesidad del mercado.</strong>
+                    No se trata de tu pasión o lo que te gusta hacer, sino de lo que el mercado necesita.
+                    "Haz lo que amas" es un mal consejo para negocios. El mercado te paga por resolver problemas, no por
+                    seguir tus pasiones.
+                </div>
+                <p class="pregunta">¿Tu negocio/idea resuelve un problema real o satisface una necesidad genuina del
+                    mercado?</p>
+                <div class="opciones">
+                    <div class="opcion">
+                        <input type="radio" name="necesidad" value="si" id="nec-si" required>
+                        <label for="nec-si">✅ Sí, resuelve un problema significativo que la gente está dispuesta a pagar
+                            por solucionar</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="necesidad" value="parcial" id="nec-parcial">
+                        <label for="nec-parcial">⚠️ Parcialmente, resuelve un problema menor o es una mejora
+                            incremental</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="necesidad" value="no" id="nec-no">
+                        <label for="nec-no">❌ No, es principalmente mi pasión o hobby, no una necesidad del
+                            mercado</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANDAMIENTO 2: ENTRADA -->
+            <div class="mandamiento">
+                <h3><span>2️⃣</span> Mandamiento de ENTRADA</h3>
+                <div class="explicacion">
+                    <strong>Debe haber barreras de entrada significativas.</strong>
+                    Si todos pueden hacerlo fácilmente, habrá demasiada competencia y márgenes bajos.
+                    "Entrada fácil = camino difícil. Entrada difícil = camino fácil." Las barreras protegen tu negocio.
+                </div>
+                <p class="pregunta">¿Qué tan difícil es para otros competidores entrar en tu mercado?</p>
+                <div class="opciones">
+                    <div class="opcion">
+                        <input type="radio" name="entrada" value="si" id="ent-si" required>
+                        <label for="ent-si">✅ Muy difícil - Requiere capital significativo, conocimiento especializado,
+                            o tiempo considerable</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="entrada" value="parcial" id="ent-parcial">
+                        <label for="ent-parcial">⚠️ Moderadamente difícil - Hay algunas barreras pero no son
+                            insuperables</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="entrada" value="no" id="ent-no">
+                        <label for="ent-no">❌ Fácil - Cualquiera puede empezar con poco dinero y esfuerzo (ej: MLM,
+                            franquicias baratas)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANDAMIENTO 3: CONTROL -->
+            <div class="mandamiento">
+                <h3><span>3️⃣</span> Mandamiento de CONTROL</h3>
+                <div class="explicacion">
+                    <strong>Debes tener control total sobre tu negocio.</strong>
+                    Si dependes de una plataforma, empresa matriz o terceros para tu éxito, no tienes control.
+                    Evita MLM, franquicias restrictivas, o negocios donde otros pueden cambiar las reglas.
+                </div>
+                <p class="pregunta">¿Tienes control total sobre las decisiones, precios, productos y dirección de tu
+                    negocio?</p>
+                <div class="opciones">
+                    <div class="opcion">
+                        <input type="radio" name="control" value="si" id="ctrl-si" required>
+                        <label for="ctrl-si">✅ Control total - Es 100% mi negocio, tomo todas las decisiones
+                            importantes</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="control" value="parcial" id="ctrl-parcial">
+                        <label for="ctrl-parcial">⚠️ Control parcial - Tengo algo de autonomía pero con
+                            limitaciones</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="control" value="no" id="ctrl-no">
+                        <label for="ctrl-no">❌ Sin control - Dependo de una empresa matriz, plataforma o sistema de
+                            terceros (MLM, franquicia, afiliados)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANDAMIENTO 4: ESCALA -->
+            <div class="mandamiento">
+                <h3><span>4️⃣</span> Mandamiento de ESCALA</h3>
+                <div class="explicacion">
+                    <strong>El negocio debe poder escalar masivamente.</strong>
+                    Debes poder servir a millones de personas, no solo a tu vecindario. Los negocios locales tienen
+                    escala limitada.
+                    Internet, software y productos replicables permiten escala global.
+                </div>
+                <p class="pregunta">¿Puede tu negocio escalar para servir a millones de clientes sin estar limitado
+                    geográficamente?</p>
+                <div class="opciones">
+                    <div class="opcion">
+                        <input type="radio" name="escala" value="si" id="esc-si" required>
+                        <label for="esc-si">✅ Alta escala - Puedo servir a millones globalmente (Internet, software,
+                            productos digitales/físicos escalables)</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="escala" value="parcial" id="esc-parcial">
+                        <label for="esc-parcial">⚠️ Escala media - Puedo expandirme regionalmente o nacionalmente con
+                            esfuerzo</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="escala" value="no" id="esc-no">
+                        <label for="esc-no">❌ Escala limitada - Negocio local o de servicios que requiere mi presencia
+                            física</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANDAMIENTO 5: TIEMPO -->
+            <div class="mandamiento">
+                <h3><span>5️⃣</span> Mandamiento de TIEMPO</h3>
+                <div class="explicacion">
+                    <strong>El negocio debe poder generar ingresos sin tu presencia constante.</strong>
+                    Debes construir un sistema, no un trabajo. Si dejas de trabajar y los ingresos se detienen,
+                    no tienes un negocio Fastlane, tienes un trabajo disfrazado.
+                </div>
+                <p class="pregunta">¿Puede tu negocio generar ingresos sin requerir tu tiempo constante?</p>
+                <div class="opciones">
+                    <div class="opcion">
+                        <input type="radio" name="tiempo" value="si" id="time-si" required>
+                        <label for="time-si">✅ Sí - Es un sistema automatizado o con empleados que puede funcionar sin
+                            mí</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="tiempo" value="parcial" id="time-parcial">
+                        <label for="time-parcial">⚠️ Parcialmente - Requiere supervisión ocasional pero no mi presencia
+                            constante</label>
+                    </div>
+                    <div class="opcion">
+                        <input type="radio" name="tiempo" value="no" id="time-no">
+                        <label for="time-no">❌ No - Si dejo de trabajar, los ingresos se detienen (consultoría,
+                            servicios personales)</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">🚀 Evaluar Mi Negocio Contra los 5 Mandamientos</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const respuestas = {
+                necesidad: document.querySelector('input[name="necesidad"]:checked').value,
+                entrada: document.querySelector('input[name="entrada"]:checked').value,
+                control: document.querySelector('input[name="control"]:checked').value,
+                escala: document.querySelector('input[name="escala"]:checked').value,
+                tiempo: document.querySelector('input[name="tiempo"]:checked').value
+            };
+
+            // Calcular puntuación
+            let puntos = 0;
+            const mandamientos = ['necesidad', 'entrada', 'control', 'escala', 'tiempo'];
+            const cumplidos = [];
+            const parciales = [];
+            const noCumplidos = [];
+
+            mandamientos.forEach(m => {
+                if (respuestas[m] === 'si') {
+                    puntos += 20;
+                    cumplidos.push(m);
+                } else if (respuestas[m] === 'parcial') {
+                    puntos += 10;
+                    parciales.push(m);
+                } else {
+                    noCumplidos.push(m);
+                }
+            });
+
+            // Generar resultado
+            let html = '<div class="score-header">';
+            html += '<div class="score-circle ' + getScoreClass(puntos) + '">';
+            html += puntos + '<span class="score-label">/ 100</span>';
+            html += '</div>';
+            html += '<h2 style="color: #2c3e50;">' + getVeredicto(puntos) + '</h2>';
+            html += '</div>';
+
+            // Detalles por mandamiento
+            html += '<h3 style="color: #2c3e50; margin: 30px 0 20px 0;">📊 Análisis Detallado:</h3>';
+
+            const nombres = {
+                necesidad: 'Necesidad',
+                entrada: 'Entrada',
+                control: 'Control',
+                escala: 'Escala',
+                tiempo: 'Tiempo'
+            };
+
+            mandamientos.forEach(m => {
+                const cumple = respuestas[m] === 'si';
+                const parcial = respuestas[m] === 'parcial';
+                html += '<div class="mandamiento-resultado ' + (cumple ? 'cumple' : parcial ? '' : 'no-cumple') + '">';
+                html += '<h4>';
+                html += cumple ? '✅' : parcial ? '⚠️' : '❌';
+                html += ' Mandamiento de ' + nombres[m].toUpperCase();
+                html += '</h4>';
+                html += '<p style="color: #666; margin-top: 8px;">';
+                html += cumple ? 'Excelente! Tu negocio cumple con este mandamiento.' :
+                    parcial ? 'Cumplimiento parcial. Hay espacio para mejorar.' :
+                        'No cumple. Este es un punto crítico que debes abordar.';
+                html += '</p>';
+                html += '</div>';
+            });
+
+            // Recomendaciones
+            html += '<div class="recomendacion">';
+            html += '<h4>💡 Recomendaciones Basadas en Tu Evaluación:</h4>';
+            html += '<ul>';
+
+            if (puntos >= 80) {
+                html += '<li><strong>¡Felicitaciones!</strong> Tu idea tiene un excelente potencial Fastlane.</li>';
+                html += '<li>Enfócate en la <strong>ejecución rápida</strong>. La idea es buena, ahora debes ejecutar.</li>';
+                html += '<li>Mantén el enfoque en los 5 mandamientos mientras creces.</li>';
+                html += '<li>Considera cómo puedes fortalecer aún más los mandamientos que cumples parcialmente.</li>';
+            } else if (puntos >= 60) {
+                html += '<li>Tu idea tiene potencial pero necesita <strong>refinamiento</strong>.</li>';
+                html += '<li>Identifica los mandamientos que no cumples y trabaja en mejorarlos.</li>';
+                html += '<li>Considera pivotar tu modelo de negocio para cumplir más mandamientos.</li>';
+                html += '<li>No inviertas todo tu tiempo y dinero hasta mejorar el cumplimiento.</li>';
+            } else if (puntos >= 40) {
+                html += '<li>Tu idea necesita <strong>trabajo significativo</strong> antes de ser viable en el Fastlane.</li>';
+                html += '<li>Considera si vale la pena mejorar esta idea o buscar una nueva oportunidad.</li>';
+                html += '<li>Los mandamientos que no cumples son <strong>señales de alerta críticas</strong>.</li>';
+                html += '<li>Lee nuevamente los capítulos sobre los 5 mandamientos en el libro.</li>';
+            } else {
+                html += '<li><strong>Alerta:</strong> Esta idea probablemente no te llevará al Fastlane.</li>';
+                html += '<li>Es mejor buscar una oportunidad diferente que cumpla más mandamientos.</li>';
+                html += '<li>No todas las ideas son buenas ideas de negocio, sin importar cuánto te apasionen.</li>';
+                html += '<li>Enfócate en encontrar <strong>necesidades del mercado</strong>, no en seguir tus pasiones.</li>';
+            }
+
+            html += '</ul>';
+            html += '</div>';
+
+            // Mostrar resultado
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        function getScoreClass(puntos) {
+            if (puntos >= 80) return 'excelente';
+            if (puntos >= 60) return 'bueno';
+            if (puntos >= 40) return 'regular';
+            return 'malo';
+        }
+
+        function getVeredicto(puntos) {
+            if (puntos >= 80) return '🏆 Excelente Potencial Fastlane';
+            if (puntos >= 60) return '👍 Buen Potencial con Mejoras';
+            if (puntos >= 40) return '⚠️ Potencial Limitado';
+            return '❌ Bajo Potencial Fastlane';
+        }
+    </script>
+</body>
+
+</html>

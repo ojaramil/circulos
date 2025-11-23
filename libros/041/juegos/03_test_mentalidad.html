@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Mentalidad Fastlane</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #FF6B35;
+            background: #fff3e0;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .resultado.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mentalidad-card {
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .sidewalk-card {
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+        }
+
+        .slowlane-card {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .fastlane-card {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">🧠</div>
+        <h1>Test de Mentalidad</h1>
+        <p class="description">Descubre si tienes mentalidad de Sidewalker, Slowlaner o Fastlaner</p>
+
+        <form id="test">
+            <div class="question">
+                <h3>1. ¿Cómo ves el dinero?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="sidewalk" required>
+                        Para gastarlo y disfrutar la vida hoy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="slowlane">
+                        Para ahorrarlo e invertirlo para el futuro
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="fastlane">
+                        Como una herramienta para crear sistemas que generen más dinero
+                    </label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>2. ¿Cuál es tu actitud hacia el trabajo?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="sidewalk" required>
+                        Trabajo para pagar mis cuentas y disfrutar los fines de semana
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="slowlane">
+                        Trabajo duro, ahorro y espero retirarme a los 65
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="fastlane">
+                        Construyo sistemas y negocios que trabajen para mí
+                    </label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>3. ¿Cómo inviertes tu tiempo libre?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="sidewalk" required>
+                        Viendo TV, redes sociales, entretenimiento
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="slowlane">
+                        Estudiando para mejorar en mi trabajo actual
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="fastlane">
+                        Construyendo mi negocio o aprendiendo nuevas habilidades empresariales
+                    </label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>4. ¿Qué piensas sobre el riesgo?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="sidewalk" required>
+                        Evito el riesgo, prefiero la comodidad
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="slowlane">
+                        Tomo riesgos calculados con mis inversiones
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="fastlane">
+                        El mayor riesgo es no tomar riesgos. Apuesto por mí mismo
+                    </label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>5. ¿Cuál es tu plan para la riqueza?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="sidewalk" required>
+                        No tengo plan, espero ganar la lotería o heredar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="slowlane">
+                        Ahorrar 10%, invertir en fondos mutuos, retirarme a los 65
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="fastlane">
+                        Crear un negocio escalable que genere riqueza en 5-10 años
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">🚀 Ver Mi Mentalidad</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('test').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const respuestas = {
+                sidewalk: 0,
+                slowlane: 0,
+                fastlane: 0
+            };
+
+            for (let i = 1; i <= 5; i++) {
+                const respuesta = document.querySelector(`input[name="q${i}"]:checked`).value;
+                respuestas[respuesta]++;
+            }
+
+            let mentalidad = '';
+            let maxRespuestas = 0;
+
+            for (const [tipo, cantidad] of Object.entries(respuestas)) {
+                if (cantidad > maxRespuestas) {
+                    maxRespuestas = cantidad;
+                    mentalidad = tipo;
+                }
+            }
+
+            const resultado = document.getElementById('resultado');
+            let html = '';
+
+            if (mentalidad === 'sidewalk') {
+                html = `
+                    <div class="mentalidad-card sidewalk-card">
+                        <h2 style="font-size: 2.5em; margin-bottom: 15px;">🚶 Mentalidad Sidewalk</h2>
+                        <p style="font-size: 1.2em; line-height: 1.8;">
+                            Actualmente tienes una mentalidad Sidewalk. Vives el momento sin plan para el futuro.
+                            Esto te llevará a la pobreza y dependencia financiera.
+                        </p>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">⚠️ Advertencias:</h3>
+                        <ul style="text-align: left; font-size: 1.1em; line-height: 2;">
+                            <li>Estás a "un evento" de la bancarrota</li>
+                            <li>No tienes control sobre tu futuro financiero</li>
+                            <li>El tiempo está en tu contra</li>
+                        </ul>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">💡 Próximos Pasos:</h3>
+                        <p style="font-size: 1.1em;">
+                            1. Deja de gastar todo lo que ganas<br>
+                            2. Crea un plan financiero básico<br>
+                            3. Lee el libro completo del Fastlane<br>
+                            4. Cambia tu mentalidad sobre el dinero
+                        </p>
+                    </div>
+                `;
+            } else if (mentalidad === 'slowlane') {
+                html = `
+                    <div class="mentalidad-card slowlane-card">
+                        <h2 style="font-size: 2.5em; margin-bottom: 15px;">🐌 Mentalidad Slowlane</h2>
+                        <p style="font-size: 1.2em; line-height: 1.8;">
+                            Tienes una mentalidad Slowlane. Eres responsable financieramente, pero sacrificas
+                            tu juventud por una jubilación incierta a los 65 años.
+                        </p>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">⚠️ Limitaciones:</h3>
+                        <ul style="text-align: left; font-size: 1.1em; line-height: 2;">
+                            <li>Tu riqueza depende del mercado de valores (fuera de tu control)</li>
+                            <li>Necesitas 40+ años para ser rico</li>
+                            <li>Tu tiempo está atado a tu dinero</li>
+                        </ul>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">💡 Próximos Pasos:</h3>
+                        <p style="font-size: 1.1em;">
+                            1. Considera emprender un negocio<br>
+                            2. Aprende sobre sistemas y apalancamiento<br>
+                            3. Busca oportunidades Fastlane<br>
+                            4. No dependas solo de tu trabajo
+                        </p>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="mentalidad-card fastlane-card">
+                        <h2 style="font-size: 2.5em; margin-bottom: 15px;">🏎️ Mentalidad Fastlane</h2>
+                        <p style="font-size: 1.2em; line-height: 1.8;">
+                            ¡Felicitaciones! Tienes una mentalidad Fastlane. Entiendes que la riqueza viene
+                            de crear sistemas, no de vender tu tiempo. Estás en el camino correcto.
+                        </p>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">✅ Fortalezas:</h3>
+                        <ul style="text-align: left; font-size: 1.1em; line-height: 2;">
+                            <li>Entiendes el poder del apalancamiento</li>
+                            <li>Estás dispuesto a tomar riesgos calculados</li>
+                            <li>Piensas en sistemas, no en trabajos</li>
+                        </ul>
+                        <h3 style="margin-top: 25px; margin-bottom: 15px;">💡 Próximos Pasos:</h3>
+                        <p style="font-size: 1.1em;">
+                            1. Identifica una necesidad del mercado<br>
+                            2. Evalúa tu idea contra los 5 Mandamientos<br>
+                            3. Ejecuta rápido, aprende rápido<br>
+                            4. Construye sistemas escalables<br>
+                            5. ¡Mantén el enfoque y la disciplina!
+                        </p>
+                    </div>
+                `;
+            }
+
+            resultado.innerHTML = html;
+            resultado.classList.add('show');
+            resultado.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de ROI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2d5a3d; margin-bottom: 20px; }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Calculadora de ROI</h1>
+        <p style="color: #666; margin-bottom: 20px;">Calcula el retorno de inversión</p>
+        
+        <input type="number" id="investment" placeholder="Inversión ($)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <input type="number" id="return" placeholder="Retorno ($)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <button onclick="calcROI()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 20px;">Calcular ROI</button>
+        <div id="result" style="display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #d4edda 0%, #c3e6cb 100%); border-radius: 15px; text-align: center;">
+            <h2 style="color: #2d5a3d;">ROI: <span id="roi">0%</span></h2>
+            <p id="verdict" style="margin-top: 15px; font-size: 1.1em;"></p>
+        </div>
+        <script>
+            function calcROI() {{
+                const inv = parseFloat(document.getElementById('investment').value) || 0;
+                const ret = parseFloat(document.getElementById('return').value) || 0;
+                const roi = ((ret - inv) / inv * 100).toFixed(1);
+                document.getElementById('roi').textContent = roi + '%';
+                document.getElementById('verdict').textContent = roi > 100 ? '🔥 Excelente ROI!' : roi > 50 ? '✅ Buen ROI' : '⚠️ ROI Bajo';
+                document.getElementById('result').style.display = 'block';
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

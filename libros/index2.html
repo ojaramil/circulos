@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Círculos de Lectura - Club Asperger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1b2a 100%);
+            color: #E0E7EF;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .bg-animation::before,
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-animation::before {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .bg-animation::after {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(100px, -100px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-50px, 100px) scale(0.9);
+            }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            background: rgba(20, 43, 71, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 91, 170, 0.4);
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #82aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            font-size: 0.9rem;
+            color: #A0B0C0;
+            margin-top: 0.25rem;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #82aaff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #C0D0E0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(20, 43, 71, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .filter-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid rgba(130, 170, 255, 0.3);
+            background: rgba(20, 43, 71, 0.5);
+            color: #C0D0E0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(130, 170, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .filter-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .filter-btn:hover {
+            border-color: #82aaff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(130, 170, 255, 0.3);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+            border-color: #0077CC;
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(0, 91, 170, 0.4);
+        }
+
+        .filter-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            background: rgba(13, 31, 51, 0.6);
+            border: 2px solid rgba(130, 170, 255, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #82aaff;
+            box-shadow: 0 0 0 4px rgba(130, 170, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #7993b4;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #7993b4;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .stat-card {
+            background: rgba(20, 43, 71, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #82aaff, #0077CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #A0B0C0;
+            margin-top: 0.5rem;
+        }
+
+        /* Books Grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .book-card {
+            background: rgba(20, 43, 71, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #005BAA, #0077CC, #28a745);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .book-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-color: rgba(130, 170, 255, 0.4);
+        }
+
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .book-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: #A0B0C0;
+            margin-top: 0.5rem;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #C0D0E0;
+        }
+
+        /* Category Colors */
+        .category-finanzas {
+            background: linear-gradient(135deg, #005BAA, #0077CC);
+        }
+
+        .category-desarrollo-profesional {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+        }
+
+        .category-desarrollo-personal {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+        }
+
+        .category-productividad {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .category-liderazgo {
+            background: linear-gradient(135deg, #6f42c1, #9b59b6);
+        }
+
+        .category-neurociencia {
+            background: linear-gradient(135deg, #e83e8c, #ec4899);
+        }
+
+        .category-emprendimiento {
+            background: linear-gradient(135deg, #fd7e14, #ff6b6b);
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            color: #C0D0E0;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: #7993b4;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .filter-buttons {
+                gap: 0.75rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(130, 170, 255, 0.2);
+            border-top-color: #82aaff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">📚</div>
+                <div class="header-title">
+                    <h1>Biblioteca de Círculos</h1>
+                    <p>Club Asperger para Asperger</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h2>Explora Nuestra Colección</h2>
+            <p>40 libros interactivos con lecciones, juegos y actividades diseñadas para tu crecimiento personal y
+                profesional</p>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" id="totalBooks">40</div>
+                <div class="stat-label">Libros Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="visibleBooks">40</div>
+                <div class="stat-label">Mostrando</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Categorías</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Lecciones</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-title">
+                <span>🔍</span>
+                <span>Filtrar por Categoría</span>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">
+                    <span>📚 Todos los Libros</span>
+                </button>
+                <button class="filter-btn" data-category="finanzas">
+                    <span>💰 Finanzas Personales</span>
+                </button>
+                <button class="filter-btn" data-category="desarrollo-profesional">
+                    <span>💼 Desarrollo Profesional</span>
+                </button>
+                <button class="filter-btn" data-category="desarrollo-personal">
+                    <span>🏆 Desarrollo Personal</span>
+                </button>
+                <button class="filter-btn" data-category="productividad">
+                    <span>✅ Productividad</span>
+                </button>
+                <button class="filter-btn" data-category="liderazgo">
+                    <span>👑 Liderazgo</span>
+                </button>
+                <button class="filter-btn" data-category="neurociencia">
+                    <span>🧠 Neurociencia</span>
+                </button>
+                <button class="filter-btn" data-category="emprendimiento">
+                    <span>🚀 Emprendimiento</span>
+                </button>
+            </div>
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Buscar por título, autor o tema...">
+            </div>
+        </div>
+
+        <div class="loading">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <div class="books-grid" id="booksGrid">
+            <!-- Books will be dynamically inserted here -->
+        </div>
+
+        <div class="no-results" id="noResults">
+            <div class="no-results-icon">📭</div>
+            <h3>No se encontraron resultados</h3>
+            <p>Intenta con otros términos de búsqueda o categoría</p>
+        </div>
+    </div>
+
+    <script>
+        // Books Database - Información Real de los Libros
+        const books = [
+            { number: '001', title: 'Cómo Piensan los Ricos', author: 'Morgan Housel', category: 'finanzas', lessons: 4, games: 7, icon: '💎' },
+            { number: '002', title: 'El Optimista Racional', author: 'Matt Ridley', category: 'desarrollo-personal', lessons: 10, games: 8, icon: '🌟' },
+            { number: '003', title: 'Piense y Hágase Rico', author: 'Napoleon Hill', category: 'finanzas', lessons: 12, games: 10, icon: '💰' },
+            { number: '004', title: 'Inquebrantable', author: 'Tony Robbins', category: 'finanzas', lessons: 13, games: 8, icon: '🛡️' },
+            { number: '005', title: 'Comienza con el Por Qué', author: 'Simon Sinek', category: 'liderazgo', lessons: 8, games: 7, icon: '🎯' },
+            { number: '006', title: '¡Tráguese ese Sapo!', author: 'Brian Tracy', category: 'productividad', lessons: 15, games: 12, icon: '🐸' },
+            { number: '007', title: 'La Vaca', author: 'Camilo Cruz', category: 'desarrollo-personal', lessons: 10, games: 6, icon: '🐄' },
+            { number: '008', title: 'El Monje que Vendió su Ferrari', author: 'Robin Sharma', category: 'desarrollo-personal', lessons: 12, games: 8, icon: '🧘' },
+            { number: '009', title: 'El MBA Personal', author: 'Josh Kaufman', category: 'emprendimiento', lessons: 10, games: 7, icon: '💼' },
+            { number: '010', title: 'Atrévete a no gustar', author: 'Kishimi & Koga', category: 'desarrollo-personal', lessons: 11, games: 9, icon: '🎭' },
+            { number: '011', title: 'El Líder que no Tenía Cargo', author: 'Robin Sharma', category: 'liderazgo', lessons: 12, games: 10, icon: '👑' },
+            { number: '012', title: 'La Quinta Disciplina', author: 'Peter Senge', category: 'liderazgo', lessons: 10, games: 8, icon: '📚' },
+            { number: '013', title: 'Los 7 Hábitos de la Gente Altamente Efectiva', author: 'Stephen Covey', category: 'desarrollo-personal', lessons: 13, games: 9, icon: '⭐' },
+            { number: '014', title: 'El Poder de los Hábitos', author: 'Charles Duhigg', category: 'desarrollo-personal', lessons: 11, games: 8, icon: '🔄' },
+            { number: '015', title: 'Hábitos Atómicos', author: 'James Clear', category: 'desarrollo-personal', lessons: 12, games: 10, icon: '⚛️' },
+            { number: '016', title: 'El Cerebro que se Cambia a Sí Mismo', author: 'Norman Doidge', category: 'neurociencia', lessons: 14, games: 11, icon: '🧠' },
+            { number: '017', title: 'El Efecto Compuesto', author: 'Darren Hardy', category: 'desarrollo-personal', lessons: 9, games: 7, icon: '📈' },
+            { number: '018', title: 'The Slight Edge', author: 'Jeff Olson', category: 'desarrollo-personal', lessons: 13, games: 10, icon: '🔺' },
+            { number: '019', title: 'Mindset: La Nueva Psicología del Éxito', author: 'Carol S. Dweck', category: 'desarrollo-personal', lessons: 12, games: 9, icon: '🌱' },
+            { number: '020', title: 'De Bueno a Excelente', author: 'Jim Collins', category: 'desarrollo-personal', lessons: 10, games: 8, icon: '🏆' },
+            { number: '021', title: 'El Pequeño Libro del Talento', author: 'Daniel Coyle', category: 'desarrollo-personal', lessons: 15, games: 12, icon: '📖' },
+            { number: '022', title: 'Número Uno', author: 'Anders Ericsson', category: 'desarrollo-personal', lessons: 25, games: 5, icon: '🥇' },
+            { number: '023', title: 'Céntrate (Deep Work)', author: 'Cal Newport', category: 'desarrollo-personal', lessons: 12, games: 9, icon: '🎯' },
+            { number: '024', title: 'David y Goliat', author: 'Malcolm Gladwell', category: 'desarrollo-personal', lessons: 25, games: 10, icon: '⚔️' },
+            { number: '025', title: 'Los Líderes Comen de Último', author: 'Simon Sinek', category: 'liderazgo', lessons: 11, games: 8, icon: '🍽️' },
+            { number: '026', title: 'El Ego es el Enemigo', author: 'Ryan Holiday', category: 'desarrollo-personal', lessons: 14, games: 11, icon: '🎭' },
+            { number: '027', title: 'El Cerebro se Cambia a Sí Mismo', author: 'Norman Doidge', category: 'neurociencia', lessons: 12, games: 9, icon: '🧠' },
+            { number: '028', title: 'La Teoría "Déjalos"', author: 'Mel Robbins', category: 'desarrollo-personal', lessons: 13, games: 10, icon: '🚪' },
+            { number: '029', title: 'Recupera tu Mente', author: 'Marian Rojas Estapé', category: 'desarrollo-personal', lessons: 14, games: 11, icon: '🧘‍♀️' },
+            { number: '030', title: 'El Arte de Pensar', author: 'Rolf Dobelli', category: 'desarrollo-personal', lessons: 15, games: 12, icon: '🤔' },
+            { number: '031', title: 'La Montaña Eres Tú', author: 'Brianna Wiest', category: 'desarrollo-personal', lessons: 13, games: 10, icon: '⛰️' },
+            { number: '032', title: 'Autodisciplina Diaria', author: 'Martin Meadows', category: 'desarrollo-personal', lessons: 12, games: 9, icon: '💪' },
+            { number: '033', title: 'Ikigai', author: 'Héctor García & Francesc Miralles', category: 'desarrollo-personal', lessons: 11, games: 8, icon: '🌸' },
+            { number: '034', title: 'Think Again', author: 'Walter Sinnott-Armstrong', category: 'desarrollo-personal', lessons: 12, games: 9, icon: '🔄' },
+            { number: '035', title: 'Cómo Terminar Lo Que Empiezas', author: 'Peter Hollins', category: 'productividad', lessons: 10, games: 12, icon: '✅' },
+            { number: '036', title: 'Money Mindset', author: 'Jacob H. Gold', category: 'desarrollo-personal', lessons: 13, games: 10, icon: '💵' },
+            { number: '037', title: 'Abundance', author: 'Peter H. Diamandis & Steven Kotler', category: 'desarrollo-personal', lessons: 11, games: 9, icon: '🌍' },
+            { number: '038', title: 'Mentalidad de Abundancia', author: 'Joel Osteen', category: 'desarrollo-personal', lessons: 14, games: 11, icon: '🙏' },
+            { number: '039', title: 'El Millonario Automático Dueño de Casa', author: 'David Bach', category: 'finanzas', lessons: 12, games: 10, icon: '🏠' },
+            { number: '040', title: 'Psicología de Ventas', author: 'Brian Tracy', category: 'desarrollo-profesional', lessons: 15, games: 10, icon: '💼' }
+        ];
+
+        // DOM Elements
+        const booksGrid = document.getElementById('booksGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const noResults = document.getElementById('noResults');
+        const visibleBooksCounter = document.getElementById('visibleBooks');
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Render Books
+        function renderBooks() {
+            const filteredBooks = books.filter(book => {
+                const matchesCategory = currentFilter === 'all' || book.category === currentFilter;
+                const matchesSearch = book.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    book.author.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            booksGrid.innerHTML = '';
+
+            if (filteredBooks.length === 0) {
+                noResults.classList.add('show');
+                visibleBooksCounter.textContent = '0';
+            } else {
+                noResults.classList.remove('show');
+                visibleBooksCounter.textContent = filteredBooks.length;
+
+                filteredBooks.forEach((book, index) => {
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.style.animationDelay = `${index * 0.05}s`;
+                    bookCard.onclick = () => window.location.href = `${book.number}/pantalla_principal.html`;
+
+                    bookCard.innerHTML = `
+                        <div class="book-header">
+                            <div class="book-number category-${book.category}">
+                                ${book.icon}
+                            </div>
+                            <div class="book-info">
+                                <div class="book-category">${getCategoryName(book.category)}</div>
+                                <div class="book-title">${book.title}</div>
+                            </div>
+                        </div>
+                        <div class="book-author">por ${book.author}</div>
+                        <div class="book-meta">
+                            <div class="meta-item">
+                                <span>📚</span>
+                                <span>${book.lessons} lecciones</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎮</span>
+                                <span>${book.games} juegos</span>
+                            </div>
+                        </div>
+                    `;
+
+                    booksGrid.appendChild(bookCard);
+                });
+            }
+        }
+
+        // Get Category Name
+        function getCategoryName(category) {
+            const names = {
+                'finanzas': 'Finanzas Personales',
+                'desarrollo-profesional': 'Desarrollo Profesional',
+                'desarrollo-personal': 'Desarrollo Personal',
+                'productividad': 'Productividad',
+                'liderazgo': 'Liderazgo',
+                'neurociencia': 'Neurociencia',
+                'emprendimiento': 'Emprendimiento'
+            };
+            return names[category] || category;
+        }
+
+        // Filter Buttons
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.category;
+                renderBooks();
+            });
+        });
+
+        // Search Input
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderBooks();
+        });
+
+        // Initial Render
+        renderBooks();
+    </script>
+</body>
+
+</html>

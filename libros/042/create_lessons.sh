@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Lección 04
+cat > "lecciones/04_mensaje_masas.html" << 'LESSON04'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensaje para las Masas</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; max-width: 900px; margin: 0 auto; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; }
+        .container { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #667eea; border-bottom: 4px solid #667eea; padding-bottom: 15px; margin-bottom: 30px; font-size: 2.5em; }
+        h2 { color: #764ba2; margin-top: 35px; font-size: 1.8em; }
+        .highlight { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 5px solid #667eea; }
+        .key-points { background: #f8f9fa; padding: 25px; border-radius: 12px; margin: 25px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📢 Elegir un Mensaje para las Masas</h1>
+        <p style="font-size: 1.2em;">Tu mensaje debe resonar emocionalmente con tu audiencia y ser lo suficientemente poderoso como para que quieran compartirlo.</p>
+        
+        <h2>Los Elementos de un Mensaje Viral</h2>
+        <div class="highlight">
+            <h3>🎯 Componentes Clave</h3>
+            <p><strong>1. Conexión Emocional:</strong> Debe tocar el corazón o la mente</p>
+            <p><strong>2. Relevancia:</strong> Debe importarle a tu audiencia ahora</p>
+            <p><strong>3. Valor:</strong> Debe ofrecer algo útil, entretenido o inspirador</p>
+            <p><strong>4. Simplicidad:</strong> Debe ser fácil de entender y compartir</p>
+        </div>
+
+        <h2>Tipos de Mensajes que Funcionan</h2>
+        <p><strong>Inspiracional:</strong> Motiva a las personas a ser mejores</p>
+        <p><strong>Educativo:</strong> Enseña algo valioso</p>
+        <p><strong>Entretenimiento:</strong> Hace reír o divierte</p>
+        <p><strong>Aspiracional:</strong> Muestra lo que es posible</p>
+
+        <div class="key-points">
+            <h3>💡 Puntos Clave</h3>
+            <p>✓ Tu mensaje debe ser auténtico y alineado con tu marca</p>
+            <p>✓ Prueba múltiples variaciones del mismo mensaje</p>
+            <p>✓ Analiza qué resuena más con tu audiencia</p>
+            <p>✓ Ajusta basándote en los datos de engagement</p>
+        </div>
+    </div>
+</body>
+</html>
+LESSON04
+
+echo "Lección 04 creada"
+

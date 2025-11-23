@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contenido</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .ideas-container {
+            margin-top: 30px;
+            display: none;
+        }
+        .ideas-container.show { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .idea-card {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        .idea-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .idea-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Generador de Ideas de Contenido</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera ideas virales para tus redes sociales</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 20px;">Selecciona tu nicho:</label>
+        <select id="niche">
+            <option value="">Selecciona un nicho...</option>
+            <option value="business">Negocios y Emprendimiento</option>
+            <option value="fitness">Fitness y Salud</option>
+            <option value="tech">Tecnología</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="education">Educación</option>
+            <option value="finance">Finanzas Personales</option>
+        </select>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 20px;">Palabra clave (opcional):</label>
+        <input type="text" id="keyword" placeholder="Ej: productividad, marketing, etc.">
+
+        <button class="btn" onclick="generateIdeas()">🚀 Generar Ideas</button>
+
+        <div class="ideas-container" id="ideas"></div>
+    </div>
+
+    <script>
+        const contentIdeas = {
+            business: [
+                { title: "5 Errores que Matan tu Productividad", desc: "Comparte los errores más comunes y cómo evitarlos" },
+                { title: "Mi Rutina Matutina de CEO", desc: "Muestra tu rutina y hábitos de éxito" },
+                { title: "Cómo Gané $X en 30 Días", desc: "Case study de un logro reciente" },
+                { title: "Herramientas que Uso Diariamente", desc: "Lista de apps y tools favoritas" },
+                { title: "Lección Más Cara que Aprendí", desc: "Historia de fracaso y aprendizaje" }
+            ],
+            fitness: [
+                { title: "Transformación de 90 Días", desc: "Before/After con tu historia" },
+                { title: "5 Ejercicios en Casa Sin Equipo", desc: "Tutorial rápido y efectivo" },
+                { title: "Qué Como en un Día", desc: "Full day of eating con macros" },
+                { title: "Mitos del Fitness que Debes Ignorar", desc: "Desmiente creencias populares" },
+                { title: "Rutina de 15 Minutos", desc: "Workout rápido para gente ocupada" }
+            ],
+            tech: [
+                { title: "Apps que Cambiarán tu Vida", desc: "Top apps poco conocidas" },
+                { title: "Trucos de [App Popular]", desc: "Tips y hacks avanzados" },
+                { title: "Mi Setup de Trabajo", desc: "Tour de tu espacio de trabajo" },
+                { title: "Tecnología del Futuro", desc: "Predicciones y tendencias" },
+                { title: "Cómo Proteger tu Privacidad Online", desc: "Guía práctica de seguridad" }
+            ],
+            lifestyle: [
+                { title: "Un Día en Mi Vida", desc: "Vlog estilo day in the life" },
+                { title: "Cosas que Dejé de Hacer", desc: "Hábitos que eliminaste y por qué" },
+                { title: "Mi Espacio Favorito", desc: "Tour de tu lugar especial" },
+                { title: "Lecciones de Vida a los X Años", desc: "Sabiduría y reflexiones" },
+                { title: "Cómo Organizo Mi Vida", desc: "Sistema de organización personal" }
+            ],
+            education: [
+                { title: "Aprende X en 5 Minutos", desc: "Tutorial ultra-condensado" },
+                { title: "Recursos Gratuitos que Debes Conocer", desc: "Lista de recursos educativos" },
+                { title: "Cómo Estudiar Efectivamente", desc: "Técnicas de aprendizaje" },
+                { title: "Libros que Cambiaron Mi Perspectiva", desc: "Recomendaciones con insights" },
+                { title: "Habilidades del Futuro", desc: "Qué aprender para 2025+" }
+            ],
+            finance: [
+                { title: "Cómo Ahorré $X en un Año", desc: "Estrategia de ahorro paso a paso" },
+                { title: "Apps para Gestionar tu Dinero", desc: "Herramientas financieras útiles" },
+                { title: "Inversiones para Principiantes", desc: "Guía básica de inversión" },
+                { title: "Gastos que Eliminé", desc: "Cómo reducir gastos innecesarios" },
+                { title: "Mi Estrategia de Ingresos Pasivos", desc: "Cómo generar ingresos extra" }
+            ]
+        };
+
+        function generateIdeas() {
+            const niche = document.getElementById('niche').value;
+            const keyword = document.getElementById('keyword').value.toLowerCase();
+
+            if (!niche) {
+                alert('Por favor selecciona un nicho');
+                return;
+            }
+
+            const ideas = contentIdeas[niche];
+            let html = '<h2 style="color: #667eea; margin-bottom: 20px;">💡 Ideas para tu Contenido:</h2>';
+
+            ideas.forEach((idea, index) => {
+                html += `
+                    <div class="idea-card" style="animation-delay: ${index * 0.1}s">
+                        <h3>${idea.title}</h3>
+                        <p>${idea.desc}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('ideas').innerHTML = html;
+            document.getElementById('ideas').classList.add('show');
+        }
+    </script>
+</body>
+</html>

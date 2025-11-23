@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Competencia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        .checklist-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checklist-item:hover { background: #e9ecef; }
+        .checklist-item.checked {
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+        }
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #FF0000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+        .checklist-item.checked .checkbox {
+            background: #FF0000;
+            color: white;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Checklist de Análisis de Competencia</h1>
+        <p style="color: #666; margin-bottom: 20px;">Analiza a tu competencia sistemáticamente</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%;">0%</div>
+        </div>
+
+        <div id="checklist"></div>
+
+        <div id="result" style="display: none; margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%); border-radius: 15px;">
+            <h3 style="color: #FF0000; text-align: center;">✅ Análisis Completo</h3>
+            <p style="text-align: center; margin-top: 15px; color: #333;">Has completado el análisis de competencia. Ahora aplica estos insights a tu estrategia.</p>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { text: 'Identifica 5-10 canales competidores', tip: 'Canales similares en tamaño y nicho' },
+            { text: 'Analiza sus títulos más exitosos', tip: 'Patrones en títulos con más vistas' },
+            { text: 'Estudia sus thumbnails', tip: 'Colores, composición, texto usado' },
+            { text: 'Revisa su frecuencia de publicación', tip: 'Cuántos videos por semana' },
+            { text: 'Analiza duración promedio de videos', tip: 'Qué formato funciona mejor' },
+            { text: 'Observa su engagement rate', tip: 'Likes y comentarios vs vistas' },
+            { text: 'Identifica sus videos más virales', tip: 'Qué tienen en común' },
+            { text: 'Estudia sus descripciones', tip: 'Cómo optimizan para SEO' },
+            { text: 'Analiza sus playlists', tip: 'Cómo organizan contenido' },
+            { text: 'Revisa sus colaboraciones', tip: 'Con quién trabajan' }
+        ];
+
+        let checkedCount = 0;
+
+        function initChecklist() {
+            let html = '';
+            items.forEach((item, index) => {
+                html += `
+                    <div class="checklist-item" onclick="toggleItem(this, ${index})">
+                        <div class="checkbox"></div>
+                        <div>
+                            <div style="font-weight: 600; color: #333;">${item.text}</div>
+                            <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${item.tip}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('checklist').innerHTML = html;
+        }
+
+        function toggleItem(element, index) {
+            element.classList.toggle('checked');
+            const checkbox = element.querySelector('.checkbox');
+            
+            if (element.classList.contains('checked')) {
+                checkbox.textContent = '✓';
+                checkedCount++;
+            } else {
+                checkbox.textContent = '';
+                checkedCount--;
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((checkedCount / items.length) * 100);
+            const progressBar = document.getElementById('progress');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+
+            if (percentage === 100) {
+                document.getElementById('result').style.display = 'block';
+            } else {
+                document.getElementById('result').style.display = 'none';
+            }
+        }
+
+        initChecklist();
+    </script>
+</body>
+</html>

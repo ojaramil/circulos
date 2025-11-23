@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Ideas - 5 Mandamientos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .icon { font-size: 4em; text-align: center; margin-bottom: 20px; }
+        .description { text-align: center; color: #666; font-size: 1.1em; margin-bottom: 30px; }
+        .mandamiento {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .mandamiento h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        .mandamiento p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+        .radio-group label:hover {
+            border-color: #FF6B35;
+            background: #fff3e0;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #FF6B35;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .resultado {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .resultado.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+        }
+        .excelente { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .bueno { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .regular { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .malo { background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">💡</div>
+        <h1>Evaluador de Ideas de Negocio</h1>
+        <p class="description">Evalúa tu idea contra los 5 Mandamientos del Fastlane</p>
+
+        <form id="evaluacion">
+            <div class="mandamiento">
+                <h3>1️⃣ Mandamiento de NECESIDAD</h3>
+                <p>¿Tu negocio resuelve un problema real o satisface una necesidad del mercado?</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="necesidad" value="5" required><span>Sí, resuelve un gran problema</span></label>
+                    <label><input type="radio" name="necesidad" value="3"><span>Resuelve un problema menor</span></label>
+                    <label><input type="radio" name="necesidad" value="0"><span>No, es solo mi pasión</span></label>
+                </div>
+            </div>
+
+            <div class="mandamiento">
+                <h3>2️⃣ Mandamiento de ENTRADA</h3>
+                <p>¿Qué tan difícil es para otros entrar en tu mercado?</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="entrada" value="5" required><span>Muy difícil, altas barreras</span></label>
+                    <label><input type="radio" name="entrada" value="3"><span>Moderadamente difícil</span></label>
+                    <label><input type="radio" name="entrada" value="0"><span>Fácil, cualquiera puede hacerlo</span></label>
+                </div>
+            </div>
+
+            <div class="mandamiento">
+                <h3>3️⃣ Mandamiento de CONTROL</h3>
+                <p>¿Tienes control total sobre tu negocio y decisiones?</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="control" value="5" required><span>Control total, es mi negocio</span></label>
+                    <label><input type="radio" name="control" value="3"><span>Control parcial</span></label>
+                    <label><input type="radio" name="control" value="0"><span>Dependo de otros (franquicia, MLM)</span></label>
+                </div>
+            </div>
+
+            <div class="mandamiento">
+                <h3>4️⃣ Mandamiento de ESCALA</h3>
+                <p>¿Puedes servir a millones de personas o estás limitado geográficamente?</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="escala" value="5" required><span>Puedo servir a millones (Internet, software)</span></label>
+                    <label><input type="radio" name="escala" value="3"><span>Puedo escalar regionalmente</span></label>
+                    <label><input type="radio" name="escala" value="0"><span>Limitado localmente</span></label>
+                </div>
+            </div>
+
+            <div class="mandamiento">
+                <h3>5️⃣ Mandamiento de TIEMPO</h3>
+                <p>¿Puede tu negocio generar ingresos sin tu presencia constante?</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="tiempo" value="5" required><span>Sí, es un sistema automatizado</span></label>
+                    <label><input type="radio" name="tiempo" value="3"><span>Parcialmente automatizado</span></label>
+                    <label><input type="radio" name="tiempo" value="0"><span>No, requiere mi tiempo constante</span></label>
+                </div>
+            </div>
+
+            <button type="submit">🚀 Evaluar Mi Idea</button>
+        </form>
+
+        <div class="resultado" id="resultado">
+            <div class="score-circle" id="scoreCircle"></div>
+            <h2 id="veredicto"></h2>
+            <p id="mensaje" style="font-size: 1.1em; color: #666; margin-top: 20px; line-height: 1.8;"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('evaluacion').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const necesidad = parseInt(document.querySelector('input[name="necesidad"]:checked').value);
+            const entrada = parseInt(document.querySelector('input[name="entrada"]:checked').value);
+            const control = parseInt(document.querySelector('input[name="control"]:checked').value);
+            const escala = parseInt(document.querySelector('input[name="escala"]:checked').value);
+            const tiempo = parseInt(document.querySelector('input[name="tiempo"]:checked').value);
+            
+            const total = necesidad + entrada + control + escala + tiempo;
+            const porcentaje = (total / 25) * 100;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            const veredicto = document.getElementById('veredicto');
+            const mensaje = document.getElementById('mensaje');
+            
+            scoreCircle.textContent = Math.round(porcentaje) + '%';
+            
+            if (porcentaje >= 80) {
+                scoreCircle.className = 'score-circle excelente';
+                veredicto.textContent = '🏆 ¡Idea Excelente!';
+                veredicto.style.color = '#11998e';
+                mensaje.textContent = '¡Felicitaciones! Tu idea cumple con la mayoría de los mandamientos del Fastlane. Tienes un gran potencial para crear riqueza rápidamente. Enfócate en la ejecución.';
+            } else if (porcentaje >= 60) {
+                scoreCircle.className = 'score-circle bueno';
+                veredicto.textContent = '👍 Buena Idea';
+                veredicto.style.color = '#f5576c';
+                mensaje.textContent = 'Tu idea tiene potencial, pero necesita refinamiento. Identifica qué mandamientos no cumples y trabaja en mejorarlos antes de invertir mucho tiempo y dinero.';
+            } else if (porcentaje >= 40) {
+                scoreCircle.className = 'score-circle regular';
+                veredicto.textContent = '⚠️ Idea Regular';
+                veredicto.style.color = '#fa709a';
+                mensaje.textContent = 'Tu idea necesita trabajo significativo. Considera pivotar o buscar una idea diferente que cumpla mejor con los mandamientos del Fastlane.';
+            } else {
+                scoreCircle.className = 'score-circle malo';
+                veredicto.textContent = '❌ Idea Pobre';
+                veredicto.style.color = '#fc4a1a';
+                mensaje.textContent = 'Esta idea probablemente no te llevará al Fastlane. Es mejor buscar una oportunidad diferente que cumpla con más mandamientos. Recuerda: no todas las ideas son buenas ideas de negocio.';
+            }
+            
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+</html>

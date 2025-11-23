@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Punto de Equilibrio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2d5a3d; margin-bottom: 20px; }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚖️ Calculadora de Punto de Equilibrio</h1>
+        <p style="color: #666; margin-bottom: 20px;">Calcula cuándo serás rentable</p>
+        
+        <input type="number" id="fixed" placeholder="Costos fijos mensuales ($)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <input type="number" id="price" placeholder="Precio por unidad ($)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <input type="number" id="variable" placeholder="Costo variable por unidad ($)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <button onclick="calcBreakEven()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 20px;">Calcular</button>
+        <div id="result" style="display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #d4edda 0%, #c3e6cb 100%); border-radius: 15px; text-align: center;">
+            <h2 style="color: #2d5a3d;">Necesitas vender: <span id="units">0</span> unidades/mes</h2>
+        </div>
+        <script>
+            function calcBreakEven() {{
+                const fixed = parseFloat(document.getElementById('fixed').value) || 0;
+                const price = parseFloat(document.getElementById('price').value) || 0;
+                const variable = parseFloat(document.getElementById('variable').value) || 0;
+                const units = Math.ceil(fixed / (price - variable));
+                document.getElementById('units').textContent = units;
+                document.getElementById('result').style.display = 'block';
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Objetivos Fastlane - The Millionaire Fastlane</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF6B35;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .intro-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .intro-box p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 25px 0;
+        }
+
+        label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            animation: slideIn 0.5s;
+        }
+
+        .resultado.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .objetivo-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #FF6B35;
+        }
+
+        .objetivo-card h3 {
+            color: #FF6B35;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .objetivo-card p {
+            color: #2c3e50;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .objetivo-card strong {
+            color: #FF6B35;
+        }
+
+        .tip-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tip-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .tip-box ul {
+            margin-left: 20px;
+            color: #856404;
+            line-height: 2;
+        }
+
+        .smart-badge {
+            display: inline-block;
+            background: #11998e;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px 5px 5px 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="icon">🎯</div>
+        <h1>Generador de Objetivos Fastlane</h1>
+        <p class="description">Crea objetivos SMART alineados con la filosofía Fastlane para acelerar tu riqueza</p>
+
+        <div class="intro-box">
+            <h3>📚 Objetivos SMART del Fastlane</h3>
+            <p>
+                Los objetivos Fastlane deben ser <strong>SMART</strong> (Específicos, Medibles, Alcanzables, Relevantes,
+                con Tiempo definido)
+                pero también deben estar alineados con los principios del Fastlane: <strong>enfocarse en sistemas
+                    escalables,
+                    no en intercambiar tiempo por dinero</strong>. Un buen objetivo Fastlane te acerca a la libertad
+                financiera
+                mediante la creación de activos que generan ingresos pasivos.
+            </p>
+        </div>
+
+        <form id="objetivoForm">
+            <div class="form-section">
+                <div class="input-group">
+                    <label>🎯 ¿Cuál es tu objetivo principal? (Sé específico)</label>
+                    <textarea id="objetivo"
+                        placeholder="Ejemplo: Crear un negocio de software SaaS que genere $10,000 mensuales en ingresos recurrentes"
+                        required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>💰 Meta financiera específica (USD):</label>
+                    <input type="number" id="metaFinanciera" placeholder="10000" min="1000" step="1000" required>
+                </div>
+
+                <div class="input-group">
+                    <label>📅 ¿En cuánto tiempo quieres lograrlo?</label>
+                    <select id="tiempo" required>
+                        <option value="">Selecciona un plazo...</option>
+                        <option value="3">3 meses (Sprint Fastlane)</option>
+                        <option value="6">6 meses (Medio plazo)</option>
+                        <option value="12">12 meses (1 año)</option>
+                        <option value="24">24 meses (2 años)</option>
+                        <option value="36">36 meses (3 años)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>🚀 Tipo de negocio/proyecto:</label>
+                    <select id="tipoNegocio" required>
+                        <option value="">Selecciona el tipo...</option>
+                        <option value="software">Software/SaaS (Alta escala)</option>
+                        <option value="ecommerce">E-commerce/Productos físicos</option>
+                        <option value="contenido">Contenido/Información digital</option>
+                        <option value="servicios">Servicios escalables</option>
+                        <option value="invencion">Invención/Innovación</option>
+                        <option value="otro">Otro modelo escalable</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>📊 ¿Cómo medirás el progreso? (Métricas clave)</label>
+                    <textarea id="metricas"
+                        placeholder="Ejemplo: Número de usuarios activos, ingresos mensuales recurrentes, tasa de conversión, etc."
+                        required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>⚡ ¿Qué acción tomarás esta semana para avanzar?</label>
+                    <input type="text" id="accionInmediata"
+                        placeholder="Ejemplo: Validar idea con 10 clientes potenciales" required>
+                </div>
+            </div>
+
+            <button type="submit">🚀 Generar Mi Objetivo SMART Fastlane</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('objetivoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const objetivo = document.getElementById('objetivo').value;
+            const metaFinanciera = parseFloat(document.getElementById('metaFinanciera').value);
+            const tiempo = parseInt(document.getElementById('tiempo').value);
+            const tipoNegocio = document.getElementById('tipoNegocio').value;
+            const metricas = document.getElementById('metricas').value;
+            const accionInmediata = document.getElementById('accionInmediata').value;
+
+            // Calcular métricas
+            const ingresoMensual = metaFinanciera;
+            const ingresoAnual = metaFinanciera * 12;
+            const fechaObjetivo = new Date();
+            fechaObjetivo.setMonth(fechaObjetivo.getMonth() + tiempo);
+
+            const tiposNegocio = {
+                software: 'Software/SaaS',
+                ecommerce: 'E-commerce',
+                contenido: 'Contenido Digital',
+                servicios: 'Servicios Escalables',
+                invencion: 'Invención/Innovación',
+                otro: 'Modelo Escalable'
+            };
+
+            let html = '<div class="objetivo-card">';
+            html += '<h3>🎯 Tu Objetivo SMART Fastlane</h3>';
+            html += '<div style="margin: 20px 0;">';
+            html += '<span class="smart-badge">S - Específico</span>';
+            html += '<span class="smart-badge">M - Medible</span>';
+            html += '<span class="smart-badge">A - Alcanzable</span>';
+            html += '<span class="smart-badge">R - Relevante</span>';
+            html += '<span class="smart-badge">T - Tiempo definido</span>';
+            html += '</div>';
+            html += '<p style="font-size: 1.2em; font-weight: 600; color: #2c3e50; margin: 20px 0;">';
+            html += objetivo;
+            html += '</p>';
+            html += '</div>';
+
+            // Desglose SMART
+            html += '<div class="objetivo-card">';
+            html += '<h3>📋 Desglose SMART</h3>';
+            html += '<p><strong>S - Específico:</strong> ' + tiposNegocio[tipoNegocio] + ' con objetivo de $' + metaFinanciera.toLocaleString() + ' mensuales</p>';
+            html += '<p><strong>M - Medible:</strong> ' + metricas + '</p>';
+            html += '<p><strong>A - Alcanzable:</strong> Plazo de ' + tiempo + ' meses para construcción y escalamiento</p>';
+            html += '<p><strong>R - Relevante:</strong> Alineado con principios Fastlane (escalable, no intercambio tiempo-dinero)</p>';
+            html += '<p><strong>T - Tiempo definido:</strong> Fecha objetivo: ' + fechaObjetivo.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) + '</p>';
+            html += '</div>';
+
+            // Proyección financiera
+            html += '<div class="objetivo-card">';
+            html += '<h3>💰 Proyección Financiera</h3>';
+            html += '<p><strong>Ingreso Mensual Objetivo:</strong> $' + ingresoMensual.toLocaleString() + ' USD</p>';
+            html += '<p><strong>Ingreso Anual Proyectado:</strong> $' + ingresoAnual.toLocaleString() + ' USD</p>';
+            html += '<p><strong>Tiempo para Libertad Financiera:</strong> ' + tiempo + ' meses</p>';
+            html += '<p style="margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 8px;">';
+            html += '💡 <strong>Perspectiva Fastlane:</strong> Si logras este objetivo, estarás generando ';
+            html += '<strong>$' + (ingresoAnual / (tiempo * 4 * 40)).toFixed(2) + ' por hora trabajada</strong> ';
+            html += '(asumiendo 40 horas/semana durante ' + tiempo + ' meses). ';
+            html += 'Esto es ' + Math.round((ingresoAnual / (tiempo * 4 * 40)) / 15) + 'x mejor que un trabajo promedio de $15/hora.';
+            html += '</p>';
+            html += '</div>';
+
+            // Plan de acción
+            html += '<div class="objetivo-card">';
+            html += '<h3>⚡ Plan de Acción Inmediata</h3>';
+            html += '<p><strong>Esta Semana:</strong> ' + accionInmediata + '</p>';
+            html += '<p><strong>Este Mes:</strong> Validar modelo de negocio y conseguir primeros clientes/usuarios</p>';
+            html += '<p><strong>Trimestre 1:</strong> Construir MVP (Producto Mínimo Viable) y probar mercado</p>';
+            html += '<p><strong>Trimestre 2:</strong> Iterar basado en feedback y comenzar a escalar</p>';
+            html += '<p><strong>Trimestre 3+:</strong> Optimizar sistemas, automatizar y escalar agresivamente</p>';
+            html += '</div>';
+
+            // Consejos Fastlane
+            html += '<div class="tip-box">';
+            html += '<h4>🚀 Principios Fastlane para Tu Objetivo:</h4>';
+            html += '<ul>';
+            html += '<li><strong>Enfócate en EJECUCIÓN, no en planificación perfecta.</strong> Lanza rápido, aprende rápido.</li>';
+            html += '<li><strong>Construye SISTEMAS, no trabajos.</strong> Tu negocio debe poder funcionar sin ti.</li>';
+            html += '<li><strong>Resuelve NECESIDADES, no persigas pasiones.</strong> El mercado paga por soluciones.</li>';
+            html += '<li><strong>Piensa en ESCALA desde el día 1.</strong> ¿Puedes servir a 1,000? ¿A 10,000? ¿A 1 millón?</li>';
+            html += '<li><strong>Mide TODO.</strong> Lo que no se mide, no se puede mejorar.</li>';
+            html += '<li><strong>Velocidad mata a la grandeza.</strong> Ejecuta rápido, falla rápido, aprende rápido.</li>';
+            html += '</ul>';
+            html += '</div>';
+
+            document.getElementById('resultado').innerHTML = html;
+            document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    </script>
+</body>
+
+</html>

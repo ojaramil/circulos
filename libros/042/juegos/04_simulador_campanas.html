@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Campañas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+.btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 10px 5px;
+}
+.btn:hover { transform: translateY(-2px); }
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+}
+        .campaign-result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        .campaign-result.show { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .metric-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric-label { color: #666; font-weight: 600; }
+        .metric-value { color: #667eea; font-size: 1.5em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📣 Simulador de Campañas Publicitarias</h1>
+        <p style="color: #666; margin-bottom: 20px;">Simula el rendimiento de tu campaña en Facebook Ads</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Presupuesto Diario ($):</label>
+        <input type="number" id="budget" placeholder="Ej: 50" min="1">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">CPM Estimado ($):</label>
+        <input type="number" id="cpm" placeholder="Ej: 10" min="0.1" step="0.1">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">CTR Estimado (%):</label>
+        <input type="number" id="ctr" placeholder="Ej: 2" min="0.1" step="0.1">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tasa de Conversión (%):</label>
+        <input type="number" id="conversion" placeholder="Ej: 5" min="0.1" step="0.1">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Duración (días):</label>
+        <input type="number" id="days" placeholder="Ej: 7" min="1">
+
+        <button class="btn" style="width: 100%; margin-top: 20px;" onclick="simulateCampaign()">Simular Campaña</button>
+
+        <div class="campaign-result" id="result">
+            <h2 style="color: #333; margin-bottom: 20px;">📊 Resultados Proyectados</h2>
+            <div class="metric-box">
+                <span class="metric-label">Inversión Total</span>
+                <span class="metric-value" id="totalSpend">$0</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-label">Impresiones</span>
+                <span class="metric-value" id="impressions">0</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-label">Clicks</span>
+                <span class="metric-value" id="clicks">0</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-label">Conversiones</span>
+                <span class="metric-value" id="conversions">0</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-label">Costo por Conversión</span>
+                <span class="metric-value" id="cpc">$0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function simulateCampaign() {
+            const budget = parseFloat(document.getElementById('budget').value) || 0;
+            const cpm = parseFloat(document.getElementById('cpm').value) || 0;
+            const ctr = parseFloat(document.getElementById('ctr').value) || 0;
+            const conversion = parseFloat(document.getElementById('conversion').value) || 0;
+            const days = parseInt(document.getElementById('days').value) || 0;
+
+            if (!budget || !cpm || !ctr || !conversion || !days) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const totalSpend = budget * days;
+            const impressions = Math.round((totalSpend / cpm) * 1000);
+            const clicks = Math.round(impressions * (ctr / 100));
+            const conversions = Math.round(clicks * (conversion / 100));
+            const costPerConversion = conversions > 0 ? (totalSpend / conversions).toFixed(2) : 0;
+
+            document.getElementById('totalSpend').textContent = '$' + totalSpend.toFixed(2);
+            document.getElementById('impressions').textContent = impressions.toLocaleString();
+            document.getElementById('clicks').textContent = clicks.toLocaleString();
+            document.getElementById('conversions').textContent = conversions.toLocaleString();
+            document.getElementById('cpc').textContent = '$' + costPerConversion;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

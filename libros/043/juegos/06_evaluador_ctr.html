@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de CTR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #FF0000;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            border-radius: 15px;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .gauge {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .metric {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Evaluador de CTR (Click-Through Rate)</h1>
+        <p style="color: #666; margin-bottom: 20px;">Evalúa si tu CTR es competitivo en YouTube</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Impresiones del Video:</label>
+        <input type="number" id="impressions" placeholder="Ej: 10000">
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Clicks en el Video:</label>
+        <input type="number" id="clicks" placeholder="Ej: 600">
+
+        <button class="btn" onclick="evaluateCTR()">Evaluar CTR</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #FF0000; text-align: center; margin-bottom: 20px;">📊 Análisis de CTR</h2>
+
+            <div class="metric">
+                <span>Tu CTR</span>
+                <span style="font-weight: 600; color: #FF0000; font-size: 1.5em;" id="ctrValue">0%</span>
+            </div>
+
+            <div class="gauge">
+                <div class="gauge-fill" id="gaugeFill" style="width: 0%; background: #FF0000;">0%</div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #FF0000; margin-bottom: 15px;" id="verdict">Veredicto</h3>
+                <p id="recommendation" style="line-height: 1.6;"></p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                <h4 style="color: #FF0000; margin-bottom: 10px;">📈 Benchmarks de CTR</h4>
+                <p style="margin: 5px 0;">• <strong>2-4%:</strong> Promedio</p>
+                <p style="margin: 5px 0;">• <strong>4-6%:</strong> Bueno</p>
+                <p style="margin: 5px 0;">• <strong>6-8%:</strong> Muy Bueno</p>
+                <p style="margin: 5px 0;">• <strong>8%+:</strong> Excelente</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function evaluateCTR() {
+            const impressions = parseInt(document.getElementById('impressions').value) || 0;
+            const clicks = parseInt(document.getElementById('clicks').value) || 0;
+
+            if (!impressions || !clicks) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const ctr = ((clicks / impressions) * 100).toFixed(2);
+
+            document.getElementById('ctrValue').textContent = ctr + '%';
+
+            const gaugeFill = document.getElementById('gaugeFill');
+            const gaugeWidth = Math.min(parseFloat(ctr) * 10, 100);
+            gaugeFill.style.width = gaugeWidth + '%';
+            gaugeFill.textContent = ctr + '%';
+
+            let verdict, recommendation, color;
+
+            if (ctr >= 8) {
+                verdict = '🔥 EXCELENTE CTR';
+                recommendation = '¡Increíble! Tu thumbnail y título están perfectamente optimizados. Este CTR está en el top 10% de YouTube. Mantén esta calidad y escala tu contenido.';
+                color = '#4CAF50';
+            } else if (ctr >= 6) {
+                verdict = '✅ MUY BUEN CTR';
+                recommendation = 'Muy bien! Estás por encima del promedio. Para llegar al siguiente nivel, prueba A/B testing con diferentes thumbnails y títulos más emocionales.';
+                color = '#2196F3';
+            } else if (ctr >= 4) {
+                verdict = '👍 BUEN CTR';
+                recommendation = 'Estás en el promedio superior. Hay espacio para mejorar. Enfócate en crear thumbnails más llamativos con expresiones faciales claras y títulos más curiosos.';
+                color = '#FF9800';
+            } else if (ctr >= 2) {
+                verdict = '📊 CTR PROMEDIO';
+                recommendation = 'Estás en el promedio de YouTube. Necesitas mejorar urgentemente tus thumbnails y títulos. Estudia canales exitosos de tu nicho y aplica sus estrategias.';
+                color = '#FFC107';
+            } else {
+                verdict = '⚠️ CTR BAJO';
+                recommendation = 'URGENTE: Tu CTR está muy por debajo del promedio. Rediseña completamente tus thumbnails (usa rostros, colores contrastantes, texto grande) y reescribe tus títulos para generar más curiosidad.';
+                color = '#f44336';
+            }
+
+            document.getElementById('verdict').textContent = verdict;
+            document.getElementById('verdict').style.color = color;
+            document.getElementById('recommendation').textContent = recommendation;
+            gaugeFill.style.background = color;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+
+</html>

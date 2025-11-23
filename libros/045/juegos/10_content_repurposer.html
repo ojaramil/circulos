@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repurposing Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; margin: 10px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .result { display: none; margin-top: 30px; padding: 30px; background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 15px; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>♻️ Repurposing Tool</h1>
+        <p style="color: #666; margin-bottom: 20px;">Convierte un contenido en múltiples formatos</p>
+        
+        <textarea id="content" placeholder="Describe tu contenido original..." rows="4"></textarea>
+        <button class="btn" onclick="repurpose()">Generar Versiones</button>
+        <div class="result" id="result">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">♻️ Versiones para cada plataforma:</h3>
+            <div id="versions"></div>
+        </div>
+        <script>
+            function repurpose() {{
+                const content = document.getElementById('content').value;
+                if (!content) {{ alert('Describe tu contenido'); return; }}
+                
+                const versions = [
+                    {{ platform: 'TikTok', format: 'Video de 15-30 segundos con hook fuerte' }},
+                    {{ platform: 'Instagram Reel', format: 'Video de 30-60 segundos + caption' }},
+                    {{ platform: 'YouTube Short', format: 'Video de 60 segundos con CTA' }},
+                    {{ platform: 'LinkedIn', format: 'Post de texto con insights clave' }},
+                    {{ platform: 'Twitter', format: 'Thread de 5-7 tweets' }},
+                    {{ platform: 'Instagram Story', format: '3-5 slides interactivas' }}
+                ];
+                
+                let html = '';
+                versions.forEach(v => {{
+                    html += `<div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                        <strong style="color: #1e3a8a;">${{v.platform}}:</strong> ${{v.format}}
+                    </div>`;
+                }});
+                
+                document.getElementById('versions').innerHTML = html;
+                document.getElementById('result').classList.add('show');
+            }}
+        </script>
+    
+    </div>
+</body>
+</html>

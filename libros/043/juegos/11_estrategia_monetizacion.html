@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia de Monetización</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF0000; margin-bottom: 20px; }
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .strategy-card {
+            background: linear-gradient(120deg, #FFE5E5 0%, #FFD5D5 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .revenue-stream {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .revenue-stream h4 {
+            color: #FF0000;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Planificador de Estrategia de Monetización</h1>
+        <p style="color: #666; margin-bottom: 20px;">Crea tu plan de ingresos en YouTube</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tamaño de tu Canal:</label>
+        <select id="channelSize">
+            <option value="">Selecciona...</option>
+            <option value="small">0 - 10,000 subs</option>
+            <option value="medium">10,000 - 100,000 subs</option>
+            <option value="large">100,000 - 1M subs</option>
+            <option value="huge">1M+ subs</option>
+        </select>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Tu Nicho:</label>
+        <select id="niche">
+            <option value="">Selecciona...</option>
+            <option value="tech">Tecnología</option>
+            <option value="gaming">Gaming</option>
+            <option value="education">Educación</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="finance">Finanzas</option>
+        </select>
+
+        <button class="btn" onclick="generateStrategy()">Generar Estrategia</button>
+
+        <div id="strategy"></div>
+    </div>
+
+    <script>
+        const strategies = {
+            small: {
+                title: 'Fase de Construcción',
+                focus: 'Enfócate en crecer tu audiencia antes de monetizar agresivamente',
+                streams: [
+                    { name: 'Afiliados', desc: 'Comienza con links de afiliados en descripciones', priority: 'Alta' },
+                    { name: 'Sponsorships Pequeños', desc: 'Busca marcas pequeñas de tu nicho', priority: 'Media' },
+                    { name: 'Productos Digitales', desc: 'Crea un ebook o curso pequeño', priority: 'Media' },
+                    { name: 'AdSense', desc: 'Trabaja para alcanzar YPP (1k subs, 4k horas)', priority: 'Baja' }
+                ]
+            },
+            medium: {
+                title: 'Fase de Diversificación',
+                focus: 'Diversifica tus fuentes de ingreso',
+                streams: [
+                    { name: 'AdSense', desc: 'Ya deberías estar monetizado', priority: 'Alta' },
+                    { name: 'Sponsorships', desc: 'Negocia deals de $500-$2000 por video', priority: 'Alta' },
+                    { name: 'Membresías', desc: 'Activa membresías de canal', priority: 'Alta' },
+                    { name: 'Productos Propios', desc: 'Lanza curso o producto digital premium', priority: 'Media' },
+                    { name: 'Afiliados', desc: 'Optimiza tus links de afiliados', priority: 'Media' }
+                ]
+            },
+            large: {
+                title: 'Fase de Escalamiento',
+                focus: 'Maximiza cada fuente de ingreso',
+                streams: [
+                    { name: 'Sponsorships Premium', desc: 'Deals de $5k-$20k por video', priority: 'Alta' },
+                    { name: 'Productos Propios', desc: 'Múltiples productos y servicios', priority: 'Alta' },
+                    { name: 'Membresías', desc: 'Contenido exclusivo premium', priority: 'Alta' },
+                    { name: 'AdSense', desc: 'Optimiza CPM con contenido premium', priority: 'Media' },
+                    { name: 'Merchandising', desc: 'Lanza línea de productos', priority: 'Media' },
+                    { name: 'Consultoría', desc: 'Ofrece servicios de alto valor', priority: 'Media' }
+                ]
+            },
+            huge: {
+                title: 'Fase de Imperio',
+                focus: 'Construye un negocio completo alrededor de tu marca',
+                streams: [
+                    { name: 'Empresa Propia', desc: 'Lanza tu propia compañía', priority: 'Alta' },
+                    { name: 'Inversiones', desc: 'Invierte en otros negocios', priority: 'Alta' },
+                    { name: 'Sponsorships Masivos', desc: 'Deals de $50k+ por video', priority: 'Alta' },
+                    { name: 'Productos Físicos', desc: 'Línea completa de productos', priority: 'Alta' },
+                    { name: 'Eventos', desc: 'Tours, conferencias, meetups', priority: 'Media' },
+                    { name: 'Licenciamiento', desc: 'Licencia tu marca', priority: 'Media' }
+                ]
+            }
+        };
+
+        function generateStrategy() {
+            const size = document.getElementById('channelSize').value;
+            const niche = document.getElementById('niche').value;
+
+            if (!size || !niche) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const strategy = strategies[size];
+
+            let html = `
+                <div class="strategy-card">
+                    <h2 style="color: #FF0000; margin-bottom: 15px;">${strategy.title}</h2>
+                    <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;"><strong>Enfoque:</strong> ${strategy.focus}</p>
+                    
+                    <h3 style="color: #FF0000; margin: 20px 0 15px 0;">💵 Fuentes de Ingreso Recomendadas:</h3>
+            `;
+
+            strategy.streams.forEach(stream => {
+                const priorityColor = stream.priority === 'Alta' ? '#4CAF50' : '#FF9800';
+                html += `
+                    <div class="revenue-stream">
+                        <h4>${stream.name} <span style="color: ${priorityColor}; font-size: 0.9em;">(${stream.priority} Prioridad)</span></h4>
+                        <p style="color: #666;">${stream.desc}</p>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('strategy').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

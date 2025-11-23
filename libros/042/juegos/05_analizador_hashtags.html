@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Hashtags</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+.btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 10px 5px;
+}
+.btn:hover { transform: translateY(-2px); }
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+}
+        .hashtag-list {
+            margin-top: 20px;
+        }
+        .hashtag-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hashtag-name {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .hashtag-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .copy-btn:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>#️⃣ Analizador de Hashtags</h1>
+        <p style="color: #666; margin-bottom: 20px;">Genera hashtags estratégicos para tu nicho</p>
+
+        <label style="display: block; color: #333; font-weight: 600; margin-top: 15px;">Selecciona tu nicho:</label>
+        <select id="niche">
+            <option value="">Selecciona...</option>
+            <option value="fitness">Fitness</option>
+            <option value="business">Negocios</option>
+            <option value="food">Comida</option>
+            <option value="travel">Viajes</option>
+            <option value="fashion">Moda</option>
+            <option value="tech">Tecnología</option>
+        </select>
+
+        <button class="btn" style="width: 100%; margin-top: 20px;" onclick="generateHashtags()">Generar Hashtags</button>
+
+        <div id="hashtags"></div>
+    </div>
+
+    <script>
+        const hashtagDatabase = {
+            fitness: ['#fitness', '#gym', '#workout', '#fitfam', '#bodybuilding', '#fitnessmotivation', '#training', '#muscle', '#fit', '#health', '#motivation', '#lifestyle', '#fitnessmodel', '#exercise', '#strong', '#gains', '#gymlife', '#personaltrainer', '#fitlife', '#healthylifestyle'],
+            business: ['#business', '#entrepreneur', '#marketing', '#success', '#motivation', '#startup', '#businessowner', '#entrepreneurship', '#money', '#hustle', '#smallbusiness', '#businesstips', '#leadership', '#mindset', '#goals', '#businesslife', '#ceo', '#networking', '#growth', '#strategy'],
+            food: ['#food', '#foodie', '#foodporn', '#instafood', '#foodphotography', '#yummy', '#delicious', '#foodstagram', '#foodlover', '#cooking', '#homemade', '#dinner', '#lunch', '#breakfast', '#healthyfood', '#foodblogger', '#tasty', '#eat', '#chef', '#recipe'],
+            travel: ['#travel', '#travelgram', '#wanderlust', '#instatravel', '#travelphotography', '#adventure', '#explore', '#vacation', '#traveling', '#nature', '#trip', '#photography', '#travelblogger', '#landscape', '#tourism', '#traveltheworld', '#beautiful', '#photooftheday', '#instagood', '#holiday'],
+            fashion: ['#fashion', '#style', '#ootd', '#fashionblogger', '#fashionista', '#instafashion', '#outfit', '#model', '#fashionstyle', '#stylish', '#fashionable', '#instagood', '#beauty', '#shopping', '#moda', '#fashionweek', '#trendy', '#fashiongram', '#fashionaddict', '#fashionlover'],
+            tech: ['#tech', '#technology', '#innovation', '#gadgets', '#techie', '#coding', '#programming', '#software', '#developer', '#ai', '#machinelearning', '#startup', '#digital', '#future', '#science', '#computer', '#electronics', '#geek', '#smartphone', '#app']
+        };
+
+        function generateHashtags() {
+            const niche = document.getElementById('niche').value;
+            if (!niche) {
+                alert('Por favor selecciona un nicho');
+                return;
+            }
+
+            const hashtags = hashtagDatabase[niche];
+            let html = '<div class="hashtag-list">';
+            html += '<h2 style="color: #667eea; margin: 20px 0;">📌 Hashtags Recomendados:</h2>';
+
+            // Mezclar y tomar 15 hashtags
+            const selectedHashtags = hashtags.sort(() => 0.5 - Math.random()).slice(0, 15);
+            
+            selectedHashtags.forEach((tag, index) => {
+                const score = Math.floor(Math.random() * 30) + 70; // Score entre 70-100
+                html += `
+                    <div class="hashtag-item">
+                        <span class="hashtag-name">${tag}</span>
+                        <span class="hashtag-score">Score: ${score}</span>
+                    </div>
+                `;
+            });
+
+            const hashtagString = selectedHashtags.join(' ');
+            html += `
+                <button class="copy-btn" onclick="copyHashtags('${hashtagString}')">
+                    📋 Copiar Todos los Hashtags
+                </button>
+            `;
+            html += '</div>';
+
+            document.getElementById('hashtags').innerHTML = html;
+        }
+
+        function copyHashtags(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('¡Hashtags copiados al portapapeles!');
+            });
+        }
+    </script>
+</body>
+</html>

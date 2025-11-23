@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Plataforma Ideal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 { color: #1e3a8a; margin-bottom: 20px; }
+.btn {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px 5px;
+}
+.btn:hover { transform: translateY(-2px); transition: 0.3s; }
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+}
+.result {
+    display: none;
+    margin-top: 30px;
+    padding: 30px;
+    background: linear-gradient(120deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 15px;
+}
+.result.show { display: block; }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .option {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            margin: 8px 0;
+            transition: all 0.3s;
+        }
+        .option:hover { border-color: #3b82f6; }
+        .option.selected {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Test de Plataforma Ideal</h1>
+        <p style="color: #666; margin-bottom: 20px;">Descubre en qué plataforma deberías enfocarte</p>
+
+        <div class="question">
+            <h3>1. ¿Qué tipo de contenido prefieres crear?</h3>
+            <div class="option" onclick="selectOption(this, 'q1', 'tiktok')">Videos cortos entretenidos</div>
+            <div class="option" onclick="selectOption(this, 'q1', 'youtube')">Videos largos educativos</div>
+            <div class="option" onclick="selectOption(this, 'q1', 'instagram')">Contenido visual/fotos</div>
+            <div class="option" onclick="selectOption(this, 'q1', 'linkedin')">Artículos profesionales</div>
+        </div>
+
+        <div class="question">
+            <h3>2. ¿Cuál es tu audiencia objetivo?</h3>
+            <div class="option" onclick="selectOption(this, 'q2', 'tiktok')">Gen Z (18-24 años)</div>
+            <div class="option" onclick="selectOption(this, 'q2', 'instagram')">Millennials (25-40 años)</div>
+            <div class="option" onclick="selectOption(this, 'q2', 'linkedin')">Profesionales/B2B</div>
+            <div class="option" onclick="selectOption(this, 'q2', 'youtube')">Audiencia general</div>
+        </div>
+
+        <div class="question">
+            <h3>3. ¿Cuánto tiempo puedes dedicar diariamente?</h3>
+            <div class="option" onclick="selectOption(this, 'q3', 'tiktok')">30-60 minutos (contenido rápido)</div>
+            <div class="option" onclick="selectOption(this, 'q3', 'instagram')">1-2 horas (contenido visual)</div>
+            <div class="option" onclick="selectOption(this, 'q3', 'youtube')">3+ horas (producción alta)</div>
+            <div class="option" onclick="selectOption(this, 'q3', 'linkedin')">30 minutos (escritura)</div>
+        </div>
+
+        <button class="btn" style="width: 100%; margin-top: 20px;" onclick="calculatePlatform()">Ver Mi Plataforma Ideal</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #1e3a8a; text-align: center;" id="platform">Tu Plataforma</h2>
+            <p id="description" style="font-size: 1.1em; margin-top: 20px;"></p>
+            <div id="tips" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+
+        function selectOption(element, question, value) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[question] = value;
+        }
+
+        function calculatePlatform() {
+            if (Object.keys(answers).length < 3) {
+                alert('Por favor responde todas las preguntas');
+                return;
+            }
+
+            const counts = {};
+            Object.values(answers).forEach(val => {
+                counts[val] = (counts[val] || 0) + 1;
+            });
+
+            const platform = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+
+            const platforms = {
+                'tiktok': {
+                    name: '🎵 TikTok',
+                    desc: 'TikTok es tu plataforma ideal! Es perfecta para contenido rápido, entretenido y viral. Tu audiencia joven está aquí.',
+                    tips: ['Publica 3-5 videos al día', 'Usa trends y sonidos populares', 'Hook en el primer segundo', 'Sé auténtico, no pulido']
+                },
+                'instagram': {
+                    name: '📸 Instagram',
+                    desc: 'Instagram es tu mejor opción! Combina fotos, Reels y Stories para una estrategia visual completa.',
+                    tips: ['Publica Reels diariamente', 'Stories 3-5 veces al día', 'Feed estético consistente', 'Usa hashtags estratégicamente']
+                },
+                'youtube': {
+                    name: '▶️ YouTube',
+                    desc: 'YouTube es tu plataforma! Ideal para contenido educativo profundo y construir autoridad a largo plazo.',
+                    tips: ['Publica 1-2 videos por semana', 'Thumbnails llamativos', 'Títulos optimizados para SEO', 'Agrega YouTube Shorts']
+                },
+                'linkedin': {
+                    name: '💼 LinkedIn',
+                    desc: 'LinkedIn es perfecto para ti! Construye autoridad profesional y conecta con decisores B2B.',
+                    tips: ['Publica 3-5 veces por semana', 'Comparte insights valiosos', 'Comenta en posts relevantes', 'Usa storytelling profesional']
+                }
+            };
+
+            const result = platforms[platform];
+            document.getElementById('platform').textContent = result.name;
+            document.getElementById('description').textContent = result.desc;
+            
+            let tipsHTML = '<h3 style="color: #1e3a8a;">🎯 Tips para empezar:</h3><ul>';
+            result.tips.forEach(tip => {
+                tipsHTML += `<li style="margin: 10px 0;">${tip}</li>`;
+            });
+            tipsHTML += '</ul>';
+            document.getElementById('tips').innerHTML = tipsHTML;
+            
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

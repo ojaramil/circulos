@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Contenido</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
+        .day { background: #f8f9fa; padding: 15px; border-radius: 8px; min-height: 100px; border: 2px solid #e0e0e0; }
+        .day-header { font-weight: 600; color: #1e3a8a; margin-bottom: 10px; }
+        .content-item { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 8px; border-radius: 5px; font-size: 0.9em; margin: 5px 0; }
+        .btn { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Calendario de Contenido Semanal</h1>
+        <p style="color: #666; margin-bottom: 20px;">Planifica tu contenido de la semana</p>
+
+        <button class="btn" onclick="generateCalendar()">Generar Plan Semanal</button>
+
+        <div class="calendar" id="calendar"></div>
+    </div>
+
+    <script>
+        const contentTypes = [
+            'Post educativo', 'Behind the scenes', 'Tutorial rápido', 
+            'Q&A', 'Trend participation', 'Story personal', 'Tips rápidos'
+        ];
+
+        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        function generateCalendar() {
+            let html = '';
+            days.forEach((day, index) => {
+                const numPosts = index < 5 ? 2 : 1; // Más posts en días laborales
+                let posts = '';
+                for (let i = 0; i < numPosts; i++) {
+                    const randomContent = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+                    posts += `<div class="content-item">${randomContent}</div>`;
+                }
+                html += `
+                    <div class="day">
+                        <div class="day-header">${day}</div>
+                        ${posts}
+                    </div>
+                `;
+            });
+            document.getElementById('calendar').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Evaluador de Creencias Limitantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .checkbox-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkbox-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .checkbox-item input {
+            width: auto;
+            margin-right: 15px;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0deg, #667eea var(--score-deg), #e0e0e0 var(--score-deg), #e0e0e0 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+        .score-inner {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Evaluador de Creencias Limitantes</h1>
+        <p class="subtitle">Identifica las creencias que te mantienen atrapado</p>
+        
+        
+        <div id="beliefs"></div>
+        <button class="btn" onclick="evaluateBeliefs()">Evaluar Mis Creencias</button>
+        <div class="result" id="result">
+            <div class="score-circle" id="scoreCircle" style="--score-deg: 0deg">
+                <div class="score-inner" id="scoreValue">0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Nivel de Libertad Mental</div>
+                <div class="metric-value" id="freedomLevel">Calculando...</div>
+            </div>
+            <div class="metric">
+                <div style="color: #555; line-height: 1.6;" id="recommendations"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        
+const beliefs = [
+    { text: "Puedo hacerme rico rápidamente con el sistema correcto", limiting: true },
+    { text: "No soy bueno en matemáticas/ventas/tecnología", limiting: true },
+    { text: "Merezco gastar en lujos porque trabajo duro", limiting: true },
+    { text: "El dinero me haría feliz automáticamente", limiting: true },
+    { text: "Soy pobre porque otros son ricos", limiting: true },
+    { text: "Necesito suerte para tener éxito", limiting: true },
+    { text: "Debo vivir pobre ahora para ser rico después", limiting: true },
+    { text: "Wall Street me hará rico si invierto en fondos indexados", limiting: true },
+    { text: "La riqueza viene de crear valor para otros", limiting: false },
+    { text: "Puedo aprender cualquier habilidad que necesite", limiting: false },
+    { text: "Mi éxito depende de mis acciones, no de la suerte", limiting: false },
+    { text: "El verdadero éxito es libertad, no posesiones", limiting: false }
+];
+
+function renderBeliefs() {
+    const container = document.getElementById('beliefs');
+    container.innerHTML = '<div class="checkbox-group">' + 
+        beliefs.map((belief, index) => `
+            <div class="checkbox-item">
+                <input type="checkbox" id="belief${index}" value="${index}">
+                <label for="belief${index}" style="cursor: pointer; flex: 1;">${belief.text}</label>
+            </div>
+        `).join('') + '</div>';
+}
+
+function evaluateBeliefs() {
+    const checked = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => parseInt(cb.value));
+    
+    if (checked.length === 0) {
+        alert('Por favor selecciona las creencias que tienes actualmente');
+        return;
+    }
+
+    let limitingCount = 0;
+    let empoweringCount = 0;
+
+    checked.forEach(index => {
+        if (beliefs[index].limiting) {
+            limitingCount++;
+        } else {
+            empoweringCount++;
+        }
+    });
+
+    const score = Math.round((empoweringCount / (limitingCount + empoweringCount)) * 100);
+    const scoreDeg = (score / 100) * 360;
+
+    document.getElementById('scoreCircle').style.setProperty('--score-deg', scoreDeg + 'deg');
+    document.getElementById('scoreValue').textContent = score + '%';
+
+    let level, recommendations;
+    if (score >= 75) {
+        level = '🚀 Excelente - Mentalidad UNSCRIPTED';
+        recommendations = 'Tienes pocas creencias limitantes. Continúa cuestionando las normas sociales y construyendo tu libertad.';
+    } else if (score >= 50) {
+        level = '⚠️ Moderado - En Transición';
+        recommendations = 'Tienes una mezcla de creencias. Trabaja en identificar y reemplazar las creencias limitantes con creencias empoderadoras.';
+    } else {
+        level = '🚨 Bajo - Fuertemente SCRIPTED';
+        recommendations = 'Muchas creencias limitantes te están frenando. Necesitas cuestionar seriamente lo que "sabes" que es verdad. Lee más sobre las 8 estafas de creencias.';
+    }
+
+    document.getElementById('freedomLevel').textContent = level;
+    document.getElementById('recommendations').textContent = recommendations;
+    document.getElementById('result').classList.add('show');
+}
+
+renderBeliefs();
+
+    </script>
+</body>
+</html>

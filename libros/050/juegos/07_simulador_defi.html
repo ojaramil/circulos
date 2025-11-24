@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador DeFi (Liquidity Pool)</title>
+    
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0a12;
+            color: #00ff41;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: transparent;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 20px;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: inherit;
+            margin: 5px 0 15px 0;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00ff41;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #00ff41;
+            display: none;
+            background: #050505;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .hash {
+            word-break: break-all;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador DeFi (Liquidity Pool)</h1>
+        
+        <p class="subtitle">Provee liquidez y gana comisiones.</p>
+        
+        <div class="card">
+            <h3>Pool: ETH / USDC</h3>
+            <p>Precio actual: 1 ETH = 2000 USDC</p>
+            
+            <label>Depositar ETH:</label>
+            <input type="number" id="ethAmount" value="1" oninput="updateUSDC()">
+            
+            <label>Depositar USDC (Automático 50/50):</label>
+            <input type="number" id="usdcAmount" value="2000" disabled>
+            
+            <p>Tu participación en el Pool: <span id="share">0.1</span>%</p>
+        </div>
+        
+        <button class="btn" onclick="addLiquidity()">Añadir Liquidez</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            function updateUSDC() {
+                const eth = parseFloat(document.getElementById('ethAmount').value);
+                document.getElementById('usdcAmount').value = eth * 2000;
+                document.getElementById('share').innerText = (eth / 1000).toFixed(4); // Simulated total pool size
+            }
+            
+            function addLiquidity() {
+                document.getElementById('result').innerHTML = `
+                    <h3>💧 Liquidez Añadida</h3>
+                    <p>Has recibido <strong>LP Tokens</strong> que representan tu depósito.</p>
+                    <p>Ganarás el 0.3% de todas las transacciones que ocurran en este par.</p>
+                    <p style="color: #ff3333; font-size: 0.9em;">⚠️ Cuidado con el Impermanent Loss si el precio de ETH cambia drásticamente.</p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

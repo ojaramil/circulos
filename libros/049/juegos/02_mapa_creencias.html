@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Creencias Limitantes</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Mapa de Creencias Limitantes</h1>
+        
+        <p class="subtitle">Cuestiona las 'verdades' que te impiden crecer.</p>
+        
+        <div class="card">
+            <label>Escribe una creencia que te limite (ej: "No soy suficiente", "El dinero es malo"):</label>
+            <input type="text" id="belief" placeholder="Tu creencia limitante...">
+        </div>
+        
+        <div class="card" id="questions" style="display:none;">
+            <h3>El Trabajo de Indagación (The Work)</h3>
+            <div id="q1">
+                <p>1. ¿Es verdad esta creencia?</p>
+                <button class="btn" onclick="nextQ(2)">Sí</button> <button class="btn" onclick="nextQ(2)">No</button>
+            </div>
+            <div id="q2" style="display:none;">
+                <p>2. ¿Puedes saber con absoluta certeza que es verdad?</p>
+                <button class="btn" onclick="nextQ(3)">Sí</button> <button class="btn" onclick="nextQ(3)">No</button>
+            </div>
+            <div id="q3" style="display:none;">
+                <p>3. ¿Cómo reaccionas cuando crees ese pensamiento?</p>
+                <textarea placeholder="Me siento... Actúo..."></textarea>
+                <button class="btn" onclick="nextQ(4)">Siguiente</button>
+            </div>
+            <div id="q4" style="display:none;">
+                <p>4. ¿Quién serías sin ese pensamiento?</p>
+                <textarea placeholder="Me sentiría..."></textarea>
+                <button class="btn" onclick="showInversion()">Ver Inversión</button>
+            </div>
+        </div>
+        
+        <button class="btn" id="startBtn" onclick="startProcess()">Iniciar Cuestionamiento</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            function startProcess() {
+                if(document.getElementById('belief').value.trim() === "") return alert("Escribe una creencia primero.");
+                document.getElementById('questions').style.display = 'block';
+                document.getElementById('startBtn').style.display = 'none';
+            }
+            
+            function nextQ(num) {
+                document.querySelectorAll('[id^="q"]').forEach(el => el.style.display = 'none');
+                document.getElementById('q'+num).style.display = 'block';
+            }
+            
+            function showInversion() {
+                const belief = document.getElementById('belief').value;
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<h3>🔄 La Inversión</h3><p>Prueba a invertir tu creencia original: <strong>"${belief}"</strong>.</p>
+                <ul>
+                    <li>Hacia ti mismo.</li>
+                    <li>Hacia el otro.</li>
+                    <li>Al opuesto.</li>
+                </ul>
+                <p>A menudo, la inversión es tan o más verdadera que la creencia original. ¡Has roto el hechizo!</p>`;
+                resultDiv.style.display = 'block';
+                document.getElementById('questions').style.display = 'none';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

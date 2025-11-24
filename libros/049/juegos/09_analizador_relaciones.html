@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Relaciones (Ley del Espejo)</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador de Relaciones (Ley del Espejo)</h1>
+        
+        <p class="subtitle">Lo que te molesta del otro, vive en ti.</p>
+        
+        <div class="card">
+            <label>¿Qué rasgo te molesta de alguien?</label>
+            <input type="text" id="trait" placeholder="Ej: Es muy egoísta">
+            
+            <label>¿Quién es esa persona?</label>
+            <input type="text" id="person" placeholder="Ej: Mi jefe">
+        </div>
+        
+        <button class="btn" onclick="reflect()">Ver el Espejo</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            function reflect() {
+                const trait = document.getElementById('trait').value;
+                const resultDiv = document.getElementById('result');
+                
+                resultDiv.innerHTML = `
+                    <h3>🪞 El Espejo te dice:</h3>
+                    <p>Si te molesta <strong>"${trait}"</strong>, investiga:</p>
+                    <ol>
+                        <li><strong>Espejo Directo:</strong> ¿En qué áreas de tu vida eres tú "${trait}"?</li>
+                        <li><strong>Espejo Opuesto:</strong> ¿Eres tan rígido en NO ser "${trait}" que te has polarizado?</li>
+                        <li><strong>Espejo de Expectativas:</strong> ¿Tienes una expectativa irreal de que los demás no deberían ser así?</li>
+                    </ol>
+                    <p>Agradece a esa persona. Te está mostrando una sombra que necesitas integrar.</p>
+                `;
+                resultDiv.style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

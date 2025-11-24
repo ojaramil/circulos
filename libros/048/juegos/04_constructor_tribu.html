@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Tribu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .value-tag {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .value-tag:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .value-tag.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .tribe-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tribe-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>👥 Constructor de Tribu</h1>
+        <p class="subtitle">Define tu tribu: "Personas como nosotros hacen cosas como esta"</p>
+
+        <div class="section">
+            <h3>1. ¿Quiénes son "Personas Como Nosotros"?</h3>
+            <div class="input-group">
+                <label>Describe a tu tribu (demografía básica)</label>
+                <input type="text" id="who" placeholder="Ej: Emprendedores creativos de 30-45 años en ciudades grandes">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>2. Valores Compartidos (selecciona 3-5)</h3>
+            <div class="values-grid" id="valuesGrid"></div>
+        </div>
+
+        <div class="section">
+            <h3>3. ¿Qué "Cosas Como Esta" Hacen?</h3>
+            <div class="input-group">
+                <label>Comportamientos y rituales de la tribu</label>
+                <textarea id="behaviors"
+                    placeholder="Ej: Trabajan en cafés, escuchan podcasts de negocios, asisten a conferencias..."></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>4. Enemigo Común</h3>
+            <div class="input-group">
+                <label>¿Contra qué lucha tu tribu? ¿Qué rechazan?</label>
+                <input type="text" id="enemy"
+                    placeholder="Ej: El trabajo corporativo tradicional de 9-5, la mediocridad, el status quo">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>5. Lenguaje Único</h3>
+            <div class="input-group">
+                <label>Palabras, frases, o jerga que solo tu tribu usa</label>
+                <input type="text" id="language"
+                    placeholder="Ej: 'Hustle', 'Side project', 'Passive income', 'Location independent'">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>6. Exclusión (Para Quién NO Es)</h3>
+            <div class="input-group">
+                <label>¿Quiénes definitivamente NO son parte de esta tribu?</label>
+                <input type="text" id="notFor"
+                    placeholder="Ej: Personas que buscan seguridad sobre libertad, que evitan riesgos...">
+            </div>
+        </div>
+
+        <button class="btn" onclick="buildTribe()">Construir Mi Tribu</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #667eea; margin-bottom: 20px;">🎉 Tu Tribu Definida</h2>
+            <div id="tribeOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        const values = [
+            "Autenticidad", "Innovación", "Libertad", "Creatividad",
+            "Comunidad", "Excelencia", "Sostenibilidad", "Valentía",
+            "Transparencia", "Crecimiento", "Impacto", "Independencia",
+            "Colaboración", "Diversidad", "Simplicidad", "Calidad",
+            "Aventura", "Aprendizaje", "Generosidad", "Integridad"
+        ];
+
+        let selectedValues = [];
+
+        function initValues() {
+            const grid = document.getElementById('valuesGrid');
+            grid.innerHTML = values.map(v =>
+                `<div class="value-tag" onclick="toggleValue('${v}')">${v}</div>`
+            ).join('');
+        }
+
+        function toggleValue(value) {
+            const index = selectedValues.indexOf(value);
+            if (index > -1) {
+                selectedValues.splice(index, 1);
+            } else {
+                if (selectedValues.length < 5) {
+                    selectedValues.push(value);
+                } else {
+                    alert('Máximo 5 valores. Deselecciona uno primero.');
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.value-tag').forEach(tag => {
+                if (tag.textContent === value) {
+                    tag.classList.toggle('selected');
+                }
+            });
+        }
+
+        function buildTribe() {
+            const who = document.getElementById('who').value;
+            const behaviors = document.getElementById('behaviors').value;
+            const enemy = document.getElementById('enemy').value;
+            const language = document.getElementById('language').value;
+            const notFor = document.getElementById('notFor').value;
+
+            if (!who || selectedValues.length === 0 || !behaviors) {
+                alert('Completa al menos: Quiénes son, Valores (mínimo 1), y Comportamientos');
+                return;
+            }
+
+            let output = `
+                <div class="tribe-card">
+                    <h3>📋 Definición de Tu Tribu</h3>
+                    <p style="font-size: 1.3em; color: #667eea; font-weight: bold; margin-bottom: 15px;">
+                        "Personas como nosotros hacen cosas como esta"
+                    </p>
+                    <p style="line-height: 1.8; color: #333;">
+                        <strong>Personas como nosotros:</strong> ${who}
+                    </p>
+                    <p style="line-height: 1.8; color: #333; margin-top: 10px;">
+                        <strong>Hacen cosas como esta:</strong> ${behaviors}
+                    </p>
+                </div>
+                
+                <div class="tribe-card">
+                    <h3>💎 Valores Compartidos</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        ${selectedValues.map(v => `<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 15px; border-radius: 20px;">${v}</span>`).join('')}
+                    </div>
+                    <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                        <strong>💡 Tip:</strong> Estos valores deben estar visibles en TODO tu marketing. No solo los digas - vívelos y demuéstralos.
+                    </p>
+                </div>
+            `;
+
+            if (enemy) {
+                output += `
+                    <div class="tribe-card">
+                        <h3>⚔️ Enemigo Común</h3>
+                        <p style="line-height: 1.8; color: #333;">${enemy}</p>
+                        <p style="margin-top: 15px; padding: 15px; background: #ffe6e6; border-radius: 8px;">
+                            <strong>⚠️ Importante:</strong> Un enemigo común une a la tribu. Pero no ataques a personas - ataca ideas, sistemas, o status quo.
+                        </p>
+                    </div>
+                `;
+            }
+
+            if (language) {
+                output += `
+                    <div class="tribe-card">
+                        <h3>💬 Lenguaje de la Tribu</h3>
+                        <p style="line-height: 1.8; color: #333;">${language}</p>
+                        <p style="margin-top: 15px; padding: 15px; background: #e6f7ff; border-radius: 8px;">
+                            <strong>💡 Estrategia:</strong> Usa este lenguaje en tu marketing. Las personas que lo entienden se sentirán "en casa". Las que no, se auto-excluirán.
+                        </p>
+                    </div>
+                `;
+            }
+
+            if (notFor) {
+                output += `
+                    <div class="tribe-card">
+                        <h3>🚫 Para Quién NO Es</h3>
+                        <p style="line-height: 1.8; color: #333;">${notFor}</p>
+                        <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                            <strong>💡 Poder de la Exclusión:</strong> Decir "no es para ti" hace que sea MÁS valioso para quienes SÍ pertenecen. La exclusión fortalece la tribu.
+                        </p>
+                    </div>
+                `;
+            }
+
+            output += `
+                <div class="tribe-card">
+                    <h3>📝 Próximos Pasos</h3>
+                    <ol style="line-height: 2; color: #333; padding-left: 20px;">
+                        <li>Comunica esta definición a todo tu equipo</li>
+                        <li>Revisa todo tu marketing: ¿habla a esta tribu?</li>
+                        <li>Crea espacios para que la tribu se conecte (comunidad, eventos)</li>
+                        <li>Celebra a los miembros de la tribu, no solo tu producto</li>
+                        <li>Sé consistente - la tribu se construye con el tiempo</li>
+                    </ol>
+                </div>
+            `;
+
+            document.getElementById('tribeOutput').innerHTML = output;
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        initValues();
+    </script>
+</body>
+
+</html>

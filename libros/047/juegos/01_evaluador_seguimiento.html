@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Evaluador de Seguimiento</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #f5576c; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95em; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; }
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-label { color: #666; font-size: 0.9em; margin-bottom: 5px; }
+        .metric-value { color: #f5576c; font-size: 2em; font-weight: bold; }
+        .checkbox-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input { margin-right: 15px; width: auto; }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #f5576c;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            border-color: #f5576c;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Evaluador de Seguimiento</h1>
+        <p class="subtitle">Descubre qué tan bien terminas lo que empiezas</p>
+        
+    <div id="questions"></div>
+    <button class="btn" onclick="evaluate()">Evaluar Mi Seguimiento</button>
+    <div class="result" id="result">
+        <div class="metric">
+            <div class="metric-label">Tu Puntuación de Seguimiento</div>
+            <div class="metric-value" id="score">0%</div>
+        </div>
+        <div class="metric">
+            <div style="font-size: 1.5em; margin-bottom: 10px;" id="level"></div>
+            <div style="color: #555; line-height: 1.6;" id="feedback"></div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    const questions = [
+        {q: "¿Cuántos proyectos has comenzado en el último año?", a: ["0-2", "3-5", "6-10", "Más de 10"], c: [3,2,1,0]},
+        {q: "¿Cuántos de esos proyectos has completado?", a: ["Todos", "La mayoría", "Algunos", "Casi ninguno"], c: [3,2,1,0]},
+        {q: "Cuando enfrentas dificultad en un proyecto...", a: ["Busco soluciones", "Intento un poco más", "Me frustro fácilmente", "Lo abandono"], c: [3,2,1,0]},
+        {q: "¿Tienes sistemas para trabajar en tus proyectos?", a: ["Sí, muy claros", "Algunos", "Pocos", "Ninguno"], c: [3,2,1,0]},
+        {q: "¿Cuánto tiempo trabajas en tus proyectos cada día?", a: ["2+ horas", "1-2 horas", "30-60 min", "Menos de 30 min"], c: [3,2,1,0]},
+        {q: "Cuando pierdes motivación...", a: ["Trabajo de todos modos", "Intento motivarme", "Espero a sentirme mejor", "Abandono"], c: [3,2,1,0]},
+        {q: "¿Tienes un 'por qué' profundo para tus proyectos?", a: ["Muy claro", "Algo claro", "No muy claro", "No realmente"], c: [3,2,1,0]},
+        {q: "¿Qué tan fácilmente te distraes?", a: ["Muy difícil", "Algo difícil", "Fácilmente", "Muy fácilmente"], c: [3,2,1,0]}
+    ];
+    let answers = new Array(questions.length).fill(-1);
+    
+    function renderQuestions() {
+        document.getElementById('questions').innerHTML = questions.map((q, i) => `
+            <div class="question">
+                <div class="question-text">${i+1}. ${q.q}</div>
+                <div class="options">
+                    ${q.a.map((opt, j) => `
+                        <div class="option" onclick="selectAnswer(${i}, ${j})">${opt}</div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function selectAnswer(qIndex, aIndex) {
+        answers[qIndex] = aIndex;
+        const questionDiv = document.querySelectorAll('.question')[qIndex];
+        questionDiv.querySelectorAll('.option').forEach((opt, idx) => {
+            opt.classList.toggle('selected', idx === aIndex);
+        });
+    }
+    
+    function evaluate() {
+        if (answers.includes(-1)) {
+            alert('Por favor responde todas las preguntas');
+            return;
+        }
+        
+        const totalScore = answers.reduce((sum, ans, idx) => sum + questions[idx].c[ans], 0);
+        const maxScore = questions.length * 3;
+        const percentage = Math.round((totalScore / maxScore) * 100);
+        
+        document.getElementById('score').textContent = percentage + '%';
+        
+        let level, feedback;
+        if (percentage >= 80) {
+            level = '🏆 Maestro del Seguimiento';
+            feedback = '¡Excelente! Tienes hábitos sólidos para terminar lo que empiezas. Continúa refinando tus sistemas y podrías enseñar a otros.';
+        } else if (percentage >= 60) {
+            level = '👍 Buen Seguimiento';
+            feedback = 'Tienes una base sólida pero hay espacio para mejorar. Enfócate en crear sistemas más robustos y eliminar distracciones.';
+        } else if (percentage >= 40) {
+            level = '⚠️ Seguimiento Inconsistente';
+            feedback = 'Terminas algunos proyectos pero abandonas muchos. Necesitas sistemas más fuertes y un por qué más profundo.';
+        } else {
+            level = '🚨 Necesitas Ayuda';
+            feedback = 'Raramente terminas lo que empiezas. Esto es común pero cambiable. Comienza con proyectos pequeños, crea sistemas simples, y construye desde ahí.';
+        }
+        
+        document.getElementById('level').textContent = level;
+        document.getElementById('feedback').textContent = feedback;
+        document.getElementById('result').classList.add('show');
+    }
+    
+    renderQuestions();
+    </script>
+</body>
+</html>

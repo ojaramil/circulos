@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminador de Distracciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .distraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .distraction-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .distraction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .distraction-card.eliminated {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            opacity: 0.7;
+        }
+
+        .distraction-card.eliminated::after {
+            content: "✓ ELIMINADA";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .distraction-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .distraction-name {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .solution-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .solution-box.show {
+            display: block;
+        }
+
+        .solution-title {
+            color: #f5576c;
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .solution-steps {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⚡ Eliminador de Distracciones</h1>
+        <p class="subtitle">Haz clic en cada distracción para ver cómo eliminarla de tu vida</p>
+
+        <div class="distraction-grid" id="distractionGrid"></div>
+
+        <div class="solution-box" id="solutionBox">
+            <div class="solution-title" id="solutionTitle"></div>
+            <div class="solution-steps" id="solutionSteps"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="eliminated">0</div>
+                <div class="stat-label">Eliminadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="timeSaved">0h</div>
+                <div class="stat-label">Tiempo Recuperado/Día</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="focusGain">0%</div>
+                <div class="stat-label">Aumento de Foco</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="resetAll()">Reiniciar Eliminador</button>
+    </div>
+
+    <script>
+        const distractions = [
+            {
+                icon: "📱",
+                name: "Redes Sociales",
+                time: 2.5,
+                focus: 15,
+                solution: "Cómo Eliminar Redes Sociales",
+                steps: [
+                    "Desinstala todas las apps de redes sociales de tu teléfono",
+                    "Usa bloqueadores de sitios web (Freedom, Cold Turkey) durante horas de trabajo",
+                    "Programa 'ventanas de redes sociales' - solo 20 minutos a las 12pm y 6pm",
+                    "Pon tu teléfono en otra habitación cuando trabajas",
+                    "Usa la regla: 'Si no puedo resistir 5 minutos sin revisar, tengo un problema'"
+                ]
+            },
+            {
+                icon: "📺",
+                name: "Netflix/YouTube",
+                time: 3,
+                focus: 20,
+                solution: "Cómo Eliminar Streaming Compulsivo",
+                steps: [
+                    "Cierra sesión en todos los dispositivos después de cada uso",
+                    "Elimina las apps de streaming de tu teléfono",
+                    "Usa 'Temptation Bundling': solo puedes ver Netflix mientras haces ejercicio",
+                    "Establece un límite de tiempo (ej: 1 episodio por noche, no 'auto-play')",
+                    "Pregúntate: '¿Esto me acerca o me aleja de mis metas?' antes de ver"
+                ]
+            },
+            {
+                icon: "📧",
+                name: "Email Constante",
+                time: 1.5,
+                focus: 10,
+                solution: "Cómo Eliminar la Adicción al Email",
+                steps: [
+                    "Desactiva TODAS las notificaciones de email",
+                    "Revisa email solo 2-3 veces al día en horarios específicos (9am, 1pm, 5pm)",
+                    "Usa la regla de 2 minutos: si toma menos de 2 minutos, hazlo ahora; si no, agéndalo",
+                    "Usa filtros automáticos para organizar emails no urgentes",
+                    "Pon un auto-responder: 'Reviso emails 2 veces al día. Para urgencias, llama.'"
+                ]
+            },
+            {
+                icon: "💬",
+                name: "Mensajería Instantánea",
+                time: 2,
+                focus: 15,
+                solution: "Cómo Eliminar Interrupciones de Mensajes",
+                steps: [
+                    "Desactiva todas las notificaciones de WhatsApp, Slack, etc.",
+                    "Usa 'modo avión' o 'no molestar' durante bloques de trabajo profundo",
+                    "Comunica a tu equipo/familia: 'Trabajo sin interrupciones de 9am-12pm'",
+                    "Revisa mensajes en bloques específicos (cada 2-3 horas)",
+                    "Usa status: 'En modo foco profundo - responderé a las 3pm'"
+                ]
+            },
+            {
+                icon: "🎮",
+                name: "Videojuegos",
+                time: 2.5,
+                focus: 20,
+                solution: "Cómo Eliminar Videojuegos Compulsivos",
+                steps: [
+                    "Desinstala juegos de tu teléfono y computadora de trabajo",
+                    "Usa videojuegos como recompensa: solo después de completar tu tarea más importante",
+                    "Establece un límite de tiempo estricto (ej: 1 hora por noche, solo fines de semana)",
+                    "Pregúntate: '¿Qué estoy evitando al jugar?' - usualmente es una tarea difícil",
+                    "Reemplaza con actividad productiva que también sea divertida"
+                ]
+            },
+            {
+                icon: "🗞️",
+                name: "Noticias/Reddit",
+                time: 1.5,
+                focus: 10,
+                solution: "Cómo Eliminar Consumo Compulsivo de Noticias",
+                steps: [
+                    "Desinstala apps de noticias y Reddit de tu teléfono",
+                    "Usa bloqueadores de sitios para noticias/Reddit durante horas de trabajo",
+                    "Programa 'ventana de noticias': solo 15 minutos a las 6pm",
+                    "Pregúntate: '¿Esto cambia mi vida o solo me distrae?' - 99% es distracción",
+                    "Reemplaza con lectura de libros - información más profunda y útil"
+                ]
+            },
+            {
+                icon: "🛒",
+                name: "Shopping Online",
+                time: 1,
+                focus: 5,
+                solution: "Cómo Eliminar Shopping Compulsivo",
+                steps: [
+                    "Elimina todas las apps de shopping de tu teléfono",
+                    "Borra información de tarjetas guardadas en sitios web",
+                    "Usa la regla de 48 horas: espera 48 horas antes de cualquier compra no esencial",
+                    "Bloquea sitios de shopping durante horas de trabajo",
+                    "Pregúntate: '¿Realmente necesito esto o solo quiero la dopamina de comprar?'"
+                ]
+            },
+            {
+                icon: "🎵",
+                name: "Música con Letras",
+                time: 0.5,
+                focus: 8,
+                solution: "Cómo Optimizar Música para Foco",
+                steps: [
+                    "Cambia a música sin letras: lo-fi, clásica, ambient, binaural beats",
+                    "Usa playlists específicas para trabajo profundo (ej: 'Deep Focus' en Spotify)",
+                    "Evita música nueva - tu cerebro se distrae analizando canciones nuevas",
+                    "Usa el mismo playlist para trabajo - crea un 'ancla' de productividad",
+                    "Prueba trabajar en silencio total - a veces es lo mejor para foco máximo"
+                ]
+            },
+            {
+                icon: "👥",
+                name: "Interrupciones Sociales",
+                time: 1.5,
+                focus: 12,
+                solution: "Cómo Eliminar Interrupciones de Personas",
+                steps: [
+                    "Trabaja en un lugar donde no puedan interrumpirte (biblioteca, café, puerta cerrada)",
+                    "Usa audífonos (incluso sin música) como señal de 'no molestar'",
+                    "Comunica claramente: 'Estoy en modo foco de 9am-12pm, hablamos después'",
+                    "Establece 'horas de oficina' para conversaciones - ej: 2pm-3pm",
+                    "Aprende a decir: 'Estoy en algo importante, ¿podemos hablar en 2 horas?'"
+                ]
+            }
+        ];
+
+        let eliminatedCount = 0;
+        let totalTime = 0;
+        let totalFocus = 0;
+
+        function renderDistractions() {
+            const grid = document.getElementById('distractionGrid');
+            grid.innerHTML = distractions.map((d, i) => `
+                <div class="distraction-card" onclick="showSolution(${i})" id="card-${i}">
+                    <div class="distraction-icon">${d.icon}</div>
+                    <div class="distraction-name">${d.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function showSolution(index) {
+            const card = document.getElementById('card-' + index);
+            const distraction = distractions[index];
+
+            if (!card.classList.contains('eliminated')) {
+                card.classList.add('eliminated');
+                eliminatedCount++;
+                totalTime += distraction.time;
+                totalFocus += distraction.focus;
+                updateStats();
+            }
+
+            document.getElementById('solutionTitle').textContent = distraction.solution;
+            document.getElementById('solutionSteps').innerHTML = distraction.steps.map((step, i) =>
+                `<div class="step"><strong>${i + 1}.</strong> ${step}</div>`
+            ).join('');
+            document.getElementById('solutionBox').classList.add('show');
+
+            // Scroll to solution
+            document.getElementById('solutionBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateStats() {
+            document.getElementById('eliminated').textContent = eliminatedCount;
+            document.getElementById('timeSaved').textContent = totalTime.toFixed(1) + 'h';
+            document.getElementById('focusGain').textContent = totalFocus + '%';
+        }
+
+        function resetAll() {
+            eliminatedCount = 0;
+            totalTime = 0;
+            totalFocus = 0;
+            updateStats();
+            document.querySelectorAll('.distraction-card').forEach(card => {
+                card.classList.remove('eliminated');
+            });
+            document.getElementById('solutionBox').classList.remove('show');
+        }
+
+        renderDistractions();
+    </script>
+</body>
+
+</html>

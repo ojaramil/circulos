@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Valor Percibido</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .value-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .value-section h3 {
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+
+        .slider-container {
+            margin: 25px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        .value-display {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid #e0e0e0;
+        }
+
+        .comparison-item.winner {
+            border-color: #11998e;
+            background: linear-gradient(135deg, #11998e10 0%, #38ef7d10 100%);
+        }
+
+        .comparison-item.loser {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b10 0%, #c92a2a10 100%);
+        }
+
+        .big-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .recommendation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💰 Calculadora de Valor Percibido</h1>
+        <p class="subtitle">Calcula el valor percibido de tu producto/servicio vs. tu precio</p>
+
+        <div class="value-section">
+            <h3>Factores de Valor Percibido</h3>
+            <p style="color: #666; margin-bottom: 20px;">Califica cada factor de 1-10 según tu producto/servicio</p>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Calidad del Producto/Servicio</span>
+                    <span id="qualityVal">5</span>
+                </div>
+                <input type="range" id="quality" min="1" max="10" value="5" oninput="updateValue('quality')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Experiencia del Cliente</span>
+                    <span id="experienceVal">5</span>
+                </div>
+                <input type="range" id="experience" min="1" max="10" value="5" oninput="updateValue('experience')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Reputación de Marca</span>
+                    <span id="brandVal">5</span>
+                </div>
+                <input type="range" id="brand" min="1" max="10" value="5" oninput="updateValue('brand')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Exclusividad/Escasez</span>
+                    <span id="exclusivityVal">5</span>
+                </div>
+                <input type="range" id="exclusivity" min="1" max="10" value="5" oninput="updateValue('exclusivity')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Resultados/Transformación Prometida</span>
+                    <span id="resultsVal">5</span>
+                </div>
+                <input type="range" id="results" min="1" max="10" value="5" oninput="updateValue('results')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Soporte y Servicio Post-Venta</span>
+                    <span id="supportVal">5</span>
+                </div>
+                <input type="range" id="support" min="1" max="10" value="5" oninput="updateValue('support')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Comunidad/Pertenencia</span>
+                    <span id="communityVal">5</span>
+                </div>
+                <input type="range" id="community" min="1" max="10" value="5" oninput="updateValue('community')">
+            </div>
+        </div>
+
+        <div class="value-section">
+            <h3>Tu Precio Actual</h3>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Precio (escala relativa 1-10)</span>
+                    <span id="priceVal">5</span>
+                </div>
+                <input type="range" id="price" min="1" max="10" value="5" oninput="updateValue('price')">
+                <p style="color: #666; font-size: 0.9em; margin-top: 10px;">1 = Muy bajo, 5 = Medio, 10 = Premium</p>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculateValue()">Calcular Valor vs. Precio</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📊 Análisis de Valor</h2>
+
+            <div class="comparison-box">
+                <div class="comparison-item" id="valueBox">
+                    <div style="color: #666;">Valor Percibido</div>
+                    <div class="big-number" id="valueScore">0</div>
+                    <div style="color: #666;">de 70 puntos</div>
+                </div>
+                <div class="comparison-item" id="priceBox">
+                    <div style="color: #666;">Tu Precio</div>
+                    <div class="big-number" id="priceScore">0</div>
+                    <div style="color: #666;">de 10 puntos</div>
+                </div>
+            </div>
+
+            <div class="recommendation">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">Diagnóstico</h3>
+                <div id="diagnosis"></div>
+            </div>
+
+            <div class="recommendation">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">Recomendaciones</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateValue(id) {
+            const value = document.getElementById(id).value;
+            document.getElementById(id + 'Val').textContent = value;
+        }
+
+        function calculateValue() {
+            const quality = parseInt(document.getElementById('quality').value);
+            const experience = parseInt(document.getElementById('experience').value);
+            const brand = parseInt(document.getElementById('brand').value);
+            const exclusivity = parseInt(document.getElementById('exclusivity').value);
+            const results = parseInt(document.getElementById('results').value);
+            const support = parseInt(document.getElementById('support').value);
+            const community = parseInt(document.getElementById('community').value);
+            const price = parseInt(document.getElementById('price').value);
+
+            const totalValue = quality + experience + brand + exclusivity + results + support + community;
+            const valueScore = totalValue;
+            const priceScore = price;
+
+            document.getElementById('valueScore').textContent = valueScore;
+            document.getElementById('priceScore').textContent = priceScore;
+
+            // Normalize for comparison (value out of 70, price out of 10)
+            const valueNormalized = (valueScore / 70) * 10;
+            const ratio = valueNormalized / priceScore;
+
+            // Determine winner
+            const valueBox = document.getElementById('valueBox');
+            const priceBox = document.getElementById('priceBox');
+
+            if (ratio > 1.2) {
+                valueBox.classList.add('winner');
+                priceBox.classList.remove('winner');
+                priceBox.classList.add('loser');
+            } else if (ratio < 0.8) {
+                priceBox.classList.add('winner');
+                valueBox.classList.remove('winner');
+                valueBox.classList.add('loser');
+            } else {
+                valueBox.classList.remove('winner', 'loser');
+                priceBox.classList.remove('winner', 'loser');
+            }
+
+            // Generate diagnosis
+            let diagnosis = '';
+            if (ratio > 1.5) {
+                diagnosis = `<p style="line-height: 1.8; color: #11998e; font-weight: bold;">✅ EXCELENTE: Tu valor percibido (${valueScore}/70) es significativamente mayor que tu precio (${priceScore}/10).</p>
+                <p style="margin-top: 10px; line-height: 1.8;">Estás entregando valor excepcional. Podrías considerar aumentar precios O mantener precios para dominar el mercado.</p>`;
+            } else if (ratio > 1.2) {
+                diagnosis = `<p style="line-height: 1.8; color: #11998e; font-weight: bold;">👍 BUENO: Tu valor percibido (${valueScore}/70) supera tu precio (${priceScore}/10).</p>
+                <p style="margin-top: 10px; line-height: 1.8;">Buena posición. Los clientes sienten que reciben más de lo que pagan.</p>`;
+            } else if (ratio >= 0.8 && ratio <= 1.2) {
+                diagnosis = `<p style="line-height: 1.8; color: #ffd700; font-weight: bold;">⚖️ EQUILIBRADO: Tu valor percibido (${valueScore}/70) está equilibrado con tu precio (${priceScore}/10).</p>
+                <p style="margin-top: 10px; line-height: 1.8;">Posición justa pero sin ventaja clara. Considera aumentar valor percibido para diferenciarte.</p>`;
+            } else {
+                diagnosis = `<p style="line-height: 1.8; color: #ff6b6b; font-weight: bold;">⚠️ ALERTA: Tu precio (${priceScore}/10) es alto relativo a tu valor percibido (${valueScore}/70).</p>
+                <p style="margin-top: 10px; line-height: 1.8;">Situación peligrosa. Los clientes pueden sentir que no reciben suficiente valor por el precio.</p>`;
+            }
+
+            document.getElementById('diagnosis').innerHTML = diagnosis;
+
+            // Generate recommendations
+            let recommendations = '<ul style="line-height: 2; padding-left: 20px;">';
+
+            if (quality < 7) recommendations += '<li>Mejora la calidad del producto/servicio - es fundamental</li>';
+            if (experience < 7) recommendations += '<li>Optimiza la experiencia del cliente - cada punto de contacto importa</li>';
+            if (brand < 6) recommendations += '<li>Invierte en construir reputación de marca - toma tiempo pero vale la pena</li>';
+            if (results < 7) recommendations += '<li>Comunica mejor los resultados/transformación - esto es lo que realmente venden</li>';
+            if (support < 6) recommendations += '<li>Mejora el soporte post-venta - retención > adquisición</li>';
+
+            if (ratio < 1) {
+                recommendations += '<li><strong>URGENTE:</strong> Aumenta valor percibido O reduce precio</li>';
+                recommendations += '<li>Considera agregar bonuses, garantías, o servicios adicionales</li>';
+            } else if (ratio > 1.5) {
+                recommendations += '<li>Considera aumentar precios gradualmente - tienes margen</li>';
+                recommendations += '<li>O mantén precios para ganar market share rápidamente</li>';
+            }
+
+            recommendations += '</ul>';
+            recommendations += `<p style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                <strong>💡 Recuerda:</strong> El valor es PERCEPCIÓN, no realidad objetiva. Tu marketing debe comunicar claramente todo el valor que entregas.
+            </p>`;
+
+            document.getElementById('recommendations').innerHTML = recommendations;
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

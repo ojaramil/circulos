@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Libertad Financiera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            color: #667eea;
+            font-size: 2.2em;
+            font-weight: bold;
+        }
+
+        .metric-subtitle {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .insight {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .insight-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .insight-text {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💰 Calculadora de Libertad Financiera</h1>
+        <p class="subtitle">Calcula tu número de "Fuck You" - cuánto necesitas para nunca trabajar otra vez</p>
+
+        <div class="input-group">
+            <label for="monthlyExpenses">Gastos Mensuales ($)</label>
+            <input type="number" id="monthlyExpenses" placeholder="Ej: 5000" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="currentSavings">Ahorros Actuales ($)</label>
+            <input type="number" id="currentSavings" placeholder="Ej: 50000" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="monthlyIncome">Ingresos Mensuales ($)</label>
+            <input type="number" id="monthlyIncome" placeholder="Ej: 8000" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="passiveIncome">Ingresos Pasivos Mensuales ($)</label>
+            <input type="number" id="passiveIncome" placeholder="Ej: 500" min="0" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="returnRate">Tasa de Retorno Anual Esperada (%)</label>
+            <input type="number" id="returnRate" placeholder="Ej: 7" min="0" max="100" step="0.1" value="7">
+        </div>
+
+        <button class="btn" onclick="calculateFreedom()">Calcular Mi Libertad</button>
+
+        <div class="result" id="result">
+            <div class="metric">
+                <div class="metric-label">Tu Número de "Fuck You"</div>
+                <div class="metric-value" id="freedomNumber">$0</div>
+                <div class="metric-subtitle">Capital necesario para libertad financiera total</div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">Progreso Actual</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+                </div>
+                <div class="metric-subtitle" id="progressText"></div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">Tiempo para Libertad</div>
+                <div class="metric-value" id="timeToFreedom">0 años</div>
+                <div class="metric-subtitle">A tu tasa de ahorro actual</div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">Tasa de Ahorro Actual</div>
+                <div class="metric-value" id="savingsRate">0%</div>
+                <div class="metric-subtitle">De tus ingresos totales</div>
+            </div>
+
+            <div class="insight">
+                <div class="insight-title">💡 Insights Personalizados</div>
+                <div class="insight-text" id="insights"></div>
+            </div>
+
+            <div class="insight">
+                <div class="insight-title">🚀 Plan de Acción</div>
+                <div class="insight-text" id="actionPlan"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateFreedom() {
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const passiveIncome = parseFloat(document.getElementById('passiveIncome').value) || 0;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) || 7;
+
+            if (monthlyExpenses === 0) {
+                alert('Por favor ingresa tus gastos mensuales');
+                return;
+            }
+
+            // Calcular número de libertad (25x gastos anuales usando regla del 4%)
+            const annualExpenses = monthlyExpenses * 12;
+            const freedomNumber = annualExpenses * 25;
+
+            // Calcular progreso actual
+            const progress = Math.min((currentSavings / freedomNumber) * 100, 100);
+
+            // Calcular tasa de ahorro
+            const monthlySavings = monthlyIncome - monthlyExpenses;
+            const savingsRate = monthlyIncome > 0 ? (monthlySavings / monthlyIncome) * 100 : 0;
+
+            // Calcular tiempo para libertad
+            const remainingNeeded = freedomNumber - currentSavings;
+            let timeToFreedom = 0;
+
+            if (monthlySavings > 0) {
+                // Fórmula de valor futuro con contribuciones mensuales
+                const monthlyRate = returnRate / 100 / 12;
+                const months = Math.log((remainingNeeded * monthlyRate / monthlySavings) + 1) / Math.log(1 + monthlyRate);
+                timeToFreedom = months / 12;
+            }
+
+            // Actualizar UI
+            document.getElementById('freedomNumber').textContent = '$' + freedomNumber.toLocaleString();
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressBar').textContent = progress.toFixed(1) + '%';
+            document.getElementById('progressText').textContent = `Tienes $${currentSavings.toLocaleString()} de $${freedomNumber.toLocaleString()}`;
+
+            if (timeToFreedom > 0 && timeToFreedom < 100) {
+                document.getElementById('timeToFreedom').textContent = timeToFreedom.toFixed(1) + ' años';
+            } else if (progress >= 100) {
+                document.getElementById('timeToFreedom').textContent = '¡YA ERES LIBRE!';
+            } else {
+                document.getElementById('timeToFreedom').textContent = 'Necesitas ahorrar más';
+            }
+
+            document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+
+            // Generar insights
+            let insights = '';
+            if (progress >= 100) {
+                insights = '🎉 ¡Felicitaciones! Ya tienes suficiente capital para ser financieramente libre. Tus inversiones pueden generar más que tus gastos anuales. Bienvenido a "Fuck You".';
+            } else if (savingsRate >= 50) {
+                insights = '🔥 ¡Excelente! Con una tasa de ahorro del ' + savingsRate.toFixed(0) + '%, estás en el camino rápido hacia la libertad. Mantén esta disciplina y serás libre en ' + timeToFreedom.toFixed(1) + ' años.';
+            } else if (savingsRate >= 20) {
+                insights = '👍 Buena tasa de ahorro. Estás ahorrando ' + savingsRate.toFixed(0) + '% de tus ingresos. Para acelerar tu libertad, considera aumentar esta tasa reduciendo gastos o aumentando ingresos.';
+            } else if (savingsRate > 0) {
+                insights = '⚠️ Tu tasa de ahorro es baja (' + savingsRate.toFixed(0) + '%). A este ritmo, te tomará ' + timeToFreedom.toFixed(1) + ' años alcanzar la libertad. Necesitas aumentar significativamente tu tasa de ahorro.';
+            } else {
+                insights = '🚨 Actualmente gastas tanto o más de lo que ganas. No puedes alcanzar la libertad financiera sin ahorrar. Necesitas urgentemente reducir gastos o aumentar ingresos.';
+            }
+            document.getElementById('insights').textContent = insights;
+
+            // Generar plan de acción
+            let actionPlan = '';
+            if (progress >= 100) {
+                actionPlan = '1. Protege tu capital con inversiones diversificadas\n2. Mantén tus gastos bajo control\n3. Considera generar ingresos pasivos adicionales\n4. Vive la vida que diseñaste';
+            } else if (savingsRate >= 50) {
+                actionPlan = '1. Mantén tu alta tasa de ahorro\n2. Busca formas de aumentar ingresos (negocios, inversiones)\n3. Invierte sabiamente tus ahorros\n4. Evita la inflación del estilo de vida';
+            } else {
+                const targetSavings = monthlyIncome * 0.5;
+                const reductionNeeded = monthlyExpenses - (monthlyIncome - targetSavings);
+                actionPlan = '1. Reduce gastos en $' + Math.max(0, reductionNeeded).toLocaleString() + '/mes para alcanzar 50% de ahorro\n';
+                actionPlan += '2. Busca formas de aumentar ingresos (side hustles, negocios)\n';
+                actionPlan += '3. Elimina deudas de consumo\n';
+                actionPlan += '4. Desarrolla inmunidad comparativa - deja de compararte con otros';
+            }
+            document.getElementById('actionPlan').textContent = actionPlan;
+
+            document.getElementById('result').classList.add('show');
+        }
+
+        // Permitir calcular con Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    calculateFreedom();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

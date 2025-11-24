@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Anti-Procrastinación</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #f5576c; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; width: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ Anti-Procrastinación</h1>
+        <p class="subtitle">Aplica la ecuación de la procrastinación</p>
+        <div class="input-group"><label>Tarea que estás procrastinando</label><input type="text" id="task"></div>
+    <h3 style="color:#f5576c;margin:20px 0;">Califica cada factor (1-10):</h3>
+    <div class="input-group"><label>Expectativa: ¿Creo que puedo hacerlo?</label><input type="range" id="exp" min="1" max="10" value="5" oninput="updateVal('exp')"><div style="text-align:center;color:#f5576c;" id="expVal">5</div></div>
+    <div class="input-group"><label>Valor: ¿Qué tan importante es para mí?</label><input type="range" id="val" min="1" max="10" value="5" oninput="updateVal('val')"><div style="text-align:center;color:#f5576c;" id="valVal">5</div></div>
+    <div class="input-group"><label>Impulsividad: ¿Qué tan fácil me distraigo?</label><input type="range" id="imp" min="1" max="10" value="5" oninput="updateVal('imp')"><div style="text-align:center;color:#f5576c;" id="impVal">5</div></div>
+    <div class="input-group"><label>Demora: ¿Qué tan lejos está la recompensa?</label><input type="range" id="del" min="1" max="10" value="5" oninput="updateVal('del')"><div style="text-align:center;color:#f5576c;" id="delVal">5</div></div>
+    <button class="btn" onclick="analyze()">Analizar Procrastinación</button>
+    <div class="result" id="result"><div class="metric"><div style="font-size:2.5em;text-align:center;color:#f5576c;" id="motivation">0</div><div style="text-align:center;color:#666;">Nivel de Motivación</div></div><div class="metric"><div id="solutions"></div></div></div>
+    </div>
+    <script>function updateVal(id){document.getElementById(id+'Val').textContent=document.getElementById(id).value;}
+    function analyze(){const e=parseInt(document.getElementById('exp').value),v=parseInt(document.getElementById('val').value),i=parseInt(document.getElementById('imp').value),d=parseInt(document.getElementById('del').value);const motivation=((e*v)/(i*d)*10).toFixed(1);document.getElementById('motivation').textContent=motivation;let solutions='<h4 style="color:#f5576c;">Cómo Aumentar Tu Motivación:</h4>';if(e<7)solutions+=`<p>• <strong>Aumenta Expectativa:</strong> Divide la tarea en pasos más pequeños. Hazla tan simple que sepas exactamente qué hacer.</p>`;if(v<7)solutions+=`<p>• <strong>Aumenta Valor:</strong> Conecta esta tarea con tu por qué profundo. ¿Por qué realmente importa?</p>`;if(i>5)solutions+=`<p>• <strong>Reduce Impulsividad:</strong> Elimina distracciones. Pon tu teléfono en otra habitación. Usa bloqueadores de sitios.</p>`;if(d>5)solutions+=`<p>• <strong>Reduce Demora:</strong> Crea recompensas inmediatas. Usa temptation bundling - combina la tarea con algo placentero.</p>`;document.getElementById('solutions').innerHTML=solutions;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

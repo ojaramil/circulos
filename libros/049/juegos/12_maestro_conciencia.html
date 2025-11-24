@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Conciencia</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Maestro de Conciencia</h1>
+        
+        <p class="subtitle">Demuestra tu despertar.</p>
+        
+        <div id="quiz-container"></div>
+        <div id="score-area" class="result-area" style="text-align: center;"></div>
+
+        <script>
+            const quizData = [
+                {
+                    q: "¿Qué es el Ego?",
+                    a: ["Tu verdadera identidad", "Una máscara social y mental", "Tu alma"],
+                    correct: 1
+                },
+                {
+                    q: "¿Qué dice la Ley del Espejo?",
+                    a: ["Debes mirarte mucho al espejo", "Lo que ves fuera es un reflejo de dentro", "Los espejos traen mala suerte"],
+                    correct: 1
+                },
+                {
+                    q: "¿Cuál es la causa del sufrimiento?",
+                    a: ["La mala suerte", "Los demás", "La resistencia a aceptar la realidad"],
+                    correct: 2
+                },
+                {
+                    q: "¿Qué son las casualidades?",
+                    a: ["Eventos aleatorios", "No existen, son sincronicidades", "Errores de la matrix"],
+                    correct: 1
+                }
+            ];
+            
+            function loadQuiz() {
+                const container = document.getElementById('quiz-container');
+                let html = '';
+                quizData.forEach((item, index) => {
+                    html += `<div class="card">
+                        <p><strong>${index + 1}. ${item.q}</strong></p>
+                        ${item.a.map((opt, i) => `<button class="btn" style="background:#f0f0f0; color:#333; width:100%; text-align:left;" onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>`).join('')}
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+            
+            let score = 0;
+            let answered = 0;
+            
+            function checkAnswer(btn, qIndex, aIndex) {
+                if (btn.parentElement.classList.contains('answered')) return;
+                
+                btn.parentElement.classList.add('answered');
+                answered++;
+                
+                if (aIndex === quizData[qIndex].correct) {
+                    btn.style.background = '#4ecdc4';
+                    btn.style.color = 'white';
+                    score++;
+                } else {
+                    btn.style.background = '#ff6b6b';
+                    btn.style.color = 'white';
+                }
+                
+                if (answered === quizData.length) {
+                    const resultDiv = document.getElementById('score-area');
+                    resultDiv.innerHTML = `<h3>Resultado Final: ${score}/${quizData.length}</h3>
+                    <p>${score === 4 ? '¡Eres un Maestro Jedi de la Conciencia!' : 'Sigue practicando, joven padawan.'}</p>`;
+                    resultDiv.style.display = 'block';
+                }
+            }
+            
+            loadQuiz();
+        </script>
+        
+    </div>
+</body>
+</html>

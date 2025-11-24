@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Diferenciación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .diff-input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .criteria-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .criteria-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .criteria-item.selected {
+            border-color: #11998e;
+            background: #e8f5e9;
+            color: #11998e;
+            font-weight: bold;
+        }
+
+        .check-icon {
+            display: none;
+        }
+
+        .criteria-item.selected .check-icon {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-add {
+            background: transparent;
+            border: 2px dashed #667eea;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: #f0f4ff;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #ccc;
+        }
+
+        .score-card.weak {
+            border-left-color: #ff6b6b;
+        }
+
+        .score-card.medium {
+            border-left-color: #ffd700;
+        }
+
+        .score-card.strong {
+            border-left-color: #11998e;
+        }
+
+        .score-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .total-score {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⭐ Evaluador de Diferenciación</h1>
+        <p class="subtitle">¿Eres realmente diferente o solo "ligeramente mejor"? Evalúa tus factores de diferenciación.
+        </p>
+
+        <div id="differentiatorsList">
+            <!-- Dynamic inputs will appear here -->
+        </div>
+
+        <button class="btn btn-add" onclick="addDifferentiator()">+ Agregar Factor de Diferenciación</button>
+        <button class="btn" onclick="evaluate()">Evaluar Diferenciación</button>
+
+        <div class="result-section" id="result">
+            <div class="total-score">
+                <h2 style="color: #2d3436; margin-bottom: 10px;">Tu Puntuación de Unicidad</h2>
+                <div style="font-size: 3em; font-weight: bold; color: #2d3436;" id="finalScore">0/100</div>
+                <p id="finalVerdict" style="margin-top: 10px; font-size: 1.1em;"></p>
+            </div>
+
+            <h3 style="color: #667eea; margin-bottom: 20px;">Análisis Detallado</h3>
+            <div id="detailedResults"></div>
+        </div>
+    </div>
+
+    <script>
+        let diffCount = 0;
+
+        function addDifferentiator() {
+            diffCount++;
+            const html = `
+                <div class="diff-input-section" id="diff-${diffCount}">
+                    <div class="input-group">
+                        <label>Factor de Diferenciación #${diffCount}</label>
+                        <input type="text" class="diff-name" placeholder="Ej: Servicio 24/7, Tecnología patentada, Diseño exclusivo...">
+                    </div>
+                    <label style="font-size: 0.9em; color: #666;">Selecciona todo lo que aplique:</label>
+                    <div class="criteria-grid">
+                        <div class="criteria-item" onclick="toggleCriteria(this, 10)">
+                            <span>💎 Importa al Cliente</span>
+                            <span class="check-icon">✓</span>
+                        </div>
+                        <div class="criteria-item" onclick="toggleCriteria(this, 10)">
+                            <span>🔒 Difícil de Copiar</span>
+                            <span class="check-icon">✓</span>
+                        </div>
+                        <div class="criteria-item" onclick="toggleCriteria(this, 5)">
+                            <span>👀 Fácil de Ver/Probar</span>
+                            <span class="check-icon">✓</span>
+                        </div>
+                        <div class="criteria-item" onclick="toggleCriteria(this, 5)">
+                            <span>💰 Justifica Precio Alto</span>
+                            <span class="check-icon">✓</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('differentiatorsList').insertAdjacentHTML('beforeend', html);
+        }
+
+        function toggleCriteria(element, points) {
+            element.classList.toggle('selected');
+            element.dataset.points = element.classList.contains('selected') ? points : 0;
+        }
+
+        function evaluate() {
+            const sections = document.querySelectorAll('.diff-input-section');
+            let totalPoints = 0;
+            let maxPoints = sections.length * 30; // 30 is max points per item (10+10+5+5)
+            let resultsHTML = '';
+
+            if (sections.length === 0) {
+                alert("Agrega al menos un factor de diferenciación.");
+                return;
+            }
+
+            sections.forEach(section => {
+                const name = section.querySelector('.diff-name').value || "Sin nombre";
+                let itemPoints = 0;
+                const criteria = section.querySelectorAll('.criteria-item');
+
+                criteria.forEach(c => {
+                    if (c.classList.contains('selected')) {
+                        // Re-calculate points based on logic in toggle (or hardcode here for safety)
+                        if (c.innerText.includes("Importa")) itemPoints += 10;
+                        if (c.innerText.includes("Copiar")) itemPoints += 10;
+                        if (c.innerText.includes("Ver")) itemPoints += 5;
+                        if (c.innerText.includes("Justifica")) itemPoints += 5;
+                    }
+                });
+
+                totalPoints += itemPoints;
+
+                let statusClass = 'weak';
+                let statusText = 'Débil';
+                let badgeColor = '#ff6b6b';
+
+                if (itemPoints >= 25) {
+                    statusClass = 'strong';
+                    statusText = 'Diferenciador Real';
+                    badgeColor = '#11998e';
+                } else if (itemPoints >= 15) {
+                    statusClass = 'medium';
+                    statusText = 'Ventaja Moderada';
+                    badgeColor = '#ffd700';
+                } else {
+                    statusText = 'Commodity / Gimmick';
+                }
+
+                resultsHTML += `
+                    <div class="score-card ${statusClass}">
+                        <div>
+                            <h4 style="font-size: 1.1em; margin-bottom: 5px;">${name}</h4>
+                            <p style="font-size: 0.9em; color: #666;">Puntos: ${itemPoints}/30</p>
+                        </div>
+                        <span class="score-badge" style="background: ${badgeColor}">${statusText}</span>
+                    </div>
+                `;
+            });
+
+            // Calculate normalized score out of 100
+            // If user adds many weak items, score should reflect quality not just quantity.
+            // Let's average the scores.
+            const averageScore = Math.round(totalPoints / sections.length);
+            // Scale 0-30 to 0-100 roughly
+            const finalScore = Math.round((averageScore / 30) * 100);
+
+            document.getElementById('finalScore').textContent = `${finalScore}/100`;
+            document.getElementById('detailedResults').innerHTML = resultsHTML;
+
+            let verdict = "";
+            if (finalScore >= 80) verdict = "🌟 ¡Diferenciación Radical! Tienes una ventaja competitiva masiva.";
+            else if (finalScore >= 50) verdict = "👍 Buena diferenciación, pero vulnerable a copias.";
+            else verdict = "⚠️ Peligro de Commodity. Necesitas innovar o nichar más.";
+
+            document.getElementById('finalVerdict').textContent = verdict;
+
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add first item by default
+        addDifferentiator();
+    </script>
+</body>
+
+</html>

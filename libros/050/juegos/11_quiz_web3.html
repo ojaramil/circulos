@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Técnico Web3</title>
+    
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0a12;
+            color: #00ff41;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: transparent;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 20px;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: inherit;
+            margin: 5px 0 15px 0;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00ff41;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #00ff41;
+            display: none;
+            background: #050505;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .hash {
+            word-break: break-all;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Técnico Web3</h1>
+        
+        <p class="subtitle">Demuestra tu conocimiento.</p>
+        <div id="quiz-container"></div>
+        <div id="score-area" class="result-area"></div>
+
+        <script>
+            const quizData = [
+                { q: "¿Qué significa 'Gas' en Ethereum?", a: ["Combustible real", "Tarifa de transacción", "Un token de juego"], correct: 1 },
+                { q: "¿Cuál NO es un mecanismo de consenso?", a: ["Proof of Work", "Proof of Stake", "Proof of Excel"], correct: 2 },
+                { q: "¿Qué es un 'Fork'?", a: ["Un tenedor digital", "Una división de la red", "Un tipo de token"], correct: 1 },
+                { q: "¿Dónde se guardan tus criptomonedas?", a: ["En tu billetera física", "En la Blockchain", "En tu disco duro"], correct: 1 }
+            ];
+            
+            function loadQuiz() {
+                const container = document.getElementById('quiz-container');
+                let html = '';
+                quizData.forEach((item, index) => {
+                    html += `<div class="card"><p><strong>${item.q}</strong></p>${item.a.map((opt, i) => `<button class="btn" onclick="check(${index}, ${i}, this)">${opt}</button>`).join('')}</div>`;
+                });
+                container.innerHTML = html;
+            }
+            
+            let score = 0;
+            function check(qIndex, aIndex, btn) {
+                if(btn.parentNode.classList.contains('answered')) return;
+                btn.parentNode.classList.add('answered');
+                if(aIndex === quizData[qIndex].correct) {
+                    btn.style.background = '#00ff41';
+                    btn.style.color = 'black';
+                    score++;
+                } else {
+                    btn.style.borderColor = 'red';
+                    btn.style.color = 'red';
+                }
+                document.getElementById('score-area').innerHTML = `<h3>Puntuación: ${score}/${quizData.length}</h3>`;
+                document.getElementById('score-area').style.display = 'block';
+            }
+            loadQuiz();
+        </script>
+        
+    </div>
+</body>
+</html>

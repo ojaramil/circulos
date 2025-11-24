@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Sistemas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .wizard-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+
+        .wizard-step {
+            background: white;
+            border: 3px solid #e0e0e0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #999;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wizard-step.active {
+            border-color: #f5576c;
+            color: #f5576c;
+            background: #fff;
+        }
+
+        .wizard-step.completed {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #11998e;
+            color: white;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .system-output {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .system-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .system-section h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+
+        .checklist-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist-item::before {
+            content: "✓";
+            color: #11998e;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Planificador de Sistemas</h1>
+        <p class="subtitle">Crea un sistema personalizado para terminar tu proyecto</p>
+
+        <div class="wizard-steps">
+            <div class="wizard-step active" id="step-indicator-1">1</div>
+            <div class="wizard-step" id="step-indicator-2">2</div>
+            <div class="wizard-step" id="step-indicator-3">3</div>
+            <div class="wizard-step" id="step-indicator-4">4</div>
+            <div class="wizard-step" id="step-indicator-5">5</div>
+        </div>
+
+        <!-- Step 1: Project -->
+        <div class="step-content active" id="step-1">
+            <h2 style="color: #f5576c; margin-bottom: 20px;">Paso 1: Define tu Proyecto</h2>
+            <div class="input-group">
+                <label>¿Qué proyecto quieres terminar?</label>
+                <input type="text" id="project" placeholder="Ej: Escribir un libro, lanzar un negocio...">
+            </div>
+            <div class="input-group">
+                <label>¿Cuál es el resultado final específico?</label>
+                <textarea id="outcome" placeholder="Ej: Un libro de 200 páginas publicado en Amazon"></textarea>
+            </div>
+            <button class="btn" onclick="nextStep(2)">Siguiente →</button>
+        </div>
+
+        <!-- Step 2: Time -->
+        <div class="step-content" id="step-2">
+            <h2 style="color: #f5576c; margin-bottom: 20px;">Paso 2: Diseña tu Horario</h2>
+            <div class="input-group">
+                <label>¿A qué hora trabajarás en esto CADA DÍA?</label>
+                <input type="time" id="workTime">
+            </div>
+            <div class="input-group">
+                <label>¿Cuánto tiempo dedicarás cada día?</label>
+                <select id="duration">
+                    <option>15 minutos</option>
+                    <option>30 minutos</option>
+                    <option selected>1 hora</option>
+                    <option>2 horas</option>
+                    <option>3+ horas</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>¿Dónde trabajarás?</label>
+                <input type="text" id="location" placeholder="Ej: Mi escritorio, biblioteca, café...">
+            </div>
+            <button class="btn btn-secondary" onclick="prevStep(1)">← Anterior</button>
+            <button class="btn" onclick="nextStep(3)">Siguiente →</button>
+        </div>
+
+        <!-- Step 3: Triggers -->
+        <div class="step-content" id="step-3">
+            <h2 style="color: #f5576c; margin-bottom: 20px;">Paso 3: Crea tu Ritual de Inicio</h2>
+            <div class="input-group">
+                <label>¿Qué harás INMEDIATAMENTE ANTES de trabajar?</label>
+                <input type="text" id="trigger" placeholder="Ej: Tomar café, hacer 5 respiraciones profundas...">
+            </div>
+            <div class="input-group">
+                <label>¿Qué eliminarás del ambiente?</label>
+                <input type="text" id="eliminate"
+                    placeholder="Ej: Teléfono en otra habitación, cerrar todas las pestañas...">
+            </div>
+            <div class="input-group">
+                <label>¿Qué música/sonido usarás? (opcional)</label>
+                <input type="text" id="music" placeholder="Ej: Playlist 'Deep Focus', silencio total...">
+            </div>
+            <button class="btn btn-secondary" onclick="prevStep(2)">← Anterior</button>
+            <button class="btn" onclick="nextStep(4)">Siguiente →</button>
+        </div>
+
+        <!-- Step 4: Accountability -->
+        <div class="step-content" id="step-4">
+            <h2 style="color: #f5576c; margin-bottom: 20px;">Paso 4: Sistema de Responsabilidad</h2>
+            <div class="input-group">
+                <label>¿Cómo rastrearás tu progreso diario?</label>
+                <select id="tracking">
+                    <option>Calendario físico con X's</option>
+                    <option>App de hábitos (Habitica, Streaks)</option>
+                    <option>Hoja de cálculo</option>
+                    <option>Diario/journal</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>¿A quién reportarás tu progreso?</label>
+                <input type="text" id="accountability"
+                    placeholder="Ej: Mi amigo Juan cada viernes, grupo de mastermind...">
+            </div>
+            <div class="input-group">
+                <label>¿Qué consecuencia habrá si no trabajas?</label>
+                <input type="text" id="consequence" placeholder="Ej: Donar $20 a caridad, hacer 50 burpees...">
+            </div>
+            <button class="btn btn-secondary" onclick="prevStep(3)">← Anterior</button>
+            <button class="btn" onclick="nextStep(5)">Siguiente →</button>
+        </div>
+
+        <!-- Step 5: Rewards -->
+        <div class="step-content" id="step-5">
+            <h2 style="color: #f5576c; margin-bottom: 20px;">Paso 5: Recompensas y Motivación</h2>
+            <div class="input-group">
+                <label>¿Qué recompensa inmediata te darás después de cada sesión?</label>
+                <input type="text" id="reward" placeholder="Ej: 10 minutos de redes sociales, un snack favorito...">
+            </div>
+            <div class="input-group">
+                <label>¿Qué recompensa grande te darás al terminar?</label>
+                <input type="text" id="bigReward" placeholder="Ej: Viaje de fin de semana, cena especial...">
+            </div>
+            <div class="input-group">
+                <label>¿Por qué es REALMENTE importante terminar esto?</label>
+                <textarea id="why" placeholder="Tu por qué profundo..."></textarea>
+            </div>
+            <button class="btn btn-secondary" onclick="prevStep(4)">← Anterior</button>
+            <button class="btn" onclick="generateSystem()">Generar Mi Sistema →</button>
+        </div>
+
+        <!-- Output -->
+        <div class="system-output" id="output" style="display: none;">
+            <h2 style="color: #f5576c; margin-bottom: 20px; text-align: center;">🎉 Tu Sistema Personalizado</h2>
+            <div id="systemContent"></div>
+            <button class="btn" onclick="downloadSystem()" style="width: 100%;">📥 Descargar Sistema (PDF)</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function nextStep(step) {
+            // Validate current step
+            if (!validateStep(currentStep)) {
+                alert('Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            // Update UI
+            document.getElementById('step-' + currentStep).classList.remove('active');
+            document.getElementById('step-indicator-' + currentStep).classList.add('completed');
+            document.getElementById('step-indicator-' + currentStep).classList.remove('active');
+
+            currentStep = step;
+
+            document.getElementById('step-' + currentStep).classList.add('active');
+            document.getElementById('step-indicator-' + currentStep).classList.add('active');
+        }
+
+        function prevStep(step) {
+            document.getElementById('step-' + currentStep).classList.remove('active');
+            document.getElementById('step-indicator-' + currentStep).classList.remove('active');
+
+            currentStep = step;
+
+            document.getElementById('step-' + currentStep).classList.add('active');
+            document.getElementById('step-indicator-' + currentStep).classList.add('active');
+            document.getElementById('step-indicator-' + currentStep).classList.remove('completed');
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                return document.getElementById('project').value && document.getElementById('outcome').value;
+            }
+            if (step === 2) {
+                return document.getElementById('workTime').value && document.getElementById('location').value;
+            }
+            if (step === 3) {
+                return document.getElementById('trigger').value && document.getElementById('eliminate').value;
+            }
+            if (step === 4) {
+                return document.getElementById('accountability').value;
+            }
+            return true;
+        }
+
+        function generateSystem() {
+            if (!validateStep(5)) {
+                alert('Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            const data = {
+                project: document.getElementById('project').value,
+                outcome: document.getElementById('outcome').value,
+                workTime: document.getElementById('workTime').value,
+                duration: document.getElementById('duration').value,
+                location: document.getElementById('location').value,
+                trigger: document.getElementById('trigger').value,
+                eliminate: document.getElementById('eliminate').value,
+                music: document.getElementById('music').value,
+                tracking: document.getElementById('tracking').value,
+                accountability: document.getElementById('accountability').value,
+                consequence: document.getElementById('consequence').value,
+                reward: document.getElementById('reward').value,
+                bigReward: document.getElementById('bigReward').value,
+                why: document.getElementById('why').value
+            };
+
+            const systemHTML = `
+                <div class="system-section">
+                    <h3>📋 Tu Proyecto</h3>
+                    <p><strong>${data.project}</strong></p>
+                    <p>Resultado final: ${data.outcome}</p>
+                    <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                        <strong>Por qué profundo:</strong> ${data.why}
+                    </p>
+                </div>
+                
+                <div class="system-section">
+                    <h3>⏰ Tu Horario Sagrado</h3>
+                    <div class="checklist-item">Trabajaré CADA DÍA a las ${data.workTime}</div>
+                    <div class="checklist-item">Duración: ${data.duration}</div>
+                    <div class="checklist-item">Ubicación: ${data.location}</div>
+                    <p style="margin-top: 15px; color: #f5576c; font-weight: 600;">
+                        Este tiempo es NO-NEGOCIABLE. Es una cita contigo mismo que no puedes cancelar.
+                    </p>
+                </div>
+                
+                <div class="system-section">
+                    <h3>🔥 Tu Ritual de Inicio</h3>
+                    <p><strong>Antes de empezar:</strong></p>
+                    <div class="checklist-item">${data.trigger}</div>
+                    <div class="checklist-item">${data.eliminate}</div>
+                    ${data.music ? `<div class="checklist-item">Música/sonido: ${data.music}</div>` : ''}
+                    <p style="margin-top: 15px; font-style: italic; color: #666;">
+                        Este ritual señala a tu cerebro: "Es hora de trabajar". Hazlo SIEMPRE igual.
+                    </p>
+                </div>
+                
+                <div class="system-section">
+                    <h3>📊 Sistema de Responsabilidad</h3>
+                    <div class="checklist-item">Rastrearé progreso con: ${data.tracking}</div>
+                    <div class="checklist-item">Reportaré a: ${data.accountability}</div>
+                    ${data.consequence ? `<div class="checklist-item">Si fallo: ${data.consequence}</div>` : ''}
+                </div>
+                
+                <div class="system-section">
+                    <h3>🎁 Sistema de Recompensas</h3>
+                    <div class="checklist-item">Después de cada sesión: ${data.reward}</div>
+                    <div class="checklist-item">Al terminar el proyecto: ${data.bigReward}</div>
+                    <p style="margin-top: 15px; background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                        <strong>💡 Tip:</strong> Usa "Temptation Bundling" - solo puedes disfrutar tu recompensa 
+                        inmediata DESPUÉS de trabajar. Nada de Netflix antes de trabajar.
+                    </p>
+                </div>
+                
+                <div class="system-section">
+                    <h3>✅ Checklist Diario</h3>
+                    <p>Imprime esto y ponlo donde lo veas:</p>
+                    <div class="checklist-item">¿Trabajé a mi hora designada (${data.workTime})?</div>
+                    <div class="checklist-item">¿Completé mi duración completa (${data.duration})?</div>
+                    <div class="checklist-item">¿Seguí mi ritual de inicio?</div>
+                    <div class="checklist-item">¿Eliminé distracciones?</div>
+                    <div class="checklist-item">¿Registré mi progreso?</div>
+                    <p style="margin-top: 20px; padding: 20px; background: #f093fb; color: white; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.2em;">
+                        La consistencia vence al talento. Haz esto cada día y terminarás.
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('systemContent').innerHTML = systemHTML;
+            document.getElementById('output').style.display = 'block';
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadSystem() {
+            alert('💡 Para guardar tu sistema:\n\n1. Presiona Ctrl/Cmd + P\n2. Selecciona "Guardar como PDF"\n3. Imprime y pon en tu espacio de trabajo\n\n¡Tu sistema está listo para usar!');
+            window.print();
+        }
+    </script>
+</body>
+
+</html>

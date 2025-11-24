@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Generador de Propósito</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95em; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 0.95em; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-label { color: #666; font-size: 0.9em; margin-bottom: 5px; }
+        .metric-value { color: #667eea; font-size: 2em; font-weight: bold; }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkbox-item:hover { background: #e9ecef; transform: translateX(5px); }
+        .checkbox-item input { width: auto; margin-right: 15px; cursor: pointer; }
+        .checkbox-item label { cursor: pointer; flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Generador de Propósito</h1>
+        <p class="subtitle">Descubre tu propósito empresarial real</p>
+        
+    <div class="input-group">
+        <label>¿En qué eres naturalmente bueno?</label>
+        <textarea id="skills" placeholder="Ej: Resolver problemas técnicos, comunicar ideas complejas..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>¿Qué problemas te frustran en el mundo?</label>
+        <textarea id="problems" placeholder="Ej: Software complicado, falta de educación financiera..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>¿Por qué solución pagaría la gente?</label>
+        <textarea id="willingness" placeholder="Ej: Software más simple, cursos prácticos..."></textarea>
+    </div>
+    <button class="btn" onclick="generatePurpose()">Generar Mi Propósito</button>
+    <div class="result" id="result">
+        <div class="metric">
+            <div class="metric-label">Tu Propósito Empresarial</div>
+            <div style="color: #333; font-size: 1.2em; line-height: 1.6; margin-top: 15px;" id="purpose"></div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Próximos Pasos</div>
+            <div style="color: #555; line-height: 1.6;" id="nextSteps"></div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    function generatePurpose() {
+        const skills = document.getElementById('skills').value.trim();
+        const problems = document.getElementById('problems').value.trim();
+        const willingness = document.getElementById('willingness').value.trim();
+        
+        if (!skills || !problems || !willingness) {
+            alert('Por favor completa todos los campos');
+            return;
+        }
+        
+        const purpose = `Tu propósito empresarial está en la intersección de tus habilidades (${skills.split(',')[0]}...), los problemas que ves (${problems.split(',')[0]}...), y lo que la gente pagaría (${willingness.split(',')[0]}...). 
+
+Esto significa que deberías enfocarte en crear soluciones que aprovechen tus fortalezas naturales para resolver problemas reales que la gente está dispuesta a pagar por solucionar.`;
+
+        const nextSteps = `1. Valida que existe demanda real para esta solución
+2. Identifica tu mínima audiencia viable
+3. Crea un MVP (Producto Mínimo Viable)
+4. Consigue tus primeros 10 clientes
+5. Itera basándote en feedback real`;
+
+        document.getElementById('purpose').textContent = purpose;
+        document.getElementById('nextSteps').textContent = nextSteps;
+        document.getElementById('result').classList.add('show');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Contenido</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .planner-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            /* Mon-Fri */
+            gap: 15px;
+        }
+
+        .day-col {
+            background: #f0f4f8;
+            border-radius: 10px;
+            min-height: 400px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .content-type {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: white;
+            cursor: grab;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .content-type:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .type-edu {
+            background: #4facfe;
+        }
+
+        .type-insp {
+            background: #f093fb;
+        }
+
+        .type-ent {
+            background: #fa709a;
+        }
+
+        .type-promo {
+            background: #43e97b;
+        }
+
+        .drop-zone {
+            flex-grow: 1;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+            transition: background 0.3s;
+        }
+
+        .drop-zone.drag-over {
+            background: #e6f7ff;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .analysis-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📅 Planificador de Contenido Semanal</h1>
+        <p class="subtitle">Arrastra los tipos de contenido a los días de la semana para crear tu mix perfecto.</p>
+
+        <div class="planner-grid">
+            <div class="sidebar">
+                <h3 style="margin-bottom: 15px; color: #444;">Tipos de Contenido</h3>
+                <p style="font-size: 0.8em; color: #666; margin-bottom: 20px;">Arrastra estos bloques al calendario:</p>
+
+                <div class="content-type type-edu" draggable="true" ondragstart="drag(event)" data-type="edu">
+                    📚 Educativo
+                    <div style="font-size: 0.8em; font-weight: normal; margin-top: 5px;">Enseña algo útil</div>
+                </div>
+
+                <div class="content-type type-insp" draggable="true" ondragstart="drag(event)" data-type="insp">
+                    ✨ Inspirador
+                    <div style="font-size: 0.8em; font-weight: normal; margin-top: 5px;">Comparte valores/historias
+                    </div>
+                </div>
+
+                <div class="content-type type-ent" draggable="true" ondragstart="drag(event)" data-type="ent">
+                    🎭 Entretenido
+                    <div style="font-size: 0.8em; font-weight: normal; margin-top: 5px;">Humor o curiosidad</div>
+                </div>
+
+                <div class="content-type type-promo" draggable="true" ondragstart="drag(event)" data-type="promo">
+                    📢 Promocional
+                    <div style="font-size: 0.8em; font-weight: normal; margin-top: 5px;">Oferta directa</div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 15px; background: white; border-radius: 10px; font-size: 0.9em;">
+                    <strong>💡 Regla de Oro:</strong><br>
+                    Máximo 20% promocional.<br>
+                    80% valor (Edu/Insp/Ent).
+                </div>
+            </div>
+
+            <div class="calendar">
+                <div class="day-col">
+                    <div class="day-header">Lunes</div>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"
+                        ondragleave="leaveDrop(event)"></div>
+                </div>
+                <div class="day-col">
+                    <div class="day-header">Martes</div>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"
+                        ondragleave="leaveDrop(event)"></div>
+                </div>
+                <div class="day-col">
+                    <div class="day-header">Miércoles</div>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"
+                        ondragleave="leaveDrop(event)"></div>
+                </div>
+                <div class="day-col">
+                    <div class="day-header">Jueves</div>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"
+                        ondragleave="leaveDrop(event)"></div>
+                </div>
+                <div class="day-col">
+                    <div class="day-header">Viernes</div>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"
+                        ondragleave="leaveDrop(event)"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="analyzeMix()">Analizar Mix de Contenido</button>
+
+        <div class="analysis-box" id="analysis">
+            <h3 style="color: #667eea; margin-bottom: 15px;">📊 Análisis de tu Estrategia</h3>
+            <div id="analysisContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+            ev.currentTarget.classList.add('drag-over');
+        }
+
+        function leaveDrop(ev) {
+            ev.currentTarget.classList.remove('drag-over');
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("type", ev.target.dataset.type);
+            ev.dataTransfer.setData("html", ev.target.innerHTML);
+            ev.dataTransfer.setData("class", ev.target.className);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            ev.currentTarget.classList.remove('drag-over');
+
+            var type = ev.dataTransfer.getData("type");
+            var html = ev.dataTransfer.getData("html");
+            var className = ev.dataTransfer.getData("class"); // Includes original classes
+
+            var newElement = document.createElement("div");
+            newElement.className = className;
+            newElement.innerHTML = html;
+            newElement.style.cursor = "default";
+            newElement.dataset.type = type;
+
+            // Add delete button
+            var deleteBtn = document.createElement("span");
+            deleteBtn.innerHTML = "×";
+            deleteBtn.style.float = "right";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.fontWeight = "bold";
+            deleteBtn.onclick = function () { this.parentElement.remove(); };
+            newElement.insertBefore(deleteBtn, newElement.firstChild);
+
+            ev.currentTarget.appendChild(newElement);
+        }
+
+        function analyzeMix() {
+            const items = document.querySelectorAll('.drop-zone .content-type');
+            const total = items.length;
+
+            if (total === 0) {
+                alert("Arrastra al menos un bloque de contenido al calendario.");
+                return;
+            }
+
+            let counts = { edu: 0, insp: 0, ent: 0, promo: 0 };
+            items.forEach(item => {
+                counts[item.dataset.type]++;
+            });
+
+            const promoPct = Math.round((counts.promo / total) * 100);
+            const valuePct = 100 - promoPct;
+
+            let feedback = "";
+            let color = "";
+
+            if (promoPct > 30) {
+                feedback = "⚠️ Demasiada promoción. Estás pidiendo más de lo que das. Reduce el contenido promocional.";
+                color = "#ff6b6b";
+            } else if (promoPct === 0) {
+                feedback = "⚠️ Cuidado: Estás dando mucho valor pero no estás pidiendo la venta. Agrega al menos un bloque promocional.";
+                color = "#ffd700";
+            } else {
+                feedback = "✅ ¡Excelente Mix! Tienes un buen balance entre dar valor y pedir la venta.";
+                color = "#11998e";
+            }
+
+            const html = `
+                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                    <div style="flex: 1; text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #4facfe;">${counts.edu}</div>
+                        <div>Educativos</div>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #f093fb;">${counts.insp}</div>
+                        <div>Inspiradores</div>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #fa709a;">${counts.ent}</div>
+                        <div>Entretenidos</div>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #43e97b;">${counts.promo}</div>
+                        <div>Promocionales</div>
+                    </div>
+                </div>
+                <div style="padding: 15px; background: ${color}20; border-left: 5px solid ${color}; border-radius: 5px;">
+                    <strong>Diagnóstico:</strong> ${feedback}
+                </div>
+            `;
+
+            document.getElementById('analysisContent').innerHTML = html;
+            document.getElementById('analysis').style.display = 'block';
+            document.getElementById('analysis').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

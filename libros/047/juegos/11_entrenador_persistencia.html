@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Persistencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-title {
+            color: #f5576c;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .scenario-text {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+
+        .choices {
+            display: grid;
+            gap: 15px;
+        }
+
+        .choice {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .choice:hover {
+            border-color: #f5576c;
+            transform: translateX(5px);
+        }
+
+        .choice.selected {
+            border-color: #f5576c;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .choice.correct {
+            border-color: #11998e;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .choice.incorrect {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            color: white;
+        }
+
+        .feedback {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+            height: 100%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💪 Entrenador de Persistencia</h1>
+        <p class="subtitle">Enfrenta obstáculos comunes y aprende a persistir como un campeón</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+
+        <div class="score-display">
+            <div>Puntuación de Persistencia</div>
+            <div class="score-number" id="score">0/6</div>
+        </div>
+
+        <div id="scenarioContainer"></div>
+
+        <button class="btn" id="actionBtn" onclick="checkAnswer()" style="display: none;">Verificar Respuesta</button>
+        <button class="btn" id="nextBtn" onclick="nextScenario()" style="display: none;">Siguiente Escenario →</button>
+        <button class="btn" id="finishBtn" onclick="showResults()" style="display: none;">Ver Resultados
+            Finales</button>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Escenario 1: El Bajón de Motivación",
+                text: "Has estado trabajando en tu proyecto durante 2 semanas. Al principio estabas súper motivado, pero hoy te despiertas y no sientes ganas de trabajar en ello. ¿Qué haces?",
+                choices: [
+                    { text: "Espero a sentirme motivado de nuevo antes de continuar", correct: false },
+                    { text: "Trabajo de todos modos, aunque sea solo 15 minutos", correct: true },
+                    { text: "Tomo un 'break' de unos días para recargar", correct: false },
+                    { text: "Busco videos motivacionales en YouTube", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Correcto! La acción genera motivación, no al revés. Trabaja aunque sea 15 minutos - usualmente continuarás más tiempo una vez que empiezas. La regla de 5 segundos funciona: cuenta 5-4-3-2-1 y actúa antes de que tu cerebro te detenga.",
+                    incorrect: "Incorrecto. Esperar motivación es la trampa más común. La motivación es un sentimiento poco confiable. Los profesionales trabajan basados en sistemas, no en sentimientos. La acción genera motivación, no al revés."
+                }
+            },
+            {
+                title: "Escenario 2: Crítica Negativa",
+                text: "Compartes tu proyecto con un amigo y te dice: 'Eso nunca va a funcionar. Ya hay muchas personas haciendo eso.' Te sientes desanimado. ¿Qué haces?",
+                choices: [
+                    { text: "Abandono el proyecto - probablemente tiene razón", correct: false },
+                    { text: "Agradezco su opinión pero continúo de todos modos", correct: true },
+                    { text: "Cambio completamente mi proyecto", correct: false },
+                    { text: "Dejo de compartir mis ideas con otros", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Exacto! La crítica es inevitable. Las personas que no están construyendo nada siempre tienen opiniones sobre lo que tú construyes. Escucha feedback constructivo, pero no dejes que la negatividad te detenga. Muchos negocios exitosos fueron 'imposibles' hasta que alguien los hizo posibles.",
+                    incorrect: "Error. La crítica es parte del proceso. Si dejas que cada opinión negativa te detenga, nunca terminarás nada. Recuerda: las personas que critican usualmente no están haciendo nada ellas mismas. Continúa."
+                }
+            },
+            {
+                title: "Escenario 3: Progreso Lento",
+                text: "Has trabajado en tu proyecto durante un mes pero sientes que apenas has avanzado. Ves a otros que parecen progresar más rápido. ¿Qué haces?",
+                choices: [
+                    { text: "Me comparo con otros y me siento mal", correct: false },
+                    { text: "Abandono porque 'no soy lo suficientemente bueno'", correct: false },
+                    { text: "Reviso mi progreso del mes pasado y celebro cada pequeño avance", correct: true },
+                    { text: "Intento trabajar 12 horas al día para alcanzarlos", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Perfecto! Nunca te compares con otros - solo con tu yo del pasado. El progreso compuesto es real: 1% mejor cada día = 37 veces mejor en un año. Celebra pequeñas victorias. La consistencia vence al talento cuando el talento no es consistente.",
+                    incorrect: "Incorrecto. La comparación es el ladrón de la alegría. Cada persona tiene su propio timeline. Lo que importa es que estés mejor que ayer. El progreso lento es mejor que ningún progreso. Sigue adelante."
+                }
+            },
+            {
+                title: "Escenario 4: Obstáculo Técnico",
+                text: "Encuentras un problema técnico que no sabes cómo resolver. Has intentado durante 2 horas sin éxito. ¿Qué haces?",
+                choices: [
+                    { text: "Me rindo - esto es demasiado difícil para mí", correct: false },
+                    { text: "Busco ayuda: Google, YouTube, foros, mentores", correct: true },
+                    { text: "Cambio a un proyecto más fácil", correct: false },
+                    { text: "Sigo intentando lo mismo esperando resultados diferentes", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Correcto! Los obstáculos son oportunidades de aprendizaje. Buscar ayuda no es debilidad - es inteligencia. Todos los expertos fueron principiantes. Google, YouTube, Stack Overflow, mentores - usa todos los recursos disponibles. El problema no es el obstáculo, es rendirse ante él.",
+                    incorrect: "Incorrecto. Los obstáculos son normales y esperados. La diferencia entre quienes terminan y quienes abandonan es que los primeros buscan soluciones mientras los segundos buscan excusas. Busca ayuda, aprende, y continúa."
+                }
+            },
+            {
+                title: "Escenario 5: Distracción Tentadora",
+                text: "Estás trabajando en tu proyecto cuando un amigo te invita a una fiesta esta noche. Ya trabajaste 30 minutos de tu hora planeada. ¿Qué haces?",
+                choices: [
+                    { text: "Voy a la fiesta - ya trabajé algo hoy", correct: false },
+                    { text: "Termino mi hora completa, LUEGO decido sobre la fiesta", correct: true },
+                    { text: "Trabajo solo 15 minutos más y me voy", correct: false },
+                    { text: "Cancelo mi trabajo y voy a la fiesta", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Excelente! Termina lo que empezaste. Tu palabra contigo mismo es sagrada. Si dijiste 1 hora, trabaja 1 hora. DESPUÉS puedes ir a la fiesta sin culpa. Las personas exitosas terminan sus compromisos antes de divertirse. Esta disciplina es lo que te separa del 99%.",
+                    incorrect: "Incorrecto. Tu palabra contigo mismo debe ser ley. Si te permites romper compromisos pequeños ('solo 30 minutos más'), eventualmente romperás compromisos grandes. Termina tu hora, luego disfruta la fiesta sin culpa."
+                }
+            },
+            {
+                title: "Escenario 6: Casi al Final",
+                text: "Estás al 90% de completar tu proyecto. Solo falta pulir detalles pero estás cansado y quieres empezar algo nuevo y emocionante. ¿Qué haces?",
+                choices: [
+                    { text: "Empiezo el nuevo proyecto - este ya está 'casi listo'", correct: false },
+                    { text: "Termino el 10% final ANTES de empezar algo nuevo", correct: true },
+                    { text: "Trabajo en ambos proyectos simultáneamente", correct: false },
+                    { text: "Dejo este proyecto al 90% indefinidamente", correct: false }
+                ],
+                feedback: {
+                    correct: "¡Perfecto! El 90% completo es 0% útil. Un proyecto terminado al 100% vale infinitamente más que 10 proyectos al 90%. El último 10% es donde la mayoría abandona - y donde tú te diferencias. Termina. Lanza. Luego empieza lo nuevo.",
+                    incorrect: "Incorrecto. Esta es la trampa más peligrosa. El 'síndrome del objeto brillante' - siempre persiguiendo lo nuevo sin terminar lo actual. Un proyecto terminado vale más que 100 proyectos casi terminados. TERMINA PRIMERO."
+                }
+            }
+        ];
+
+        let currentScenario = 0;
+        let score = 0;
+        let selectedChoice = null;
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('scenarioContainer');
+
+            container.innerHTML = `
+                <div class="scenario-card">
+                    <div class="scenario-title">${scenario.title}</div>
+                    <div class="scenario-text">${scenario.text}</div>
+                    <div class="choices" id="choices">
+                        ${scenario.choices.map((choice, i) => `
+                            <div class="choice" onclick="selectChoice(${i})">
+                                ${choice.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            document.getElementById('actionBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            selectedChoice = null;
+
+            updateProgress();
+        }
+
+        function selectChoice(index) {
+            selectedChoice = index;
+            const choices = document.querySelectorAll('.choice');
+            choices.forEach((choice, i) => {
+                choice.classList.toggle('selected', i === index);
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedChoice === null) {
+                alert('Por favor selecciona una respuesta');
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const choices = document.querySelectorAll('.choice');
+            const isCorrect = scenario.choices[selectedChoice].correct;
+
+            choices.forEach((choice, i) => {
+                choice.onclick = null;
+                if (scenario.choices[i].correct) {
+                    choice.classList.add('correct');
+                } else if (i === selectedChoice) {
+                    choice.classList.add('incorrect');
+                }
+                choice.classList.remove('selected');
+            });
+
+            if (isCorrect) {
+                score++;
+            }
+
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <h3>${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</h3>
+                <p style="line-height: 1.8;">${isCorrect ? scenario.feedback.correct : scenario.feedback.incorrect}</p>
+            `;
+            feedback.classList.add('show');
+
+            document.getElementById('score').textContent = score + '/' + scenarios.length;
+            document.getElementById('actionBtn').style.display = 'none';
+
+            if (currentScenario < scenarios.length - 1) {
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            loadScenario();
+        }
+
+        function updateProgress() {
+            const progress = ((currentScenario + 1) / scenarios.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / scenarios.length) * 100);
+            let level, message;
+
+            if (percentage >= 80) {
+                level = '🏆 Maestro de la Persistencia';
+                message = '¡Excelente! Tienes la mentalidad correcta para terminar cualquier cosa que empieces. Entiendes que la persistencia no es sobre sentimientos - es sobre sistemas, disciplina, y compromiso. Sigue así y lograrás cosas extraordinarias.';
+            } else if (percentage >= 60) {
+                level = '💪 Buen Nivel de Persistencia';
+                message = 'Tienes una base sólida pero hay espacio para mejorar. Recuerda: la acción genera motivación, no al revés. Trabaja basado en sistemas, no en sentimientos. Termina lo que empiezas antes de empezar algo nuevo.';
+            } else {
+                level = '⚠️ Necesitas Fortalecer tu Persistencia';
+                message = 'La persistencia es una habilidad que se puede desarrollar. Empieza con proyectos pequeños y termínalos. Crea sistemas que no dependan de motivación. Lee "Finish What You Start" y aplica las estrategias. Puedes mejorar esto.';
+            }
+
+            const container = document.getElementById('scenarioContainer');
+            container.innerHTML = `
+                <div class="scenario-card">
+                    <div class="scenario-title">Resultados Finales</div>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <div style="font-size: 4em; color: #f5576c; font-weight: bold;">${percentage}%</div>
+                        <div style="font-size: 1.5em; color: #f5576c; margin: 20px 0;">${level}</div>
+                        <div style="line-height: 1.8; color: #333; margin-top: 20px;">${message}</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                        <h3 style="color: #f5576c; margin-bottom: 15px;">Próximos Pasos:</h3>
+                        <ul style="line-height: 2; color: #333;">
+                            <li>Aplica estas lecciones a tu proyecto actual</li>
+                            <li>Crea un sistema que no dependa de motivación</li>
+                            <li>Trabaja cada día, aunque sea 15 minutos</li>
+                            <li>Termina antes de empezar algo nuevo</li>
+                            <li>Celebra pequeñas victorias en el camino</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('actionBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+        }
+
+        loadScenario();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚖️ Calculadora de Costo de Oportunidad</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #f5576c; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; width: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚖️ Calculadora de Costo de Oportunidad</h1>
+        <p class="subtitle">Calcula el costo real de no terminar</p>
+        <div class="input-group"><label>¿Qué proyecto no has terminado?</label><input type="text" id="project"></div>
+    <div class="input-group"><label>¿Cuánto tiempo has invertido? (horas)</label><input type="number" id="timeInvested" min="0"></div>
+    <div class="input-group"><label>¿Cuánto dinero has gastado? ($)</label><input type="number" id="moneySpent" min="0"></div>
+    <div class="input-group"><label>Si lo terminaras, ¿cuánto podrías ganar/ahorrar? ($)</label><input type="number" id="potential" min="0"></div>
+    <div class="input-group"><label>¿Cuánto tiempo más necesitas para terminarlo? (horas)</label><input type="number" id="timeNeeded" min="0"></div>
+    <button class="btn" onclick="calculate()">Calcular Costo Real</button>
+    <div class="result" id="result"><div class="metric"><div style="font-size:2.5em;text-align:center;color:#f5576c;font-weight:bold;" id="totalCost">$0</div><div style="text-align:center;color:#666;">Costo Total de No Terminar</div></div><div class="metric"><div id="breakdown"></div></div></div>
+    </div>
+    <script>function calculate(){const ti=parseInt(document.getElementById('timeInvested').value)||0,ms=parseInt(document.getElementById('moneySpent').value)||0,p=parseInt(document.getElementById('potential').value)||0,tn=parseInt(document.getElementById('timeNeeded').value)||0;const hourlyValue=25;const timeCost=ti*hourlyValue;const opportunityCost=p;const totalCost=timeCost+ms+opportunityCost;document.getElementById('totalCost').textContent='$'+totalCost.toLocaleString();const breakdown=`<p><strong>Tiempo ya invertido:</strong> ${ti} horas × $${hourlyValue}/hora = $${timeCost.toLocaleString()}</p>
+    <p><strong>Dinero ya gastado:</strong> $${ms.toLocaleString()}</p>
+    <p><strong>Costo de oportunidad:</strong> $${opportunityCost.toLocaleString()} (lo que podrías ganar)</p>
+    <p style="margin-top:20px;padding:20px;background:#fff9e6;border-radius:8px;"><strong>💡 Perspectiva:</strong> Ya has invertido $${(timeCost+ms).toLocaleString()}. Solo necesitas ${tn} horas más para potencialmente ganar $${p.toLocaleString()}. El costo de abandonar es MUCHO mayor que el costo de terminar. ¿Qué esperas?</p>`;document.getElementById('breakdown').innerHTML=breakdown;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

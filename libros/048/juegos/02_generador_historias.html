@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 Generador de Historias de Marketing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 30px; display: none; }
+        .result.show { display: block; }
+        .card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; }
+        .card h3 { color: #764ba2; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Generador de Historias de Marketing</h1>
+        <p class="subtitle">Crea historias que resuenan usando el framework de transformación</p>
+        
+    <div class="input-group">
+        <label>1. Status Quo: ¿Dónde está tu cliente ahora?</label>
+        <textarea id="statusQuo" placeholder="Ej: María trabaja 60 horas/semana pero su negocio no crece..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>2. Tensión/Problema: ¿Qué brecha experimentan?</label>
+        <textarea id="tension" placeholder="Ej: Quiere crecer pero no sabe cómo delegar sin perder calidad..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>3. Solución: ¿Cómo tu producto/servicio ayuda?</label>
+        <textarea id="solution" placeholder="Ej: Nuestro sistema de delegación le permite..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>4. Transformación: ¿Quién se convierte después?</label>
+        <textarea id="transformation" placeholder="Ej: Ahora es una líder que trabaja 40 horas y su negocio creció 3x..."></textarea>
+    </div>
+    <div class="input-group">
+        <label>5. Nueva Identidad: ¿Cómo se ve a sí misma ahora?</label>
+        <input type="text" id="identity" placeholder="Ej: Una CEO estratégica, no una trabajadora sobrecargada">
+    </div>
+    <button class="btn" onclick="generateStory()">Generar Mi Historia</button>
+    <div class="result" id="result">
+        <div class="card">
+            <h3>📖 Tu Historia de Marketing</h3>
+            <div id="storyOutput"></div>
+        </div>
+        <div class="card">
+            <h3>💡 Cómo Usar Esta Historia</h3>
+            <div id="usage"></div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    function generateStory() {
+        const sq = document.getElementById('statusQuo').value;
+        const t = document.getElementById('tension').value;
+        const sol = document.getElementById('solution').value;
+        const trans = document.getElementById('transformation').value;
+        const id = document.getElementById('identity').value;
+        
+        if (!sq || !t || !trans) {
+            alert('Completa al menos: Status Quo, Tensión, y Transformación');
+            return;
+        }
+        
+        const story = `
+            <div style="line-height: 1.8; color: #333;">
+                <p><strong>Antes:</strong> ${sq}</p>
+                <p style="margin-top: 15px;"><strong>El Problema:</strong> ${t}</p>
+                ${sol ? `<p style="margin-top: 15px;"><strong>El Cambio:</strong> ${sol}</p>` : ''}
+                <p style="margin-top: 15px;"><strong>Después:</strong> ${trans}</p>
+                ${id ? `<p style="margin-top: 15px;"><strong>Nueva Identidad:</strong> ${id}</p>` : ''}
+            </div>
+            <div style="margin-top: 20px; padding: 20px; background: #fff9e6; border-radius: 10px;">
+                <strong>💡 Insight:</strong> Esta no es una historia sobre tu producto - es una historia sobre la transformación de tu cliente. El producto es solo el vehículo.
+            </div>
+        `;
+        
+        const usage = `
+            <ul style="line-height: 2;">
+                <li>Úsala en tu página de inicio (caso de estudio)</li>
+                <li>Compártela en redes sociales (testimonial)</li>
+                <li>Incorpórala en tu pitch de ventas</li>
+                <li>Crea contenido alrededor de cada fase</li>
+                <li>Haz que tus clientes se vean en esta historia</li>
+            </ul>
+            <p style="margin-top: 15px; padding: 15px; background: #e6f7ff; border-radius: 8px;">
+                <strong>Recuerda:</strong> Las personas no compran productos - compran transformaciones. Tu historia debe mostrar el viaje, no las características.
+            </p>
+        `;
+        
+        document.getElementById('storyOutput').innerHTML = story;
+        document.getElementById('usage').innerHTML = usage;
+        document.getElementById('result').classList.add('show');
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+</body>
+</html>

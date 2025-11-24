@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Métricas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+
+        .metric-card.selected {
+            background: #e6f7ff;
+            border-color: #667eea;
+        }
+
+        .metric-card.vanity.revealed {
+            background: #ffe6e6;
+            border-color: #ff6b6b;
+        }
+
+        .metric-card.actionable.revealed {
+            background: #e8f5e9;
+            border-color: #11998e;
+        }
+
+        .metric-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .metric-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .metric-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .vanity .badge {
+            background: #ff6b6b;
+            color: white;
+            display: block;
+        }
+
+        .actionable .badge {
+            background: #11998e;
+            color: white;
+            display: block;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Monitor de Métricas</h1>
+        <p class="subtitle">Selecciona las métricas que crees que son más importantes para tu negocio. Cuidado con las
+            métricas de vanidad.</p>
+
+        <div class="metrics-grid">
+            <!-- Vanity Metrics -->
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="vanity">
+                <span class="metric-icon">👍</span>
+                <div class="metric-name">Likes en Redes</div>
+                <div class="metric-desc">Número total de 'me gusta' en posts.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="vanity">
+                <span class="metric-icon">👁️</span>
+                <div class="metric-name">Page Views</div>
+                <div class="metric-desc">Vistas totales de página sin contexto.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="vanity">
+                <span class="metric-icon">👥</span>
+                <div class="metric-name">Seguidores Totales</div>
+                <div class="metric-desc">Cantidad acumulada de seguidores.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="vanity">
+                <span class="metric-icon">📥</span>
+                <div class="metric-name">Descargas Totales</div>
+                <div class="metric-desc">Número de descargas de tu app/ebook.</div>
+            </div>
+
+            <!-- Actionable Metrics -->
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="actionable">
+                <span class="metric-icon">💰</span>
+                <div class="metric-name">Costo de Adquisición (CAC)</div>
+                <div class="metric-desc">Cuánto cuesta conseguir un cliente.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="actionable">
+                <span class="metric-icon">🔄</span>
+                <div class="metric-name">Tasa de Retención</div>
+                <div class="metric-desc">Porcentaje de clientes que regresan.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="actionable">
+                <span class="metric-icon">⭐</span>
+                <div class="metric-name">Net Promoter Score (NPS)</div>
+                <div class="metric-desc">Probabilidad de recomendación.</div>
+            </div>
+            <div class="metric-card" onclick="toggleMetric(this)" data-type="actionable">
+                <span class="metric-icon">📈</span>
+                <div class="metric-name">Valor de Vida (LTV)</div>
+                <div class="metric-desc">Valor total de un cliente en el tiempo.</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="analyzeSelection()">Analizar Mi Dashboard</button>
+
+        <div class="result-box" id="result">
+            <h2 id="scoreTitle" style="margin-bottom: 15px;"></h2>
+            <div id="scoreFeedback"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMetric(card) {
+            if (card.classList.contains('revealed')) return; // Don't toggle if already revealed
+            card.classList.toggle('selected');
+        }
+
+        function analyzeSelection() {
+            const selected = document.querySelectorAll('.metric-card.selected');
+            if (selected.length === 0) {
+                alert("Selecciona al menos una métrica.");
+                return;
+            }
+
+            let vanityCount = 0;
+            let actionableCount = 0;
+
+            selected.forEach(card => {
+                const type = card.dataset.type;
+                card.classList.add('revealed');
+                if (type === 'vanity') {
+                    card.classList.add('vanity');
+                    card.innerHTML += '<span class="badge">VANIDAD</span>';
+                    vanityCount++;
+                } else {
+                    card.classList.add('actionable');
+                    card.innerHTML += '<span class="badge">ACCIONABLE</span>';
+                    actionableCount++;
+                }
+            });
+
+            const total = vanityCount + actionableCount;
+            const score = Math.round((actionableCount / total) * 100);
+
+            let title = "";
+            let feedback = "";
+
+            if (score === 100) {
+                title = "🏆 ¡Maestro de Datos! (100%)";
+                feedback = "Excelente. Te enfocas solo en métricas que importan y mueven la aguja del negocio.";
+            } else if (score >= 50) {
+                title = "⚖️ Analista Promedio (" + score + "%)";
+                feedback = "Tienes una mezcla. Cuidado con las métricas de vanidad (Likes, Views) - te hacen sentir bien pero no pagan las cuentas.";
+            } else {
+                title = "⚠️ Peligro de Vanidad (" + score + "%)";
+                feedback = "Estás enfocado en métricas de ego. Los likes no son ventas. Enfócate en Retención, LTV y CAC.";
+            }
+
+            document.getElementById('scoreTitle').textContent = title;
+            document.getElementById('scoreFeedback').innerHTML = `<p style="font-size: 1.1em; line-height: 1.6;">${feedback}</p>`;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

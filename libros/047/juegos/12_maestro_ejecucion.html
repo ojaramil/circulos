@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Ejecución</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .question-counter {
+            font-size: 1.2em;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #f5576c;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #f5576c;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .option.correct {
+            border-color: #11998e;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            color: white;
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5576c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-label {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .review-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #f5576c;
+        }
+
+        .review-item.correct {
+            border-left-color: #11998e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>👑 Maestro de Ejecución</h1>
+        <p class="subtitle">Quiz final: ¿Dominas el arte de terminar lo que empiezas?</p>
+
+        <div class="quiz-header">
+            <div class="question-counter" id="counter">Pregunta 1/15</div>
+            <div class="timer" id="timer">⏱️ 10:00</div>
+        </div>
+
+        <div id="quizContainer"></div>
+
+        <button class="btn" id="submitBtn" onclick="submitAnswer()" disabled>Siguiente Pregunta →</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "¿Cuál es la relación correcta entre motivación y acción?",
+                options: [
+                    "La motivación genera acción",
+                    "La acción genera motivación",
+                    "Motivación y acción son independientes",
+                    "Necesitas motivación antes de actuar"
+                ],
+                correct: 1,
+                explanation: "La acción genera motivación, no al revés. Empieza aunque no te sientas motivado - la motivación llegará después de empezar."
+            },
+            {
+                q: "¿Qué es la 'Regla de los 5 Segundos'?",
+                options: [
+                    "Trabajar solo 5 segundos al día",
+                    "Contar 5-4-3-2-1 y actuar antes de que tu cerebro te detenga",
+                    "Tomar 5 segundos para pensar antes de actuar",
+                    "Descansar 5 segundos entre tareas"
+                ],
+                correct: 1,
+                explanation: "Cuenta 5-4-3-2-1 y actúa inmediatamente. Esto interrumpe el patrón de procrastinación antes de que tu cerebro genere excusas."
+            },
+            {
+                q: "¿Qué es 'Temptation Bundling'?",
+                options: [
+                    "Evitar todas las tentaciones",
+                    "Combinar una tarea difícil con algo placentero",
+                    "Agrupar todas las tentaciones juntas",
+                    "Resistir tentaciones por fuerza de voluntad"
+                ],
+                correct: 1,
+                explanation: "Temptation Bundling es combinar algo que DEBES hacer con algo que QUIERES hacer. Ej: solo escuchar tu podcast favorito mientras haces ejercicio."
+            },
+            {
+                q: "¿Cuál es el factor más importante en la ecuación de procrastinación?",
+                options: [
+                    "Expectativa (creer que puedes hacerlo)",
+                    "Valor (qué tan importante es)",
+                    "Impulsividad (qué tan fácil te distraes)",
+                    "Todos son igualmente importantes"
+                ],
+                correct: 3,
+                explanation: "La ecuación es: Motivación = (Expectativa × Valor) / (Impulsividad × Demora). Todos los factores son importantes y trabajan juntos."
+            },
+            {
+                q: "¿Qué es más efectivo que establecer metas?",
+                options: [
+                    "Visualizar el éxito",
+                    "Crear sistemas e identidad",
+                    "Esperar inspiración",
+                    "Trabajar más duro"
+                ],
+                correct: 1,
+                explanation: "Los sistemas vencen a las metas. No te enfoques en 'escribir un libro' (meta) - enfócate en 'SOY alguien que escribe 500 palabras cada mañana' (sistema + identidad)."
+            },
+            {
+                q: "¿Cuándo es el mejor momento para trabajar en tu proyecto más importante?",
+                options: [
+                    "Cuando tengas tiempo libre",
+                    "Por la noche después del trabajo",
+                    "Durante tus horas de máxima energía",
+                    "Los fines de semana"
+                ],
+                correct: 2,
+                explanation: "Trabaja en tu proyecto MÁS importante durante tus horas de MÁXIMA energía. No desperdicies tu energía pico en tareas triviales."
+            },
+            {
+                q: "¿Qué debes hacer cuando pierdes motivación?",
+                options: [
+                    "Esperar a sentirte motivado de nuevo",
+                    "Trabajar de todos modos basado en tu sistema",
+                    "Ver videos motivacionales",
+                    "Tomar un break largo"
+                ],
+                correct: 1,
+                explanation: "Trabaja basado en sistemas, no en sentimientos. La motivación es poco confiable. Los profesionales trabajan aunque no se sientan motivados."
+            },
+            {
+                q: "¿Cuál es la mejor forma de manejar distracciones?",
+                options: [
+                    "Usar fuerza de voluntad para resistirlas",
+                    "Eliminarlas completamente del ambiente",
+                    "Permitirte algunas distracciones",
+                    "Ignorarlas"
+                ],
+                correct: 1,
+                explanation: "No confíes en fuerza de voluntad - elimina las tentaciones. Pon tu teléfono en otra habitación, usa bloqueadores de sitios, trabaja sin WiFi si es necesario."
+            },
+            {
+                q: "¿Qué porcentaje de un proyecto completado tiene valor real?",
+                options: [
+                    "Un proyecto al 90% tiene 90% del valor",
+                    "Un proyecto al 50% tiene 50% del valor",
+                    "Solo un proyecto al 100% tiene valor real",
+                    "Cualquier progreso tiene valor"
+                ],
+                correct: 2,
+                explanation: "Un proyecto al 90% completado tiene 0% de valor en el mundo real. Solo lo terminado y lanzado genera resultados. Termina antes de empezar algo nuevo."
+            },
+            {
+                q: "¿Qué es un 'Manifiesto Personal'?",
+                options: [
+                    "Una lista de metas",
+                    "Una declaración de tu identidad y estándares",
+                    "Un plan de negocios",
+                    "Un diario personal"
+                ],
+                correct: 1,
+                explanation: "Un manifiesto es tu declaración de identidad: 'SOY alguien que termina lo que empieza.' Es descriptivo de quién eres, no aspiracional."
+            },
+            {
+                q: "¿Cuál es el mejor momento para trabajar en tu proyecto?",
+                options: [
+                    "Cuando te sientas inspirado",
+                    "A la misma hora cada día (ritual)",
+                    "Cuando tengas tiempo",
+                    "Cuando estés de humor"
+                ],
+                correct: 1,
+                explanation: "Trabaja a la MISMA HORA cada día. Esto crea un ritual automático que no depende de motivación o fuerza de voluntad."
+            },
+            {
+                q: "¿Qué debes hacer cuando enfrentas un obstáculo?",
+                options: [
+                    "Rendirte - probablemente no es para ti",
+                    "Buscar soluciones: Google, YouTube, mentores",
+                    "Esperar a que se resuelva solo",
+                    "Cambiar a un proyecto más fácil"
+                ],
+                correct: 1,
+                explanation: "Los obstáculos son oportunidades de aprendizaje. Buscar ayuda no es debilidad - es inteligencia. Todos los expertos fueron principiantes."
+            },
+            {
+                q: "¿Cuánto tiempo mínimo debes trabajar en tu proyecto cada día?",
+                options: [
+                    "Al menos 4 horas",
+                    "Al menos 2 horas",
+                    "Al menos 1 hora",
+                    "Incluso 15 minutos cuenta"
+                ],
+                correct: 3,
+                explanation: "Incluso 15 minutos cuenta. La consistencia es más importante que la duración. 15 minutos cada día > 3 horas una vez por semana."
+            },
+            {
+                q: "¿Qué es más importante: talento o consistencia?",
+                options: [
+                    "Talento",
+                    "Consistencia",
+                    "Ambos son igualmente importantes",
+                    "Depende del proyecto"
+                ],
+                correct: 1,
+                explanation: "La consistencia vence al talento cuando el talento no es consistente. El progreso compuesto de trabajo diario supera al talento sin disciplina."
+            },
+            {
+                q: "¿Cuál es la mejor forma de rastrear tu progreso?",
+                options: [
+                    "Confiar en tu memoria",
+                    "Sistema visual (calendario, app, hoja de cálculo)",
+                    "No es necesario rastrear",
+                    "Solo revisar al final del mes"
+                ],
+                correct: 1,
+                explanation: "Usa un sistema visual para rastrear progreso diario. Ver tu cadena de días completados te motiva a no romperla. Lo que se mide, mejora."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let userAnswers = [];
+        let timeLeft = 600; // 10 minutes
+        let timerInterval;
+
+        function startQuiz() {
+            loadQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            const container = document.getElementById('quizContainer');
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${i})">
+                                <div class="option-letter">${String.fromCharCode(65 + i)}</div>
+                                <div>${opt}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('counter').textContent = `Pregunta ${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('submitBtn').disabled = true;
+            selectedAnswer = null;
+        }
+
+        function selectOption(index) {
+            selectedAnswer = index;
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null) return;
+
+            const q = questions[currentQuestion];
+            const isCorrect = selectedAnswer === q.correct;
+
+            userAnswers.push({
+                question: q.q,
+                selected: q.options[selectedAnswer],
+                correct: q.options[q.correct],
+                isCorrect: isCorrect,
+                explanation: q.explanation
+            });
+
+            if (isCorrect) {
+                score++;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+
+            const percentage = Math.round((score / questions.length) * 100);
+            let badge, message, color;
+
+            if (percentage >= 90) {
+                badge = "🏆 MAESTRO DE EJECUCIÓN";
+                message = "¡Extraordinario! Dominas completamente el arte de terminar lo que empiezas. Tienes el conocimiento y la mentalidad para lograr cualquier cosa que te propongas. Ahora solo necesitas aplicarlo consistentemente.";
+                color = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+            } else if (percentage >= 75) {
+                badge = "⭐ EJECUTOR AVANZADO";
+                message = "¡Excelente! Tienes un conocimiento sólido de los principios de ejecución. Revisa las preguntas incorrectas y refina tu comprensión. Estás muy cerca de la maestría.";
+                color = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+            } else if (percentage >= 60) {
+                badge = "💪 EJECUTOR EN DESARROLLO";
+                message = "Buen trabajo. Entiendes los conceptos básicos pero hay espacio para mejorar. Revisa el material, especialmente las áreas donde fallaste. La ejecución es una habilidad que se desarrolla con práctica.";
+                color = "linear-gradient(135deg, #ffd89b 0%, #19547b 100%)";
+            } else {
+                badge = "📚 ESTUDIANTE DE EJECUCIÓN";
+                message = "Estás comenzando tu viaje. Lee 'Finish What You Start' cuidadosamente y aplica los principios. La buena noticia: la ejecución es una habilidad que CUALQUIERA puede aprender. Sigue estudiando y practicando.";
+                color = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)";
+            }
+
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = `
+                <div class="results">
+                    <div class="score-circle" style="background: ${color};">
+                        <div class="score-number">${percentage}%</div>
+                        <div class="score-label">${score}/${questions.length}</div>
+                    </div>
+                    <div class="badge">${badge}</div>
+                    <p style="font-size: 1.1em; line-height: 1.8; color: #333; margin: 30px 0;">${message}</p>
+                </div>
+                
+                <div class="review-section">
+                    <h3 style="color: #f5576c; margin-bottom: 20px; font-size: 1.5em;">📋 Revisión de Respuestas</h3>
+                    ${userAnswers.map((answer, i) => `
+                        <div class="review-item ${answer.isCorrect ? 'correct' : ''}">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 10px;">
+                                ${i + 1}. ${answer.question}
+                            </div>
+                            <div style="color: ${answer.isCorrect ? '#11998e' : '#ff6b6b'}; margin-bottom: 5px;">
+                                ${answer.isCorrect ? '✓' : '✗'} Tu respuesta: ${answer.selected}
+                            </div>
+                            ${!answer.isCorrect ? `<div style="color: #11998e; margin-bottom: 10px;">✓ Correcta: ${answer.correct}</div>` : ''}
+                            <div style="color: #666; font-style: italic; margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                                💡 ${answer.explanation}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('submitBtn').style.display = 'none';
+        }
+
+        startQuiz();
+    </script>
+</body>
+
+</html>

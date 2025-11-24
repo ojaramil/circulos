@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Energía</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .energy-chart {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            height: 300px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        .time-slot {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 5px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            font-size: 0.85em;
+        }
+
+        .time-slot:hover {
+            transform: translateY(-3px);
+        }
+
+        .time-slot.high {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-color: #11998e;
+        }
+
+        .time-slot.medium {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            border-color: #ffd89b;
+        }
+
+        .time-slot.low {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .energy-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+        }
+
+        .recommendations {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .recommendations.show {
+            display: block;
+        }
+
+        .rec-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rec-section h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-list li {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #f5576c;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .chart-bar {
+            position: absolute;
+            bottom: 30px;
+            width: calc(100% / 12 - 10px);
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s;
+        }
+
+        .chart-labels {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⚡ Monitor de Energía Diaria</h1>
+        <p class="subtitle">Identifica tus picos de energía y optimiza tu horario de trabajo</p>
+
+        <div class="energy-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></div>
+                <span>Alta Energía</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);"></div>
+                <span>Energía Media</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);"></div>
+                <span>Baja Energía</span>
+            </div>
+        </div>
+
+        <h3 style="color: #f5576c; margin-bottom: 15px;">Haz clic en cada hora para marcar tu nivel de energía típico:
+        </h3>
+
+        <div class="time-slots" id="timeSlots"></div>
+
+        <div class="energy-chart" id="chart">
+            <div class="chart-labels" id="chartLabels"></div>
+        </div>
+
+        <button class="btn" onclick="analyzeEnergy()">Analizar Mi Energía</button>
+
+        <div class="recommendations" id="recommendations">
+            <div class="rec-section">
+                <h3>🌅 Tus Horas de Máxima Energía</h3>
+                <div id="peakHours"></div>
+                <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                    <strong>💡 Estrategia:</strong> Programa tu trabajo MÁS IMPORTANTE durante estas horas.
+                    No desperdicies tu energía pico en emails o reuniones triviales.
+                </p>
+            </div>
+
+            <div class="rec-section">
+                <h3>📋 Tareas Ideales por Nivel de Energía</h3>
+                <div id="taskRecommendations"></div>
+            </div>
+
+            <div class="rec-section">
+                <h3>⚡ Cómo Maximizar Tu Energía</h3>
+                <ul class="task-list">
+                    <li><strong>Sueño:</strong> Duerme 7-9 horas. La falta de sueño destruye tu energía y fuerza de
+                        voluntad.</li>
+                    <li><strong>Ejercicio:</strong> 20-30 minutos de ejercicio en la mañana aumenta energía todo el día.
+                    </li>
+                    <li><strong>Alimentación:</strong> Come proteína en el desayuno. Evita carbohidratos pesados al
+                        mediodía (causan bajón).</li>
+                    <li><strong>Descansos:</strong> Toma breaks de 5-10 minutos cada hora. Camina, estírate, respira.
+                    </li>
+                    <li><strong>Hidratación:</strong> Bebe agua constantemente. La deshidratación causa fatiga.</li>
+                    <li><strong>Luz natural:</strong> Exponerte a luz natural en la mañana sincroniza tu ritmo
+                        circadiano.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm'];
+        let energyLevels = new Array(12).fill(null);
+
+        function initTimeSlots() {
+            const container = document.getElementById('timeSlots');
+            const labels = document.getElementById('chartLabels');
+
+            hours.forEach((hour, i) => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = hour;
+                slot.onclick = () => cycleEnergy(i);
+                slot.id = 'slot-' + i;
+                container.appendChild(slot);
+
+                const label = document.createElement('div');
+                label.textContent = hour;
+                labels.appendChild(label);
+            });
+        }
+
+        function cycleEnergy(index) {
+            const slot = document.getElementById('slot-' + index);
+
+            if (energyLevels[index] === null) {
+                energyLevels[index] = 'high';
+                slot.classList.add('high');
+            } else if (energyLevels[index] === 'high') {
+                energyLevels[index] = 'medium';
+                slot.classList.remove('high');
+                slot.classList.add('medium');
+            } else if (energyLevels[index] === 'medium') {
+                energyLevels[index] = 'low';
+                slot.classList.remove('medium');
+                slot.classList.add('low');
+            } else {
+                energyLevels[index] = null;
+                slot.classList.remove('low');
+            }
+
+            updateChart();
+        }
+
+        function updateChart() {
+            const chart = document.getElementById('chart');
+            const existingBars = chart.querySelectorAll('.chart-bar');
+            existingBars.forEach(bar => bar.remove());
+
+            energyLevels.forEach((level, i) => {
+                if (level) {
+                    const bar = document.createElement('div');
+                    bar.className = 'chart-bar';
+
+                    let height = 0;
+                    let color = '';
+
+                    if (level === 'high') {
+                        height = 200;
+                        color = 'linear-gradient(180deg, #11998e 0%, #38ef7d 100%)';
+                    } else if (level === 'medium') {
+                        height = 120;
+                        color = 'linear-gradient(180deg, #ffd89b 0%, #19547b 100%)';
+                    } else if (level === 'low') {
+                        height = 50;
+                        color = 'linear-gradient(180deg, #ff6b6b 0%, #c92a2a 100%)';
+                    }
+
+                    bar.style.height = height + 'px';
+                    bar.style.background = color;
+                    bar.style.left = (i * (100 / 12)) + '%';
+
+                    chart.appendChild(bar);
+                }
+            });
+        }
+
+        function analyzeEnergy() {
+            if (!energyLevels.some(l => l !== null)) {
+                alert('Por favor marca al menos algunas horas con tu nivel de energía');
+                return;
+            }
+
+            // Find peak hours
+            const peakHours = [];
+            energyLevels.forEach((level, i) => {
+                if (level === 'high') {
+                    peakHours.push(hours[i]);
+                }
+            });
+
+            const peakHTML = peakHours.length > 0
+                ? `<p style="font-size: 1.3em; color: #f5576c; font-weight: bold;">${peakHours.join(', ')}</p>`
+                : `<p style="color: #666;">No marcaste horas de alta energía. Intenta identificar cuándo te sientes más alerta y enfocado.</p>`;
+
+            document.getElementById('peakHours').innerHTML = peakHTML;
+
+            // Task recommendations
+            const taskHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #11998e;">⚡ Alta Energía (${peakHours.join(', ') || 'N/A'}):</strong>
+                    <ul class="task-list" style="margin-top: 10px;">
+                        <li>Trabajo profundo en tu proyecto más importante</li>
+                        <li>Tareas creativas y de resolución de problemas</li>
+                        <li>Aprendizaje de conceptos nuevos y complejos</li>
+                        <li>Toma de decisiones importantes</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #19547b;">⚡ Energía Media:</strong>
+                    <ul class="task-list" style="margin-top: 10px;">
+                        <li>Reuniones y colaboración</li>
+                        <li>Responder emails importantes</li>
+                        <li>Tareas administrativas que requieren atención</li>
+                        <li>Revisión y edición de trabajo</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <strong style="color: #c92a2a;">⚡ Baja Energía:</strong>
+                    <ul class="task-list" style="margin-top: 10px;">
+                        <li>Tareas mecánicas y repetitivas</li>
+                        <li>Organización y limpieza</li>
+                        <li>Consumo de contenido (lectura ligera, videos)</li>
+                        <li>Planificación del día siguiente</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('taskRecommendations').innerHTML = taskHTML;
+            document.getElementById('recommendations').classList.add('show');
+            document.getElementById('recommendations').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        initTimeSlots();
+    </script>
+</body>
+
+</html>

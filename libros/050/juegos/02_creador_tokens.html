@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Tokens ERC-20</title>
+    
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0a12;
+            color: #00ff41;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: transparent;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 20px;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: inherit;
+            margin: 5px 0 15px 0;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00ff41;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #00ff41;
+            display: none;
+            background: #050505;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .hash {
+            word-break: break-all;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Creador de Tokens ERC-20</h1>
+        
+        <p class="subtitle">Diseña tu propio activo digital.</p>
+        
+        <div class="card">
+            <label>Nombre del Token:</label>
+            <input type="text" id="name" placeholder="Ej: Bitcoin">
+            
+            <label>Símbolo (Ticker):</label>
+            <input type="text" id="symbol" placeholder="Ej: BTC" maxlength="5" style="text-transform: uppercase;">
+            
+            <label>Suministro Total (Total Supply):</label>
+            <input type="number" id="supply" placeholder="Ej: 21000000">
+            
+            <label>Tipo de Token:</label>
+            <select id="type">
+                <option value="Utility">Utility Token (Acceso/Uso)</option>
+                <option value="Security">Security Token (Inversión/Acciones)</option>
+                <option value="Governance">Governance Token (Voto)</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="deployToken()">Desplegar Token (Simulado)</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            function deployToken() {
+                const name = document.getElementById('name').value;
+                const symbol = document.getElementById('symbol').value;
+                const supply = document.getElementById('supply').value;
+                const type = document.getElementById('type').value;
+                
+                if(!name || !symbol || !supply) return alert("Completa todos los campos");
+                
+                const contractAddress = "0x" + Math.random().toString(16).substr(2, 40);
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>🚀 Token Desplegado Exitosamente</h3>
+                    <p><strong>Contrato:</strong> <span class="hash">${contractAddress}</span></p>
+                    <p>Has creado <strong>${parseInt(supply).toLocaleString()} ${symbol}</strong>.</p>
+                    <p>Este es un token de tipo <strong>${type}</strong>.</p>
+                    <div style="margin-top:15px; border-top:1px solid #333; padding-top:10px;">
+                        <code>
+                        // Código Solidity generado:<br>
+                        contract ${name.replace(/\s/g,'')} is ERC20 {<br>
+                        &nbsp;&nbsp;constructor() ERC20("${name}", "${symbol}") {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;_mint(msg.sender, ${supply} * 10**decimals());<br>
+                        &nbsp;&nbsp;}<br>
+                        }
+                        </code>
+                    </div>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

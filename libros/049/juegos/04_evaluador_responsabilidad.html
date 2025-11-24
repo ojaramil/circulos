@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Responsabilidad</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Evaluador de Responsabilidad</h1>
+        
+        <p class="subtitle">¿Víctima o Protagonista? Mide tu nivel de poder personal.</p>
+        
+        <div id="quiz"></div>
+        <button class="btn" onclick="calculateScore()">Calcular Resultado</button>
+        <div id="result" class="result-area"></div>
+
+        <script>
+            const questions = [
+                "Cuando algo sale mal, ¿buscas a quién culpar?",
+                "¿Te quejas frecuentemente del clima, el tráfico o la política?",
+                "¿Crees que tu felicidad depende de cómo te tratan los demás?",
+                "¿Esperas que otros cambien para tú sentirte bien?",
+                "¿Usas frases como 'me hacen enfadar' o 'no tengo opción'?"
+            ];
+            
+            const quizDiv = document.getElementById('quiz');
+            questions.forEach((q, i) => {
+                quizDiv.innerHTML += `
+                    <div class="card">
+                        <p>${q}</p>
+                        <select id="q${i}">
+                            <option value="0">Nunca</option>
+                            <option value="1">A veces</option>
+                            <option value="2">Frecuentemente</option>
+                            <option value="3">Siempre</option>
+                        </select>
+                    </div>
+                `;
+            });
+
+            function calculateScore() {
+                let score = 0;
+                questions.forEach((_, i) => {
+                    score += parseInt(document.getElementById('q'+i).value);
+                });
+                
+                const resultDiv = document.getElementById('result');
+                let feedback = "";
+                
+                if (score < 5) {
+                    feedback = "<h3>👑 Protagonista Total</h3><p>Asumes plena responsabilidad de tu vida. Sabes que eres el creador de tu experiencia. ¡Felicidades!</p>";
+                } else if (score < 10) {
+                    feedback = "<h3>🚧 En Proceso</h3><p>A veces caes en el victimismo, pero estás despertando. Observa tus quejas y transfórmalas en acciones.</p>";
+                } else {
+                    feedback = "<h3>⚠️ Modo Víctima Activado</h3><p>Estás cediendo tu poder. Crees que la vida te sucede a ti. Recuerda: nadie puede hacerte sentir nada sin tu consentimiento.</p>";
+                }
+                
+                resultDiv.innerHTML = feedback;
+                resultDiv.style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

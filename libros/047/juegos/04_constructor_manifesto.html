@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📜 Constructor de Manifiesto</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #f5576c; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; width: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📜 Constructor de Manifiesto</h1>
+        <p class="subtitle">Crea tu declaración personal de identidad</p>
+        <div class="input-group"><label>¿Quién eres? (identidad, no meta)</label><input type="text" id="identity" placeholder="Ej: SOY alguien que termina lo que empieza"></div>
+    <div class="input-group"><label>¿Cuál es tu no-negociable diario?</label><input type="text" id="nonneg" placeholder="Ej: Trabajo en mi proyecto 1 hora cada mañana"></div>
+    <div class="input-group"><label>¿Qué NO aceptas de ti mismo?</label><input type="text" id="standard" placeholder="Ej: No acepto excusas ni mediocridad"></div>
+    <div class="input-group"><label>¿Cómo respondes a obstáculos?</label><input type="text" id="obstacles" placeholder="Ej: Busco soluciones, no excusas"></div>
+    <button class="btn" onclick="createManifesto()">Crear Mi Manifiesto</button>
+    <div class="result" id="result"><div class="metric"><h3 style="color:#f5576c;">Tu Manifiesto Personal</h3><div id="manifesto" style="line-height:1.8;"></div></div></div>
+    </div>
+    <script>function createManifesto(){const i=document.getElementById('identity').value,n=document.getElementById('nonneg').value,s=document.getElementById('standard').value,o=document.getElementById('obstacles').value;if(!i||!n||!s){alert('Completa al menos los primeros 3 campos');return;}const m=`<p style="font-size:1.2em;font-weight:bold;margin-bottom:15px;">${i}</p><p>${n} Este tiempo es sagrado e innegociable.</p><p>${s}</p>${o?`<p>${o}</p>`:''}
+    <p style="margin-top:20px;padding:15px;background:#f093fb;color:white;border-radius:8px;text-align:center;font-weight:bold;">Mi palabra es mi ley. Cuando digo que haré algo, lo hago.</p>
+    <p style="margin-top:15px;font-size:0.9em;color:#666;">💡 Imprime esto y ponlo donde lo veas cada día. Revísalo cada mañana. Vive tu manifiesto o cámbialo - debe ser descriptivo de quién eres, no aspiracional.</p>`;document.getElementById('manifesto').innerHTML=m;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

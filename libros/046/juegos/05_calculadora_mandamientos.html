@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Calculadora de los 5 Mandamientos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95em; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Calculadora de los 5 Mandamientos</h1>
+        <p class="subtitle">Evalúa tu negocio actual o idea contra los 5 Mandamientos</p>
+        
+    <div class="input-group">
+        <label>Nombre de tu negocio/idea</label>
+        <input type="text" id="businessName" placeholder="Mi Negocio">
+    </div>
+    <h3 style="color: #667eea; margin: 30px 0 20px;">Califica cada mandamiento (1-10):</h3>
+    <div class="input-group">
+        <label>Control (1=Sin control, 10=Control total)</label>
+        <input type="range" id="control" min="1" max="10" value="5" oninput="updateValue('control')">
+        <div style="text-align: center; color: #667eea; font-weight: bold;" id="controlValue">5</div>
+    </div>
+    <div class="input-group">
+        <label>Entrada (1=Muy fácil, 10=Muy difícil)</label>
+        <input type="range" id="entry" min="1" max="10" value="5" oninput="updateValue('entry')">
+        <div style="text-align: center; color: #667eea; font-weight: bold;" id="entryValue">5</div>
+    </div>
+    <div class="input-group">
+        <label>Necesidad (1=No resuelve nada, 10=Problema urgente)</label>
+        <input type="range" id="need" min="1" max="10" value="5" oninput="updateValue('need')">
+        <div style="text-align: center; color: #667eea; font-weight: bold;" id="needValue">5</div>
+    </div>
+    <div class="input-group">
+        <label>Tiempo (1=Requiere mi tiempo siempre, 10=Totalmente pasivo)</label>
+        <input type="range" id="time" min="1" max="10" value="5" oninput="updateValue('time')">
+        <div style="text-align: center; color: #667eea; font-weight: bold;" id="timeValue">5</div>
+    </div>
+    <div class="input-group">
+        <label>Escala (1=No escalable, 10=Altamente escalable)</label>
+        <input type="range" id="scale" min="1" max="10" value="5" oninput="updateValue('scale')">
+        <div style="text-align: center; color: #667eea; font-weight: bold;" id="scaleValue">5</div>
+    </div>
+    <button class="btn" onclick="calculate()">Calcular Puntuación</button>
+    <div class="result" id="result">
+        <div class="metric">
+            <div style="font-size: 3em; text-align: center; color: #667eea; font-weight: bold;" id="totalScore">0</div>
+            <div style="text-align: center; color: #666;">Puntuación Total (de 50)</div>
+        </div>
+        <div class="metric">
+            <div style="font-size: 1.5em; margin-bottom: 10px;" id="verdict"></div>
+            <div style="color: #555; line-height: 1.6;" id="feedback"></div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    function updateValue(id) {
+        document.getElementById(id + 'Value').textContent = document.getElementById(id).value;
+    }
+    function calculate() {
+        const name = document.getElementById('businessName').value || 'Tu negocio';
+        const control = parseInt(document.getElementById('control').value);
+        const entry = parseInt(document.getElementById('entry').value);
+        const need = parseInt(document.getElementById('need').value);
+        const time = parseInt(document.getElementById('time').value);
+        const scale = parseInt(document.getElementById('scale').value);
+        const total = control + entry + need + time + scale;
+        
+        document.getElementById('totalScore').textContent = total;
+        
+        let verdict, feedback;
+        if (total >= 40) {
+            verdict = '🚀 Excelente Oportunidad Fastlane';
+            feedback = name + ' tiene un potencial excepcional. Cumple altamente con los 5 Mandamientos. Enfócate en la ejecución rápida.';
+        } else if (total >= 30) {
+            verdict = '👍 Buena Oportunidad';
+            feedback = name + ' es prometedor pero tiene áreas de mejora. Identifica los mandamientos más débiles y trabaja en fortalecerlos.';
+        } else if (total >= 20) {
+            verdict = '⚠️ Oportunidad Mediocre';
+            feedback = name + ' tiene potencial limitado. Considera pivotar o modificar significativamente para cumplir mejor con los mandamientos.';
+        } else {
+            verdict = '🚨 No es Fastlane';
+            feedback = name + ' probablemente no te llevará a la libertad financiera. Considera buscar una oportunidad diferente que cumpla mejor con los mandamientos.';
+        }
+        
+        document.getElementById('verdict').textContent = verdict;
+        document.getElementById('feedback').textContent = feedback;
+        document.getElementById('result').classList.add('show');
+    }
+    </script>
+</body>
+</html>

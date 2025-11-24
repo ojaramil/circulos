@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 Maestro del Emprendimiento</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👑 Maestro del Emprendimiento</h1>
+        <p class="subtitle">Quiz final: ¿Estás listo para UNSCRIPTED?</p>
+        <div id="quiz"></div><button class="btn" onclick="checkAnswers()">Ver Mi Resultado</button>
+    <div class="result" id="result"><div class="metric"><div style="font-size:3em;text-align:center;color:#667eea;font-weight:bold;" id="score">0%</div><div style="text-align:center;color:#666;">Puntuación</div></div><div class="metric"><div style="font-size:1.5em;margin-bottom:10px;" id="title"></div><div id="feedback"></div></div></div>
+    </div>
+    <script>const questions=[{q:"¿Qué es más importante?",a:["Gran producto","Gran marketing"],c:0},{q:"La libertad financiera es...",a:["Un número en el banco","Ingresos pasivos > gastos"],c:1},{q:"Para ser rico debes...",a:["Ahorrar e invertir 40 años","Crear valor masivo rápidamente"],c:1},{q:"El mejor negocio es...",a:["El que puedes comenzar fácil","El que cumple los 5 Mandamientos"],c:1},{q:"La planificación perfecta es...",a:["Esencial antes de lanzar","Procrastinación disfrazada"],c:1}];let answers=[];function renderQuiz(){document.getElementById('quiz').innerHTML=questions.map((q,i)=>`<div style="background:#f8f9fa;padding:20px;border-radius:10px;margin-bottom:20px;"><div style="font-weight:bold;margin-bottom:15px;">${i+1}. ${q.q}</div>${q.a.map((a,j)=>`<div class="checkbox-item"><input type="radio" name="q${i}" value="${j}" id="q${i}_${j}"><label for="q${i}_${j}">${a}</label></div>`).join('')}</div>`).join('');}
+    function checkAnswers(){answers=questions.map((q,i)=>{const selected=document.querySelector(`input[name="q${i}"]:checked`);return selected?parseInt(selected.value):-1;});if(answers.includes(-1)){alert('Responde todas las preguntas');return;}const correct=answers.filter((a,i)=>a===questions[i].c).length;const score=Math.round((correct/questions.length)*100);document.getElementById('score').textContent=score+'%';let title,feedback;if(score===100){title='🏆 Maestro UNSCRIPTED!';feedback='Entiendes perfectamente los principios. Estás listo para construir tu libertad.';}else if(score>=60){title='👍 Buen Entendimiento';feedback='Entiendes los conceptos básicos. Repasa las áreas donde fallaste.';}else{title='📚 Necesitas Estudiar Más';feedback='Vuelve a leer las lecciones. Los principios son críticos para tu éxito.';}document.getElementById('title').textContent=title;document.getElementById('feedback').textContent=feedback;document.getElementById('result').classList.add('show');}
+    renderQuiz();</script>
+</body>
+</html>

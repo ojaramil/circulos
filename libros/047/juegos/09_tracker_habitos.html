@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker de Hábitos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .day-label {
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            padding: 10px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.05);
+            border-color: #f5576c;
+        }
+
+        .day-cell.completed {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #11998e;
+        }
+
+        .day-cell.completed::after {
+            content: "✓";
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .day-number {
+            font-size: 0.9em;
+            color: #999;
+            position: absolute;
+            top: 5px;
+            left: 8px;
+        }
+
+        .day-cell.completed .day-number {
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .streak-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .streak-badge.fire {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        }
+
+        .streak-number {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .motivational-quote {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #f5576c;
+            font-style: italic;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>✅ Tracker de Hábitos de 30 Días</h1>
+        <p class="subtitle">Haz clic en cada día que completes tu tarea. ¡No rompas la cadena!</p>
+
+        <div class="streak-badge" id="streakBadge">
+            <div class="streak-number" id="streakNumber">0</div>
+            <div>días consecutivos 🔥</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="completedDays">0</div>
+                <div class="stat-label">Días Completados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Tasa de Cumplimiento</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="longestStreak">0</div>
+                <div class="stat-label">Racha Más Larga</div>
+            </div>
+        </div>
+
+        <div class="calendar-grid">
+            <div class="day-label">L</div>
+            <div class="day-label">M</div>
+            <div class="day-label">M</div>
+            <div class="day-label">J</div>
+            <div class="day-label">V</div>
+            <div class="day-label">S</div>
+            <div class="day-label">D</div>
+        </div>
+
+        <div class="calendar-grid" id="calendar"></div>
+
+        <div class="motivational-quote" id="quote"></div>
+
+        <button class="btn" onclick="resetTracker()">Reiniciar Tracker</button>
+        <button class="btn" onclick="shareProgress()">Compartir Progreso</button>
+    </div>
+
+    <script>
+        const quotes = [
+            "\"La motivación es lo que te hace empezar. El hábito es lo que te mantiene en marcha.\" - Jim Ryun",
+            "\"No rompas la cadena. Cada día que trabajas es un eslabón. Construye una cadena larga.\" - Jerry Seinfeld",
+            "\"El éxito es la suma de pequeños esfuerzos repetidos día tras día.\" - Robert Collier",
+            "\"No necesitas ser grande para empezar, pero necesitas empezar para ser grande.\" - Zig Ziglar",
+            "\"La disciplina es el puente entre metas y logros.\" - Jim Rohn",
+            "\"Un 1% de mejora cada día equivale a 37 veces mejor en un año.\" - James Clear",
+            "\"La consistencia vence al talento cuando el talento no es consistente.\" - Kevin Durant",
+            "\"Los hábitos son el interés compuesto de la auto-mejora.\" - James Clear"
+        ];
+
+        let completedDays = [];
+        let currentStreak = 0;
+        let longestStreak = 0;
+
+        function initCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            for (let i = 1; i <= 30; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                cell.innerHTML = `<span class="day-number">${i}</span>`;
+                cell.onclick = () => toggleDay(i);
+                cell.id = 'day-' + i;
+                calendar.appendChild(cell);
+            }
+
+            loadProgress();
+            updateStats();
+            showRandomQuote();
+        }
+
+        function toggleDay(day) {
+            const cell = document.getElementById('day-' + day);
+            const index = completedDays.indexOf(day);
+
+            if (index > -1) {
+                completedDays.splice(index, 1);
+                cell.classList.remove('completed');
+            } else {
+                completedDays.push(day);
+                cell.classList.add('completed');
+            }
+
+            saveProgress();
+            updateStats();
+        }
+
+        function updateStats() {
+            // Completed days
+            document.getElementById('completedDays').textContent = completedDays.length;
+
+            // Completion rate
+            const rate = Math.round((completedDays.length / 30) * 100);
+            document.getElementById('completionRate').textContent = rate + '%';
+
+            // Calculate current streak
+            completedDays.sort((a, b) => a - b);
+            currentStreak = 0;
+            let tempStreak = 0;
+
+            for (let i = 1; i <= 30; i++) {
+                if (completedDays.includes(i)) {
+                    tempStreak++;
+                    if (tempStreak > longestStreak) {
+                        longestStreak = tempStreak;
+                    }
+                } else {
+                    tempStreak = 0;
+                }
+            }
+
+            // Current streak from the end
+            for (let i = 30; i >= 1; i--) {
+                if (completedDays.includes(i)) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+
+            document.getElementById('streakNumber').textContent = currentStreak;
+            document.getElementById('longestStreak').textContent = longestStreak;
+
+            // Update streak badge
+            const badge = document.getElementById('streakBadge');
+            if (currentStreak >= 7) {
+                badge.classList.add('fire');
+            } else {
+                badge.classList.remove('fire');
+            }
+        }
+
+        function showRandomQuote() {
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote').textContent = quote;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('habitTracker', JSON.stringify(completedDays));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('habitTracker');
+            if (saved) {
+                completedDays = JSON.parse(saved);
+                completedDays.forEach(day => {
+                    document.getElementById('day-' + day).classList.add('completed');
+                });
+            }
+        }
+
+        function resetTracker() {
+            if (confirm('¿Estás seguro de que quieres reiniciar tu tracker? Esto borrará todo tu progreso.')) {
+                completedDays = [];
+                currentStreak = 0;
+                longestStreak = 0;
+                localStorage.removeItem('habitTracker');
+                initCalendar();
+            }
+        }
+
+        function shareProgress() {
+            const message = `🔥 Mi progreso de hábitos:\n\n✅ ${completedDays.length}/30 días completados\n🔥 ${currentStreak} días de racha actual\n🏆 ${longestStreak} días de racha más larga\n📊 ${Math.round((completedDays.length / 30) * 100)}% de cumplimiento\n\n¡Sigue trabajando en terminar lo que empiezas!`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi Progreso de Hábitos',
+                    text: message
+                });
+            } else {
+                alert(message + '\n\n(Copia este texto para compartir)');
+            }
+        }
+
+        initCalendar();
+    </script>
+</body>
+
+</html>

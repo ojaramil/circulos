@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Posicionamiento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .matrix-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .matrix-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px;
+            background: #ccc;
+        }
+
+        .quadrant {
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .quadrant h3 {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .quadrant.q1 {
+            background: linear-gradient(135deg, #11998e20 0%, #38ef7d20 100%);
+        }
+
+        .quadrant.q2 {
+            background: linear-gradient(135deg, #ffd70020 0%, #ff8c0020 100%);
+        }
+
+        .quadrant.q3 {
+            background: linear-gradient(135deg, #ff6b6b20 0%, #c92a2a20 100%);
+        }
+
+        .quadrant.q4 {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+        }
+
+        .axis-label {
+            position: absolute;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .axis-label.x {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .axis-label.y {
+            left: -100px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .competitor-dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            transition: all 0.3s;
+        }
+
+        .competitor-dot:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .competitor-dot.you {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            width: 80px;
+            height: 80px;
+            font-size: 1.2em;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .slider-group {
+            margin: 20px 0;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+        }
+
+        .slider-value {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Analizador de Posicionamiento</h1>
+        <p class="subtitle">Visualiza tu posición en el mercado vs. competidores</p>
+
+        <div class="input-section">
+            <h3 style="color: #764ba2; margin-bottom: 20px;">1. Define Tu Posicionamiento</h3>
+            <div class="input-group">
+                <label>Tu Nombre/Marca</label>
+                <input type="text" id="yourName" placeholder="Ej: Mi Empresa">
+            </div>
+
+            <div class="slider-group">
+                <label>Precio (1=Bajo, 10=Premium)</label>
+                <input type="range" id="yourPrice" min="1" max="10" value="5" oninput="updateSlider('yourPrice')">
+                <div class="slider-value" id="yourPriceVal">5</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Calidad/Diferenciación (1=Básico, 10=Excepcional)</label>
+                <input type="range" id="yourQuality" min="1" max="10" value="5" oninput="updateSlider('yourQuality')">
+                <div class="slider-value" id="yourQualityVal">5</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <h3 style="color: #764ba2; margin-bottom: 20px;">2. Agrega Competidores (opcional)</h3>
+            <div id="competitorInputs">
+                <div class="input-group">
+                    <label>Competidor 1</label>
+                    <input type="text" id="comp1Name" placeholder="Nombre">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <input type="number" id="comp1Price" min="1" max="10" placeholder="Precio (1-10)">
+                        <input type="number" id="comp1Quality" min="1" max="10" placeholder="Calidad (1-10)">
+                    </div>
+                </div>
+            </div>
+            <button class="btn" style="width: auto; padding: 10px 20px; font-size: 0.9em; margin-top: 10px;"
+                onclick="addCompetitor()">+ Agregar Otro Competidor</button>
+        </div>
+
+        <button class="btn" onclick="analyzePositioning()">Analizar Posicionamiento</button>
+
+        <div class="matrix-container" id="matrix" style="display: none;">
+            <div class="axis-label y">CALIDAD / DIFERENCIACIÓN →</div>
+            <div class="axis-label x">PRECIO →</div>
+            <div class="matrix-grid">
+                <div class="quadrant q3">
+                    <h3>Bajo Precio<br>Baja Calidad</h3>
+                    <p style="color: #666; margin-top: 40px;">Zona de Commodities</p>
+                </div>
+                <div class="quadrant q1">
+                    <h3>Alto Precio<br>Alta Calidad</h3>
+                    <p style="color: #666; margin-top: 40px;">Zona Premium</p>
+                </div>
+                <div class="quadrant q4">
+                    <h3>Bajo Precio<br>Alta Calidad</h3>
+                    <p style="color: #666; margin-top: 40px;">Zona de Valor</p>
+                </div>
+                <div class="quadrant q2">
+                    <h3>Alto Precio<br>Baja Calidad</h3>
+                    <p style="color: #666; margin-top: 40px;">Zona Peligrosa</p>
+                </div>
+            </div>
+            <div id="dots"></div>
+        </div>
+
+        <div class="result" id="result">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📊 Análisis de Posicionamiento</h2>
+            <div id="analysis"></div>
+        </div>
+    </div>
+
+    <script>
+        let competitorCount = 1;
+
+        function updateSlider(id) {
+            document.getElementById(id + 'Val').textContent = document.getElementById(id).value;
+        }
+
+        function addCompetitor() {
+            competitorCount++;
+            const html = `
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Competidor ${competitorCount}</label>
+                    <input type="text" id="comp${competitorCount}Name" placeholder="Nombre">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <input type="number" id="comp${competitorCount}Price" min="1" max="10" placeholder="Precio (1-10)">
+                        <input type="number" id="comp${competitorCount}Quality" min="1" max="10" placeholder="Calidad (1-10)">
+                    </div>
+                </div>
+            `;
+            document.getElementById('competitorInputs').insertAdjacentHTML('beforeend', html);
+        }
+
+        function analyzePositioning() {
+            const yourName = document.getElementById('yourName').value || 'TÚ';
+            const yourPrice = parseInt(document.getElementById('yourPrice').value);
+            const yourQuality = parseInt(document.getElementById('yourQuality').value);
+
+            // Collect competitors
+            const competitors = [];
+            for (let i = 1; i <= competitorCount; i++) {
+                const name = document.getElementById(`comp${i}Name`)?.value;
+                const price = parseInt(document.getElementById(`comp${i}Price`)?.value);
+                const quality = parseInt(document.getElementById(`comp${i}Quality`)?.value);
+
+                if (name && price && quality) {
+                    competitors.push({ name, price, quality });
+                }
+            }
+
+            // Show matrix
+            document.getElementById('matrix').style.display = 'block';
+
+            // Plot dots
+            const dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = '';
+
+            // Plot YOU
+            const yourDot = document.createElement('div');
+            yourDot.className = 'competitor-dot you';
+            yourDot.textContent = yourName;
+            yourDot.style.left = (yourPrice * 10 - 4) + '%';
+            yourDot.style.top = (100 - yourQuality * 10 - 4) + '%';
+            yourDot.title = `${yourName}: Precio ${yourPrice}, Calidad ${yourQuality}`;
+            dotsContainer.appendChild(yourDot);
+
+            // Plot competitors
+            competitors.forEach(comp => {
+                const dot = document.createElement('div');
+                dot.className = 'competitor-dot';
+                dot.textContent = comp.name.substring(0, 3);
+                dot.style.left = (comp.price * 10 - 3) + '%';
+                dot.style.top = (100 - comp.quality * 10 - 3) + '%';
+                dot.title = `${comp.name}: Precio ${comp.price}, Calidad ${comp.quality}`;
+                dotsContainer.appendChild(dot);
+            });
+
+            // Generate analysis
+            let analysis = `
+                <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #667eea;">Tu Posición: ${yourName}</h3>
+                    <p style="margin-top: 15px; line-height: 1.8;">
+                        <strong>Precio:</strong> ${yourPrice}/10 (${yourPrice >= 7 ? 'Premium' : yourPrice >= 4 ? 'Medio' : 'Bajo'})<br>
+                        <strong>Calidad/Diferenciación:</strong> ${yourQuality}/10 (${yourQuality >= 7 ? 'Alta' : yourQuality >= 4 ? 'Media' : 'Baja'})
+                    </p>
+                </div>
+            `;
+
+            // Determine quadrant
+            let quadrant = '';
+            let recommendation = '';
+
+            if (yourPrice >= 6 && yourQuality >= 6) {
+                quadrant = '🏆 Zona Premium';
+                recommendation = 'Excelente posición. Asegúrate de que tu marketing comunique claramente el valor premium. Enfócate en calidad, servicio excepcional, y experiencia.';
+            } else if (yourPrice <= 5 && yourQuality >= 6) {
+                quadrant = '💎 Zona de Valor';
+                recommendation = 'Posición fuerte - alta calidad a precio accesible. Comunica el valor excepcional. Cuidado: ¿es sostenible? Asegúrate de no sacrificar márgenes.';
+            } else if (yourPrice >= 6 && yourQuality <= 5) {
+                quadrant = '⚠️ Zona Peligrosa';
+                recommendation = 'ALERTA: Precio alto con calidad/diferenciación baja es insostenible. Opciones: 1) Aumenta calidad/diferenciación, o 2) Reduce precio. No puedes quedarte aquí.';
+            } else {
+                quadrant = '📦 Zona de Commodities';
+                recommendation = 'Posición difícil - bajo precio y baja diferenciación. Difícil competir aquí. Recomendación: Encuentra una forma de diferenciarte o especialízate en un nicho específico.';
+            }
+
+            analysis += `
+                <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #764ba2;">Cuadrante: ${quadrant}</h3>
+                    <p style="margin-top: 15px; line-height: 1.8;">${recommendation}</p>
+                </div>
+            `;
+
+            if (competitors.length > 0) {
+                analysis += `
+                    <div style="background: white; padding: 25px; border-radius: 15px;">
+                        <h3 style="color: #667eea;">Análisis Competitivo</h3>
+                        <p style="margin-top: 15px; line-height: 1.8;">
+                            Has mapeado ${competitors.length} competidor(es). Observa:
+                        </p>
+                        <ul style="margin-top: 10px; padding-left: 20px; line-height: 2;">
+                            <li>¿Hay espacios vacíos en el mapa? = Oportunidades</li>
+                            <li>¿Estás muy cerca de competidores? = Necesitas diferenciarte más</li>
+                            <li>¿Estás solo en tu cuadrante? = Posición única (bueno o malo)</li>
+                        </ul>
+                        <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                            <strong>💡 Estrategia:</strong> No compitas donde todos compiten. Encuentra un espacio único que puedas dominar.
+                        </p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('analysis').innerHTML = analysis;
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

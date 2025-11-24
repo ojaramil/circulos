@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Gratitud</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Práctica de Gratitud</h1>
+        
+        <p class="subtitle">Eleva tu vibración enfocándote en la abundancia.</p>
+        
+        <div class="card" style="text-align: center;">
+            <h3 id="prompt">Haz clic para recibir un tema...</h3>
+            <button class="btn" onclick="newPrompt()">🎲 Nuevo Tema</button>
+        </div>
+        
+        <div class="card">
+            <textarea id="gratitudeList" placeholder="Escribe 3 cosas por las que agradeces sobre este tema..." rows="5"></textarea>
+        </div>
+        
+        <div id="counter" style="text-align: center; font-size: 1.2em; color: #1a2a6c;"></div>
+
+        <script>
+            const prompts = [
+                "Tu cuerpo y salud",
+                "Un desafío difícil que superaste",
+                "Personas que te han ayudado",
+                "Comodidades modernas (luz, agua, internet)",
+                "Talentos o habilidades que posees",
+                "La naturaleza y el entorno",
+                "Lecciones aprendidas este año"
+            ];
+            
+            function newPrompt() {
+                const random = prompts[Math.floor(Math.random() * prompts.length)];
+                document.getElementById('prompt').innerText = "Agradece por: " + random;
+                document.getElementById('gratitudeList').value = "";
+            }
+            
+            // Initialize
+            newPrompt();
+        </script>
+        
+    </div>
+</body>
+</html>

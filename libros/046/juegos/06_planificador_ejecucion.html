@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Planificador de Ejecución Cinética</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95em; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Planificador de Ejecución Cinética</h1>
+        <p class="subtitle">Crea tu plan de acción de 30 días</p>
+        
+    <div class="input-group">
+        <label>¿Qué quieres lograr en 30 días?</label>
+        <textarea id="goal" placeholder="Ej: Lanzar mi MVP y conseguir 10 clientes"></textarea>
+    </div>
+    <div class="input-group">
+        <label>¿Cuál es el primer paso más pequeño que puedes dar HOY?</label>
+        <input type="text" id="firstStep" placeholder="Ej: Crear landing page simple">
+    </div>
+    <div class="input-group">
+        <label>¿Qué te está deteniendo?</label>
+        <textarea id="obstacles" placeholder="Ej: Miedo al fracaso, perfeccionismo..."></textarea>
+    </div>
+    <button class="btn" onclick="createPlan()">Crear Mi Plan</button>
+    <div class="result" id="result">
+        <div class="metric">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Tu Plan de 30 Días</h3>
+            <div style="color: #333; line-height: 1.8;" id="plan"></div>
+        </div>
+        <div class="metric">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Principios de Ejecución Cinética</h3>
+            <div style="color: #555; line-height: 1.6;">
+                1. Acción imperfecta > Planificación perfecta<br>
+                2. Lanza rápido, aprende rápido<br>
+                3. Falla rápido, ajusta rápido<br>
+                4. El momentum viene del movimiento<br>
+                5. Comienza pequeño, piensa grande
+            </div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    function createPlan() {
+        const goal = document.getElementById('goal').value.trim();
+        const firstStep = document.getElementById('firstStep').value.trim();
+        const obstacles = document.getElementById('obstacles').value.trim();
+        
+        if (!goal || !firstStep) {
+            alert('Por favor completa al menos tu meta y primer paso');
+            return;
+        }
+        
+        const plan = `
+<strong>Meta de 30 Días:</strong> ${goal}
+
+<strong>Semana 1 - Lanzamiento Rápido:</strong>
+• Día 1: ${firstStep}
+• Día 2-3: Crear MVP mínimo (no perfecto)
+• Día 4-5: Conseguir primeros 3 usuarios beta
+• Día 6-7: Recopilar feedback inicial
+
+<strong>Semana 2 - Iteración:</strong>
+• Ajustar basándote en feedback
+• Mejorar las características más solicitadas
+• Conseguir 5 usuarios más
+
+<strong>Semana 3 - Escala Temprana:</strong>
+• Optimizar proceso de onboarding
+• Comenzar promoción activa
+• Meta: 20 usuarios totales
+
+<strong>Semana 4 - Validación:</strong>
+• Conseguir primeros clientes pagos
+• Documentar lecciones aprendidas
+• Planificar próximos 30 días
+
+<strong>Obstáculos Identificados:</strong> ${obstacles || 'Ninguno identificado'}
+
+<strong>Cómo Superarlos:</strong> Recuerda - la perfección es enemiga del progreso. Cada día que no lanzas es un día perdido de aprendizaje. Ejecuta ahora, perfecciona después.
+        `.trim();
+        
+        document.getElementById('plan').innerHTML = plan.replace(/\n/g, '<br>');
+        document.getElementById('result').classList.add('show');
+    }
+    </script>
+</body>
+</html>

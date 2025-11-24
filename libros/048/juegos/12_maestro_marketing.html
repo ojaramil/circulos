@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .timer {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .question-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: #e6f7ff;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #e8f5e9;
+            border-color: #11998e;
+            color: #11998e;
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            background: #ffe6e6;
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .final-score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .badge {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            background: #ffd700;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="quizScreen">
+            <h1>👑 Maestro de Marketing</h1>
+            <p class="subtitle">Demuestra que dominas el marketing moderno.</p>
+
+            <div class="quiz-header">
+                <div class="score-display">Pregunta <span id="currentQ">1</span>/15</div>
+                <div class="timer" id="timer">10:00</div>
+            </div>
+
+            <div id="questionContainer"></div>
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+        </div>
+
+        <div id="resultsScreen" class="results-screen">
+            <h1>¡Quiz Completado!</h1>
+            <div class="final-score" id="finalScoreDisplay">0%</div>
+            <div id="finalBadge" class="badge"></div>
+            <p id="finalMessage" style="font-size: 1.2em; margin-bottom: 30px;"></p>
+            <div id="reviewContainer" style="text-align: left;"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "¿Cuál es la definición de marketing según Seth Godin?",
+                options: ["Vender más productos a más gente", "El acto generoso de ayudar a alguien a resolver un problema", "Publicidad efectiva en redes sociales", "Manipular la percepción del consumidor"],
+                correct: 1,
+                explanation: "El marketing es el acto generoso de ayudar a otros a convertirse en quienes buscan ser."
+            },
+            {
+                q: "¿Qué es la 'Audiencia Mínima Viable'?",
+                options: ["El grupo más pequeño que puedes servir de manera sostenible", "El mínimo de seguidores para ser influencer", "Una audiencia de prueba beta", "Tus amigos y familiares"],
+                correct: 0,
+                explanation: "Es el grupo más pequeño posible que puede sostener tu negocio. La especificidad es poder."
+            },
+            {
+                q: "¿Qué significa 'Personas como nosotros hacen cosas como esta'?",
+                options: ["Una estrategia de segmentación demográfica", "La definición de cultura y tribu", "Un slogan de Nike", "Una técnica de ventas"],
+                correct: 1,
+                explanation: "Esta frase define la cultura. El marketing efectivo refuerza o cambia la cultura de una tribu."
+            },
+            {
+                q: "¿Cuál es la diferencia entre empatía y simpatía en marketing?",
+                options: ["Son lo mismo", "Empatía es sentir lástima, simpatía es entender", "Empatía es ver el mundo a través de sus ojos, simpatía es sentir por ellos", "Simpatía vende más"],
+                correct: 2,
+                explanation: "La empatía es la habilidad de entender profundamente la visión del mundo de tu cliente sin juzgarla."
+            },
+            {
+                q: "¿Qué es el 'Marketing de Permiso'?",
+                options: ["Pedir perdón por interrumpir", "Enviar emails solo a quienes lo solicitaron", "Marketing legalmente aprobado", "Publicidad pagada"],
+                correct: 1,
+                explanation: "Es el privilegio de entregar mensajes anticipados, personales y relevantes a personas que quieren recibirlos."
+            },
+            {
+                q: "¿Por qué las historias son importantes en marketing?",
+                options: ["Son entretenidas", "La gente no lee datos", "Permiten conectar emocionalmente y son memorables", "Son fáciles de escribir"],
+                correct: 2,
+                explanation: "Las historias resuenan emocionalmente y son recordadas 22 veces más que los hechos."
+            },
+            {
+                q: "¿Qué es la 'Tensión' en marketing?",
+                options: ["Estrés en el equipo de ventas", "La brecha entre donde está el cliente y donde quiere estar", "Conflicto con competidores", "Presión de precios"],
+                correct: 1,
+                explanation: "El marketing efectivo crea tensión productiva para motivar el cambio y la acción."
+            },
+            {
+                q: "¿Qué es el 'Status'?",
+                options: ["Tener mucho dinero", "La posición social relativa (dominancia o afiliación)", "Ser famoso", "Tener un coche caro"],
+                correct: 1,
+                explanation: "El status es un motor fundamental. Puede ser 'soy mejor que tú' (dominancia) o 'soy como tú' (afiliación)."
+            },
+            {
+                q: "¿Qué es un 'neófilo'?",
+                options: ["Alguien que odia lo nuevo", "Alguien obsesionado con la novedad (early adopter)", "Un tipo de cliente difícil", "Un fan de Matrix"],
+                correct: 1,
+                explanation: "Los neófilos son los primeros en adoptar nuevas ideas. Son esenciales para difundir la innovación."
+            },
+            {
+                q: "¿Cuál es el rol del precio en el marketing?",
+                options: ["Cubrir costos", "Es una historia y una señal de valor", "Debe ser lo más bajo posible", "Es irrelevante"],
+                correct: 1,
+                explanation: "El precio es una señal de marketing. 'Barato' cuenta una historia; 'Caro' cuenta otra."
+            },
+            {
+                q: "¿Qué es la 'Diferenciación Real'?",
+                options: ["Tener un logo diferente", "Ser significativamente diferente en algo que importa al cliente", "Bajar el precio", "Cambiar el color del producto"],
+                correct: 1,
+                explanation: "La diferenciación solo importa si es relevante para el cliente y difícil de copiar."
+            },
+            {
+                q: "¿Qué es el 'Lock-in' (Cierre)?",
+                options: ["Cerrar una venta", "El costo de cambiar de proveedor", "Un contrato legal", "Bloquear a la competencia"],
+                correct: 1,
+                explanation: "El lock-in ocurre cuando el costo de cambiar (tiempo, dinero, esfuerzo) es alto, fomentando la lealtad."
+            },
+            {
+                q: "¿Qué es el 'Efecto Red'?",
+                options: ["Tener buena señal de internet", "Cuando un producto es más valioso cuantos más usuarios lo usan", "Hacer networking", "Marketing multinivel"],
+                correct: 1,
+                explanation: "El valor aumenta con el número de usuarios (ej: teléfono, redes sociales)."
+            },
+            {
+                q: "¿Cuál es la métrica más importante?",
+                options: ["Likes", "Ventas brutas", "La que mide el cambio que buscas hacer", "Seguidores"],
+                correct: 2,
+                explanation: "Las métricas deben alinearse con tu objetivo de cambio, no con la vanidad."
+            },
+            {
+                q: "¿Qué significa 'El marketing es una maratón'?",
+                options: ["Es cansado", "Requiere consistencia y paciencia a largo plazo", "Hay que correr rápido", "Solo ganan los fuertes"],
+                correct: 1,
+                explanation: "La confianza y la marca se construyen con acciones consistentes a lo largo del tiempo, no con sprints."
+            }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+        let timeLeft = 600;
+        let timerInterval;
+        let userAnswers = [];
+
+        function startQuiz() {
+            showQuestion();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60);
+                const s = timeLeft % 60;
+                document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' + s : s}`;
+                if (timeLeft <= 0) finishQuiz();
+            }, 1000);
+        }
+
+        function showQuestion() {
+            const q = questions[currentQIndex];
+            const html = `
+                <div class="question-card">
+                    <div class="question-text">${q.q}</div>
+                    <div class="options-grid">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${i}, this)">${opt}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('questionContainer').innerHTML = html;
+            document.getElementById('currentQ').textContent = currentQIndex + 1;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(o => o.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('nextBtn').disabled = false;
+
+            // Store answer temporarily
+            userAnswers[currentQIndex] = index;
+        }
+
+        function nextQuestion() {
+            const q = questions[currentQIndex];
+            const selected = userAnswers[currentQIndex];
+            if (selected === q.correct) score++;
+
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('finalScoreDisplay').textContent = percentage + "%";
+
+            let badge = "";
+            let message = "";
+            let color = "";
+
+            if (percentage >= 90) {
+                badge = "👑 GURÚ DEL MARKETING";
+                message = "¡Increíble! Entiendes profundamente la filosofía de Seth Godin.";
+                color = "#ffd700";
+            } else if (percentage >= 70) {
+                badge = "⭐ MARKETER AVANZADO";
+                message = "Muy buen trabajo. Tienes los fundamentos sólidos.";
+                color = "#c0c0c0";
+            } else {
+                badge = "📚 ESTUDIANTE";
+                message = "Sigue estudiando. El marketing moderno es un viaje de aprendizaje continuo.";
+                color = "#cd7f32";
+            }
+
+            document.getElementById('finalBadge').textContent = badge;
+            document.getElementById('finalBadge').style.backgroundColor = color;
+            document.getElementById('finalMessage').textContent = message;
+
+            // Generate review
+            let reviewHTML = '<h3 style="margin-bottom:20px;">Revisión de Respuestas:</h3>';
+            questions.forEach((q, i) => {
+                const userAnswer = userAnswers[i];
+                const isCorrect = userAnswer === q.correct;
+                reviewHTML += `
+                    <div style="background: ${isCorrect ? '#e8f5e9' : '#ffe6e6'}; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                        <p><strong>${i + 1}. ${q.q}</strong></p>
+                        <p>Tu respuesta: ${q.options[userAnswer] || 'Sin respuesta'} ${isCorrect ? '✅' : '❌'}</p>
+                        ${!isCorrect ? `<p style="color: #11998e;">Correcta: ${q.options[q.correct]}</p>` : ''}
+                        <p style="font-size: 0.9em; color: #666; margin-top: 5px;">💡 ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('reviewContainer').innerHTML = reviewHTML;
+        }
+
+        startQuiz();
+    </script>
+</body>
+
+</html>

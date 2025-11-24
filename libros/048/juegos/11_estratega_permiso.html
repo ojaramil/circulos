@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estratega de Permiso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .ladder-step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 8px solid #ccc;
+            transition: all 0.3s;
+        }
+
+        .ladder-step:hover {
+            transform: translateX(5px);
+        }
+
+        .ladder-step.step-1 {
+            border-left-color: #ff6b6b;
+        }
+
+        .ladder-step.step-2 {
+            border-left-color: #ffd700;
+        }
+
+        .ladder-step.step-3 {
+            border-left-color: #11998e;
+        }
+
+        .ladder-step.step-4 {
+            border-left-color: #667eea;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .step-desc {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>✉️ Estratega de Permiso</h1>
+        <p class="subtitle">Diseña tu "Escalera de Permiso". ¿Cómo conviertes a un extraño en un amigo leal?</p>
+
+        <div class="ladder-step step-1">
+            <div class="step-header">
+                <span class="step-title">1. Extraños (Interrupción)</span>
+                <span style="font-size: 2em;">👋</span>
+            </div>
+            <p class="step-desc">¿Cómo consigues su atención inicial sin ser molesto? (Ej: Ads útiles, SEO, Contenido
+                viral)</p>
+            <textarea id="step1" placeholder="Tu estrategia para extraños..."></textarea>
+        </div>
+
+        <div class="ladder-step step-2">
+            <div class="step-header">
+                <span class="step-title">2. Amigos (Permiso Básico)</span>
+                <span style="font-size: 2em;">🤝</span>
+            </div>
+            <p class="step-desc">¿Qué ofreces a cambio de su contacto/atención? (Ej: Lead Magnet, Newsletter, Webinar)
+            </p>
+            <textarea id="step2" placeholder="Tu oferta de intercambio..."></textarea>
+        </div>
+
+        <div class="ladder-step step-3">
+            <div class="step-header">
+                <span class="step-title">3. Clientes (Permiso Medio)</span>
+                <span style="font-size: 2em;">💰</span>
+            </div>
+            <p class="step-desc">¿Cuál es la primera transacción pequeña que genera confianza? (Ej: Tripwire, Producto
+                Low-Ticket)</p>
+            <textarea id="step3" placeholder="Tu primera oferta de venta..."></textarea>
+        </div>
+
+        <div class="ladder-step step-4">
+            <div class="step-header">
+                <span class="step-title">4. Leales (Permiso Máximo)</span>
+                <span style="font-size: 2em;">❤️</span>
+            </div>
+            <p class="step-desc">¿Cómo mantienes la relación a largo plazo? (Ej: Membresía, Comunidad, Servicio VIP)</p>
+            <textarea id="step4" placeholder="Tu estrategia de retención..."></textarea>
+        </div>
+
+        <button class="btn" onclick="generateStrategy()">Generar Estrategia de Permiso</button>
+
+        <div class="result" id="result">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Tu Plan de Marketing de Permiso</h2>
+            <div id="strategyOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateStrategy() {
+            const s1 = document.getElementById('step1').value;
+            const s2 = document.getElementById('step2').value;
+            const s3 = document.getElementById('step3').value;
+            const s4 = document.getElementById('step4').value;
+
+            if (!s1 || !s2 || !s3 || !s4) {
+                alert("Por favor completa todos los pasos de la escalera.");
+                return;
+            }
+
+            const html = `
+                <div style="background: white; padding: 25px; border-radius: 15px;">
+                    <p style="margin-bottom: 15px;"><strong>Tu Promesa:</strong> "Si me prestas atención, te enseñaré ${s1.substring(0, 30)}..."</p>
+                    <p style="margin-bottom: 15px;"><strong>El Intercambio:</strong> "Te daré ${s2} a cambio de tu permiso para contactarte."</p>
+                    <p style="margin-bottom: 15px;"><strong>La Prueba:</strong> "Demostraré mi valor con ${s3}."</p>
+                    <p><strong>La Relación:</strong> "Serviré a largo plazo a través de ${s4}."</p>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e6f7ff; border-radius: 10px; border-left: 5px solid #667eea;">
+                        <strong>💡 Insight de Seth Godin:</strong> El permiso es como una cita. No pides matrimonio (venta grande) en la primera cita. Construyes confianza paso a paso.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('strategyOutput').innerHTML = html;
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Patrones: Ego vs. Esencia</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a2a6c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #b21f1f;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Detector de Patrones: Ego vs. Esencia</h1>
+        
+        <p class="subtitle">Identifica desde dónde estás actuando en este momento.</p>
+        
+        <div class="card">
+            <h3>Analiza una situación reciente</h3>
+            <p>Piensa en un conflicto o situación que te haya perturbado recientemente.</p>
+            <textarea id="situation" placeholder="Describe brevemente la situación..."></textarea>
+            
+            <p>¿Qué sentiste? (Selecciona todas las que apliquen)</p>
+            <div id="feelings" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'ego')">Miedo</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'ego')">Ira</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'ego')">Culpa</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'esencia')">Comprensión</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'ego')">Necesidad de tener razón</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'esencia')">Paz</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'ego')">Juicio</button>
+                <button class="btn" style="background: #ddd; color: #333;" onclick="toggleFeeling(this, 'esencia')">Aceptación</button>
+            </div>
+        </div>
+        
+        <button class="btn" onclick="analyze()">Analizar Origen</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            let egoCount = 0;
+            let essenceCount = 0;
+
+            function toggleFeeling(btn, type) {
+                if (btn.style.background === 'rgb(221, 221, 221)') {
+                    btn.style.background = type === 'ego' ? '#ff6b6b' : '#4ecdc4';
+                    btn.style.color = 'white';
+                    if (type === 'ego') egoCount++; else essenceCount++;
+                } else {
+                    btn.style.background = '#ddd';
+                    btn.style.color = '#333';
+                    if (type === 'ego') egoCount--; else essenceCount--;
+                }
+            }
+
+            function analyze() {
+                const resultDiv = document.getElementById('result');
+                let message = "";
+                
+                if (egoCount > essenceCount) {
+                    message = "<h3>🚨 Detectado: Reacción del EGO</h3><p>Estás operando desde el miedo, la defensa o el ataque. Tu interpretación de la realidad está distorsionada por tus creencias limitantes. <strong>Consejo:</strong> Detente, respira y pregúntate: '¿Prefiero tener razón o ser feliz?'.</p>";
+                } else if (essenceCount > egoCount) {
+                    message = "<h3>✨ Detectado: Respuesta de la ESENCIA</h3><p>Estás conectado con tu sabiduría interior. Actúas desde la paz y la aceptación. ¡Sigue así!</p>";
+                } else {
+                    message = "<h3>⚖️ Zona Neutral</h3><p>Hay una mezcla de emociones. Estás en el proceso de observar. Da un paso atrás y observa la situación como si fueras un espectador en el cine.</p>";
+                }
+                
+                resultDiv.innerHTML = message;
+                resultDiv.style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

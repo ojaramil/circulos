@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tokenomics</title>
+    
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0a12;
+            color: #00ff41;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: transparent;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 20px;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: inherit;
+            margin: 5px 0 15px 0;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00ff41;
+            outline: none;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #00ff41;
+            display: none;
+            background: #050505;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .hash {
+            word-break: break-all;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Tokenomics</h1>
+        
+        <p class="subtitle">Equilibra la oferta y la demanda.</p>
+        
+        <div class="card">
+            <div class="slider-container">
+                <label>Suministro Inicial (Millones): <span id="supplyVal">10</span>M</label>
+                <input type="range" min="1" max="100" value="10" oninput="updateCalc()">
+            </div>
+            
+            <div class="slider-container">
+                <label>Tasa de Inflación Anual (%): <span id="inflationVal">5</span>%</label>
+                <input type="range" min="0" max="50" value="5" oninput="updateCalc()">
+            </div>
+            
+            <div class="slider-container">
+                <label>Mecanismo de Quema (Burn Rate %): <span id="burnVal">2</span>%</label>
+                <input type="range" min="0" max="20" value="2" oninput="updateCalc()">
+            </div>
+            
+            <div class="slider-container">
+                <label>Demanda Estimada (Usuarios): <span id="usersVal">1000</span></label>
+                <input type="range" min="100" max="100000" value="1000" step="100" oninput="updateCalc()">
+            </div>
+        </div>
+        
+        <div id="result" class="result-area" style="display:block;">
+            <h3>Proyección a 5 Años</h3>
+            <p>Suministro Proyectado: <strong id="projSupply">0</strong> Millones</p>
+            <p>Precio Estimado del Token: $<strong id="projPrice">0.00</strong></p>
+            <p>Estado de la Economía: <span id="ecoStatus">--</span></p>
+        </div>
+
+        <script>
+            function updateCalc() {
+                const supply = parseInt(document.querySelector('input[type=range]:nth-of-type(1)').value);
+                const inflation = parseInt(document.querySelector('input[type=range]:nth-of-type(2)').value);
+                const burn = parseInt(document.querySelector('input[type=range]:nth-of-type(3)').value);
+                const users = parseInt(document.querySelector('input[type=range]:nth-of-type(4)').value);
+                
+                // Update labels
+                document.getElementById('supplyVal').innerText = supply;
+                document.getElementById('inflationVal').innerText = inflation;
+                document.getElementById('burnVal').innerText = burn;
+                document.getElementById('usersVal').innerText = users;
+                
+                // Simple calculation logic
+                const netChange = inflation - burn;
+                let finalSupply = supply * Math.pow(1 + (netChange/100), 5);
+                
+                // Price model: Price = (Users * ValuePerUser) / Supply
+                // Assuming constant ValuePerUser for simplicity
+                const price = (users * 100) / (finalSupply * 1000000);
+                
+                document.getElementById('projSupply').innerText = finalSupply.toFixed(2);
+                document.getElementById('projPrice').innerText = price.toFixed(2);
+                
+                let status = "";
+                if (netChange > 10) status = "⚠️ Hiperinflación (El valor se diluye)";
+                else if (netChange < 0) status = "🔥 Deflacionario (Escasez aumenta valor)";
+                else status = "⚖️ Estable";
+                
+                document.getElementById('ecoStatus').innerText = status;
+                document.getElementById('ecoStatus').style.color = netChange < 0 ? '#00ff41' : (netChange > 10 ? '#ff3333' : '#fff');
+            }
+            
+            updateCalc();
+        </script>
+        
+    </div>
+</body>
+</html>

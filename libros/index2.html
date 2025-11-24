@@ -520,6 +520,85 @@
             }
         }
 
+        /* Learning Paths */
+        .paths-section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .paths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .path-card {
+            background: linear-gradient(145deg, rgba(20, 43, 71, 0.8), rgba(10, 25, 45, 0.9));
+            border: 1px solid rgba(130, 170, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .path-card:hover {
+            transform: translateY(-5px);
+            border-color: #82aaff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .path-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(130, 170, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .path-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .path-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .path-desc {
+            font-size: 0.9rem;
+            color: #A0B0C0;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .path-books-count {
+            font-size: 0.8rem;
+            color: #82aaff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         /* Loading Animation */
         .loading {
             display: none;
@@ -563,30 +642,64 @@
     <div class="container">
         <div class="hero">
             <h2>Explora Nuestra Colección</h2>
-            <p>40 libros interactivos con lecciones, juegos y actividades diseñadas para tu crecimiento personal y
+            <p>50 libros interactivos con lecciones, juegos y actividades diseñadas para tu crecimiento personal y
                 profesional</p>
         </div>
 
         <div class="stats-section">
             <div class="stat-card">
-                <div class="stat-number" id="totalBooks">40</div>
+                <div class="stat-number" id="totalBooks">50</div>
                 <div class="stat-label">Libros Totales</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="visibleBooks">40</div>
+                <div class="stat-number" id="visibleBooks">50</div>
                 <div class="stat-label">Mostrando</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">6</div>
+                <div class="stat-number">7</div>
                 <div class="stat-label">Categorías</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">500+</div>
+                <div class="stat-number">1000+</div>
                 <div class="stat-label">Lecciones</div>
             </div>
         </div>
 
-        <div class="filter-section">
+        <div class="paths-section">
+            <div class="section-title">
+                <span>🗺️</span>
+                <span>Rutas de Aprendizaje</span>
+            </div>
+            <div class="paths-grid">
+                <div class="path-card" onclick="filterByPath('emprendedor')">
+                    <div class="path-icon">🚀</div>
+                    <div class="path-title">Despegue Emprendedor</div>
+                    <div class="path-desc">De la idea a la ejecución. Libros esenciales para construir negocios
+                        escalables.</div>
+                    <div class="path-books-count">📚 6 Libros</div>
+                </div>
+                <div class="path-card" onclick="filterByPath('mentalidad')">
+                    <div class="path-icon">🧠</div>
+                    <div class="path-title">Mente Indestructible</div>
+                    <div class="path-desc">Fortalece tu psicología, supera el ego y domina tus hábitos.</div>
+                    <div class="path-books-count">📚 8 Libros</div>
+                </div>
+                <div class="path-card" onclick="filterByPath('financiera')">
+                    <div class="path-icon">💰</div>
+                    <div class="path-title">Libertad Financiera</div>
+                    <div class="path-desc">Estrategias de inversión, ahorro y creación de riqueza a largo plazo.</div>
+                    <div class="path-books-count">📚 5 Libros</div>
+                </div>
+                <div class="path-card" onclick="filterByPath('liderazgo')">
+                    <div class="path-icon">👑</div>
+                    <div class="path-title">Liderazgo de Alto Impacto</div>
+                    <div class="path-desc">Inspira equipos, gestiona talento y crea una cultura de éxito.</div>
+                    <div class="path-books-count">📚 5 Libros</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section" id="filter-section">
             <div class="filter-title">
                 <span>🔍</span>
                 <span>Filtrar por Categoría</span>
@@ -681,7 +794,17 @@
             { number: '037', title: 'Abundance', author: 'Peter H. Diamandis & Steven Kotler', category: 'desarrollo-personal', lessons: 11, games: 9, icon: '🌍' },
             { number: '038', title: 'Mentalidad de Abundancia', author: 'Joel Osteen', category: 'desarrollo-personal', lessons: 14, games: 11, icon: '🙏' },
             { number: '039', title: 'El Millonario Automático Dueño de Casa', author: 'David Bach', category: 'finanzas', lessons: 12, games: 10, icon: '🏠' },
-            { number: '040', title: 'Psicología de Ventas', author: 'Brian Tracy', category: 'desarrollo-profesional', lessons: 15, games: 10, icon: '💼' }
+            { number: '040', title: 'Psicología de Ventas', author: 'Brian Tracy', category: 'desarrollo-profesional', lessons: 15, games: 10, icon: '💼' },
+            { number: '041', title: 'The Millionaire Fastlane', author: 'MJ DeMarco', category: 'emprendimiento', lessons: 25, games: 12, icon: '🏎️' },
+            { number: '042', title: 'One Million Followers', author: 'Brendan Kane', category: 'desarrollo-profesional', lessons: 25, games: 12, icon: '📱' },
+            { number: '043', title: 'The YouTube Formula', author: 'Derral Eves', category: 'desarrollo-profesional', lessons: 25, games: 12, icon: '▶️' },
+            { number: '044', title: '$100M Money Models', author: 'Alex Hormozi', category: 'emprendimiento', lessons: 25, games: 12, icon: '💸' },
+            { number: '045', title: 'Day Trading Attention', author: 'Gary Vaynerchuk', category: 'desarrollo-profesional', lessons: 25, games: 12, icon: '👀' },
+            { number: '046', title: 'UNSCRIPTED', author: 'MJ DeMarco', category: 'emprendimiento', lessons: 25, games: 12, icon: '🔓' },
+            { number: '047', title: 'Finish What You Start', author: 'Peter Hollins', category: 'productividad', lessons: 25, games: 12, icon: '🏁' },
+            { number: '048', title: 'La Vaca Púrpura', author: 'Seth Godin', category: 'desarrollo-profesional', lessons: 25, games: 12, icon: '🐄' },
+            { number: '049', title: 'Las casualidades no existen', author: 'Borja Vilaseca', category: 'desarrollo-personal', lessons: 25, games: 12, icon: '✨' },
+            { number: '050', title: 'Token Economy', author: 'Shermin Voshmgir', category: 'finanzas', lessons: 25, games: 12, icon: '🪙' }
         ];
 
         // DOM Elements
@@ -693,10 +816,40 @@
 
         let currentFilter = 'all';
         let currentSearch = '';
+        let currentPath = null;
+
+        const learningPaths = {
+            'emprendedor': ['041', '046', '009', '005', '044', '022'],
+            'mentalidad': ['019', '026', '031', '016', '015', '030', '034', '049'],
+            'financiera': ['001', '003', '004', '039', '050'],
+            'liderazgo': ['011', '012', '025', '020', '005']
+        };
+
+        // Filter by Path
+        function filterByPath(pathKey) {
+            currentPath = learningPaths[pathKey];
+            currentFilter = 'all';
+            currentSearch = '';
+
+            // Reset UI
+            filterButtons.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-category="all"]').classList.add('active');
+            searchInput.value = '';
+
+            // Scroll
+            document.getElementById('filter-section').scrollIntoView({ behavior: 'smooth' });
+
+            renderBooks();
+        }
 
         // Render Books
         function renderBooks() {
             const filteredBooks = books.filter(book => {
+                // Path Filter
+                if (currentPath) {
+                    return currentPath.includes(book.number);
+                }
+
                 const matchesCategory = currentFilter === 'all' || book.category === currentFilter;
                 const matchesSearch = book.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
                     book.author.toLowerCase().includes(currentSearch.toLowerCase());
@@ -765,6 +918,7 @@
             btn.addEventListener('click', () => {
                 filterButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                currentPath = null; // Reset path
                 currentFilter = btn.dataset.category;
                 renderBooks();
             });
@@ -772,6 +926,7 @@
 
         // Search Input
         searchInput.addEventListener('input', (e) => {
+            currentPath = null; // Reset path
             currentSearch = e.target.value;
             renderBooks();
         });

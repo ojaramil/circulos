@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificador de Audiencia Mínima Viable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .question-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-section h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .avatar-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .specificity-meter {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .specificity-fill {
+            background: linear-gradient(90deg, #ff6b6b 0%, #ffd700 50%, #11998e 100%);
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 Identificador de Audiencia Mínima Viable</h1>
+        <p class="subtitle">Define tu audiencia con precisión quirúrgica - mientras más específico, mejor</p>
+
+        <div class="question-section">
+            <h3>1. Demografía Básica</h3>
+            <div class="input-group">
+                <label>¿Quiénes son? (edad, género, ubicación, profesión)</label>
+                <input type="text" id="demographics"
+                    placeholder="Ej: Mujeres de 30-45 años, profesionales en ciudades grandes">
+            </div>
+        </div>
+
+        <div class="question-section">
+            <h3>2. Psicografía Profunda</h3>
+            <div class="input-group">
+                <label>¿Qué creen que es verdad sobre el mundo?</label>
+                <textarea id="beliefs"
+                    placeholder="Ej: Creen que el éxito requiere sacrificar tiempo con familia..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>¿Qué les da miedo?</label>
+                <input type="text" id="fears" placeholder="Ej: Miedo a quedarse atrás profesionalmente">
+            </div>
+            <div class="input-group">
+                <label>¿Qué desean profundamente?</label>
+                <input type="text" id="desires" placeholder="Ej: Balance entre carrera exitosa y vida personal plena">
+            </div>
+        </div>
+
+        <div class="question-section">
+            <h3>3. Comportamientos y Hábitos</h3>
+            <div class="input-group">
+                <label>¿Dónde pasan su tiempo? (online y offline)</label>
+                <input type="text" id="hangouts"
+                    placeholder="Ej: LinkedIn, podcasts de negocios, conferencias de industria">
+            </div>
+            <div class="input-group">
+                <label>¿Qué compran regularmente?</label>
+                <input type="text" id="purchases"
+                    placeholder="Ej: Cursos online, libros de desarrollo personal, coaching">
+            </div>
+        </div>
+
+        <div class="question-section">
+            <h3>4. El Problema Específico</h3>
+            <div class="input-group">
+                <label>¿Qué problema específico tienen que tú puedes resolver?</label>
+                <textarea id="problem"
+                    placeholder="Ej: No saben cómo delegar efectivamente para crecer su negocio sin trabajar 80 horas/semana"></textarea>
+            </div>
+            <div class="input-group">
+                <label>¿Qué soluciones han intentado antes?</label>
+                <input type="text" id="tried"
+                    placeholder="Ej: Contratar asistentes, apps de productividad, trabajar más horas">
+            </div>
+        </div>
+
+        <div class="question-section">
+            <h3>5. La Transformación Deseada</h3>
+            <div class="input-group">
+                <label>¿Quiénes quieren convertirse?</label>
+                <input type="text" id="transformation"
+                    placeholder="Ej: Líderes que escalan negocios sin sacrificar salud o familia">
+            </div>
+        </div>
+
+        <button class="btn" onclick="generateAvatar()">Generar Mi Audiencia Mínima Viable</button>
+
+        <div class="result" id="result">
+            <h2>Tu Audiencia Mínima Viable</h2>
+
+            <div style="margin-bottom: 20px;">
+                <strong>Nivel de Especificidad:</strong>
+                <div class="specificity-meter">
+                    <div class="specificity-fill" id="specificityFill">0%</div>
+                </div>
+                <div id="specificityFeedback"></div>
+            </div>
+
+            <div class="avatar-card">
+                <h3>📋 Perfil de Tu Cliente Ideal</h3>
+                <div id="avatarProfile"></div>
+            </div>
+
+            <div class="avatar-card">
+                <h3>💬 Cómo Hablarles</h3>
+                <div id="messaging"></div>
+            </div>
+
+            <div class="avatar-card">
+                <h3>📍 Dónde Encontrarlos</h3>
+                <div id="channels"></div>
+            </div>
+
+            <div class="avatar-card">
+                <h3>⚠️ Para Quién NO Es Esto</h3>
+                <div id="notFor"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateAvatar() {
+            const demographics = document.getElementById('demographics').value;
+            const beliefs = document.getElementById('beliefs').value;
+            const fears = document.getElementById('fears').value;
+            const desires = document.getElementById('desires').value;
+            const hangouts = document.getElementById('hangouts').value;
+            const purchases = document.getElementById('purchases').value;
+            const problem = document.getElementById('problem').value;
+            const tried = document.getElementById('tried').value;
+            const transformation = document.getElementById('transformation').value;
+
+            if (!demographics || !problem || !transformation) {
+                alert('Por favor completa al menos: Demografía, Problema, y Transformación');
+                return;
+            }
+
+            // Calculate specificity score
+            let score = 0;
+            if (demographics.length > 20) score += 15;
+            if (beliefs) score += 15;
+            if (fears) score += 10;
+            if (desires) score += 10;
+            if (hangouts) score += 15;
+            if (purchases) score += 10;
+            if (problem.length > 30) score += 15;
+            if (tried) score += 5;
+            if (transformation) score += 5;
+
+            // Update specificity meter
+            document.getElementById('specificityFill').style.width = score + '%';
+            document.getElementById('specificityFill').textContent = score + '%';
+
+            let feedback = '';
+            if (score >= 80) {
+                feedback = '🎯 ¡Excelente! Tu audiencia está muy bien definida. Esta especificidad te dará claridad y poder.';
+            } else if (score >= 60) {
+                feedback = '👍 Buen nivel de especificidad. Considera agregar más detalles psicográficos para mayor precisión.';
+            } else {
+                feedback = '⚠️ Necesitas más especificidad. Cuanto más específico seas, más fácil será crear marketing relevante.';
+            }
+            document.getElementById('specificityFeedback').innerHTML = `<p style="margin-top: 10px; color: #333;">${feedback}</p>`;
+
+            // Generate avatar profile
+            const profile = `
+                <p><strong>Quiénes son:</strong> ${demographics}</p>
+                ${beliefs ? `<p><strong>Qué creen:</strong> ${beliefs}</p>` : ''}
+                ${fears ? `<p><strong>Sus miedos:</strong> ${fears}</p>` : ''}
+                ${desires ? `<p><strong>Sus deseos:</strong> ${desires}</p>` : ''}
+                <p><strong>Problema específico:</strong> ${problem}</p>
+                ${tried ? `<p><strong>Ya intentaron:</strong> ${tried}</p>` : ''}
+                <p><strong>Quieren convertirse en:</strong> ${transformation}</p>
+            `;
+            document.getElementById('avatarProfile').innerHTML = profile;
+
+            // Generate messaging
+            const messaging = `
+                <p><strong>Tu mensaje central:</strong> "Ayudo a ${demographics} a ${transformation} sin ${fears || 'los problemas comunes'}."</p>
+                <p style="margin-top: 15px;"><strong>Lenguaje a usar:</strong> Habla sobre ${desires || 'sus aspiraciones'}, reconoce ${fears || 'sus miedos'}, y muestra cómo tu solución es diferente de ${tried || 'lo que ya intentaron'}.</p>
+                <p style="margin-top: 15px; padding: 15px; background: #fff9e6; border-radius: 8px;">
+                    <strong>💡 Tip:</strong> Usa sus palabras exactas. Si dicen "estoy abrumado", usa "abrumado" en tu marketing, no "estresado".
+                </p>
+            `;
+            document.getElementById('messaging').innerHTML = messaging;
+
+            // Generate channels
+            const channels = `
+                ${hangouts ? `<p><strong>Canales principales:</strong> ${hangouts}</p>` : '<p>Agrega dónde pasan su tiempo para recomendaciones específicas.</p>'}
+                <p style="margin-top: 15px;"><strong>Estrategia:</strong> No intentes estar en todas partes. Domina los 2-3 canales donde tu audiencia realmente está.</p>
+            `;
+            document.getElementById('channels').innerHTML = channels;
+
+            // Generate "not for"
+            const notFor = `
+                <p>Esta audiencia mínima viable NO es para:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Personas que no creen en ${beliefs || 'tus valores fundamentales'}</li>
+                    <li>Personas que no experimentan ${problem}</li>
+                    <li>Personas que no aspiran a ${transformation}</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 15px; background: #ffe6e6; border-radius: 8px;">
+                    <strong>⚠️ Importante:</strong> Decir "no es para ti" a algunos hace que sea MÁS valioso para otros. La exclusión fortalece tu posicionamiento.
+                </p>
+            `;
+            document.getElementById('notFor').innerHTML = notFor;
+
+            document.getElementById('result').classList.add('show');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Validador de Ideas de Negocio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 0.95em; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 0.95em; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        .result.show { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-label { color: #666; font-size: 0.9em; margin-bottom: 5px; }
+        .metric-value { color: #667eea; font-size: 2em; font-weight: bold; }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkbox-item:hover { background: #e9ecef; transform: translateX(5px); }
+        .checkbox-item input { width: auto; margin-right: 15px; cursor: pointer; }
+        .checkbox-item label { cursor: pointer; flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💡 Validador de Ideas de Negocio</h1>
+        <p class="subtitle">Evalúa tu idea contra los 5 Mandamientos</p>
+        
+    <div class="input-group">
+        <label>Describe tu idea de negocio brevemente</label>
+        <textarea id="idea" placeholder="Ej: Una app que ayuda a las personas a..."></textarea>
+    </div>
+    
+    <div style="margin: 30px 0;">
+        <h3 style="color: #667eea; margin-bottom: 20px;">Evalúa tu idea contra los 5 Mandamientos:</h3>
+        
+        <div class="checkbox-item">
+            <input type="checkbox" id="control">
+            <label for="control"><strong>Control:</strong> ¿Posees completamente el negocio, marca y relación con clientes?</label>
+        </div>
+        
+        <div class="checkbox-item">
+            <input type="checkbox" id="entry">
+            <label for="entry"><strong>Entrada:</strong> ¿Requiere habilidades, capital o esfuerzo significativo para comenzar?</label>
+        </div>
+        
+        <div class="checkbox-item">
+            <input type="checkbox" id="need">
+            <label for="need"><strong>Necesidad:</strong> ¿Resuelve un problema real que la gente paga por solucionar?</label>
+        </div>
+        
+        <div class="checkbox-item">
+            <input type="checkbox" id="time">
+            <label for="time"><strong>Tiempo:</strong> ¿Puede funcionar sin tu presencia constante?</label>
+        </div>
+        
+        <div class="checkbox-item">
+            <input type="checkbox" id="scale">
+            <label for="scale"><strong>Escala:</strong> ¿Puede servir a 10x más clientes sin 10x más esfuerzo?</label>
+        </div>
+    </div>
+    
+    <button class="btn" onclick="validateIdea()">Validar Mi Idea</button>
+    
+    <div class="result" id="result">
+        <div class="metric">
+            <div class="metric-label">Puntuación Fastlane</div>
+            <div class="metric-value" id="score">0/5</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Veredicto</div>
+            <div style="font-size: 1.5em; margin: 15px 0;" id="verdict"></div>
+            <div style="color: #555; line-height: 1.6;" id="feedback"></div>
+        </div>
+    </div>
+    
+    </div>
+    <script>
+    function validateIdea() {
+        const idea = document.getElementById('idea').value.trim();
+        if (!idea) {
+            alert('Por favor describe tu idea primero');
+            return;
+        }
+        
+        const control = document.getElementById('control').checked;
+        const entry = document.getElementById('entry').checked;
+        const need = document.getElementById('need').checked;
+        const time = document.getElementById('time').checked;
+        const scale = document.getElementById('scale').checked;
+        
+        const score = [control, entry, need, time, scale].filter(Boolean).length;
+        
+        document.getElementById('score').textContent = score + '/5';
+        
+        let verdict, feedback;
+        if (score === 5) {
+            verdict = '🚀 ¡EXCELENTE! Idea Fastlane';
+            feedback = 'Tu idea cumple con los 5 Mandamientos. Esto es una verdadera oportunidad Fastlane. Ahora necesitas ejecutar rápidamente antes que otros vean la misma oportunidad.';
+        } else if (score >= 3) {
+            verdict = '👍 Buena Idea con Potencial';
+            feedback = 'Tu idea cumple con ' + score + ' de 5 mandamientos. Trabaja en mejorar las áreas faltantes. Pregúntate cómo puedes modificar tu idea para cumplir con todos los mandamientos.';
+        } else {
+            verdict = '⚠️ Idea Slowlane o Sidewalk';
+            feedback = 'Tu idea solo cumple con ' + score + ' de 5 mandamientos. Esto probablemente no te llevará a la libertad financiera rápidamente. Considera pivotar o buscar una idea diferente que cumpla más mandamientos.';
+        }
+        
+        document.getElementById('verdict').textContent = verdict;
+        document.getElementById('feedback').textContent = feedback;
+        document.getElementById('result').classList.add('show');
+    }
+    </script>
+</body>
+</html>

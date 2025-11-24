@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Mapa de Ruta UNSCRIPTED</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Mapa de Ruta UNSCRIPTED</h1>
+        <p class="subtitle">Visualiza tu camino desde SCRIPTED a UNSCRIPTED</p>
+        <div class="input-group"><label>¿Dónde estás ahora?</label><select id="current"><option>Completamente SCRIPTED</option><option>Mayormente SCRIPTED</option><option>En transición</option><option>Mayormente UNSCRIPTED</option><option>Completamente UNSCRIPTED</option></select></div>
+    <div class="input-group"><label>¿Cuál es tu mayor obstáculo?</label><textarea id="obstacle"></textarea></div>
+    <button class="btn" onclick="createRoadmap()">Crear Mi Mapa</button>
+    <div class="result" id="result"><div class="metric"><h3 style="color:#667eea;">Tu Ruta UNSCRIPTED</h3><div id="roadmap"></div></div></div>
+    </div>
+    <script>function createRoadmap(){const current=document.getElementById('current').value;const obstacle=document.getElementById('obstacle').value;let roadmap='';if(current.includes('Completamente SCRIPTED')){roadmap='<strong>Fase 1 (Meses 1-3): Despertar</strong><br>• Lee UNSCRIPTED y The Millionaire Fastlane<br>• Identifica tus creencias limitantes<br>• Comienza a ahorrar agresivamente (30%+)<br><br><strong>Fase 2 (Meses 4-6): Exploración</strong><br>• Identifica problemas que puedes resolver<br>• Valida ideas con mercado real<br>• Desarrolla habilidades necesarias<br><br><strong>Fase 3 (Meses 7-12): Ejecución</strong><br>• Lanza tu MVP<br>• Consigue primeros clientes<br>• Itera basándote en feedback<br><br><strong>Fase 4 (Año 2+): Escala</strong><br>• Optimiza y automatiza<br>• Construye sistemas<br>• Camino hacia libertad financiera';}else if(current.includes('transición')){roadmap='<strong>Estás en el camino correcto!</strong><br><br><strong>Próximos Pasos:</strong><br>• Acelera tu ejecución<br>• Enfócate en los 5 Mandamientos<br>• Aumenta tu tasa de ahorro<br>• Construye ingresos pasivos<br>• Mantén disciplinas financieras<br><br><strong>Meta:</strong> Alcanzar libertad financiera en 2-5 años';}else{roadmap='<strong>¡Felicitaciones por tu progreso!</strong><br><br><strong>Enfócate en:</strong><br>• Proteger y crecer tu libertad<br>• Ayudar a otros en su viaje<br>• Continuar creando valor<br>• Vivir con propósito<br>• Disfrutar tu vida UNSCRIPTED';}if(obstacle){roadmap+=`<br><br><strong>Tu Obstáculo:</strong> ${obstacle}<br><strong>Solución:</strong> La mayoría de los obstáculos son mentales. Cuestiona si es real o una excusa. Luego, toma acción a pesar del miedo.`;}document.getElementById('roadmap').innerHTML=roadmap;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

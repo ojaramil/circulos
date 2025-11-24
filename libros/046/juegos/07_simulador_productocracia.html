@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏭 Simulador de Productocracia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏭 Simulador de Productocracia</h1>
+        <p class="subtitle">Evalúa tu producto vs. tu marketing</p>
+        <div class="input-group"><label>Calidad de tu Producto (1-10)</label><input type="range" id="product" min="1" max="10" value="5" oninput="updateSim()"><div style="text-align:center;color:#667eea;font-weight:bold;" id="productVal">5</div></div>
+    <div class="input-group"><label>Calidad de tu Marketing (1-10)</label><input type="range" id="marketing" min="1" max="10" value="5" oninput="updateSim()"><div style="text-align:center;color:#667eea;font-weight:bold;" id="marketingVal">5</div></div>
+    <button class="btn" onclick="simulate()">Simular Resultados</button>
+    <div class="result" id="result"><div class="metric"><div style="font-size:2em;text-align:center;color:#667eea;font-weight:bold;" id="score">0</div><div style="text-align:center;color:#666;">Puntuación de Éxito</div></div><div class="metric"><div id="analysis"></div></div></div>
+    </div>
+    <script>function updateSim(){document.getElementById('productVal').textContent=document.getElementById('product').value;document.getElementById('marketingVal').textContent=document.getElementById('marketing').value;}
+    function simulate(){const p=parseInt(document.getElementById('product').value);const m=parseInt(document.getElementById('marketing').value);const score=Math.round((p*0.7+m*0.3)*10);document.getElementById('score').textContent=score;let analysis='';if(p>=8&&m>=6){analysis='🚀 Combinación Ganadora! Gran producto + buen marketing = éxito sostenible. Los clientes regresan y refieren.';}else if(p>=8&&m<6){analysis='👍 Buen Producto, Marketing Débil. Tu producto es excelente pero pocos lo conocen. Mejora tu marketing para crecer más rápido.';}else if(p<6&&m>=8){analysis='⚠️ Marketing Fuerte, Producto Débil. Conseguirás clientes pero no volverán. Enfócate en mejorar el producto primero.';}else{analysis='🚨 Ambos Necesitan Mejora. Prioriza el producto primero - un gran producto con marketing mediocre vence a un producto mediocre con gran marketing.';}document.getElementById('analysis').innerHTML=analysis;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

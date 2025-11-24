@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Tracker de las 4 Disciplinas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        textarea { min-height: 100px; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 30px; padding: 25px; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; display: none; }
+        .result.show { display: block; }
+        .metric { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .checkbox-item { padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Tracker de las 4 Disciplinas</h1>
+        <p class="subtitle">Monitorea tu progreso en las disciplinas financieras</p>
+        <h3 style="color:#667eea;margin:20px 0;">Evalúa tu nivel en cada disciplina:</h3>
+    <div class="checkbox-item"><input type="checkbox" id="d1"><label>Practico inmunidad comparativa - no me comparo con otros</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d2"><label>Ahorro con propósito específico (construir ingresos pasivos)</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d3"><label>Practico elevación medida - no inflo mi estilo de vida rápidamente</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d4"><label>Uso pensamiento consecuencial antes de decisiones importantes</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d5"><label>Evito deudas de consumo</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d6"><label>Invierto en activos, no en pasivos</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d7"><label>Mi tasa de ahorro es >30%</label></div>
+    <div class="checkbox-item"><input type="checkbox" id="d8"><label>Tengo un plan claro hacia la libertad financiera</label></div>
+    <button class="btn" onclick="track()">Evaluar Mi Disciplina</button>
+    <div class="result" id="result"><div class="metric"><div style="font-size:3em;text-align:center;color:#667eea;font-weight:bold;" id="score">0/8</div><div style="text-align:center;color:#666;">Disciplinas Activas</div></div><div class="metric"><div id="feedback"></div></div></div>
+    </div>
+    <script>function track(){const checks=Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).length;document.getElementById('score').textContent=checks+'/8';let feedback='';if(checks>=7){feedback='🚀 Excelente! Tienes alta disciplina financiera. Continúa así y alcanzarás la libertad.';}else if(checks>=5){feedback='👍 Buen progreso. Trabaja en las disciplinas faltantes para acelerar tu camino.';}else if(checks>=3){feedback='⚠️ Disciplina moderada. Necesitas mejorar significativamente para alcanzar libertad.';}else{feedback='🚨 Disciplina baja. Sin estas disciplinas, incluso si ganas mucho, no alcanzarás libertad real.';}document.getElementById('feedback').textContent=feedback;document.getElementById('result').classList.add('show');}</script>
+</body>
+</html>

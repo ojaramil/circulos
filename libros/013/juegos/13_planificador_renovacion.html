@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Planificador de Renovación</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .option { background: white; border: 3px solid #e0e0e0; padding: 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .option:hover { border-color: #667eea; transform: scale(1.05); }
+        .option.selected { border-color: #667eea; background: linear-gradient(120deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Planificador de Renovación</h1>
+        <p class="subtitle">Equilibra tu renovación en las 4 dimensiones</p>
+        
+    <div class="card">
+        <h3>Las 4 Dimensiones de la Renovación</h3>
+        <p>Para mantener y mejorar tu efectividad, debes renovarte en las cuatro dimensiones de tu naturaleza.</p>
+    </div>
+    <div class="card">
+        <h3>🏃 Dimensión Física</h3>
+        <p>Ejercicio, nutrición, manejo del estrés</p>
+        <textarea id="physical" placeholder="¿Qué harás esta semana? Ej: Correr 30 min 3 veces, comer más verduras..."></textarea>
+    </div>
+    <div class="card">
+        <h3>🧘 Dimensión Espiritual</h3>
+        <p>Clarificación de valores, compromiso, meditación, estudio</p>
+        <textarea id="spiritual" placeholder="¿Qué harás? Ej: Meditar 10 min diarios, leer textos inspiradores..."></textarea>
+    </div>
+    <div class="card">
+        <h3>🧠 Dimensión Mental</h3>
+        <p>Lectura, visualización, planificación, escritura</p>
+        <textarea id="mental" placeholder="¿Qué harás? Ej: Leer 30 min al día, aprender algo nuevo..."></textarea>
+    </div>
+    <div class="card">
+        <h3>❤️ Dimensión Social/Emocional</h3>
+        <p>Servicio, empatía, sinergia, seguridad intrínseca</p>
+        <textarea id="social" placeholder="¿Qué harás? Ej: Llamar a un amigo, hacer un acto de servicio..."></textarea>
+    </div>
+    <button class="btn" onclick="createPlan()">Crear Mi Plan de Renovación</button>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    function createPlan() {
+        const physical = document.getElementById('physical').value;
+        const spiritual = document.getElementById('spiritual').value;
+        const mental = document.getElementById('mental').value;
+        const social = document.getElementById('social').value;
+        
+        if (!physical || !spiritual || !mental || !social) {
+            alert('Por favor completa las 4 dimensiones');
+            return;
+        }
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea; text-align: center;">✨ Tu Plan de Renovación Semanal</h2>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>🏃 Física</h3>
+                <p>${physical}</p>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>🧘 Espiritual</h3>
+                <p>${spiritual}</p>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>🧠 Mental</h3>
+                <p>${mental}</p>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>❤️ Social/Emocional</h3>
+                <p>${social}</p>
+            </div>
+            <div style="background: #fff9e6; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>💡 Recuerda:</h3>
+                <p>Afilar la sierra toma tiempo, pero te hace más efectivo en todo lo demás. No es egoísta cuidarte - es esencial para poder cuidar a otros.</p>
+                <p style="margin-top: 15px;"><strong>Próximo paso:</strong> Agenda estas actividades en tu calendario como citas contigo mismo.</p>
+            </div>
+        `;
+        result.classList.add('show');
+        result.scrollIntoView({ behavior: 'smooth' });
+        
+        localStorage.setItem('renewalPlan', JSON.stringify({physical, spiritual, mental, social}));
+    }
+    </script>
+</body>
+</html>

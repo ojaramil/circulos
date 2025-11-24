@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Simulador de Interdependencia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 1000px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .checkbox-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .checkbox-item input { width: auto; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Simulador de Interdependencia</h1>
+        <p class="subtitle">Aprende a colaborar efectivamente con otros</p>
+        
+    <div class="card">
+        <h3>De la Independencia a la Interdependencia</h3>
+        <p>La interdependencia es una elección que solo las personas independientes pueden hacer. Es el paradigma del "Nosotros".</p>
+    </div>
+    <div class="card">
+        <h3>Escenario de Colaboración</h3>
+        <p>Tienes un proyecto importante que requiere colaboración. ¿Cómo abordarías cada situación?</p>
+    </div>
+    <div id="scenarios"></div>
+    <button class="btn" onclick="evaluateInterdependence()">Evaluar Respuestas</button>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    const scenarios = [
+        {
+            question: "Un compañero tiene una idea diferente a la tuya para el proyecto:",
+            options: [
+                { text: "Impongo mi idea porque sé que es mejor", type: "independence", score: 0 },
+                { text: "Acepto su idea para evitar conflicto", type: "dependence", score: 0 },
+                { text: "Busco entender su perspectiva y encontrar una tercera alternativa", type: "interdependence", score: 1 }
+            ]
+        },
+        {
+            question: "Necesitas ayuda pero no quieres molestar a nadie:",
+            options: [
+                { text: "No pido ayuda, lo hago todo yo mismo", type: "independence", score: 0 },
+                { text: "Espero que alguien note que necesito ayuda", type: "dependence", score: 0 },
+                { text: "Pido ayuda específica y ofrezco ayudar en algo a cambio", type: "interdependence", score: 1 }
+            ]
+        },
+        {
+            question: "Hay un desacuerdo en el equipo sobre la dirección:",
+            options: [
+                { text: "Dejo que el líder decida, no es mi problema", type: "dependence", score: 0 },
+                { text: "Defiendo mi posición hasta que los demás cedan", type: "independence", score: 0 },
+                { text: "Facilito una conversación para entender todas las perspectivas", type: "interdependence", score: 1 }
+            ]
+        }
+    ];
+    
+    let answers = {};
+    
+    function loadScenarios() {
+        let html = '';
+        scenarios.forEach((s, index) => {
+            html += `
+                <div class="card">
+                    <h3>Situación ${index + 1}</h3>
+                    <p>${s.question}</p>
+                    <div style="margin-top: 15px;">
+            `;
+            s.options.forEach((opt, oIndex) => {
+                html += `
+                    <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; cursor: pointer; border: 2px solid #e0e0e0;" 
+                         onclick="selectAnswer(${index}, ${oIndex}, '${opt.type}', ${opt.score})">
+                        ${opt.text}
+                    </div>
+                `;
+            });
+            html += '</div></div>';
+        });
+        document.getElementById('scenarios').innerHTML = html;
+    }
+    
+    function selectAnswer(sIndex, oIndex, type, score) {
+        answers[sIndex] = { type, score };
+        const options = document.querySelectorAll('.card')[sIndex + 2].querySelectorAll('div[onclick]');
+        options.forEach((opt, i) => {
+            opt.style.border = i === oIndex ? '2px solid #667eea' : '2px solid #e0e0e0';
+            opt.style.background = i === oIndex ? '#e8f5e9' : 'white';
+        });
+    }
+    
+    function evaluateInterdependence() {
+        let totalScore = 0;
+        let dependence = 0, independence = 0, interdependence = 0;
+        
+        for (let key in answers) {
+            totalScore += answers[key].score;
+            if (answers[key].type === 'dependence') dependence++;
+            else if (answers[key].type === 'independence') independence++;
+            else interdependence++;
+        }
+        
+        const percentage = Math.round((totalScore / scenarios.length) * 100);
+        let message = '';
+        
+        if (interdependence === scenarios.length) {
+            message = '¡Excelente! Entiendes la interdependencia. Sabes que juntos podemos lograr más que solos.';
+        } else if (independence > interdependence) {
+            message = 'Valoras tu independencia, pero recuerda: la interdependencia es una elección más elevada cuando se basa en independencia real.';
+        } else {
+            message = 'La interdependencia requiere primero ser independiente. Trabaja en los Hábitos 1-3 antes de los Hábitos 4-6.';
+        }
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea; text-align: center;">Resultados</h2>
+            <div style="text-align: center; font-size: 3em; color: #667eea; margin: 20px 0;">${totalScore}/${scenarios.length}</div>
+            <div style="text-align: center; font-size: 1.5em;">${percentage}% Interdependiente</div>
+            <p style="text-align: center; margin: 20px 0;">${message}</p>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3>Tu Perfil:</h3>
+                <p>Dependencia: ${dependence} respuestas</p>
+                <p>Independencia: ${independence} respuestas</p>
+                <p>Interdependencia: ${interdependence} respuestas</p>
+            </div>
+        `;
+        result.classList.add('show');
+    }
+    
+    loadScenarios();
+    </script>
+</body>
+</html>

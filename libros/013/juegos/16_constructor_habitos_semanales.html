@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📆 Constructor de Hábitos Semanales</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 1000px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .checkbox-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .checkbox-item input { width: auto; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📆 Constructor de Hábitos Semanales</h1>
+        <p class="subtitle">Planifica y rastrea tus hábitos semana a semana</p>
+        
+    <div class="card">
+        <h3>Define tus 3 Hábitos Clave</h3>
+        <p>Elige 3 hábitos que quieras desarrollar esta semana:</p>
+        <input type="text" id="habit1" placeholder="Hábito 1: Ej. Meditar 10 minutos">
+        <input type="text" id="habit2" placeholder="Hábito 2: Ej. Leer 30 minutos">
+        <input type="text" id="habit3" placeholder="Hábito 3: Ej. Ejercicio 20 minutos">
+    </div>
+    <button class="btn" onclick="createWeeklyTracker()">Crear Tracker Semanal</button>
+    <div id="tracker" style="display: none;">
+        <div class="card">
+            <h3>Tracker Semanal</h3>
+            <div id="weekGrid"></div>
+        </div>
+        <button class="btn" onclick="saveWeek()">Guardar Semana</button>
+        <button class="btn" onclick="viewStats()">Ver Estadísticas</button>
+    </div>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    let habits = [];
+    let weekData = {};
+    
+    function createWeeklyTracker() {
+        const h1 = document.getElementById('habit1').value;
+        const h2 = document.getElementById('habit2').value;
+        const h3 = document.getElementById('habit3').value;
+        
+        if (!h1 || !h2 || !h3) {
+            alert('Por favor define los 3 hábitos');
+            return;
+        }
+        
+        habits = [h1, h2, h3];
+        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        
+        let html = '<table style="width: 100%; border-collapse: collapse;">';
+        html += '<tr><th style="padding: 10px; border: 1px solid #ddd;">Día</th>';
+        habits.forEach(h => {
+            html += `<th style="padding: 10px; border: 1px solid #ddd;">${h}</th>`;
+        });
+        html += '</tr>';
+        
+        days.forEach((day, dIndex) => {
+            html += `<tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>${day}</strong></td>`;
+            habits.forEach((h, hIndex) => {
+                html += `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                    <input type="checkbox" id="day${dIndex}_habit${hIndex}" onchange="updateWeekData()">
+                </td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</table>';
+        
+        document.getElementById('weekGrid').innerHTML = html;
+        document.getElementById('tracker').style.display = 'block';
+    }
+    
+    function updateWeekData() {
+        weekData = {};
+        for (let d = 0; d < 7; d++) {
+            for (let h = 0; h < 3; h++) {
+                const key = `day${d}_habit${h}`;
+                weekData[key] = document.getElementById(key).checked;
+            }
+        }
+    }
+    
+    function viewStats() {
+        let total = 0;
+        let completed = 0;
+        
+        for (let key in weekData) {
+            total++;
+            if (weekData[key]) completed++;
+        }
+        
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea; text-align: center;">Estadísticas de la Semana</h2>
+            <div style="text-align: center; font-size: 3em; color: #667eea; margin: 20px 0;">${completed}/${total}</div>
+            <div style="text-align: center; font-size: 1.5em;">${percentage}% Completado</div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3>Por Hábito:</h3>
+                ${habits.map((h, i) => {
+                    let count = 0;
+                    for (let d = 0; d < 7; d++) {
+                        if (weekData[`day${d}_habit${i}`]) count++;
+                    }
+                    return `<p><strong>${h}:</strong> ${count}/7 días</p>`;
+                }).join('')}
+            </div>
+        `;
+        result.classList.add('show');
+    }
+    
+    function saveWeek() {
+        updateWeekData();
+        localStorage.setItem('weeklyHabits_' + new Date().toISOString().split('T')[0], JSON.stringify({habits, weekData}));
+        alert('✅ Semana guardada');
+    }
+    </script>
+</body>
+</html>

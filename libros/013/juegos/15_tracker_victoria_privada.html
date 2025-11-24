@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Tracker de Victoria Privada</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 1000px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .checkbox-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .checkbox-item input { width: auto; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Tracker de Victoria Privada</h1>
+        <p class="subtitle">Monitorea tu progreso en los Hábitos 1, 2 y 3</p>
+        
+    <div class="card">
+        <h3>Victoria Privada: Hábitos 1, 2 y 3</h3>
+        <p>Antes de lograr victorias públicas con otros, debes lograr victorias privadas contigo mismo.</p>
+    </div>
+    <div class="card">
+        <h3>Hábito 1: Ser Proactivo</h3>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h1_1">
+            <label>Hoy enfoqué mi energía en mi Círculo de Influencia</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h1_2">
+            <label>Elegí mi respuesta ante situaciones difíciles</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h1_3">
+            <label>Usé lenguaje proactivo ("Yo elijo" vs "Tengo que")</label>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Hábito 2: Comenzar con el Fin en Mente</h3>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h2_1">
+            <label>Revisé mi misión personal o valores</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h2_2">
+            <label>Mis acciones de hoy alinearon con mis valores</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h2_3">
+            <label>Visualicé mis metas a largo plazo</label>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Hábito 3: Poner Primero lo Primero</h3>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h3_1">
+            <label>Pasé tiempo en el Cuadrante II (importante, no urgente)</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h3_2">
+            <label>Dije "no" a algo urgente pero no importante</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="h3_3">
+            <label>Planifiqué mi semana basado en roles y metas</label>
+        </div>
+    </div>
+    <button class="btn" onclick="calculateScore()">Calcular Puntuación</button>
+    <button class="btn" onclick="saveProgress()">Guardar Progreso</button>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    function calculateScore() {
+        let total = 0;
+        let h1 = 0, h2 = 0, h3 = 0;
+        
+        for (let i = 1; i <= 3; i++) {
+            if (document.getElementById('h1_' + i).checked) { h1++; total++; }
+            if (document.getElementById('h2_' + i).checked) { h2++; total++; }
+            if (document.getElementById('h3_' + i).checked) { h3++; total++; }
+        }
+        
+        const percentage = Math.round((total / 9) * 100);
+        let message = '';
+        
+        if (percentage >= 80) {
+            message = '¡Excelente! Estás construyendo una base sólida de victoria privada.';
+        } else if (percentage >= 60) {
+            message = 'Buen progreso. Sigue practicando estos hábitos diariamente.';
+        } else {
+            message = 'Recuerda: las victorias privadas preceden a las victorias públicas. Enfócate en estos fundamentos.';
+        }
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea; text-align: center;">Puntuación de Hoy</h2>
+            <div style="text-align: center; font-size: 3em; color: #667eea; margin: 20px 0;">${total}/9</div>
+            <div style="text-align: center; font-size: 1.5em; margin: 10px 0;">${percentage}%</div>
+            <p style="text-align: center; font-size: 1.1em; margin: 20px 0;">${message}</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 2em; color: #667eea;">${h1}/3</div>
+                    <div>Hábito 1</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 2em; color: #667eea;">${h2}/3</div>
+                    <div>Hábito 2</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 2em; color: #667eea;">${h3}/3</div>
+                    <div>Hábito 3</div>
+                </div>
+            </div>
+        `;
+        result.classList.add('show');
+    }
+    
+    function saveProgress() {
+        const data = {};
+        for (let i = 1; i <= 3; i++) {
+            data['h1_' + i] = document.getElementById('h1_' + i).checked;
+            data['h2_' + i] = document.getElementById('h2_' + i).checked;
+            data['h3_' + i] = document.getElementById('h3_' + i).checked;
+        }
+        localStorage.setItem('victoriaPrivada_' + new Date().toISOString().split('T')[0], JSON.stringify(data));
+        alert('✅ Progreso guardado para hoy');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Evaluador de Paradigmas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 1000px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .checkbox-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .checkbox-item input { width: auto; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Evaluador de Paradigmas</h1>
+        <p class="subtitle">Identifica y cambia tus paradigmas limitantes</p>
+        
+    <div class="card">
+        <h3>¿Qué son los Paradigmas?</h3>
+        <p>Los paradigmas son la forma en que "vemos" el mundo - nuestros mapas mentales. Si quieres cambios menores, trabaja en tu comportamiento. Si quieres cambios significativos, trabaja en tus paradigmas.</p>
+    </div>
+    <div class="card">
+        <h3>Identifica un Área de Frustración</h3>
+        <select id="area">
+            <option value="">Selecciona un área...</option>
+            <option value="trabajo">Trabajo/Carrera</option>
+            <option value="relaciones">Relaciones</option>
+            <option value="salud">Salud/Bienestar</option>
+            <option value="finanzas">Finanzas</option>
+            <option value="desarrollo">Desarrollo Personal</option>
+        </select>
+        <h3 style="margin-top: 20px;">Describe la Situación</h3>
+        <textarea id="situation" placeholder="¿Qué te frustra o no funciona en esta área?"></textarea>
+    </div>
+    <div class="card">
+        <h3>Tu Paradigma Actual</h3>
+        <p>¿Cómo ves esta situación? ¿Qué crees que es verdad sobre ella?</p>
+        <textarea id="currentParadigm" placeholder="Ejemplo: 'No tengo tiempo para hacer ejercicio' o 'Mi jefe nunca me va a promover'"></textarea>
+    </div>
+    <button class="btn" onclick="evaluateParadigm()">Evaluar Paradigma</button>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    function evaluateParadigm() {
+        const area = document.getElementById('area').value;
+        const situation = document.getElementById('situation').value;
+        const current = document.getElementById('currentParadigm').value;
+        
+        if (!area || !situation || !current) {
+            alert('Por favor completa todos los campos');
+            return;
+        }
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea;">🔍 Análisis de Tu Paradigma</h2>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>Paradigma Actual:</h3>
+                <p style="font-size: 1.1em; font-style: italic;">"${current}"</p>
+            </div>
+            <div style="background: #ffebee; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>⚠️ Posibles Limitaciones de Este Paradigma:</h3>
+                <ul style="line-height: 2; margin-top: 10px;">
+                    <li>¿Te hace sentir víctima de las circunstancias?</li>
+                    <li>¿Limita tus opciones y posibilidades?</li>
+                    <li>¿Te enfoca en lo que NO puedes controlar?</li>
+                    <li>¿Es realmente verdad o es solo tu interpretación?</li>
+                </ul>
+            </div>
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>💡 Preguntas para Cambiar el Paradigma:</h3>
+                <ol style="line-height: 2; margin-top: 10px;">
+                    <li>¿Qué pasaría si lo contrario fuera verdad?</li>
+                    <li>¿Cómo vería esto una persona exitosa en esta área?</li>
+                    <li>¿Qué oportunidades no estoy viendo con este paradigma?</li>
+                    <li>¿Qué pequeña acción podría tomar si este paradigma fuera falso?</li>
+                </ol>
+            </div>
+            <div style="background: #fff9e6; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>🎯 Nuevo Paradigma Propuesto:</h3>
+                <p>En lugar de: "${current}"</p>
+                <p style="margin-top: 10px;"><strong>Intenta:</strong></p>
+                <textarea id="newParadigm" placeholder="Escribe un paradigma más empoderador..." style="margin-top: 10px;"></textarea>
+                <p style="margin-top: 15px; font-size: 0.9em; color: #666;">Ejemplo: "Puedo encontrar 20 minutos al día para mi salud" o "Puedo demostrar mi valor y crear oportunidades"</p>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>📝 Próximo Paso:</h3>
+                <p>Actúa como si tu nuevo paradigma fuera verdad durante una semana. Observa qué cambia.</p>
+            </div>
+        `;
+        result.classList.add('show');
+        result.scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+</body>
+</html>

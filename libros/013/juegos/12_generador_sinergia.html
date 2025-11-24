@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Generador de Sinergia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; font-size: 1.1em; }
+        .card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin: 10px 5px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin: 10px 0; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .option { background: white; border: 3px solid #e0e0e0; padding: 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .option:hover { border-color: #667eea; transform: scale(1.05); }
+        .option.selected { border-color: #667eea; background: linear-gradient(120deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .result { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Generador de Sinergia</h1>
+        <p class="subtitle">Encuentra la tercera alternativa en conflictos</p>
+        
+    <div class="card">
+        <h3>¿Qué es la Sinergia?</h3>
+        <p>Sinergia significa que el todo es más que la suma de sus partes. En un compromiso, 1+1=1.5. En la sinergia, 1+1=3 o más.</p>
+    </div>
+    <div class="card">
+        <h3>Describe un conflicto actual</h3>
+        <textarea id="conflict" placeholder="Ejemplo: Mi pareja quiere vivir en la ciudad, yo quiero vivir en el campo..."></textarea>
+        <h3 style="margin-top: 20px;">Posición A (Primera persona)</h3>
+        <input type="text" id="posA" placeholder="Quiero vivir en la ciudad">
+        <h3 style="margin-top: 20px;">Posición B (Segunda persona)</h3>
+        <input type="text" id="posB" placeholder="Quiero vivir en el campo">
+    </div>
+    <div class="card">
+        <h3>Necesidades Subyacentes</h3>
+        <p>¿Qué necesita realmente cada persona? (No lo que quieren, sino POR QUÉ lo quieren)</p>
+        <input type="text" id="needA" placeholder="Necesidad A: Acceso a oportunidades, cultura, servicios">
+        <input type="text" id="needB" placeholder="Necesidad B: Paz, naturaleza, espacio">
+    </div>
+    <button class="btn" onclick="generateSynergy()">Generar Tercera Alternativa</button>
+    <div id="result" class="result"></div>
+    
+    </div>
+    <script>
+    function generateSynergy() {
+        const conflict = document.getElementById('conflict').value;
+        const posA = document.getElementById('posA').value;
+        const posB = document.getElementById('posB').value;
+        const needA = document.getElementById('needA').value;
+        const needB = document.getElementById('needB').value;
+        
+        if (!conflict || !posA || !posB || !needA || !needB) {
+            alert('Por favor completa todos los campos');
+            return;
+        }
+        
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2 style="color: #667eea;">🎯 Análisis del Conflicto</h2>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>Posiciones (Lo que quieren):</h3>
+                <p><strong>A:</strong> ${posA}</p>
+                <p><strong>B:</strong> ${posB}</p>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>Necesidades Reales (Por qué lo quieren):</h3>
+                <p><strong>A:</strong> ${needA}</p>
+                <p><strong>B:</strong> ${needB}</p>
+            </div>
+            <div style="background: #fff9e6; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>💡 Posibles Terceras Alternativas:</h3>
+                <p>Ahora que entiendes las necesidades reales, piensa en soluciones que satisfagan AMBAS necesidades:</p>
+                <ul style="line-height: 2; margin-top: 15px;">
+                    <li>¿Vivir en las afueras con buen acceso a la ciudad?</li>
+                    <li>¿Tener una casa en la ciudad con un retiro en el campo?</li>
+                    <li>¿Vivir en un pueblo con buena conexión de transporte?</li>
+                    <li>¿Trabajar remotamente desde el campo con visitas frecuentes a la ciudad?</li>
+                </ul>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                <h3>🔑 Claves para la Sinergia:</h3>
+                <ol style="line-height: 2; margin-top: 15px;">
+                    <li>Busca entender las necesidades reales, no solo las posiciones</li>
+                    <li>Valora las diferencias - son oportunidades, no amenazas</li>
+                    <li>Sé creativo - la tercera alternativa es mejor que ambas posiciones originales</li>
+                    <li>Requiere confianza y comunicación abierta</li>
+                </ol>
+            </div>
+        `;
+        result.classList.add('show');
+        result.scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+</body>
+</html>

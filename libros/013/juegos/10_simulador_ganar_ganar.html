@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Negociación Ganar-Ganar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #11998e;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .scenario {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #11998e;
+        }
+        .options {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #11998e;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            border-color: #11998e;
+            background: linear-gradient(120deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+        .option.wrong {
+            border-color: #dc3545;
+            background: #ffebee;
+        }
+        .option.correct {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+        .feedback {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .score {
+            text-align: center;
+            font-size: 2em;
+            color: #11998e;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Simulador de Negociación Ganar-Ganar</h1>
+        <p class="subtitle">Practica encontrar soluciones mutuamente beneficiosas</p>
+
+        <div id="scenarioArea"></div>
+        <div id="feedback" class="feedback"></div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn" onclick="nextScenario()">Siguiente Escenario</button>
+            <button class="btn" onclick="resetGame()">Reiniciar</button>
+        </div>
+
+        <div class="score">
+            <div>Puntuación: <span id="score">0</span>/<span id="total">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                situation: "Tu jefe quiere que trabajes horas extra este fin de semana, pero tienes planes familiares importantes.",
+                options: [
+                    { text: "Ganar-Perder: Insistes en tus planes y te niegas rotundamente", type: "win-lose", feedback: "Esto puede dañar tu relación laboral y crear resentimiento." },
+                    { text: "Perder-Ganar: Cancelas tus planes familiares sin decir nada", type: "lose-win", feedback: "Sacrificas tus necesidades, lo que genera resentimiento a largo plazo." },
+                    { text: "Ganar-Ganar: Propones trabajar desde casa el sábado por la mañana y terminar el lunes temprano", type: "win-win", feedback: "¡Excelente! Encuentras una solución que beneficia a ambas partes." },
+                    { text: "Perder-Perder: Te quejas pero trabajas mal, dañando el proyecto", type: "lose-lose", feedback: "Nadie gana. El proyecto sufre y tú también." }
+                ]
+            },
+            {
+                situation: "Tu pareja quiere ir al cine, pero tú prefieres quedarte en casa descansando.",
+                options: [
+                    { text: "Ganar-Perder: Insistes en quedarte en casa", type: "win-lose", feedback: "Tu pareja se siente ignorada y resentida." },
+                    { text: "Perder-Ganar: Vas al cine aunque estés agotado", type: "lose-win", feedback: "Terminas resentido y no disfrutas la experiencia." },
+                    { text: "Ganar-Ganar: Propones ver una película en casa juntos con palomitas", type: "win-win", feedback: "¡Perfecto! Ambos disfrutan tiempo juntos de manera cómoda." },
+                    { text: "Perder-Perder: Discuten y terminan molestos sin hacer nada", type: "lose-lose", feedback: "Ambos pierden tiempo de calidad juntos." }
+                ]
+            },
+            {
+                situation: "Un colega quiere usar tu oficina para una reunión importante, pero tú necesitas concentrarte en un proyecto urgente.",
+                options: [
+                    { text: "Ganar-Perder: Te niegas sin ofrecer alternativas", type: "win-lose", feedback: "Dañas la relación profesional innecesariamente." },
+                    { text: "Perder-Ganar: Cedes tu espacio y trabajas en un lugar ruidoso", type: "lose-win", feedback: "Tu productividad sufre y te sientes frustrado." },
+                    { text: "Ganar-Ganar: Ofreces tu oficina y reservas una sala de concentración para ti", type: "win-win", feedback: "¡Excelente! Ambos obtienen lo que necesitan." },
+                    { text: "Perder-Perder: Ambos usan la oficina y ninguno puede trabajar bien", type: "lose-lose", feedback: "Ambos proyectos se ven afectados negativamente." }
+                ]
+            },
+            {
+                situation: "Tu hijo adolescente quiere salir con amigos, pero no ha terminado sus tareas escolares.",
+                options: [
+                    { text: "Ganar-Perder: Le prohíbes salir completamente", type: "win-lose", feedback: "Generas resentimiento y rebeldía." },
+                    { text: "Perder-Ganar: Lo dejas salir sin consecuencias", type: "lose-win", feedback: "No aprende responsabilidad y sus calificaciones sufren." },
+                    { text: "Ganar-Ganar: Acuerdan que puede salir después de completar al menos la mitad de las tareas", type: "win-win", feedback: "¡Perfecto! Aprende responsabilidad y mantiene su vida social." },
+                    { text: "Perder-Perder: Discuten y él se va enojado sin permiso", type: "lose-lose", feedback: "La confianza se rompe y el conflicto escala." }
+                ]
+            },
+            {
+                situation: "Un cliente solicita un descuento del 30% que afectaría significativamente tus márgenes.",
+                options: [
+                    { text: "Ganar-Perder: Te niegas rotundamente y arriesgas perder el cliente", type: "win-lose", feedback: "Puedes perder una relación valiosa a largo plazo." },
+                    { text: "Perder-Ganar: Aceptas el descuento y trabajas con pérdida", type: "lose-win", feedback: "Tu negocio sufre y creas un mal precedente." },
+                    { text: "Ganar-Ganar: Ofreces 15% de descuento a cambio de un contrato a largo plazo", type: "win-win", feedback: "¡Excelente! Ambos obtienen valor: descuento y seguridad." },
+                    { text: "Perder-Perder: Ofreces el descuento pero reduces la calidad del servicio", type: "lose-lose", feedback: "El cliente queda insatisfecho y tu reputación sufre." }
+                ]
+            }
+        ];
+
+        let currentScenario = 0;
+        let score = 0;
+        let answered = false;
+
+        function loadScenario() {
+            if (currentScenario >= scenarios.length) {
+                showFinalResults();
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            const area = document.getElementById('scenarioArea');
+            
+            let html = `
+                <div class="scenario">
+                    <h3>Escenario ${currentScenario + 1} de ${scenarios.length}</h3>
+                    <p style="font-size: 1.1em; margin-top: 15px;">${scenario.situation}</p>
+                </div>
+                <div class="options">
+            `;
+
+            scenario.options.forEach((option, index) => {
+                html += `
+                    <div class="option" onclick="selectOption(${index})">
+                        <strong>${option.text.split(':')[0]}:</strong> ${option.text.split(':')[1]}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            area.innerHTML = html;
+            document.getElementById('feedback').classList.remove('show');
+            answered = false;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            
+            const scenario = scenarios[currentScenario];
+            const option = scenario.options[index];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                if (i === index) {
+                    if (option.type === 'win-win') {
+                        opt.classList.add('correct');
+                        score++;
+                    } else {
+                        opt.classList.add('wrong');
+                    }
+                    opt.classList.add('selected');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <h3>${option.type === 'win-win' ? '✅ ¡Correcto!' : '❌ Intenta de nuevo'}</h3>
+                <p style="font-size: 1.1em; margin-top: 10px;">${option.feedback}</p>
+                ${option.type === 'win-win' ? '<p style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;"><strong>Principio Ganar-Ganar:</strong> Buscas soluciones que beneficien a ambas partes, construyendo relaciones de largo plazo basadas en confianza y beneficio mutuo.</p>' : ''}
+            `;
+            feedback.classList.add('show');
+            
+            answered = true;
+            updateScore();
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentScenario + 1;
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            loadScenario();
+        }
+
+        function showFinalResults() {
+            const area = document.getElementById('scenarioArea');
+            const percentage = Math.round((score / scenarios.length) * 100);
+            
+            let message = '';
+            if (percentage >= 80) {
+                message = '¡Excelente! Dominas el pensamiento Ganar-Ganar. Sigues buscando soluciones que beneficien a todas las partes.';
+            } else if (percentage >= 60) {
+                message = 'Bien hecho. Entiendes el concepto, pero sigue practicando para identificar más oportunidades Ganar-Ganar.';
+            } else {
+                message = 'Recuerda: Ganar-Ganar no es compromiso (1+1=1.5), es sinergia (1+1=3). Busca la tercera alternativa.';
+            }
+
+            area.innerHTML = `
+                <div class="scenario">
+                    <h2 style="color: #11998e; text-align: center;">🎉 Resultados Finales</h2>
+                    <div style="text-align: center; font-size: 3em; color: #11998e; margin: 20px 0;">
+                        ${score}/${scenarios.length}
+                    </div>
+                    <div style="text-align: center; font-size: 1.5em; margin: 20px 0;">
+                        ${percentage}% de precisión
+                    </div>
+                    <p style="font-size: 1.1em; text-align: center; margin-top: 20px;">${message}</p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                        <h3>Recuerda los 5 Paradigmas:</h3>
+                        <ul style="line-height: 2; margin-top: 15px;">
+                            <li><strong>Ganar-Ganar:</strong> Beneficio mutuo (lo ideal)</li>
+                            <li><strong>Ganar-Perder:</strong> Yo gano, tú pierdes (autoritario)</li>
+                            <li><strong>Perder-Ganar:</strong> Yo pierdo, tú ganas (complaciente)</li>
+                            <li><strong>Perder-Perder:</strong> Ambos perdemos (vengativo)</li>
+                            <li><strong>Ganar o No Hay Trato:</strong> Si no hay Ganar-Ganar, mejor no negociar</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            document.getElementById('feedback').classList.remove('show');
+        }
+
+        function resetGame() {
+            currentScenario = 0;
+            score = 0;
+            answered = false;
+            loadScenario();
+            updateScore();
+        }
+
+        loadScenario();
+        updateScore();
+    </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏦 Cuenta Bancaria Emocional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Cuenta Bancaria Emocional</h1>
+        <p class="subtitle">Rastrea depósitos y retiros en tus relaciones</p>
+        
+        <div class="card">
+            <h3>Selecciona una relación importante para ti</h3>
+            <input type="text" id="relationName" placeholder="Nombre de la persona">
+            <button class="btn" onclick="startTracking()">Comenzar Seguimiento</button>
+        </div>
+        <div id="trackingArea" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div class="card" style="background: linear-gradient(120deg, #e8f5e9 0%, #c8e6c9 100%);">
+                    <h3 style="color: #2e7d32;">💰 Depósitos</h3>
+                    <select id="depositType">
+                        <option>Cumplir promesa</option>
+                        <option>Escuchar con empatía</option>
+                        <option>Pedir disculpas sinceras</option>
+                        <option>Acto de bondad</option>
+                        <option>Tiempo de calidad</option>
+                    </select>
+                    <button class="btn" onclick="makeDeposit()">Hacer Depósito</button>
+                </div>
+                <div class="card" style="background: linear-gradient(120deg, #ffebee 0%, #ffcdd2 100%);">
+                    <h3 style="color: #c62828;">📉 Retiros</h3>
+                    <select id="withdrawalType">
+                        <option>Romper promesa</option>
+                        <option>No escuchar</option>
+                        <option>Falta de respeto</option>
+                        <option>Crítica destructiva</option>
+                        <option>Egoísmo</option>
+                    </select>
+                    <button class="btn" onclick="makeWithdrawal()">Registrar Retiro</button>
+                </div>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h2>Balance Actual</h2>
+                <div style="font-size: 4em; font-weight: bold; color: #667eea;" id="balance">0</div>
+                <div id="status" style="font-size: 1.2em; margin-top: 10px;"></div>
+            </div>
+            <div id="history" style="margin-top: 20px;"></div>
+        </div>
+        
+    </div>
+    <script>
+    
+        let balance = 0;
+        let history = [];
+        
+        function startTracking() {
+            const name = document.getElementById('relationName').value;
+            if (!name) {
+                alert('Por favor ingresa un nombre');
+                return;
+            }
+            document.getElementById('trackingArea').style.display = 'block';
+            updateStatus();
+        }
+        
+        function makeDeposit() {
+            const type = document.getElementById('depositType').value;
+            balance += 10;
+            history.unshift({type: 'deposit', action: type, amount: 10});
+            updateDisplay();
+        }
+        
+        function makeWithdrawal() {
+            const type = document.getElementById('withdrawalType').value;
+            balance -= 15;
+            history.unshift({type: 'withdrawal', action: type, amount: -15});
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            document.getElementById('balance').textContent = balance;
+            updateStatus();
+            updateHistory();
+        }
+        
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (balance >= 50) {
+                status.textContent = '🌟 Relación muy saludable';
+                status.style.color = '#2e7d32';
+            } else if (balance >= 20) {
+                status.textContent = '👍 Relación positiva';
+                status.style.color = '#1976d2';
+            } else if (balance >= 0) {
+                status.textContent = '⚠️ Relación neutral';
+                status.style.color = '#f57c00';
+            } else {
+                status.textContent = '❌ Relación en riesgo';
+                status.style.color = '#c62828';
+            }
+        }
+        
+        function updateHistory() {
+            const historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = '<h3>Historial Reciente</h3>';
+            history.slice(0, 5).forEach(item => {
+                const div = document.createElement('div');
+                div.style.cssText = 'padding: 10px; margin: 5px 0; border-radius: 5px; background: ' + (item.type === 'deposit' ? '#e8f5e9' : '#ffebee');
+                div.textContent = `${item.type === 'deposit' ? '💰 +' : '📉 '}${Math.abs(item.amount)}: ${item.action}`;
+                historyDiv.appendChild(div);
+            });
+        }
+        
+    </script>
+</body>
+</html>

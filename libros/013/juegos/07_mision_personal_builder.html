@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Misión Personal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #f5576c;
+        }
+        .step h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .value-chip {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .value-chip:hover {
+            transform: scale(1.05);
+        }
+        .value-chip.selected {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .mission-preview {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-align: center;
+        }
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📜 Constructor de Misión Personal</h1>
+        <p class="subtitle">Crea tu enunciado de misión personal paso a paso</p>
+
+        <div class="step">
+            <h3>Paso 1: Selecciona tus valores fundamentales</h3>
+            <p style="margin-bottom: 15px;">Elige 3-5 valores que sean más importantes para ti:</p>
+            <div class="values-grid" id="valuesGrid"></div>
+        </div>
+
+        <div class="step">
+            <h3>Paso 2: ¿Qué quieres SER?</h3>
+            <p style="margin-bottom: 10px;">Describe el carácter que quieres desarrollar:</p>
+            <textarea id="beInput" placeholder="Ejemplo: Quiero ser una persona íntegra, compasiva y valiente..."></textarea>
+        </div>
+
+        <div class="step">
+            <h3>Paso 3: ¿Qué quieres HACER?</h3>
+            <p style="margin-bottom: 10px;">Describe las contribuciones que quieres hacer:</p>
+            <textarea id="doInput" placeholder="Ejemplo: Quiero ayudar a otros a alcanzar su potencial, crear valor en mi trabajo..."></textarea>
+        </div>
+
+        <div class="step">
+            <h3>Paso 4: ¿Cuál es tu propósito?</h3>
+            <p style="margin-bottom: 10px;">¿Por qué existes? ¿Qué legado quieres dejar?</p>
+            <textarea id="purposeInput" placeholder="Ejemplo: Mi propósito es inspirar y empoderar a otros para que vivan vidas significativas..."></textarea>
+        </div>
+
+        <button class="btn" onclick="generateMission()">Generar Mi Misión</button>
+        <button class="btn btn-secondary" onclick="saveMission()">Guardar Misión</button>
+        <button class="btn btn-secondary" onclick="resetForm()">Reiniciar</button>
+
+        <div class="mission-preview" id="missionPreview" style="display: none;">
+            <h3 style="margin-bottom: 20px;">✨ Tu Enunciado de Misión Personal</h3>
+            <div id="missionText"></div>
+        </div>
+    </div>
+
+    <script>
+        const coreValues = [
+            "Integridad", "Familia", "Crecimiento", "Servicio", "Excelencia",
+            "Creatividad", "Salud", "Sabiduría", "Libertad", "Amor",
+            "Justicia", "Paz", "Innovación", "Responsabilidad", "Gratitud",
+            "Humildad", "Coraje", "Compasión", "Disciplina", "Generosidad"
+        ];
+
+        let selectedValues = [];
+
+        function initValues() {
+            const grid = document.getElementById('valuesGrid');
+            coreValues.forEach(value => {
+                const chip = document.createElement('div');
+                chip.className = 'value-chip';
+                chip.textContent = value;
+                chip.onclick = () => toggleValue(chip, value);
+                grid.appendChild(chip);
+            });
+        }
+
+        function toggleValue(chip, value) {
+            const index = selectedValues.indexOf(value);
+            if (index > -1) {
+                selectedValues.splice(index, 1);
+                chip.classList.remove('selected');
+            } else {
+                if (selectedValues.length < 5) {
+                    selectedValues.push(value);
+                    chip.classList.add('selected');
+                } else {
+                    alert('Selecciona máximo 5 valores fundamentales');
+                }
+            }
+        }
+
+        function generateMission() {
+            const beText = document.getElementById('beInput').value.trim();
+            const doText = document.getElementById('doInput').value.trim();
+            const purposeText = document.getElementById('purposeInput').value.trim();
+
+            if (selectedValues.length === 0 || !beText || !doText || !purposeText) {
+                alert('Por favor completa todos los pasos antes de generar tu misión');
+                return;
+            }
+
+            let mission = `Mi misión es vivir guiado por los valores de ${selectedValues.join(', ')}. \n\n`;
+            mission += `${beText}\n\n`;
+            mission += `${doText}\n\n`;
+            mission += `${purposeText}`;
+
+            document.getElementById('missionText').textContent = mission;
+            document.getElementById('missionPreview').style.display = 'block';
+            document.getElementById('missionPreview').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function saveMission() {
+            const missionText = document.getElementById('missionText').textContent;
+            if (!missionText) {
+                alert('Genera tu misión primero');
+                return;
+            }
+
+            localStorage.setItem('personalMission', missionText);
+            localStorage.setItem('personalValues', JSON.stringify(selectedValues));
+            alert('✅ Tu misión personal ha sido guardada. ¡Revísala regularmente!');
+        }
+
+        function resetForm() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el formulario?')) {
+                selectedValues = [];
+                document.querySelectorAll('.value-chip').forEach(chip => {
+                    chip.classList.remove('selected');
+                });
+                document.getElementById('beInput').value = '';
+                document.getElementById('doInput').value = '';
+                document.getElementById('purposeInput').value = '';
+                document.getElementById('missionPreview').style.display = 'none';
+            }
+        }
+
+        function loadSaved() {
+            const saved = localStorage.getItem('personalMission');
+            if (saved) {
+                const load = confirm('Tienes una misión guardada. ¿Quieres cargarla?');
+                if (load) {
+                    document.getElementById('missionText').textContent = saved;
+                    document.getElementById('missionPreview').style.display = 'block';
+                    
+                    const savedValues = JSON.parse(localStorage.getItem('personalValues') || '[]');
+                    selectedValues = savedValues;
+                    document.querySelectorAll('.value-chip').forEach(chip => {
+                        if (savedValues.includes(chip.textContent)) {
+                            chip.classList.add('selected');
+                        }
+                    });
+                }
+            }
+        }
+
+        initValues();
+        loadSaved();
+    </script>
+</body>
+</html>

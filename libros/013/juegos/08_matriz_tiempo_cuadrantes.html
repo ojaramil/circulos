@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Matriz del Tiempo - 4 Cuadrantes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ Matriz del Tiempo - 4 Cuadrantes</h1>
+        <p class="subtitle">Organiza tus tareas según urgencia e importancia</p>
+        
+        <div class="card">
+            <h3>Arrastra tus tareas a los cuadrantes correctos</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; min-height: 200px;">
+                    <h4 style="color: #2e7d32;">Cuadrante I: Urgente e Importante</h4>
+                    <p style="font-size: 0.9em; color: #666;">Crisis, problemas apremiantes</p>
+                    <div id="q1" class="drop-zone"></div>
+                </div>
+                <div style="background: #fff8e1; padding: 20px; border-radius: 10px; min-height: 200px;">
+                    <h4 style="color: #f57c00;">Cuadrante II: No Urgente pero Importante</h4>
+                    <p style="font-size: 0.9em; color: #666;">Prevención, planificación, relaciones</p>
+                    <div id="q2" class="drop-zone"></div>
+                </div>
+                <div style="background: #ffebee; padding: 20px; border-radius: 10px; min-height: 200px;">
+                    <h4 style="color: #c62828;">Cuadrante III: Urgente pero No Importante</h4>
+                    <p style="font-size: 0.9em; color: #666;">Interrupciones, algunas llamadas</p>
+                    <div id="q3" class="drop-zone"></div>
+                </div>
+                <div style="background: #f3e5f5; padding: 20px; border-radius: 10px; min-height: 200px;">
+                    <h4 style="color: #6a1b9a;">Cuadrante IV: No Urgente y No Importante</h4>
+                    <p style="font-size: 0.9em; color: #666;">Trivialidades, pérdidas de tiempo</p>
+                    <div id="q4" class="drop-zone"></div>
+                </div>
+            </div>
+        </div>
+        <div id="tasks" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px;"></div>
+        <button class="btn" onclick="checkResults()">Ver Resultados</button>
+        <button class="btn" onclick="resetGame()">Reiniciar</button>
+        
+    </div>
+    <script>
+    
+        const tasks = [
+            {text: "Emergencia médica", correct: "q1"},
+            {text: "Ejercicio regular", correct: "q2"},
+            {text: "Planificación semanal", correct: "q2"},
+            {text: "Llamada no importante", correct: "q3"},
+            {text: "Redes sociales sin propósito", correct: "q4"},
+            {text: "Fecha límite mañana", correct: "q1"},
+            {text: "Aprender nueva habilidad", correct: "q2"},
+            {text: "Reunión innecesaria", correct: "q3"},
+            {text: "Ver TV sin control", correct: "q4"},
+            {text: "Construir relaciones", correct: "q2"}
+        ];
+        
+        let placements = {};
+        
+        function initGame() {
+            const container = document.getElementById('tasks');
+            container.innerHTML = '';
+            placements = {};
+            
+            tasks.forEach((task, index) => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.draggable = true;
+                div.textContent = task.text;
+                div.dataset.index = index;
+                div.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; cursor: grab; text-align: center;';
+                div.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text', index);
+                    div.style.opacity = '0.5';
+                });
+                div.addEventListener('dragend', e => {
+                    div.style.opacity = '1';
+                });
+                container.appendChild(div);
+            });
+            
+            ['q1', 'q2', 'q3', 'q4'].forEach(id => {
+                const zone = document.getElementById(id);
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    zone.style.background = 'rgba(0,0,0,0.1)';
+                });
+                zone.addEventListener('dragleave', e => {
+                    zone.style.background = '';
+                });
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.style.background = '';
+                    const taskIndex = e.dataTransfer.getData('text');
+                    const taskEl = document.querySelector(`[data-index="${taskIndex}"]`);
+                    zone.appendChild(taskEl);
+                    placements[taskIndex] = id;
+                });
+            });
+        }
+        
+        function checkResults() {
+            let correct = 0;
+            tasks.forEach((task, index) => {
+                if (placements[index] === task.correct) correct++;
+            });
+            const pct = Math.round((correct / tasks.length) * 100);
+            alert(`Resultados:\n\n✅ Correctas: ${correct}/${tasks.length}\n📊 Precisión: ${pct}%\n\n${pct >= 80 ? '¡Excelente! Entiendes bien la matriz.' : 'Sigue practicando. Enfócate en el Cuadrante II.'}`);
+        }
+        
+        function resetGame() {
+            initGame();
+        }
+        
+        initGame();
+        
+    </script>
+</body>
+</html>

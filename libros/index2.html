@@ -2,6 +2,18 @@
 <html lang="es">
 
 <head>
+    <script>
+        // Si esta página es cargada dentro del visor embebido (iframe), significa que el usuario 
+        // hizo clic en "Volver a la Biblioteca" dentro de un libro.
+        // Llamamos a la función del padre para cerrar el visor.
+        if (window !== window.parent) {
+            if (typeof window.parent.closeBook === 'function') {
+                window.parent.closeBook();
+            } else {
+                window.parent.location.href = window.location.href;
+            }
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Círculos de Lectura - Club Asperger</title>
@@ -625,6 +637,11 @@
 </head>
 
 <body>
+    <!-- Contenedor del Visor de Libro Embebido -->
+    <div id="book-viewer" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: #0D1F33; opacity: 0; transition: opacity 0.3s ease;">
+        <iframe id="book-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
     <div class="bg-animation"></div>
 
     <header class="header">
@@ -920,7 +937,7 @@
                     const bookCard = document.createElement('div');
                     bookCard.className = 'book-card';
                     bookCard.style.animationDelay = `${index * 0.05}s`;
-                    bookCard.onclick = () => window.location.href = `${book.number}/pantalla_principal.html`;
+                    bookCard.onclick = () => openBook(`${book.number}/pantalla_principal.html`);
 
                     bookCard.innerHTML = `
                         <div class="book-header">
@@ -984,6 +1001,47 @@
 
         // Initial Render
         renderBooks();
+
+        // Funciones para SPA (Single Page Application)
+        function openBook(url) {
+            const viewer = document.getElementById('book-viewer');
+            const iframe = document.getElementById('book-iframe');
+            viewer.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Forzar reflow para que la transición funcione
+            void viewer.offsetWidth;
+            viewer.style.opacity = '1';
+            
+            iframe.src = url;
+            
+            // Añadir estado en el historial para soportar el botón de atrás del navegador
+            history.pushState({ bookOpen: true }, "", "#libro");
+        }
+
+        function closeBook(fromPopState = false) {
+            const viewer = document.getElementById('book-viewer');
+            const iframe = document.getElementById('book-iframe');
+            
+            viewer.style.opacity = '0';
+            setTimeout(() => {
+                viewer.style.display = 'none';
+                document.body.style.overflow = '';
+                iframe.src = 'about:blank';
+            }, 300);
+            
+            if (!fromPopState && window.location.hash === '#libro') {
+                history.back();
+            }
+        }
+
+        // Manejar el botón de retroceso del navegador
+        window.addEventListener('popstate', (e) => {
+            const viewer = document.getElementById('book-viewer');
+            if (viewer.style.display === 'block') {
+                closeBook(true);
+            }
+        });
     </script>
 </body>
 

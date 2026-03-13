@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test HP6: Autoevaluación de los seis hábitos</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Test HP6: Autoevaluación de los seis hábitos</h1>
+        
+        <p class="subtitle">Valora del 1 al 5 cada hábito según tu práctica actual.</p>
+        <div id="quiz"></div>
+        <button class="btn" onclick="calculateHP6()">Ver mi perfil HP6</button>
+        <div id="result" class="result-area"></div>
+        <script>
+            const habits = [
+                { name: "Claridad", desc: "Sé quién quiero ser, qué quiero y qué me da significado." },
+                { name: "Energía", desc: "Cuido mi energía física, mental y emocional." },
+                { name: "Necesidad", desc: "Siento una razón fuerte por la que debo rendir al máximo." },
+                { name: "Productividad", desc: "Me enfoco en resultados de calidad en mi área principal (PQO)." },
+                { name: "Influencia", desc: "Los demás creen en mí y me apoyan; yo los valoro." },
+                { name: "Coraje", desc: "Expreso mis ideas y actúo con audacia a pesar del miedo." }
+            ];
+            const quizDiv = document.getElementById('quiz');
+            habits.forEach((h, i) => {
+                quizDiv.innerHTML += `<div class="card">
+                    <p><strong>${h.name}:</strong> ${h.desc}</p>
+                    <label>1 (casi nunca) — 5 (siempre): </label>
+                    <select id="h${i}">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>`;
+            });
+            function calculateHP6() {
+                let scores = [];
+                let total = 0;
+                habits.forEach((h, i) => {
+                    let v = parseInt(document.getElementById('h'+i).value);
+                    scores.push({ name: h.name, score: v });
+                    total += v;
+                });
+                let avg = (total / 6).toFixed(1);
+                let weak = scores.filter(s => s.score <= 2).map(s => s.name).join(", ") || "Ninguno";
+                let strong = scores.filter(s => s.score >= 4).map(s => s.name).join(", ") || "Ninguno";
+                document.getElementById('result').innerHTML = `
+                    <h3>📊 Tu perfil HP6</h3>
+                    <p><strong>Puntuación media:</strong> ${avg}/5</p>
+                    <p><strong>Fortalezas (4-5):</strong> ${strong}</p>
+                    <p><strong>Áreas a mejorar (1-2):</strong> ${weak}</p>
+                    <p><em>Recomendación: Trabaja primero el hábito con menor puntuación. Un hábito mejorado levanta a los demás.</em></p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

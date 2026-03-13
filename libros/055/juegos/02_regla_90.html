@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>La Regla del 90%</title>
+    <style>
+        body { font-family: 'Helvetica Neue', sans-serif; background: #fffcf5; color: #333; text-align: center; padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        input[type=range] { width: 100%; margin: 30px 0; }
+        .score-display { font-size: 3em; font-weight: bold; color: #333; }
+        .decision { font-size: 2em; margin-top: 20px; font-weight: bold; padding: 20px; border-radius: 10px; transition: 0.3s; }
+        .yes { background: #4CAF50; color: white; }
+        .no { background: #eee; color: #aaa; text-decoration: line-through; }
+        h1 { font-weight: 300; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #333; display: inline-block; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Evaluador de Opciones</h1>
+        <p>Piensa en una oportunidad actual (un proyecto, invitación, compra).</p>
+        <p>Evalúala del 0 al 100.</p>
+        
+        <input type="range" id="slider" min="0" max="100" value="50" oninput="update()">
+        
+        <div class="score-display" id="val">50</div>
+        
+        <div class="decision" id="decision">NO</div>
+        
+        <p style="margin-top: 40px; font-style: italic;">"Si no es un 90 o más, es un 0."</p>
+    </div>
+
+    <script>
+        function update() {
+            const val = document.getElementById('slider').value;
+            document.getElementById('val').innerText = val;
+            const dec = document.getElementById('decision');
+            
+            if (val >= 90) {
+                dec.innerText = "SÍ ESENCIAL";
+                dec.className = "decision yes";
+            } else {
+                dec.innerText = "NO (Eliminar)";
+                dec.className = "decision no";
+            }
+        }
+        update();
+    </script>
+</body>
+</html>

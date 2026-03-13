@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrenador de "No" 🚫</title>
+    <style>
+        body { font-family: 'Helvetica Neue', sans-serif; background: #333; color: white; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 500px; background: #444; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; height: 80vh; }
+        .header { background: #222; padding: 15px; text-align: center; font-weight: bold; letter-spacing: 1px; }
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; }
+        .incoming { background: #555; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .outgoing { background: #795548; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .options { padding: 15px; background: #222; display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 12px; background: #5D4037; border: none; color: white; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.2s; }
+        button:hover { background: #4E342E; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="header">Simulador de Rechazo Elegante</div>
+        <div class="messages" id="msgs">
+            <div class="msg incoming">Oye, necesito que te encargues de organizar la fiesta de fin de año de la oficina. Sé que estás ocupado, ¡pero eres el mejor en esto!</div>
+        </div>
+        <div class="options" id="opts">
+            <button onclick="reply(0)">¡Claro! Veré cómo hago tiempo. (Ceder)</button>
+            <button onclick="reply(1)">No puedo, estoy muy ocupado. (Brusco)</button>
+            <button onclick="reply(2)">Me siento halagado de que pensaras en mí, pero dada mi carga de trabajo actual, no podría darle la dedicación que merece. Tengo que declinar. (Elegante)</button>
+        </div>
+    </div>
+
+    <script>
+        function reply(option) {
+            const msgs = document.getElementById('msgs');
+            const opts = document.getElementById('opts');
+            
+            let text = "";
+            let feedback = "";
+            let color = "";
+
+            if (option === 0) {
+                text = "¡Claro! Veré cómo hago tiempo.";
+                feedback = "❌ Error: Has sacrificado tu esencial por lo trivial de otro.";
+                color = "#FFCDD2";
+            } else if (option === 1) {
+                text = "No puedo, estoy muy ocupado.";
+                feedback = "⚠️ Regular: Es un 'no', pero puede dañar la relación.";
+                color = "#FFF9C4";
+            } else {
+                text = "Me siento halagado de que pensaras en mí, pero dada mi carga de trabajo actual, no podría darle la dedicación que merece. Tengo que declinar.";
+                feedback = "✅ Perfecto: Un 'no' elegante que respeta tu tiempo y a la otra persona.";
+                color = "#C8E6C9";
+            }
+
+            msgs.innerHTML += `<div class="msg outgoing">${text}</div>`;
+            setTimeout(() => {
+                msgs.innerHTML += `<div style="background:${color}; color:#333; padding:10px; border-radius:5px; text-align:center; font-size:0.9em; margin-top:10px;">${feedback}</div>`;
+                if(option === 2) {
+                    opts.innerHTML = '<button onclick="location.reload()" style="text-align:center">Volver a intentar</button>';
+                }
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 500);
+        }
+    </script>
+</body>
+</html>

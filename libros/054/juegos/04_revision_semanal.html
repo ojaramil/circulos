@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Checklist Revisión Semanal ✅</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #FFF9E6; color: #5D4037; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #F39C12; border-bottom: 2px solid #F39C12; padding-bottom: 15px; }
+        .item { display: flex; align-items: center; margin: 15px 0; padding: 15px; background: #FFF3E0; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+        .item:hover { background: #FFE0B2; }
+        .item.checked { background: #E8F5E9; text-decoration: line-through; color: #888; }
+        .checkbox { width: 25px; height: 25px; border: 2px solid #F39C12; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; background: white; }
+        .checked .checkbox { background: #4CAF50; border-color: #4CAF50; color: white; }
+        .progress-bar { height: 10px; background: #eee; border-radius: 5px; margin-top: 30px; overflow: hidden; }
+        .fill { height: 100%; background: #2ECC71; width: 0%; transition: 0.5s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Tu Revisión Semanal</h1>
+        <p>Marca cada paso a medida que "limpias" tu mente:</p>
+
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Vaciar la cabeza (braindump)
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Procesar bandeja de entrada física
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Procesar Email a cero
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Revisar calendario (pasado y futuro)
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Revisar lista "En Espera"
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Revisar lista de "Proyectos" (¿activos?)
+        </div>
+        <div class="item" onclick="toggle(this)">
+            <div class="checkbox"></div> Revisar "Algún día / Tal vez"
+        </div>
+
+        <div class="progress-bar"><div class="fill" id="fill"></div></div>
+        <p style="text-align:center; font-weight:bold" id="msg"></p>
+    </div>
+
+    <script>
+        function toggle(el) {
+            el.classList.toggle('checked');
+            if(el.classList.contains('checked')){
+                el.querySelector('.checkbox').innerHTML = '✓';
+            } else {
+                el.querySelector('.checkbox').innerHTML = '';
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('.item').length;
+            const checked = document.querySelectorAll('.item.checked').length;
+            const pct = (checked / total) * 100;
+            document.getElementById('fill').style.width = pct + "%";
+            
+            if (pct === 100) {
+                document.getElementById('msg').innerText = "¡Mente clara como el agua! Listo para la semana.";
+                document.getElementById('msg').style.color = "#27AE60";
+            } else {
+                document.getElementById('msg').innerText = checked + " de " + total + " completados";
+            }
+        }
+    </script>
+</body>
+</html>

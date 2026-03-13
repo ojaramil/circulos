@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resolución de Conflictos 🤝</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #F3E5F5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #7B1FA2; text-align: center; }
+        .step { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .step h3 { color: #4A148C; }
+        .principle-card { background: #E1BEE7; padding: 15px; border-radius: 8px; margin: 10px 0; font-weight: bold; color: #4A148C; }
+        button { background: #9C27B0; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #7B1FA2; }
+        .hidden { display: none; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .success { background: #C8E6C9; color: #2E7D32; }
+        .fail { background: #FFCDD2; color: #C62828; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Laboratorio de Conflictos</h1>
+        <p>Aplica los principios para desactivar una situación tensa.</p>
+        
+        <div class="principle-card">Situación: Un vecino está furioso porque tu perro ladró toda la noche.</div>
+
+        <div id="step1" class="step">
+            <h3>Paso 1: La Reacción Inicial</h3>
+            <p>El vecino grita: "¡Ese perro no me dejó dormir! ¡Es un desastre!"</p>
+            <button onclick="check(1, false)">"¡Usted también hace ruido!"</button>
+            <button onclick="check(1, true)">"Lo siento mucho, debe estar agotado."</button>
+            <div id="res1" class="result hidden"></div>
+        </div>
+
+        <div id="step2" class="step hidden">
+            <h3>Paso 2: Admitir Errores</h3>
+            <p>Vecino: "¡Sí, estoy agotado! Tengo que trabajar hoy."</p>
+            <button onclick="check(2, true)">"Tiene toda la razón en estar molesto. Fue mi responsabilidad y fallé."</button>
+            <button onclick="check(2, false)">"Bueno, los perros ladran, es natural."</button>
+            <div id="res2" class="result hidden"></div>
+        </div>
+
+        <div id="step3" class="step hidden">
+            <h3>Paso 3: Solución Cooperativa</h3>
+            <p>Vecino (más calmado): "Bueno, solo asegúrese de que no pase otra vez."</p>
+            <button onclick="check(3, false)">"Lo intentaré."</button>
+            <button onclick="check(3, true)">"Absolutamente. Lo meteré dentro de casa a partir de las 8pm. ¿Le parece bien?"</button>
+            <div id="res3" class="result hidden"></div>
+        </div>
+
+        <div id="final" class="hidden" style="text-align:center">
+            <h2>¡Conflicto Resuelto! 🎉</h2>
+            <p>Has convertido a un vecino enojado en un aliado usando empatía y admitiendo errores.</p>
+            <button onclick="location.reload()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        function check(step, isCorrect) {
+            const res = document.getElementById('res' + step);
+            res.classList.remove('hidden');
+            
+            if (isCorrect) {
+                res.className = 'result success';
+                res.innerHTML = '✅ <strong>Correcto:</strong> Desarmaste la tensión.';
+                setTimeout(() => {
+                    if (step < 3) {
+                        document.getElementById('step' + (step + 1)).classList.remove('hidden');
+                    } else {
+                        document.getElementById('final').classList.remove('hidden');
+                    }
+                }, 1000);
+            } else {
+                res.className = 'result fail';
+                res.innerHTML = '❌ <strong>Incorrecto:</strong> Eso aumentó la defensiva. Intenta la otra opción.';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Práctica de Sonrisa 😊</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #FFF3E0; text-align: center; padding: 50px; }
+        .container { background: white; max-width: 600px; margin: 0 auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .emoji { font-size: 8em; margin: 20px 0; transition: all 0.3s; cursor: pointer; }
+        .emoji:hover { transform: scale(1.1); }
+        button { background: #FF9800; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 50px; cursor: pointer; margin-top: 20px; }
+        button:hover { background: #F57C00; }
+        p { font-size: 1.2em; color: #555; line-height: 1.6; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>😊 El Poder de la Sonrisa</h1>
+        <div id="step1">
+            <div class="emoji">😐</div>
+            <p>¿Sabías que el acto físico de sonreír puede cambiar tu estado de ánimo real?</p>
+            <button onclick="startPractice()">Comenzar Experimento</button>
+        </div>
+
+        <div id="step2" class="hidden">
+            <div class="emoji">😌</div>
+            <p>Cierra los ojos por un momento. Piensa en algo por lo que estés agradecido hoy.</p>
+            <button onclick="nextStep(3)">Listo</button>
+        </div>
+
+        <div id="step3" class="hidden">
+            <div class="emoji">😊</div>
+            <p>Ahora, fuerza una sonrisa suave. Manténla durante 10 segundos.</p>
+            <div style="font-size: 2em; font-weight: bold; color: #FF9800; margin: 20px;" id="timer">10</div>
+        </div>
+
+        <div id="step4" class="hidden">
+            <div class="emoji">😁</div>
+            <p>¡Excelente! ¿Notaste un pequeño cambio en tu energía?</p>
+            <p><strong>Reto del día:</strong> Sonríe a las próximas 3 personas que veas, aunque sea por teléfono.</p>
+            <button onclick="location.reload()">Repetir Ejercicio</button>
+        </div>
+    </div>
+
+    <script>
+        function startPractice() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function nextStep(step) {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            
+            let time = 10;
+            const timer = setInterval(() => {
+                time--;
+                document.getElementById('timer').innerText = time;
+                if (time <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('step3').classList.add('hidden');
+                    document.getElementById('step4').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

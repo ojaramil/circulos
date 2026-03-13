@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformador de Conducta: El Método Senghor</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #E0E7EF;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #0D1F33;
+        }
+        .game-container {
+            background: #142b47;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; border-bottom: 2px solid #FF6B35; padding-bottom: 10px; }
+        .intro { margin-bottom: 20px; font-style: italic; color: #A0B0C0; }
+        .scenario { margin-bottom: 30px; display: none; }
+        .scenario.active { display: block; }
+        .question { font-size: 1.2em; margin-bottom: 20px; font-weight: 500; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #213a5a;
+            border: 1px solid #2a4464;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover { background: #2a4464; transform: translateX(5px); }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.correct { background: #1b4d3e; border: 1px solid #2d8a6b; display: block; }
+        .feedback.incorrect { background: #5a2121; border: 1px solid #8a2d2d; display: block; }
+        .btn-next {
+            margin-top: 20px;
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Transformador de Conducta: El Método Senghor</h1>
+        <p class="intro">Debes guiar a tu equipo para salir de un ciclo de malas decisiones usando comunicación y empatía.</p>
+        <div id="game-content">
+            <div class="scenario" id="scenario-0"><div class="question">Tu equipo quiere tomar represalias contra un competidor que 'les robó' una idea. ¿Qué haces?</div><button class="option-btn" data-feedback="CONFLICTO. Estás perpetuando un ciclo tóxico. Nadie gana en una guerra de barro." onclick="checkAnswer(this, false, 'feedback-0')">Apoyas la represalia; hay que demostrar fuerza.</button><button class="option-btn" data-feedback="EXCELENTE. El método de Senghor y Oprah: identificar la intención para romper el ciclo." onclick="checkAnswer(this, true, 'feedback-0')">Les haces preguntar: '¿Cuál es nuestra intención real aquí?'.</button><div id="feedback-0" class="feedback"></div><button class="btn-next" onclick="nextStep()">Continuar</button></div><div class="scenario" id="scenario-1"><div class="question">Un miembro del equipo ha fallado y otros lo están culpando públicamente. ¿Cómo intervienes?</div><button class="option-btn" data-feedback="RIESGOSO. Estás permitiendo el linchamiento interno, lo cual destruye la confianza." onclick="checkAnswer(this, false, 'feedback-1')">Dejas que ellos lo resuelvan; es parte de la meritocracia.</button><button class="option-btn" data-feedback="EFECTIVO. El contacto constante y las conversaciones profundas son la clave de la transformación." onclick="checkAnswer(this, true, 'feedback-1')">Organizas un almuerzo para 'compartir pan' y hablar de las causas raíz.</button><div id="feedback-1" class="feedback"></div><button class="btn-next" onclick="nextStep()">Continuar</button></div>
+        </div>
+        <div id="final-score" style="display:none;">
+            <h2>¡Simulación Completa!</h2>
+            <p>Has terminado el reto. Recuerda: <strong>Lo que haces es quien eres.</strong></p>
+            <button class="btn-next" style="display:block;" onclick="location.reload()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const scenarios = document.querySelectorAll('.scenario');
+        
+        function showStep(n) {
+            scenarios.forEach((s, i) => s.classList.toggle('active', i === n));
+        }
+
+        function checkAnswer(btn, isCorrect, feedbackId) {
+            const feedback = document.getElementById(feedbackId);
+            feedback.innerHTML = btn.getAttribute('data-feedback');
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            
+            const nextBtn = feedback.nextElementSibling;
+            nextBtn.style.display = 'block';
+            
+            // Disable other buttons
+            const options = btn.parentElement.querySelectorAll('.option-btn');
+            options.forEach(o => o.disabled = true);
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep < scenarios.length) {
+                showStep(currentStep);
+            } else {
+                document.getElementById('game-content').style.display = 'none';
+                document.getElementById('final-score').style.display = 'block';
+            }
+        }
+
+        showStep(0);
+    </script>
+</body>
+</html>

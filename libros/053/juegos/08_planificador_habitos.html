@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de hábitos deliberados</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Planificador de hábitos deliberados</h1>
+        
+        <p class="subtitle">Elige un hábito HP6 para trabajar esta semana y planifica cuándo lo practicarás.</p>
+        <div class="card">
+            <label>Hábito que voy a priorizar esta semana:</label>
+            <select id="habit">
+                <option value="Claridad">Claridad</option>
+                <option value="Energía">Energía</option>
+                <option value="Necesidad">Necesidad</option>
+                <option value="Productividad">Productividad</option>
+                <option value="Influencia">Influencia</option>
+                <option value="Coraje">Coraje</option>
+            </select>
+            <label>¿Qué práctica concreta haré? (ej. 10 min de diario de claridad cada mañana):</label>
+            <textarea id="practice" placeholder="Describe la práctica y la frecuencia"></textarea>
+            <label>¿Cuándo y dónde? (día, hora, lugar):</label>
+            <input type="text" id="when" placeholder="Ej: Lunes a viernes 7:00, en mi escritorio">
+        </div>
+        <button class="btn" onclick="savePlan()">Guardar mi plan</button>
+        <div id="result" class="result-area"></div>
+        <script>
+            function savePlan() {
+                const habit = document.getElementById('habit').value;
+                const practice = document.getElementById('practice').value || "—";
+                const when = document.getElementById('when').value || "—";
+                document.getElementById('result').innerHTML = `
+                    <h3>📅 Plan de hábito deliberado</h3>
+                    <p><strong>Hábito:</strong> ${habit}</p>
+                    <p><strong>Práctica:</strong> ${practice}</p>
+                    <p><strong>Cuándo y dónde:</strong> ${when}</p>
+                    <p><em>Los hábitos deliberados requieren atención consciente. Pon una alarma o bloquea el tiempo en tu calendario.</em></p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

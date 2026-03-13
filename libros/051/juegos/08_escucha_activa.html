@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Escucha Activa 👂</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #E1F5FE; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #0277BD; text-align: center; }
+        .chat-box { border: 2px solid #B3E5FC; padding: 20px; border-radius: 10px; height: 300px; overflow-y: auto; margin-bottom: 20px; background: #FAFAFA; }
+        .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 15px; max-width: 80%; }
+        .msg.bot { background: #E1F5FE; color: #01579B; float: left; clear: both; }
+        .msg.user { background: #0277BD; color: white; float: right; clear: both; text-align: right; }
+        .controls { clear: both; display: flex; flex-direction: column; gap: 10px; }
+        .option-btn { padding: 12px; border: 1px solid #0277BD; background: white; color: #0277BD; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option-btn:hover { background: #0277BD; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👂 Simulador de Escucha Activa</h1>
+        <p>Tu objetivo: Hacer que la otra persona se sienta comprendida sin juzgar ni dar consejos prematuros.</p>
+        
+        <div class="chat-box" id="chat">
+            <div class="msg bot">Estoy muy estresado con el nuevo proyecto. Siento que mi jefe no valora mi esfuerzo.</div>
+        </div>
+
+        <div class="controls" id="options">
+            <!-- Options will appear here -->
+        </div>
+    </div>
+
+    <script>
+        const levels = [
+            {
+                options: [
+                    { text: "No te preocupes, seguro se le pasa.", score: 0, feedback: "Minimizaste sus sentimientos." },
+                    { text: "Deberías hablar con él directamente.", score: 1, feedback: "Consejo prematuro. Primero escucha." },
+                    { text: "Suena frustrante sentir que te esfuerzas y no lo notan. ¿Qué pasó exactamente?", score: 2, feedback: "¡Bien! Validaste y preguntaste para entender más." }
+                ],
+                nextMsg: "Bueno, ayer me quedé hasta tarde terminando el informe y hoy ni siquiera lo miró."
+            },
+            {
+                options: [
+                    { text: "Al menos tienes trabajo.", score: 0, feedback: "Eso invalida su frustración." },
+                    { text: "¿Y no le dijiste nada?", score: 1, feedback: "Un poco agresivo." },
+                    { text: "Vaya, quedarse hasta tarde y ser ignorado duele. ¿Cómo te hizo sentir eso?", score: 2, feedback: "Excelente empatía." }
+                ],
+                nextMsg: "Me sentí invisible. Como si mi tiempo no valiera nada."
+            },
+            {
+                options: [
+                    { text: "Entiendo perfectamente que te sientas invisible. Es una necesidad humana querer ser apreciado.", score: 2, feedback: "Perfecto cierre con validación profunda." },
+                    { text: "Bueno, ya pasará.", score: 0, feedback: "Cierre frío." }
+                ],
+                end: true
+            }
+        ];
+
+        let currentLevel = 0;
+
+        function renderOptions() {
+            const container = document.getElementById('options');
+            container.innerHTML = '';
+            levels[currentLevel].options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(opt) {
+            const chat = document.getElementById('chat');
+            
+            // User msg
+            chat.innerHTML += `<div class="msg user">${opt.text}</div>`;
+            
+            // Feedback msg (system)
+            setTimeout(() => {
+                chat.innerHTML += `<div style="clear:both; text-align:center; font-size:0.8em; color:#888; margin:5px;">Feedback: ${opt.feedback}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+
+                if (opt.score === 2) {
+                    setTimeout(() => {
+                        if (levels[currentLevel].end) {
+                             chat.innerHTML += `<div class="msg bot">Gracias por escucharme. Me siento mucho mejor hablándolo contigo.</div>`;
+                             document.getElementById('options').innerHTML = '<h3>¡Misión Cumplida! 🎉</h3><button class="option-btn" onclick="location.reload()">Reiniciar</button>';
+                        } else {
+                            chat.innerHTML += `<div class="msg bot">${levels[currentLevel].nextMsg}</div>`;
+                            currentLevel++;
+                            renderOptions();
+                        }
+                        chat.scrollTop = chat.scrollHeight;
+                    }, 1000);
+                } else {
+                    // Try again
+                    chat.innerHTML += `<div style="clear:both; text-align:center; color:red; font-size:0.9em;">Intenta una respuesta más empática.</div>`;
+                }
+            }, 500);
+        }
+
+        renderOptions();
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Regla de los 2 Minutos ⏱️</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #2C3E50; color: white; text-align: center; padding: 40px; }
+        .card { background: #ECF0F1; color: #2C3E50; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        h1 { color: #E74C3C; }
+        .task { font-size: 1.5em; margin: 30px 0; font-weight: bold; }
+        .controls { display: flex; justify-content: center; gap: 20px; }
+        button { padding: 15px 30px; font-size: 1.2em; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        .btn-now { background: #2ECC71; color: white; }
+        .btn-later { background: #3498DB; color: white; }
+        button:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>⏱️ ¿2 Minutos o Más?</h1>
+        <p>¿Hacerlo YA o ponerlo en la lista?</p>
+        
+        <div id="game">
+            <div class="task" id="task-text">Cargando...</div>
+            <div class="controls">
+                <button class="btn-now" onclick="check(true)">¡Hacer AHORA!</button>
+                <button class="btn-later" onclick="check(false)">Planificar</button>
+            </div>
+            <p id="msg" style="margin-top:20px; height:20px;"></p>
+        </div>
+    </div>
+
+    <script>
+        const tasks = [
+            { text: "Enviar ese archivo adjunto", now: true },
+            { text: "Escribir un libro", now: false },
+            { text: "Llamar para confirmar cita", now: true },
+            { text: "Diseñar la web completa", now: false },
+            { text: "Regar la planta", now: true },
+            { text: "Aprender alemán", now: false }
+        ];
+        
+        let idx = 0;
+
+        function load() {
+            if (idx >= tasks.length) {
+                document.getElementById('game').innerHTML = "<h2>¡Terminado!</h2><p>Has dominado la regla de oro de la productividad instantánea.</p><button class='btn-later' onclick='location.reload()'>Reiniciar</button>";
+                return;
+            }
+            document.getElementById('task-text').innerText = tasks[idx].text;
+            document.getElementById('msg').innerText = "";
+        }
+
+        function check(chosenNow) {
+            const correct = tasks[idx].now === chosenNow;
+            const msg = document.getElementById('msg');
+            
+            if (correct) {
+                msg.style.color = "green";
+                msg.innerText = "¡Bien! " + (tasks[idx].now ? "Es rápido, hazlo ya." : "Eso toma tiempo, planifícalo.");
+                setTimeout(() => {
+                    idx++;
+                    load();
+                }, 1000);
+            } else {
+                msg.style.color = "red";
+                msg.innerText = "¡Ups! " + (tasks[idx].now ? "Esto es rápido, no lo pospongas." : "Esto es muy largo para hacerlo ahora.");
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>

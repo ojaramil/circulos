@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Decisión</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Decisión</h1>
+        
+        <p class="subtitle">Experimenta cómo el número de opciones afecta tu proceso de decisión.</p>
+        
+        <div class="card">
+            <label>Número de Opciones:</label>
+            <select id="optionCount" onchange="generateOptions()">
+                <option value="3">3 Opciones (Óptimo)</option>
+                <option value="6">6 Opciones (Bueno)</option>
+                <option value="12">12 Opciones (Muchas)</option>
+                <option value="24">24 Opciones (Demasiadas)</option>
+            </select>
+            
+            <label>Escenario:</label>
+            <select id="scenario" onchange="generateOptions()">
+                <option value="restaurant">Elegir un Restaurante</option>
+                <option value="product">Comprar un Producto</option>
+                <option value="career">Elegir una Carrera</option>
+            </select>
+        </div>
+        
+        <div id="options-container"></div>
+        
+        <button class="btn" onclick="makeDecision()">Tomar Decisión</button>
+        <button class="btn" onclick="reset()">Reiniciar</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            let selectedOption = null;
+            
+            function generateOptions() {
+                const count = parseInt(document.getElementById('optionCount').value);
+                const scenario = document.getElementById('scenario').value;
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const scenarios = {
+                    restaurant: ['Restaurante Italiano', 'Restaurante Mexicano', 'Restaurante Japonés', 'Restaurante Francés', 'Restaurante Tailandés', 'Restaurante Indio', 'Restaurante Griego', 'Restaurante Español', 'Restaurante Coreano', 'Restaurante Vietnamita', 'Restaurante Libanés', 'Restaurante Brasileño', 'Restaurante Argentino', 'Restaurante Peruano', 'Restaurante Marroquí', 'Restaurante Turco', 'Restaurante Alemán', 'Restaurante Británico', 'Restaurante Americano', 'Restaurante Mediterráneo', 'Restaurante Vegano', 'Restaurante Vegetariano', 'Restaurante de Mariscos', 'Restaurante de Carne'],
+                    product: ['Producto A', 'Producto B', 'Producto C', 'Producto D', 'Producto E', 'Producto F', 'Producto G', 'Producto H', 'Producto I', 'Producto J', 'Producto K', 'Producto L', 'Producto M', 'Producto N', 'Producto O', 'Producto P', 'Producto Q', 'Producto R', 'Producto S', 'Producto T', 'Producto U', 'Producto V', 'Producto W', 'Producto X'],
+                    career: ['Ingeniería', 'Medicina', 'Derecho', 'Educación', 'Arquitectura', 'Psicología', 'Negocios', 'Arte', 'Música', 'Periodismo', 'Marketing', 'Finanzas', 'Tecnología', 'Ciencias', 'Filosofía', 'Historia', 'Literatura', 'Diseño', 'Deportes', 'Gastronomía', 'Turismo', 'Medio Ambiente', 'Política', 'Investigación']
+                };
+                
+                const options = scenarios[scenario].slice(0, count);
+                
+                options.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'option-item';
+                    div.textContent = `${i + 1}. ${opt}`;
+                    div.onclick = () => selectOption(i, div);
+                    container.appendChild(div);
+                });
+                
+                selectedOption = null;
+            }
+            
+            function selectOption(index, element) {
+                document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+                element.classList.add('selected');
+                selectedOption = index;
+            }
+            
+            function makeDecision() {
+                const count = parseInt(document.getElementById('optionCount').value);
+                const timeSpent = count * 2; // minutos estimados
+                const stressLevel = count > 12 ? 'Alto' : count > 6 ? 'Moderado' : 'Bajo';
+                const satisfaction = count > 12 ? 'Baja' : count > 6 ? 'Moderada' : 'Alta';
+                
+                if (selectedOption === null) {
+                    alert('Por favor selecciona una opción primero');
+                    return;
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>📊 Análisis de tu Decisión</h3>
+                    <p><strong>Opciones consideradas:</strong> ${count}</p>
+                    <p><strong>Tiempo estimado de decisión:</strong> ${timeSpent} minutos</p>
+                    <p><strong>Nivel de estrés:</strong> ${stressLevel}</p>
+                    <p><strong>Satisfacción esperada:</strong> ${satisfaction}</p>
+                    <p style="margin-top: 15px; color: #b388ff;">
+                        ${count > 12 ? '⚠️ Con tantas opciones, es probable que experimentes arrepentimiento y te preguntes si otra opción habría sido mejor.' : count > 6 ? '✓ Un número moderado de opciones te da flexibilidad sin sobrecarga.' : '✓ Este es el rango óptimo para la satisfacción y la toma de decisiones efectiva.'}
+                    </p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+            
+            function reset() {
+                selectedOption = null;
+                document.getElementById('result').style.display = 'none';
+                generateOptions();
+            }
+            
+            generateOptions();
+        </script>
+        
+    </div>
+</body>
+</html>

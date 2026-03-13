@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de la Elección</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Maestro de la Elección</h1>
+        
+        <p class="subtitle">Certificación Final: Aplica todos los principios aprendidos.</p>
+        
+        <div class="card" style="text-align: center;">
+            <h3>¡Felicidades!</h3>
+            <p>Has completado el recorrido por "La Paradoja de la Elección".</p>
+            <p>Estás listo para tomar decisiones más inteligentes y vivir una vida más satisfactoria.</p>
+            <div style="font-size: 50px; margin: 20px;">🎓</div>
+            <p>Tu kit de herramientas ahora contiene:</p>
+            <ul style="text-align: left; list-style: none;">
+                <li>✅ Entendimiento de cómo las opciones afectan la satisfacción</li>
+                <li>✅ Habilidades para priorizar decisiones</li>
+                <li>✅ Estrategias para limitar opciones efectivamente</li>
+                <li>✅ Técnicas de gratitud y satisfacción</li>
+                <li>✅ Conocimiento de maximizadores vs. satisfactores</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>Resumen de Principios Clave</h3>
+            <ol style="text-align: left;">
+                <li><strong>Elige cuándo elegir:</strong> No todas las decisiones merecen el mismo nivel de atención.</li>
+                <li><strong>Sé un satisfactor:</strong> Busca lo "suficientemente bueno" en lugar de "lo mejor".</li>
+                <li><strong>Reduce expectativas:</strong> Sé realista sobre lo que cualquier elección puede darte.</li>
+                <li><strong>Haz decisiones irreversibles:</strong> Comprométete con tus elecciones.</li>
+                <li><strong>Presta menos atención a los demás:</strong> Evalúa tus elecciones según tus propios valores.</li>
+                <li><strong>Abraza restricciones voluntarias:</strong> Limita tus opciones para aumentar tu libertad.</li>
+                <li><strong>Practica gratitud:</strong> Aprecia lo que tienes en lugar de buscar constantemente algo mejor.</li>
+            </ol>
+        </div>
+        
+        <button class="btn" onclick="claimCertificate()">Reclamar Certificado (Simulado)</button>
+        
+        <div id="result" class="result-area" style="text-align: center;"></div>
+        
+        <script>
+            function claimCertificate() {
+                document.getElementById('result').innerHTML = `
+                    <h3>🏆 Certificado de Maestría en Toma de Decisiones</h3>
+                    <p>Has demostrado comprensión de:</p>
+                    <p style="color: #00e5ff; font-size: 1.2em;">La Paradoja de la Elección</p>
+                    <p><em>Barry Schwartz</em></p>
+                    <p style="margin-top: 20px; color: #b388ff;">Recuerda: La verdadera libertad viene de aprender a elegir sabiamente, no de tener opciones ilimitadas.</p>
+                    <p style="margin-top: 15px;">¡Bienvenido al camino hacia una vida más satisfactoria y menos estresante!</p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

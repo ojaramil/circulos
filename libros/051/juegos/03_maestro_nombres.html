@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de Nombres 👤</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3F51B5 0%, #283593 100%);
+            min-height: 100vh; padding: 20px; color: #333;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #3F51B5, #283593);
+            color: white; padding: 30px; text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; }
+        .game-area { padding: 30px; }
+        .person-card {
+            background: linear-gradient(135deg, #E8EAF6, #C5CAE9);
+            padding: 25px; border-radius: 15px; margin: 20px 0;
+            text-align: center; border: 3px solid #3F51B5;
+        }
+        .person-card img {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 4px solid white; margin-bottom: 15px;
+            background: #fff; display: flex; align-items: center;
+            justify-content: center; font-size: 4em; margin: 0 auto 15px;
+        }
+        .person-info { font-size: 1.1em; margin: 10px 0; }
+        .name-input {
+            width: 100%; max-width: 400px; padding: 15px;
+            border: 2px solid #3F51B5; border-radius: 10px;
+            font-size: 1.2em; text-align: center; margin: 20px auto;
+            display: block;
+        }
+        .btn {
+            background: #3F51B5; color: white; border: none;
+            padding: 15px 30px; border-radius: 10px; cursor: pointer;
+            font-size: 1.1em; margin: 10px; transition: all 0.3s;
+        }
+        .btn:hover { background: #283593; transform: scale(1.05); }
+        .score-display {
+            text-align: center; font-size: 2em; color: #3F51B5;
+            font-weight: bold; margin: 20px 0;
+        }
+        .feedback {
+            padding: 20px; border-radius: 10px; margin: 20px 0;
+            text-align: center; font-size: 1.2em; display: none;
+        }
+        .feedback.show { display: block; animation: fadeIn 0.5s; }
+        .feedback.correct { background: #E8F5E9; color: #2E7D32; border: 2px solid #4CAF50; }
+        .feedback.incorrect { background: #FFEBEE; color: #C62828; border: 2px solid #F44336; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .timer {
+            text-align: center; font-size: 1.5em; color: #FF5722;
+            font-weight: bold; margin: 15px 0;
+        }
+        .people-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .mini-card {
+            background: #f5f5f5; padding: 15px; border-radius: 10px;
+            text-align: center; cursor: pointer; transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .mini-card:hover { background: #E8EAF6; border-color: #3F51B5; }
+        .mini-card.selected { background: #3F51B5; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 Maestro de Nombres</h1>
+            <p>Practica recordar nombres y detalles de las personas</p>
+        </div>
+        
+        <div class="game-area">
+            <div class="score-display">Puntuación: <span id="score">0</span></div>
+            <div class="timer" id="timer" style="display: none;">Tiempo: <span id="time">30</span>s</div>
+            <div id="game-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentPhase = 'memorize';
+        let timeLeft = 30;
+        let timerInterval;
+
+        const people = [
+            { name: 'María González', job: 'Ingeniera de Software', hobby: 'Fotografía', emoji: '👩‍💻' },
+            { name: 'Carlos Rodríguez', job: 'Diseñador Gráfico', hobby: 'Ciclismo', emoji: '👨‍🎨' },
+            { name: 'Ana Martínez', job: 'Doctora', hobby: 'Yoga', emoji: '👩‍⚕️' },
+            { name: 'Luis Fernández', job: 'Profesor', hobby: 'Ajedrez', emoji: '👨‍🏫' },
+            { name: 'Sofia López', job: 'Arquitecta', hobby: 'Pintura', emoji: '👩‍🔬' },
+            { name: 'Diego Torres', job: 'Chef', hobby: 'Jardinería', emoji: '👨‍��' }
+        ];
+
+        function startGame() {
+            showMemorizePhase();
+        }
+
+        function showMemorizePhase() {
+            currentPhase = 'memorize';
+            timeLeft = 30;
+            document.getElementById('timer').style.display = 'block';
+            
+            let html = '<h2 style="text-align: center; color: #3F51B5;">Fase 1: Memoriza a estas personas</h2>';
+            html += '<p style="text-align: center; margin: 15px 0;">Tienes 30 segundos para recordar sus nombres y detalles</p>';
+            html += '<div class="people-grid">';
+            
+            people.forEach(person => {
+                html += \`
+                    <div class="person-card" style="padding: 15px;">
+                        <div style="font-size: 3em;">\${person.emoji}</div>
+                        <div style="font-weight: bold; font-size: 1.1em; margin: 10px 0;">\${person.name}</div>
+                        <div style="font-size: 0.9em; color: #666;">\${person.job}</div>
+                        <div style="font-size: 0.9em; color: #666;">Le gusta: \${person.hobby}</div>
+                    </div>
+                \`;
+            });
+            
+            html += '</div>';
+            document.getElementById('game-container').innerHTML = html;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showTestPhase();
+                }
+            }, 1000);
+        }
+
+        function showTestPhase() {
+            currentPhase = 'test';
+            document.getElementById('timer').style.display = 'none';
+            
+            const shuffled = [...people].sort(() => Math.random() - 0.5);
+            const testPerson = shuffled[0];
+            
+            let html = '<h2 style="text-align: center; color: #3F51B5;">Fase 2: ¿Recuerdas a esta persona?</h2>';
+            html += \`
+                <div class="person-card">
+                    <div style="font-size: 4em;">\${testPerson.emoji}</div>
+                    <div style="font-size: 1.2em; margin: 15px 0;">¿Cuál es el nombre de esta persona?</div>
+                </div>
+            \`;
+            
+            html += '<div class="people-grid">';
+            const nameOptions = [...people].sort(() => Math.random() - 0.5).slice(0, 4);
+            if (!nameOptions.includes(testPerson)) {
+                nameOptions[0] = testPerson;
+                nameOptions.sort(() => Math.random() - 0.5);
+            }
+            
+            nameOptions.forEach(person => {
+                html += \`<div class="mini-card" onclick="checkAnswer('\${person.name}', '\${testPerson.name}')">\${person.name}</div>\`;
+            });
+            html += '</div>';
+            html += '<div id="feedback" class="feedback"></div>';
+            
+            document.getElementById('game-container').innerHTML = html;
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('feedback');
+            const cards = document.querySelectorAll('.mini-card');
+            cards.forEach(card => card.style.pointerEvents = 'none');
+            
+            if (selected === correct) {
+                score += 10;
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = '✅ ¡Correcto! Has recordado el nombre.';
+            } else {
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = \`❌ Incorrecto. El nombre correcto era \${correct}.\`;
+            }
+            
+            document.getElementById('score').textContent = score;
+            
+            setTimeout(() => {
+                if (people.length > 0) {
+                    showTestPhase();
+                } else {
+                    showResults();
+                }
+            }, 2000);
+        }
+
+        function showResults() {
+            const percentage = (score / (people.length * 10) * 100).toFixed(0);
+            let message = '';
+            
+            if (percentage >= 80) message = '¡Excelente memoria!';
+            else if (percentage >= 60) message = '¡Bien! Sigue practicando.';
+            else message = 'Necesitas más práctica. Intenta crear asociaciones mentales.';
+            
+            document.getElementById('game-container').innerHTML = \`
+                <div class="person-card">
+                    <h2 style="color: #3F51B5;">🎉 Juego Completado</h2>
+                    <div style="font-size: 3em; margin: 20px 0;">\${percentage}%</div>
+                    <p style="font-size: 1.2em;">\${message}</p>
+                    <p style="margin: 20px 0;">Puntuación: \${score} puntos</p>
+                    <button class="btn" onclick="location.reload()">Jugar de Nuevo</button>
+                </div>
+            \`;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>

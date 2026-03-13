@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Arrepentimiento</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador de Arrepentimiento</h1>
+        
+        <p class="subtitle">Evalúa cómo las opciones no elegidas afectan tu satisfacción.</p>
+        
+        <div class="card">
+            <h3>Escenario: Has Elegido un Restaurante</h3>
+            <p>Has elegido: <strong id="chosen">Restaurante Italiano</strong></p>
+            
+            <label>Número de Opciones que Consideraste:</label>
+            <input type="number" id="totalOptions" value="6" min="2" max="30" oninput="analyze()">
+            
+            <label>¿Cuántas de esas opciones eran atractivas?</label>
+            <input type="number" id="attractiveOptions" value="4" min="1" max="30" oninput="analyze()">
+        </div>
+        
+        <div id="result" class="result-area" style="display:block;">
+            <h3>📊 Análisis de Arrepentimiento</h3>
+            <p><strong>Probabilidad de Arrepentimiento:</strong> <span id="regretProb">40%</span></p>
+            <p><strong>Nivel de Satisfacción:</strong> <span id="satisfaction">60%</span></p>
+            <p><strong>Opciones Atractivas Rechazadas:</strong> <span id="rejected">3</span></p>
+            <p id="insight" style="margin-top: 15px; color: #b388ff;"></p>
+        </div>
+
+        <script>
+            function analyze() {
+                const total = parseInt(document.getElementById('totalOptions').value) || 2;
+                const attractive = parseInt(document.getElementById('attractiveOptions').value) || 1;
+                const rejected = Math.max(0, attractive - 1);
+                
+                // Más opciones atractivas rechazadas = más arrepentimiento
+                const regretProb = Math.min(90, rejected * 15 + (total > 10 ? 20 : 0));
+                const satisfaction = Math.max(30, 100 - regretProb);
+                
+                let insight = '';
+                if (total > 15) {
+                    insight = '⚠️ Con tantas opciones, es difícil estar completamente satisfecho. Considera limitar a 6-8 opciones más prometedoras.';
+                } else if (attractive > total * 0.7) {
+                    insight = '💡 Muchas opciones atractivas pueden aumentar el arrepentimiento. Recuerda: no puedes tenerlo todo.';
+                } else if (total <= 6) {
+                    insight = '✅ Rango óptimo. Tienes suficientes opciones sin sobrecarga de arrepentimiento.';
+                } else {
+                    insight = '✓ Número moderado de opciones. Tu satisfacción debería ser buena.';
+                }
+                
+                document.getElementById('regretProb').innerText = Math.round(regretProb) + '%';
+                document.getElementById('satisfaction').innerText = Math.round(satisfaction) + '%';
+                document.getElementById('rejected').innerText = rejected;
+                document.getElementById('insight').innerText = insight;
+            }
+            
+            analyze();
+        </script>
+        
+    </div>
+</body>
+</html>

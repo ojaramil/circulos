@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro de alto rendimiento</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Maestro de alto rendimiento</h1>
+        
+        <p class="subtitle">Quiz final sobre los HP6.</p>
+        <div id="quiz-container"></div>
+        <div id="score-area" class="result-area" style="text-align: center;"></div>
+        <script>
+            const quizData = [
+                { q: "¿Qué son los HP6?", a: ["Seis tipos de personalidad", "Seis hábitos deliberados que distinguen a los high performers", "Seis fortalezas innatas"], correct: 1 },
+                { q: "¿Cuál es el primer hábito?", a: ["Generar energía", "Buscar claridad", "Aumentar productividad"], correct: 1 },
+                { q: "¿Qué significa PQO?", a: ["Plan Quincenal de Objetivos", "Prolific Quality Output (output prolífico de calidad)", "Productividad Quick Option"], correct: 1 },
+                { q: "¿Por qué las fortalezas solas no bastan?", a: ["Porque son innatas", "Porque llegar a la cima requiere ir más allá de lo natural y desplegar los HP6", "Porque hay que enfocarse solo en debilidades"], correct: 1 },
+                { q: "¿Qué es 'the main thing'?", a: ["La primera tarea del día", "La cosa más importante que debes mantener como prioridad", "El jefe"], correct: 1 }
+            ];
+            function loadQuiz() {
+                const container = document.getElementById('quiz-container');
+                let html = '';
+                quizData.forEach((item, index) => {
+                    html += `<div class="card">
+                        <p><strong>${index + 1}. ${item.q}</strong></p>
+                        ${item.a.map((opt, i) => `<button class="btn" style="background:#f0f0f0; color:#333; width:100%; text-align:left; margin:5px 0;" onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>`).join('')}
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+            let answered = 0;
+            let score = 0;
+            function checkAnswer(btn, qIndex, aIndex) {
+                if (btn.parentElement.classList.contains('answered')) return;
+                btn.parentElement.classList.add('answered');
+                answered++;
+                if (aIndex === quizData[qIndex].correct) {
+                    btn.style.background = '#1abc9c';
+                    btn.style.color = 'white';
+                    score++;
+                } else {
+                    btn.style.background = '#e74c3c';
+                    btn.style.color = 'white';
+                }
+                if (answered === quizData.length) {
+                    document.getElementById('score-area').innerHTML = `
+                        <h3>Resultado: ${score}/${quizData.length}</h3>
+                        <p>${score === quizData.length ? '¡Eres un maestro de los HP6! Sigue aplicando los hábitos con intención.' : 'Sigue repasando los seis hábitos y practicando con los juegos.'}</p>
+                    `;
+                    document.getElementById('score-area').style.display = 'block';
+                }
+            }
+            loadQuiz();
+        </script>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Liderazgo Positivo 👑</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #FFF8E1; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #FF6F00; text-align: center; }
+        .card { border: 2px solid #FFECB3; padding: 20px; margin: 15px 0; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .card:hover { background: #FFF8E1; border-color: #FF6F00; }
+        .card h3 { margin-top: 0; color: #F57C00; }
+        .feedback-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5); display: none; width: 80%; max-width: 500px; text-align: center; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👑 Retos de Liderazgo</h1>
+        <p>Elige la mejor forma de liderar en cada situación para inspirar sin ofender.</p>
+
+        <div class="card" onclick="showScenario(1)">
+            <h3>Caso 1: El empleado impuntual</h3>
+            <p>Juan ha llegado tarde 3 veces esta semana.</p>
+        </div>
+
+        <div class="card" onclick="showScenario(2)">
+            <h3>Caso 2: Error en el informe</h3>
+            <p>María cometió un error de cálculo en el reporte final.</p>
+        </div>
+
+        <div class="card" onclick="showScenario(3)">
+            <h3>Caso 3: Baja motivación</h3>
+            <p>El equipo está desanimado por un proyecto difícil.</p>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="feedback-modal" id="modal">
+        <h2 id="modal-title"></h2>
+        <div id="modal-options"></div>
+        <div id="modal-feedback" style="margin-top:15px; font-weight:bold;"></div>
+        <button onclick="closeModal()" style="margin-top:20px; padding:10px 20px; background:#FF6F00; color:white; border:none; border-radius:5px; cursor:pointer;">Cerrar</button>
+    </div>
+
+    <script>
+        const scenarios = {
+            1: {
+                title: "El empleado impuntual",
+                options: [
+                    { text: "Juan, llegas tarde siempre. ¡Basta ya!", correct: false, feedback: "La crítica directa genera resentimiento." },
+                    { text: "Juan, siempre has sido muy comprometido. Me preocupa que estos retrasos afecten tu excelente récord. ¿Todo bien?", correct: true, feedback: "¡Bien! Elogiaste primero (reputación a mantener) y mostraste preocupación genuina." }
+                ]
+            },
+            2: {
+                title: "Error en el informe",
+                options: [
+                    { text: "María, hay un error aquí. Pero no te preocupes, yo cometí uno peor al principio. Vamos a arreglarlo.", correct: true, feedback: "¡Excelente! Hablar de tus propios errores primero suaviza la corrección." },
+                    { text: "¿Cómo pudiste equivocarte en esto? Es básico.", correct: false, feedback: "Humillar a alguien destruye su confianza." }
+                ]
+            },
+            3: {
+                title: "Baja motivación",
+                options: [
+                    { text: "Tienen que trabajar más duro o fracasaremos.", correct: false, feedback: "Las amenazas no inspiran." },
+                    { text: "Sé que es un reto enorme, pero confío plenamente en su capacidad para superarlo. Miren lo que lograron el mes pasado...", correct: true, feedback: "¡Perfecto! El estímulo y la confianza motivan a las personas a superarse." }
+                ]
+            }
+        };
+
+        function showScenario(id) {
+            const s = scenarios[id];
+            document.getElementById('modal-title').innerText = s.title;
+            const optsDiv = document.getElementById('modal-options');
+            optsDiv.innerHTML = '';
+            document.getElementById('modal-feedback').innerText = '';
+            
+            s.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.style = "display:block; width:100%; margin:10px 0; padding:10px; border:1px solid #ddd; background:#f9f9f9; cursor:pointer; border-radius:5px;";
+                btn.innerText = opt.text;
+                btn.onclick = () => {
+                    document.getElementById('modal-feedback').style.color = opt.correct ? 'green' : 'red';
+                    document.getElementById('modal-feedback').innerText = (opt.correct ? "✅ " : "❌ ") + opt.feedback;
+                };
+                optsDiv.appendChild(btn);
+            });
+
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

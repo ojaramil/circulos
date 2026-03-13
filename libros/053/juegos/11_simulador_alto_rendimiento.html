@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de alto rendimiento</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de alto rendimiento</h1>
+        
+        <p class="subtitle">Simula una situación donde debes desplegar los HP6.</p>
+        <div class="card">
+            <label>Describe una situación próxima que importe (reunión, presentación, conversación difícil, proyecto nuevo):</label>
+            <textarea id="situation" placeholder="Ej: Reunión con mi jefe para pedir un nuevo rol..."></textarea>
+            <p>Para esta situación, ¿cómo aplicarías cada hábito?</p>
+            <p><strong>Claridad:</strong> ¿Qué quieres lograr y qué sentimiento buscas?</p>
+            <input type="text" id="c" placeholder="Breve">
+            <p><strong>Energía:</strong> ¿Cómo te prepararás (descanso, movimiento, estado de ánimo)?</p>
+            <input type="text" id="e" placeholder="Breve">
+            <p><strong>Necesidad:</strong> ¿Quién depende de que rindas bien aquí?</p>
+            <input type="text" id="n" placeholder="Breve">
+            <p><strong>Productividad:</strong> ¿Cuál es el resultado de calidad que debes lograr?</p>
+            <input type="text" id="p" placeholder="Breve">
+            <p><strong>Influencia:</strong> ¿Cómo harás que la otra persona se sienta valorada?</p>
+            <input type="text" id="i" placeholder="Breve">
+            <p><strong>Coraje:</strong> ¿Qué dirás o harás que te da miedo pero es necesario?</p>
+            <input type="text" id="co" placeholder="Breve">
+        </div>
+        <button class="btn" onclick="simulate()">Ver mi plan HP6</button>
+        <div id="result" class="result-area"></div>
+        <script>
+            function simulate() {
+                const sit = document.getElementById('situation').value || "—";
+                const labels = ["Claridad", "Energía", "Necesidad", "Productividad", "Influencia", "Coraje"];
+                const ids = ["c", "e", "n", "p", "i", "co"];
+                let list = "<ul>";
+                labels.forEach((l, i) => {
+                    let v = document.getElementById(ids[i]).value || "—";
+                    list += `<li><strong>${l}:</strong> ${v}</li>`;
+                });
+                list += "</ul>";
+                document.getElementById('result').innerHTML = `
+                    <h3>🔄 Plan HP6 para tu situación</h3>
+                    <p><strong>Situación:</strong> ${sit}</p>
+                    ${list}
+                    <p><em>Usa este plan como checklist antes de entrar en la situación. Los HP6 son tu sistema operativo.</em></p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

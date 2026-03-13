@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Influencia Ética ⚖️</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #E0F2F1; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #00695C; text-align: center; }
+        .scenario-box { border: 2px solid #80CBC4; padding: 20px; border-radius: 10px; margin-bottom: 20px; background: #F0F4C3; }
+        .drag-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .draggable { background: #009688; color: white; padding: 10px 20px; border-radius: 20px; cursor: grab; }
+        .drop-zone { border: 2px dashed #00695C; padding: 20px; min-height: 100px; border-radius: 10px; background: #E0F2F1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+        .success-msg { text-align: center; color: #2E7D32; font-weight: bold; font-size: 1.2em; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚖️ Constructor de Influencia Ética</h1>
+        <p>Arrastra los elementos correctos para construir una petición persuasiva y ética.</p>
+        
+        <div class="scenario-box">
+            <strong>Objetivo:</strong> Convencer a tu equipo de adoptar un nuevo software difícil de aprender.
+        </div>
+
+        <div class="drag-container" id="source">
+            <div class="draggable" draggable="true">Amenazar con despidos</div>
+            <div class="draggable" draggable="true">Elogiar su adaptabilidad pasada</div>
+            <div class="draggable" draggable="true">Explicar beneficios para ellos</div>
+            <div class="draggable" draggable="true">Mentir sobre la facilidad</div>
+            <div class="draggable" draggable="true">Pedir su opinión</div>
+            <div class="draggable" draggable="true">Imponer la orden</div>
+        </div>
+
+        <h3>Arrastra aquí los 3 componentes éticos:</h3>
+        <div class="drop-zone" id="target"></div>
+        
+        <div id="success" class="success-msg">🎉 ¡Perfecto! Has construido una influencia basada en respeto y beneficio mutuo.</div>
+        <button onclick="check()" style="margin-top:20px; padding:10px 20px; background:#00695C; color:white; border:none; border-radius:5px; cursor:pointer; display:block; margin: 20px auto;">Verificar</button>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZone = document.getElementById('target');
+        const sourceZone = document.getElementById('source');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            const draggable = document.querySelector('.dragging');
+            if (draggable) dropZone.appendChild(draggable);
+        });
+
+        sourceZone.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+
+        sourceZone.addEventListener('drop', e => {
+            e.preventDefault();
+            const draggable = document.querySelector('.dragging');
+            if (draggable) sourceZone.appendChild(draggable);
+        });
+
+        function check() {
+            const items = dropZone.querySelectorAll('.draggable');
+            const correctItems = ["Elogiar su adaptabilidad pasada", "Explicar beneficios para ellos", "Pedir su opinión"];
+            let correctCount = 0;
+            let wrongCount = 0;
+
+            items.forEach(item => {
+                if (correctItems.includes(item.innerText)) correctCount++;
+                else wrongCount++;
+            });
+
+            if (correctCount === 3 && wrongCount === 0) {
+                document.getElementById('success').style.display = 'block';
+                dropZone.style.borderColor = '#4CAF50';
+                dropZone.style.background = '#C8E6C9';
+            } else {
+                alert("Mmm... algo no está bien. Asegúrate de elegir solo estrategias éticas y positivas (sin amenazas, mentiras ni imposiciones).");
+            }
+        }
+    </script>
+</body>
+</html>

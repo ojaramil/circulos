@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Aprecio 💝</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #E91E63, #880E4F); color: #333; padding: 20px; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h1 { color: #880E4F; text-align: center; }
+        .scenario { background: #FCE4EC; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #E91E63; }
+        .input-area { margin-top: 20px; }
+        textarea { width: 100%; height: 100px; padding: 10px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-family: inherit; }
+        button { background: #E91E63; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: transform 0.2s; }
+        button:hover { transform: scale(1.05); background: #C2185B; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
+        .feedback.good { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+        .feedback.bad { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💝 Generador de Aprecio Sincero</h1>
+        <p>Transforma observaciones cotidianas en elogios genuinos y específicos.</p>
+        
+        <div id="game-area"></div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                context: "Tu colega entregó un informe a tiempo, aunque tuvo poco tiempo.",
+                bad: "Buen trabajo.",
+                hint: "Sé específico sobre el esfuerzo y la calidad bajo presión."
+            },
+            {
+                context: "Tu pareja preparó una cena especial un martes cualquiera.",
+                bad: "Gracias por la cena.",
+                hint: "Menciona el detalle, el sabor y cómo te hace sentir su consideración."
+            },
+            {
+                context: "Un empleado se quedó tarde para ayudar a un cliente difícil.",
+                bad: "Bien hecho con ese cliente.",
+                hint: "Reconoce su paciencia, profesionalismo y el impacto en la imagen de la empresa."
+            }
+        ];
+        
+        let current = 0;
+
+        function loadScenario() {
+            if (current >= scenarios.length) {
+                document.getElementById('game-area').innerHTML = '<div style="text-align:center"><h2>¡Excelente! 🎉</h2><p>Has practicado el arte del aprecio específico.</p><button onclick="location.reload()">Volver a empezar</button></div>';
+                return;
+            }
+            const s = scenarios[current];
+            document.getElementById('game-area').innerHTML = `
+                <div class="scenario">
+                    <h3>Situación ${current + 1}:</h3>
+                    <p>${s.context}</p>
+                    <p><strong>Elogio genérico (a evitar):</strong> "${s.bad}"</p>
+                </div>
+                <div class="input-area">
+                    <label>Escribe un elogio específico y sincero:</label>
+                    <textarea id="user-input" placeholder="Ej: Realmente admiro cómo..."></textarea>
+                    <button onclick="checkAnswer()">Enviar Elogio</button>
+                </div>
+                <div id="feedback" class="feedback"></div>
+            `;
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input').value;
+            const feedback = document.getElementById('feedback');
+            
+            if (input.length < 20) {
+                feedback.className = 'feedback bad';
+                feedback.innerHTML = '⚠️ Tu elogio es muy corto. Intenta ser más específico y detallado.';
+                feedback.style.display = 'block';
+                return;
+            }
+
+            feedback.className = 'feedback good';
+            feedback.innerHTML = `
+                <strong>¡Muy bien!</strong> 🌟<br>
+                Los elogios específicos como el tuyo tienen mucho más impacto que los genéricos.<br>
+                <button onclick="next()" style="margin-top:10px; background:#2E7D32">Siguiente</button>
+            `;
+            feedback.style.display = 'block';
+        }
+
+        function next() {
+            current++;
+            loadScenario();
+        }
+
+        loadScenario();
+    </script>
+</body>
+</html>

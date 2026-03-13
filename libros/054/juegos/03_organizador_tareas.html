@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>El Organizador GTD 🗂️</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #DAE4E8; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #2C3E50; }
+        .lists-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 30px; }
+        .list { background: white; flex: 1; min-height: 300px; padding: 10px; border-radius: 8px; border-top: 5px solid #ccc; }
+        .list h3 { text-align: center; margin-top: 0; }
+        
+        #inbox { border-color: #34495E; }
+        #projects { border-color: #E67E22; }
+        #next-actions { border-color: #2ECC71; }
+        #waiting { border-color: #F1C40F; }
+        #someday { border-color: #95A5A6; }
+
+        .card { background: #ECF0F1; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #BDC3C7; cursor: move; }
+        .card:hover { background: #D6DBDF; }
+
+        .success-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #27AE60; color: white; padding: 15px 30px; border-radius: 30px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗂️ Organiza tu Mundo</h1>
+        <p style="text-align:center">Arrastra las tareas de la BANDEJA DE ENTRADA a la lista correcta.</p>
+
+        <div class="lists-container">
+            <div class="list" id="inbox-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>📥 Bandeja Entrada</h3>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t1" data-target="projects">Planear vacaciones a Italia</div>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t2" data-target="next-actions">Comprar leche</div>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t3" data-target="waiting">Esperar respuesta de cliente</div>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t4" data-target="someday">Aprender a tocar piano</div>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t5" data-target="projects">Rediseñar jardín</div>
+                <div class="card" draggable="true" ondragstart="drag(event)" id="t6" data-target="next-actions">Llamar a mamá</div>
+            </div>
+            
+            <div class="list" id="projects" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>Proyectos</h3>
+            </div>
+            <div class="list" id="next-actions" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>Próximas Acciones</h3>
+            </div>
+            <div class="list" id="waiting" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>En Espera</h3>
+            </div>
+            <div class="list" id="someday" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>Algún día</h3>
+            </div>
+        </div>
+    </div>
+    <div id="success" class="success-msg">🎉 ¡Organización Perfecta!</div>
+
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            var element = document.getElementById(data);
+            var targetList = ev.target.closest('.list');
+            
+            if (targetList && targetList.id !== 'inbox-list') {
+                if (targetList.id === element.dataset.target) {
+                    targetList.appendChild(element);
+                    element.style.borderColor = "green";
+                    element.style.background = "#D5F5E3";
+                    checkWin();
+                } else {
+                    alert("¡Esa no es la lista correcta! Piénsalo bien.");
+                }
+            }
+        }
+
+        function checkWin() {
+            const inbox = document.getElementById('inbox-list');
+            if (inbox.children.length === 1) { // Only H3 remains
+                document.getElementById('success').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

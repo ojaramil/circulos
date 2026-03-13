@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Experimento de las Mermeladas</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>El Experimento de las Mermeladas</h1>
+        
+        <p class="subtitle">Recrea el famoso estudio que demostró la paradoja de la elección.</p>
+        
+        <div class="card">
+            <h3>Configuración del Experimento</h3>
+            <label>Número de Mermeladas en la Mesa de Degustación:</label>
+            <select id="jamCount" onchange="runExperiment()">
+                <option value="6">6 Mermeladas (Grupo A)</option>
+                <option value="24">24 Mermeladas (Grupo B)</option>
+            </select>
+        </div>
+        
+        <div id="experiment-area"></div>
+        
+        <button class="btn" onclick="runExperiment()">Iniciar Experimento</button>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            const jams = ['Fresa', 'Frambuesa', 'Arándano', 'Durazno', 'Albaricoque', 'Cereza', 'Mora', 'Manzana', 'Pera', 'Uva', 'Ciruela', 'Melocotón', 'Mango', 'Piña', 'Naranja', 'Limón', 'Kiwi', 'Maracuyá', 'Guayaba', 'Higo', 'Granada', 'Coco', 'Plátano', 'Fresa Silvestre'];
+            
+            function runExperiment() {
+                const count = parseInt(document.getElementById('jamCount').value);
+                const availableJams = jams.slice(0, count);
+                const area = document.getElementById('experiment-area');
+                
+                area.innerHTML = `
+                    <div class="card">
+                        <h3>Mesa de Degustación</h3>
+                        <p>Has probado estas mermeladas:</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 15px;">
+                            ${availableJams.map(jam => `<div style="padding: 10px; background: rgba(0,229,255,0.1); border-radius: 5px; text-align: center;">🍯 ${jam}</div>`).join('')}
+                        </div>
+                        <p style="margin-top: 15px;">¿Cuál te gustaría comprar?</p>
+                        <select id="selectedJam" style="margin-top: 10px;">
+                            <option value="">-- Selecciona una --</option>
+                            ${availableJams.map(jam => `<option value="${jam}">${jam}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+                
+                document.getElementById('result').style.display = 'none';
+            }
+            
+            document.addEventListener('change', function(e) {
+                if (e.target.id === 'selectedJam' && e.target.value) {
+                    const count = parseInt(document.getElementById('jamCount').value);
+                    const buyRate = count === 6 ? 30 : 3; // 30% vs 3%
+                    const bought = Math.random() * 100 < buyRate;
+                    
+                    document.getElementById('result').innerHTML = `
+                        <h3>📊 Resultados del Experimento</h3>
+                        <p><strong>Mermeladas disponibles:</strong> ${count}</strong></p>
+                        <p><strong>Mermelada seleccionada:</strong> ${e.target.value}</p>
+                        <p><strong>¿Compraste?</strong> ${bought ? 'Sí ✅' : 'No ❌'}</p>
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(179, 136, 255, 0.1); border-radius: 8px;">
+                            <strong>📈 Estadísticas del Estudio Real:</strong><br>
+                            Con 6 opciones: <strong>30%</strong> de las personas compraron<br>
+                            Con 24 opciones: Solo <strong>3%</strong> de las personas compraron<br><br>
+                            <em style="color: #b388ff;">Conclusión: Más opciones pueden desalentar la acción. El esfuerzo de decidir entre muchas opciones puede hacer que las personas decidan no decidir.</em>
+                        </div>
+                    `;
+                    document.getElementById('result').style.display = 'block';
+                }
+            });
+            
+            runExperiment();
+        </script>
+        
+    </div>
+</body>
+</html>

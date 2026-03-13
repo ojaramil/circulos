@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto: Código Bushido</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #E0E7EF;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #0D1F33;
+        }
+        .game-container {
+            background: #142b47;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        h1 { color: #FF6B35; border-bottom: 2px solid #FF6B35; padding-bottom: 10px; }
+        .intro { margin-bottom: 20px; font-style: italic; color: #A0B0C0; }
+        .scenario { margin-bottom: 30px; display: none; }
+        .scenario.active { display: block; }
+        .question { font-size: 1.2em; margin-bottom: 20px; font-weight: 500; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #213a5a;
+            border: 1px solid #2a4464;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover { background: #2a4464; transform: translateX(5px); }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.correct { background: #1b4d3e; border: 1px solid #2d8a6b; display: block; }
+        .feedback.incorrect { background: #5a2121; border: 1px solid #8a2d2d; display: block; }
+        .btn-next {
+            margin-top: 20px;
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Reto: Código Bushido</h1>
+        <p class="intro">Equilibra las virtudes del samurái en situaciones de conflicto.</p>
+        <div id="game-content">
+            <div class="scenario" id="scenario-0"><div class="question">Un colega te pide que mientas por cortesía para no herir los sentimientos de un cliente. ¿Qué dictado del Bushido aplicas?</div><button class="option-btn" data-feedback="ERROR. La cortesía sin veracidad es una farsa. No tiene valor." onclick="checkAnswer(this, false, 'feedback-0')">Mientes; la cortesía es suprema.</button><button class="option-btn" data-feedback="CORRECTO. La sinceridad es el principio y el fin de todas las cosas." onclick="checkAnswer(this, true, 'feedback-0')">Dices la verdad con respeto.</button><div id="feedback-0" class="feedback"></div><button class="btn-next" onclick="nextStep()">Continuar</button></div>
+        </div>
+        <div id="final-score" style="display:none;">
+            <h2>¡Simulación Completa!</h2>
+            <p>Has terminado el reto. Recuerda: <strong>Lo que haces es quien eres.</strong></p>
+            <button class="btn-next" style="display:block;" onclick="location.reload()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const scenarios = document.querySelectorAll('.scenario');
+        
+        function showStep(n) {
+            scenarios.forEach((s, i) => s.classList.toggle('active', i === n));
+        }
+
+        function checkAnswer(btn, isCorrect, feedbackId) {
+            const feedback = document.getElementById(feedbackId);
+            feedback.innerHTML = btn.getAttribute('data-feedback');
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            
+            const nextBtn = feedback.nextElementSibling;
+            nextBtn.style.display = 'block';
+            
+            // Disable other buttons
+            const options = btn.parentElement.querySelectorAll('.option-btn');
+            options.forEach(o => o.disabled = true);
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep < scenarios.length) {
+                showStep(currentStep);
+            } else {
+                document.getElementById('game-content').style.display = 'none';
+                document.getElementById('final-score').style.display = 'block';
+            }
+        }
+
+        showStep(0);
+    </script>
+</body>
+</html>

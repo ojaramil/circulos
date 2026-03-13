@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtro de Opciones</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Filtro de Opciones</h1>
+        
+        <p class="subtitle">Aprende a limitar activamente el número de opciones que consideras.</p>
+        
+        <div class="card">
+            <h3>Escenario: Comprar un Laptop</h3>
+            <p>Opciones disponibles inicialmente: <strong>50</strong></p>
+            
+            <h4>Establece Criterios de Filtrado:</h4>
+            <label>Precio Máximo ($):</label>
+            <input type="number" id="maxPrice" value="1000" oninput="filter()">
+            
+            <label>RAM Mínima (GB):</label>
+            <input type="number" id="minRAM" value="8" oninput="filter()">
+            
+            <label>Almacenamiento Mínimo (GB):</label>
+            <input type="number" id="minStorage" value="256" oninput="filter()">
+            
+            <label>Marca Preferida:</label>
+            <select id="brand" onchange="filter()">
+                <option value="">Cualquiera</option>
+                <option value="Apple">Apple</option>
+                <option value="Dell">Dell</option>
+                <option value="HP">HP</option>
+                <option value="Lenovo">Lenovo</option>
+                <option value="Asus">Asus</option>
+            </select>
+        </div>
+        
+        <div id="filtered-options" class="card" style="display:none;">
+            <h3>Opciones Filtradas</h3>
+            <div id="options-list"></div>
+        </div>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            // Simulación de 50 laptops
+            const allLaptops = [];
+            const brands = ['Apple', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'MSI', 'Razer'];
+            for (let i = 0; i < 50; i++) {
+                allLaptops.push({
+                    brand: brands[Math.floor(Math.random() * brands.length)],
+                    price: 500 + Math.random() * 2000,
+                    ram: [4, 8, 16, 32][Math.floor(Math.random() * 4)],
+                    storage: [128, 256, 512, 1024][Math.floor(Math.random() * 4)]
+                });
+            }
+            
+            function filter() {
+                const maxPrice = parseFloat(document.getElementById('maxPrice').value) || 9999;
+                const minRAM = parseInt(document.getElementById('minRAM').value) || 0;
+                const minStorage = parseInt(document.getElementById('minStorage').value) || 0;
+                const brand = document.getElementById('brand').value;
+                
+                let filtered = allLaptops.filter(l => 
+                    l.price <= maxPrice &&
+                    l.ram >= minRAM &&
+                    l.storage >= minStorage &&
+                    (brand === '' || l.brand === brand)
+                );
+                
+                const listDiv = document.getElementById('options-list');
+                const filterDiv = document.getElementById('filtered-options');
+                
+                if (filtered.length > 0) {
+                    listDiv.innerHTML = filtered.slice(0, 10).map((l, i) => 
+                        `<div style="padding: 10px; margin: 5px 0; background: rgba(0,229,255,0.1); border-radius: 5px;">
+                            ${i+1}. ${l.brand} - $${Math.round(l.price)} - ${l.ram}GB RAM - ${l.storage}GB
+                        </div>`
+                    ).join('');
+                    
+                    if (filtered.length > 10) {
+                        listDiv.innerHTML += `<p style="color: #b388ff;">... y ${filtered.length - 10} más</p>`;
+                    }
+                    
+                    filterDiv.style.display = 'block';
+                } else {
+                    filterDiv.style.display = 'none';
+                }
+                
+                const result = document.getElementById('result');
+                let recommendation = '';
+                if (filtered.length === 0) {
+                    recommendation = '❌ No hay opciones que cumplan tus criterios. Considera relajar algunos filtros.';
+                } else if (filtered.length <= 6) {
+                    recommendation = '✅ Perfecto! Tienes un número óptimo de opciones para considerar.';
+                } else if (filtered.length <= 12) {
+                    recommendation = '⚠️ Aún tienes muchas opciones. Considera agregar un criterio más (ej: peso, batería, pantalla).';
+                } else {
+                    recommendation = '❌ Demasiadas opciones. Agrega más criterios de filtrado para reducir a 6-8 opciones.';
+                }
+                
+                result.innerHTML = `
+                    <h3>📊 Resultados del Filtrado</h3>
+                    <p><strong>Opciones después del filtro:</strong> ${filtered.length}</strong></p>
+                    <p style="margin-top: 15px; color: #b388ff;">${recommendation}</p>
+                `;
+                result.style.display = 'block';
+            }
+            
+            filter();
+        </script>
+        
+    </div>
+</body>
+</html>

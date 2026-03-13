@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detector de Críticas 🚫</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #F44336 0%, #C62828 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .header {
+            background: linear-gradient(135deg, #F44336, #C62828);
+            color: white; padding: 30px; text-align: center; border-radius: 20px 20px 0 0;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; }
+        .game-area { padding: 30px; }
+        .statement {
+            background: #FFEBEE; padding: 25px; border-radius: 15px;
+            margin: 20px 0; border-left: 5px solid #F44336;
+            font-size: 1.2em; line-height: 1.6;
+        }
+        .buttons {
+            display: flex; gap: 15px; justify-content: center; margin: 20px 0;
+        }
+        .btn {
+            padding: 15px 40px; border: none; border-radius: 10px;
+            font-size: 1.1em; cursor: pointer; transition: all 0.3s;
+            font-weight: bold;
+        }
+        .btn.criticism { background: #F44336; color: white; }
+        .btn.constructive { background: #4CAF50; color: white; }
+        .btn:hover { transform: scale(1.05); }
+        .feedback {
+            padding: 20px; border-radius: 10px; margin: 20px 0;
+            display: none; animation: fadeIn 0.5s;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #E8F5E9; border-left: 4px solid #4CAF50; }
+        .feedback.incorrect { background: #FFEBEE; border-left: 4px solid #F44336; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .score { text-align: center; font-size: 2em; color: #F44336; font-weight: bold; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚫 Detector de Críticas</h1>
+            <p>Identifica críticas destructivas vs. feedback constructivo</p>
+        </div>
+        <div class="game-area">
+            <div class="score">Puntuación: <span id="score">0</span> / <span id="total">0</span></div>
+            <div id="statement-container"></div>
+            <div class="buttons">
+                <button class="btn criticism" onclick="checkAnswer(true)">Es Crítica Destructiva</button>
+                <button class="btn constructive" onclick="checkAnswer(false)">Es Feedback Constructivo</button>
+            </div>
+            <div id="feedback" class="feedback"></div>
+        </div>
+    </div>
+    <script>
+        let score = 0, current = 0;
+        const statements = [
+            { text: "Siempre cometes los mismos errores. Nunca aprendes.", isCriticism: true, explanation: "Usa palabras absolutas ('siempre', 'nunca') y ataca a la persona, no el comportamiento." },
+            { text: "Noté que este informe tiene algunos errores. ¿Podemos revisarlo juntos?", isCriticism: false, explanation: "Señala el problema específicamente y ofrece ayuda para solucionarlo." },
+            { text: "Eres terrible en presentaciones. Deberías dejar que otros lo hagan.", isCriticism: true, explanation: "Ataca la identidad de la persona y no ofrece solución constructiva." },
+            { text: "Tu presentación tuvo buenos puntos. Para la próxima, podríamos trabajar en el contacto visual.", isCriticism: false, explanation: "Empieza con lo positivo y ofrece sugerencia específica para mejorar." },
+            { text: "No sé por qué te contrataron. No sirves para este trabajo.", isCriticism: true, explanation: "Ataque personal que destruye la autoestima sin ofrecer nada constructivo." },
+            { text: "He notado que llegas tarde frecuentemente. ¿Hay algo que pueda hacer para ayudarte a llegar a tiempo?", isCriticism: false, explanation: "Señala el comportamiento específico y ofrece apoyo." }
+        ];
+        
+        function loadStatement() {
+            if (current >= statements.length) { showResults(); return; }
+            const stmt = statements[current];
+            document.getElementById('statement-container').innerHTML = `<div class="statement">"${stmt.text}"</div>`;
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('total').textContent = statements.length;
+        }
+        
+        function checkAnswer(userSaysCriticism) {
+            const stmt = statements[current];
+            const correct = userSaysCriticism === stmt.isCriticism;
+            if (correct) score++;
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback show ${correct ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = `
+                <h3>${correct ? '✅ Correcto' : '❌ Incorrecto'}</h3>
+                <p><strong>Explicación:</strong> ${stmt.explanation}</p>
+                <button class="btn constructive" onclick="nextStatement()">Siguiente →</button>
+            `;
+            document.getElementById('score').textContent = score;
+            document.querySelectorAll('.buttons .btn').forEach(b => b.disabled = true);
+        }
+        
+        function nextStatement() {
+            current++;
+            document.querySelectorAll('.buttons .btn').forEach(b => b.disabled = false);
+            loadStatement();
+        }
+        
+        function showResults() {
+            const pct = (score/statements.length*100).toFixed(0);
+            document.getElementById('statement-container').innerHTML = `
+                <div class="statement" style="text-align: center;">
+                    <h2>🎉 Completado</h2>
+                    <div style="font-size: 3em; margin: 20px 0;">${pct}%</div>
+                    <p>Puntuación: ${score} de ${statements.length}</p>
+                    <button class="btn constructive" onclick="location.reload()">Reiniciar</button>
+                </div>
+            `;
+            document.querySelector('.buttons').style.display = 'none';
+        }
+        
+        loadStatement();
+    </script>
+</body>
+</html>

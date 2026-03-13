@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>¿Esencial o Ruido?</title>
+    <style>
+        body { font-family: 'Helvetica Neue', sans-serif; background: #222; color: #eee; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #333; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 500px; width: 90%; }
+        h1 { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; }
+        .item { font-size: 1.8em; margin-bottom: 40px; font-weight: bold; min-height: 60px; }
+        .buttons { display: flex; gap: 20px; justify-content: center; }
+        button { padding: 15px 40px; font-size: 1.2em; border: 2px solid #fff; background: transparent; color: white; cursor: pointer; transition: 0.2s; border-radius: 50px; }
+        button:hover { background: white; color: #222; }
+        .essential-btn { border-color: #4CAF50; color: #4CAF50; }
+        .essential-btn:hover { background: #4CAF50; color: white; }
+        .noise-btn { border-color: #F44336; color: #F44336; }
+        .noise-btn:hover { background: #F44336; color: white; }
+        #feedback { margin-top: 20px; height: 30px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Discriminador</h1>
+        <div id="game-area">
+            <div class="item" id="item-text"></div>
+            <div class="buttons">
+                <button class="noise-btn" onclick="guess('ruido')">Ruido</button>
+                <button class="essential-btn" onclick="guess('esencial')">Esencial</button>
+            </div>
+            <div id="feedback"></div>
+        </div>
+        <div id="end" style="display:none">
+            <h2>Fin de la sesión</h2>
+            <p>Recuerda: Si no es un SÍ absoluto, es un NO.</p>
+            <button onclick="location.reload()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { text: "Revisar email cada 5 minutos", type: "ruido" },
+            { text: "Dormir 8 horas", type: "esencial" },
+            { text: "Decir sí a todo para agradar", type: "ruido" },
+            { text: "Tiempo para pensar a solas", type: "esencial" },
+            { text: "Comprar un auto de lujo innecesario", type: "ruido" },
+            { text: "Pasar tiempo con la familia", type: "esencial" },
+            { text: "Reuniones sin agenda", type: "ruido" }
+        ];
+
+        let idx = 0;
+
+        function load() {
+            if (idx >= items.length) {
+                document.getElementById('game-area').style.display = 'none';
+                document.getElementById('end').style.display = 'block';
+                return;
+            }
+            document.getElementById('item-text').innerText = items[idx].text;
+            document.getElementById('feedback').innerText = "";
+        }
+
+        function guess(type) {
+            const item = items[idx];
+            const feedback = document.getElementById('feedback');
+            if (item.type === type) {
+                feedback.style.color = "#4CAF50";
+                feedback.innerText = "¡Correcto!";
+                setTimeout(() => {
+                    idx++;
+                    load();
+                }, 800);
+            } else {
+                feedback.style.color = "#F44336";
+                feedback.innerText = "Error. Piénsalo de nuevo.";
+            }
+        }
+        load();
+    </script>
+</body>
+</html>

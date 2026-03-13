@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenador de Empatía ❤️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            min-height: 100vh; padding: 20px; color: #333;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #E91E63, #C2185B);
+            color: white; padding: 30px; text-align: center;
+        }
+        .header h1 { font-size: 2.2em; margin-bottom: 10px; }
+        .game-area {
+            padding: 30px;
+        }
+        .emotion-card {
+            background: #f5f5f5; padding: 25px; border-radius: 15px;
+            margin: 20px 0; border-left: 5px solid #E91E63;
+        }
+        .emotion-card h3 { color: #E91E63; margin-bottom: 15px; }
+        .response-area {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%; min-height: 100px; padding: 15px;
+            border: 2px solid #E91E63; border-radius: 10px;
+            font-size: 1em; font-family: inherit; resize: vertical;
+        }
+        .analyze-btn {
+            background: #E91E63; color: white; border: none;
+            padding: 15px 30px; border-radius: 10px; cursor: pointer;
+            font-size: 1.1em; margin-top: 15px; transition: all 0.3s;
+        }
+        .analyze-btn:hover { background: #C2185B; transform: scale(1.05); }
+        .feedback {
+            margin-top: 20px; padding: 20px; border-radius: 10px;
+            background: #FFF3E0; border-left: 4px solid #FF9800; display: none;
+        }
+        .feedback.show { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .score-badge {
+            display: inline-block; padding: 10px 20px; background: #4CAF50;
+            color: white; border-radius: 20px; font-weight: bold; margin: 10px 5px;
+        }
+        .tips {
+            background: #E8F5E9; padding: 20px; border-radius: 10px;
+            margin-top: 20px; border-left: 4px solid #4CAF50;
+        }
+        .tips h4 { color: #2E7D32; margin-bottom: 10px; }
+        .tips ul { margin-left: 20px; }
+        .tips li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❤️ Entrenador de Empatía</h1>
+            <p>Aprende a responder con empatía genuina</p>
+        </div>
+        
+        <div class="game-area">
+            <div id="scenario-container"></div>
+            <div class="response-area">
+                <label for="response"><strong>Tu respuesta empática:</strong></label>
+                <textarea id="response" placeholder="Escribe cómo responderías con empatía..."></textarea>
+                <button class="analyze-btn" onclick="analyzeResponse()">Analizar Respuesta</button>
+            </div>
+            <div id="feedback" class="feedback"></div>
+            <button class="analyze-btn" onclick="nextScenario()" style="display: none;" id="next-btn">Siguiente Escenario →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = 0;
+        const scenarios = [
+            {
+                situation: "Un amigo te dice: 'Acabo de perder mi trabajo y no sé cómo voy a pagar el alquiler este mes.'",
+                keywords: ['entiendo', 'difícil', 'preocupado', 'ayudar', 'siento'],
+                avoid: ['al menos', 'peor', 'suerte', 'culpa'],
+                goodExample: "Entiendo lo difícil que debe ser esto para ti. Es completamente normal sentirse preocupado. ¿Hay algo en lo que pueda ayudarte?"
+            },
+            {
+                situation: "Tu pareja dice: 'Siento que ya no pasamos tiempo juntos. Siempre estás trabajando.'",
+                keywords: ['entiendo', 'razón', 'importante', 'tiempo', 'juntos'],
+                avoid: ['exageras', 'siempre', 'nunca', 'pero'],
+                goodExample: "Tienes toda la razón. He estado muy enfocado en el trabajo y no he priorizado nuestro tiempo juntos. Eres muy importante para mí."
+            },
+            {
+                situation: "Un colega dice: 'Estoy abrumado. Tengo demasiados proyectos y no sé por dónde empezar.'",
+                keywords: ['abrumador', 'entiendo', 'ayudar', 'priorizar', 'apoyo'],
+                avoid: ['fácil', 'solo', 'simple', 'deberías'],
+                goodExample: "Eso suena realmente abrumador. Entiendo esa sensación. ¿Te gustaría que te ayude a priorizar o simplemente necesitas desahogarte?"
+            }
+        ];
+
+        function loadScenario() {
+            if (currentScenario >= scenarios.length) {
+                showCompletion();
+                return;
+            }
+            const scenario = scenarios[currentScenario];
+            document.getElementById('scenario-container').innerHTML = \`
+                <div class="emotion-card">
+                    <h3>Escenario \${currentScenario + 1}</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">\${scenario.situation}</p>
+                </div>
+            \`;
+            document.getElementById('response').value = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function analyzeResponse() {
+            const response = document.getElementById('response').value.toLowerCase();
+            if (!response.trim()) {
+                alert('Por favor escribe una respuesta primero.');
+                return;
+            }
+
+            const scenario = scenarios[currentScenario];
+            let score = 0;
+            let feedback = '<h4>Análisis de tu respuesta:</h4><ul>';
+            
+            scenario.keywords.forEach(keyword => {
+                if (response.includes(keyword)) {
+                    score += 20;
+                    feedback += \`<li>✅ Usaste "\${keyword}" - Muestra empatía</li>\`;
+                }
+            });
+
+            scenario.avoid.forEach(word => {
+                if (response.includes(word)) {
+                    score -= 10;
+                    feedback += \`<li>⚠️ Evita usar "\${word}" - Puede minimizar sentimientos</li>\`;
+                }
+            });
+
+            feedback += '</ul>';
+            feedback += \`<div class="score-badge">Puntuación: \${Math.max(0, score)}/100</div>\`;
+            feedback += \`<div class="tips">
+                <h4>Ejemplo de respuesta empática:</h4>
+                <p>"\${scenario.goodExample}"</p>
+                <h4>Consejos:</h4>
+                <ul>
+                    <li>Valida los sentimientos de la persona</li>
+                    <li>Evita minimizar su experiencia</li>
+                    <li>Ofrece apoyo sin dar consejos no solicitados</li>
+                    <li>Usa frases como "Entiendo que..." o "Eso debe ser..."</li>
+                </ul>
+            </div>\`;
+
+            document.getElementById('feedback').innerHTML = feedback;
+            document.getElementById('feedback').className = 'feedback show';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            loadScenario();
+        }
+
+        function showCompletion() {
+            document.getElementById('scenario-container').innerHTML = \`
+                <div class="emotion-card" style="text-align: center;">
+                    <h2 style="color: #E91E63;">🎉 ¡Completado!</h2>
+                    <p style="font-size: 1.2em; margin: 20px 0;">Has practicado respuestas empáticas en \${scenarios.length} escenarios diferentes.</p>
+                    <p>La empatía es una habilidad que mejora con la práctica. ¡Sigue aplicando estos principios en tu vida diaria!</p>
+                    <button class="analyze-btn" onclick="location.reload()">Reiniciar Entrenamiento</button>
+                </div>
+            \`;
+            document.querySelector('.response-area').style.display = 'none';
+        }
+
+        loadScenario();
+    </script>
+</body>
+</html>

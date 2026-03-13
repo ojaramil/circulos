@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Rutinas</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Generador de Rutinas</h1>
+        
+        <p class="subtitle">Crea rutinas para decisiones triviales y libera tiempo mental.</p>
+        
+        <div class="card">
+            <h3>Decisiones para Automatizar</h3>
+            <div id="routines-list"></div>
+            <button class="btn" onclick="addRoutine()">+ Agregar Rutina</button>
+        </div>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            let routines = [
+                { decision: 'Qué desayunar', routine: 'Avena con frutas', timeSaved: 10 },
+                { decision: 'Qué café tomar', routine: 'Café negro', timeSaved: 5 },
+                { decision: 'Dónde almorzar', routine: 'Los mismos 3 restaurantes rotando', timeSaved: 15 }
+            ];
+            
+            function renderRoutines() {
+                const container = document.getElementById('routines-list');
+                container.innerHTML = '';
+                
+                routines.forEach((r, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.marginBottom = '10px';
+                    div.innerHTML = `
+                        <p><strong>Decisión:</strong> ${r.decision}</p>
+                        <label>Rutina:</label>
+                        <input type="text" value="${r.routine}" onchange="updateRoutine(${i}, this.value)">
+                        <button class="btn" onclick="removeRoutine(${i})" style="margin-top: 10px; background: rgba(255,0,0,0.2); border-color: #ff3333; color: #ff3333;">Eliminar</button>
+                    `;
+                    container.appendChild(div);
+                });
+                
+                calculateBenefits();
+            }
+            
+            function updateRoutine(index, value) {
+                routines[index].routine = value;
+                calculateBenefits();
+            }
+            
+            function removeRoutine(index) {
+                routines.splice(index, 1);
+                renderRoutines();
+            }
+            
+            function addRoutine() {
+                const decision = prompt('¿Qué decisión quieres automatizar?');
+                if (decision) {
+                    const routine = prompt('¿Cuál será tu rutina?');
+                    if (routine) {
+                        routines.push({ decision, routine, timeSaved: 10 });
+                        renderRoutines();
+                    }
+                }
+            }
+            
+            function calculateBenefits() {
+                const totalTime = routines.reduce((sum, r) => sum + r.timeSaved, 0);
+                const weeklyTime = totalTime * 7;
+                const monthlyTime = weeklyTime * 4;
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>📊 Beneficios de tus Rutinas</h3>
+                    <p><strong>Tiempo ahorrado por día:</strong> ${totalTime} minutos</p>
+                    <p><strong>Tiempo ahorrado por semana:</strong> ${weeklyTime} minutos (${Math.round(weeklyTime/60 * 10)/10} horas)</p>
+                    <p><strong>Tiempo ahorrado por mes:</strong> ${monthlyTime} minutos (${Math.round(monthlyTime/60 * 10)/10} horas)</p>
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(179, 136, 255, 0.1); border-radius: 8px;">
+                        <strong>💡 Beneficios:</strong><br>
+                        • Menos decisiones = menos estrés<br>
+                        • Más tiempo mental para decisiones importantes<br>
+                        • Mayor satisfacción al eliminar la sobrecarga de elección en áreas triviales<br>
+                        • Las rutinas crean predictibilidad y reducen la ansiedad
+                    </div>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+            
+            renderRoutines();
+        </script>
+        
+    </div>
+</body>
+</html>

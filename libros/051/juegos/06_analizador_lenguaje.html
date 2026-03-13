@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Analizador de Lenguaje 🔍</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #3F51B5; }
+        .phrase-box { background: #E8EAF6; padding: 20px; margin: 20px 0; border-radius: 8px; font-size: 1.2em; text-align: center; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .option:hover { background: #f5f5f5; border-color: #3F51B5; }
+        .option.correct { background: #C8E6C9; border-color: #4CAF50; }
+        .option.wrong { background: #FFCDD2; border-color: #F44336; }
+        .score { text-align: center; font-weight: bold; margin-bottom: 20px; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Analizador de Lenguaje</h1>
+        <p style="text-align:center">Selecciona la frase que mejor aplica los principios de Carnegie (evita críticas, despierta deseo, muestra interés).</p>
+        <div class="score">Puntuación: <span id="score">0</span></div>
+        <div id="game-content"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                bad: "¡Estás equivocado! Esos datos no son correctos.",
+                good: "Yo pensaba diferente, pero puedo estar equivocado. Revisemos los hechos juntos.",
+                explanation: "Admitir que puedes estar equivocado desarma la defensiva del otro."
+            },
+            {
+                bad: "Necesito que termines esto para mañana sin falta.",
+                good: "Si logramos terminar esto para mañana, el cliente estará encantado y será un gran logro para el equipo.",
+                explanation: "Despierta un deseo en la otra persona mostrando el beneficio."
+            },
+            {
+                bad: "Tu idea no va a funcionar.",
+                good: "¿Cómo crees que podríamos implementar esa idea para resolver el problema X?",
+                explanation: "Haz preguntas en lugar de dar órdenes o críticas directas."
+            },
+            {
+                bad: "Hablas demasiado de ti mismo.",
+                good: "¡Qué historia tan interesante! Cuéntame más sobre cómo lograste eso.",
+                explanation: "Muestra interés genuino y anima a los demás a hablar de sí mismos."
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            if (current >= questions.length) {
+                document.getElementById('game-content').innerHTML = `<div style="text-align:center"><h2>Fin del juego</h2><p>Puntuación final: ${score}/${questions.length}</p><button onclick="location.reload()" style="padding:10px 20px; cursor:pointer;">Jugar de nuevo</button></div>`;
+                return;
+            }
+            
+            const q = questions[current];
+            const isFirstGood = Math.random() > 0.5;
+            
+            document.getElementById('game-content').innerHTML = `
+                <div class="phrase-box">¿Cuál frase es más efectiva?</div>
+                <div class="options">
+                    <div class="option" onclick="check(this, ${isFirstGood}, '${q.explanation}')">${isFirstGood ? q.good : q.bad}</div>
+                    <div class="option" onclick="check(this, ${!isFirstGood}, '${q.explanation}')">${isFirstGood ? q.bad : q.good}</div>
+                </div>
+                <div id="result" style="margin-top:20px; text-align:center;"></div>
+            `;
+        }
+
+        function check(el, isCorrect, explanation) {
+            if (document.querySelector('.option.clicked')) return; 
+            el.classList.add('clicked');
+            
+            if (isCorrect) {
+                el.classList.add('correct');
+                score++;
+                document.getElementById('result').innerHTML = `<p style="color:green"><strong>¡Correcto!</strong> ${explanation}</p><button onclick="next()">Siguiente</button>`;
+            } else {
+                el.classList.add('wrong');
+                document.getElementById('result').innerHTML = `<p style="color:red"><strong>Mejorable.</strong> La otra opción es mejor porque: ${explanation}</p><button onclick="next()">Siguiente</button>`;
+            }
+            document.getElementById('score').innerText = score;
+        }
+
+        function next() {
+            current++;
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desarrollador de influencia</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Desarrollador de influencia</h1>
+        
+        <p class="subtitle">Una acción concreta para fortalecer tu influencia con alguien clave.</p>
+        <div class="card">
+            <label>Persona clave con la que quiero fortalecer la relación (jefe, cliente, colega, familiar):</label>
+            <input type="text" id="person" placeholder="Nombre o rol">
+            <label>¿Qué podría hacer esta semana para valorarla o ayudarla sin pedir nada a cambio?</label>
+            <textarea id="action" placeholder="Ej: Reconocer su trabajo en público, enviar un recurso útil, escuchar su idea..."></textarea>
+        </div>
+        <button class="btn" onclick="planInfluence()">Planear mi acción</button>
+        <div id="result" class="result-area"></div>
+        <script>
+            function planInfluence() {
+                const person = document.getElementById('person').value || "—";
+                const action = document.getElementById('action').value || "—";
+                document.getElementById('result').innerHTML = `
+                    <h3>🤝 Plan de influencia</h3>
+                    <p><strong>Persona:</strong> ${person}</p>
+                    <p><strong>Acción que haré:</strong> ${action}</p>
+                    <p><em>La influencia crece cuando el otro siente que gana algo al estar cerca de ti. Cumple esta acción esta semana.</em></p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

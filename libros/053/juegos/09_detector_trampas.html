@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de trampas</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a5c, #2d5a87, #e67e22);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        h1 { color: #1a3a5c; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .btn {
+            background: linear-gradient(to right, #1a3a5c, #e67e22);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1a3a5c;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: #e67e22; outline: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Detector de trampas</h1>
+        
+        <p class="subtitle">¿Estás cayendo en alguna de las tres trampas?</p>
+        <div id="quiz"></div>
+        <button class="btn" onclick="detectTraps()">Analizar</button>
+        <div id="result" class="result-area"></div>
+        <script>
+            const traps = [
+                { name: "Ego", q: "¿Crees que ya lo tienes todo resuelto y evitas feedback o aprendizaje nuevo?" },
+                { name: "Éxito a cualquier costo", q: "¿Estás sacrificando salud, sueño o relaciones por el trabajo?" },
+                { name: "Comodidad", q: "¿Evitas proyectos o retos nuevos porque 'las cosas ya van bien'?" }
+            ];
+            const quizDiv = document.getElementById('quiz');
+            traps.forEach((t, i) => {
+                quizDiv.innerHTML += `<div class="card">
+                    <p>${t.q}</p>
+                    <select id="t${i}">
+                        <option value="0">No / Casi nunca</option>
+                        <option value="1">A veces</option>
+                        <option value="2">Sí / Frecuentemente</option>
+                    </select>
+                </div>`;
+            });
+            function detectTraps() {
+                let msg = "<h3>⚠️ Resultado del detector de trampas</h3>";
+                let found = [];
+                traps.forEach((t, i) => {
+                    let v = parseInt(document.getElementById('t'+i).value);
+                    if (v >= 1) found.push(t.name);
+                });
+                if (found.length === 0) {
+                    msg += "<p>No detectamos señales fuertes de las tres trampas. Sigue con humildad, equilibrio y disposición a desafiarte.</p>";
+                } else {
+                    msg += "<p><strong>Posibles trampas:</strong> " + found.join(", ") + "</p>";
+                    msg += "<p><em>Recomendación: La certeza es enemiga del crecimiento. Revisa si estás cerrado al aprendizaje, descuidando bienestar o evitando nuevos retos.</em></p>";
+                }
+                document.getElementById('result').innerHTML = msg;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>

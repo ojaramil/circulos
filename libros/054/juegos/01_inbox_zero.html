@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador Inbox Zero 📥</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .game-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
+        .inbox-item { background: #34495E; color: white; padding: 20px; margin: 20px 0; border-radius: 10px; font-size: 1.2em; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        button { padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; transition: 0.2s; color: white; }
+        .btn-do { background: #2ECC71; } 
+        .btn-defer { background: #F39C12; }
+        .btn-delegate { background: #9B59B6; }
+        .btn-delete { background: #E74C3C; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .score-board { margin-bottom: 20px; font-weight: bold; color: #2C3E50; }
+        .feedback { margin-top: 15px; font-weight: bold; min-height: 24px; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>📥 Inbox Zero Challenge</h1>
+        <p>Decide qué hacer con cada ítem según GTD.</p>
+        <div class="score-board">Bandeja de Entrada: <span id="count">5</span> | Puntuación: <span id="score">0</span></div>
+        
+        <div id="game-area">
+            <div class="inbox-item" id="current-item">Cargando...</div>
+            <div class="buttons">
+                <button class="btn-do" onclick="process('do')">Hacer (< 2 min)</button>
+                <button class="btn-delegate" onclick="process('delegate')">Delegar</button>
+                <button class="btn-defer" onclick="process('defer')">Diferir (> 2 min)</button>
+                <button class="btn-delete" onclick="process('delete')">Eliminar/Archivar</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+        <div id="result" style="display:none">
+            <h2>¡Bandeja Vacía! 🎉</h2>
+            <p>Has procesado todo tu inbox.</p>
+            <button onclick="location.reload()" style="background:#3498DB; width:100%">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { text: "Spam de tarjeta de crédito", type: "delete", reason: "Es basura." },
+            { text: "Responder email rápido de confirmación", type: "do", reason: "Tarda menos de 2 minutos." },
+            { text: "Preparar presentación anual (1 hora)", type: "defer", reason: "Es un proyecto/tarea larga. Va a la lista de tareas." },
+            { text: "Pedir a Juan el reporte mensual", type: "delegate", reason: "Es responsabilidad de Juan. Va a 'En Espera'." },
+            { text: "Leer artículo interesante pero no urgente", type: "defer", reason: "Va a 'Algún día / Tal vez' o lista de lectura." },
+            { text: "Pagar factura de luz online (1 min)", type: "do", reason: "Regla de los 2 minutos." }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        function loadItem() {
+            if (currentIndex >= items.length) {
+                document.getElementById('game-area').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                return;
+            }
+            document.getElementById('current-item').innerText = items[currentIndex].text;
+            document.getElementById('count').innerText = items.length - currentIndex;
+            document.getElementById('feedback').innerText = "";
+        }
+
+        function process(action) {
+            const item = items[currentIndex];
+            const feedback = document.getElementById('feedback');
+            
+            if (item.type === action) {
+                score += 10;
+                feedback.style.color = "green";
+                feedback.innerText = "¡Correcto! " + item.reason;
+            } else {
+                score -= 5;
+                feedback.style.color = "red";
+                feedback.innerText = "Incorrecto. " + item.reason;
+            }
+            
+            document.getElementById('score').innerText = score;
+            currentIndex++;
+            setTimeout(loadItem, 1500);
+        }
+
+        loadItem();
+    </script>
+</body>
+</html>

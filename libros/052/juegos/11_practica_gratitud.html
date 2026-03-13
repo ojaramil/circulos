@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Gratitud</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(30, 30, 46, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b388ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border: 1px solid #b388ff;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00e5ff;
+            color: #fff;
+            font-family: inherit;
+            margin: 8px 0 15px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #b388ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 136, 255, 0.3);
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00e5ff;
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            color: #b388ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .option-item {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: rgba(0, 229, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .option-item.selected {
+            background: rgba(179, 136, 255, 0.3);
+            border-left-color: #b388ff;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Práctica de Gratitud</h1>
+        
+        <p class="subtitle">Aprende a apreciar lo que tienes en lugar de buscar constantemente algo mejor.</p>
+        
+        <div class="card">
+            <h3>Ejercicio de Gratitud</h3>
+            <p>Piensa en una decisión reciente que tomaste. En lugar de pensar en lo que podrías haber elegido, enfócate en lo positivo de tu elección.</p>
+            
+            <label>¿Qué decidiste?</label>
+            <input type="text" id="decision" placeholder="Ej: Compré un auto usado">
+            
+            <label>¿Qué aspectos positivos tiene tu elección? (Lista al menos 3)</label>
+            <textarea id="positives" rows="5" placeholder="1. Es confiable&#10;2. Está dentro de mi presupuesto&#10;3. Me encanta el color"></textarea>
+            
+            <button class="btn" onclick="practiceGratitude()">Practicar Gratitud</button>
+        </div>
+        
+        <div id="result" class="result-area"></div>
+
+        <script>
+            function practiceGratitude() {
+                const decision = document.getElementById('decision').value;
+                const positives = document.getElementById('positives').value;
+                
+                if (!decision || !positives) {
+                    alert('Por favor completa ambos campos');
+                    return;
+                }
+                
+                const positiveList = positives.split('\n').filter(p => p.trim());
+                
+                if (positiveList.length < 3) {
+                    alert('Por favor lista al menos 3 aspectos positivos');
+                    return;
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>🙏 Reflexión de Gratitud</h3>
+                    <p><strong>Tu decisión:</strong> ${decision}</p>
+                    <div class="card" style="margin-top: 15px;">
+                        <h4 style="color: #00e5ff;">Aspectos Positivos:</h4>
+                        <ul>
+                            ${positiveList.map(p => `<li>${p.trim()}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(179, 136, 255, 0.1); border-radius: 8px;">
+                        <strong>💡 Lección:</strong> Al practicar la gratitud, cambias tu enfoque de lo que podrías tener a lo que ya tienes. Esto aumenta tu satisfacción con tus decisiones y reduce el arrepentimiento constante. La satisfacción no viene de tener más opciones o mejores opciones; viene de aprender a estar satisfecho con las opciones que tenemos.
+                    </div>
+                    <p style="margin-top: 15px; color: #b388ff;"><em>Intenta hacer este ejercicio regularmente, especialmente después de tomar decisiones importantes.</em></p>
+                `;
+                document.getElementById('result').style.display = 'block';
+            }
+        </script>
+        
+    </div>
+</body>
+</html>
